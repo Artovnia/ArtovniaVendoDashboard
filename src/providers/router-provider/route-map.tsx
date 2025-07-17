@@ -13,6 +13,7 @@ import { SettingsLayout } from '../../components/layout/settings-layout';
 import { ErrorBoundary } from '../../components/utilities/error-boundary';
 import { TaxRegionDetailBreadcrumb } from '../../routes/tax-regions/tax-region-detail/breadcrumb';
 import { taxRegionLoader } from '../../routes/tax-regions/tax-region-detail/loader';
+import productVariantRoutes from '../../routes/product-variants/routes';
 import { RouteExtensions } from './route-extensions';
 import { SettingsExtensions } from './settings-extensions';
 
@@ -30,24 +31,275 @@ export const RouteMap: RouteObject[] = [
             lazy: () => import('../../routes/home'),
           },
           {
-            path: 'stripe-connect',
+            path: 'payout-provider-select',
             handle: {
-              breadcrumb: () => 'Stripe Connects',
+              breadcrumb: () => 'Select Payout Provider',
             },
             errorElement: <ErrorBoundary />,
-            lazy: () =>
-              import('../../routes/stripe-connect'),
+            lazy: async () => {
+              const mod = await import('../../routes/payout-provider-select');
+              return { Component: mod.default };
+            },
           },
           {
-            path: '/dashboard',
+            path: 'stripe-connect',
+            handle: {
+              breadcrumb: () => 'Stripe',
+            },
+            errorElement: <ErrorBoundary />,
+            lazy: async () => {
+              const mod = await import('../../routes/stripe-connect');
+              return { Component: mod.default };
+            },
+          },
+          {
+            path: 'payu-connect',
+            handle: {
+              breadcrumb: () => 'PayU',
+            },
+            errorElement: <ErrorBoundary />,
+            lazy: async () => {
+              const mod = await import('../../routes/payu-connect/index');
+              return { Component: mod.default };
+            },
+          },
+          {
+            path: 'payout',
+            handle: {
+              breadcrumb: () => 'Konto Wypłat',
+            },
+            errorElement: <ErrorBoundary />,
+            children: [
+              {
+                index: true,
+                lazy: async () => {
+                  const mod = await import('../../routes/payout');
+                  return { Component: mod.default };
+                },
+              },
+              {
+                path: 'detail',
+                handle: {
+                  breadcrumb: () => 'Szczegóły konta wypłat',
+                },
+                errorElement: <ErrorBoundary />,
+                lazy: async () => {
+                  const mod = await import('../../routes/payout/payout-detail');
+                  return { Component: mod.default };
+                },
+              },
+              {
+                path: 'create',
+                handle: {
+                  breadcrumb: () => 'Utworzenie konta wypłat',
+                },
+                errorElement: <ErrorBoundary />,
+                lazy: async () => {
+                  const mod = await import('../../routes/payout/payout-create');
+                  return { Component: mod.default };
+                },
+              },
+              {
+                path: 'edit/:section',
+                handle: {
+                  breadcrumb: () => 'Edycja konta wypłat',
+                },
+                errorElement: <ErrorBoundary />,
+                lazy: async () => {
+                  const mod = await import('../../routes/payout/payout-edit');
+                  return { Component: mod.default };
+                },
+              },
+              // Removed legacy payu-onboarding route - now handled by the modular structure
+              {                
+                path: 'simplified-payout',
+                handle: {
+                  breadcrumb: () => 'Konfiguracja wypłat PLN',
+                },
+                errorElement: <ErrorBoundary />,
+                // Redirect to new create view
+                lazy: async () => {
+                  const mod = await import('../../routes/payout/redirect-to-create');
+                  return { Component: mod.default };
+                },
+              },
+              {
+                path: 'simplified',
+                handle: {
+                  breadcrumb: () => 'Konfiguracja wypłat PLN',
+                },
+                errorElement: <ErrorBoundary />,
+                // Redirect to new create view
+                lazy: async () => {
+                  const mod = await import('../../routes/payout/redirect-to-create');
+                  return { Component: mod.default };
+                },
+              },
+            ],
+          },
+          {
+            path: 'dashboard',
             errorElement: <ErrorBoundary />,
             lazy: () => import('../../routes/dashboard'),
           },
           {
-            path: '/requests',
+            path: 'holiday-mode',
             errorElement: <ErrorBoundary />,
             handle: {
-              breadcrumb: () => 'Requests',
+              breadcrumb: () => t('holidayMode.domain'),
+            },
+            lazy: async () => {
+              const mod = await import('../../routes/holiday-mode');
+              return { Component: mod.default };
+            },
+          },
+          {
+            path: 'requests',
+            errorElement: <ErrorBoundary />,
+            handle: {
+              breadcrumb: () => 'Zapytania',
+            },
+            children: [
+              {
+                index: true,
+                lazy: async () => {
+                  const mod = await import('../../routes/requests/page');
+                  return { Component: mod.default };
+                },
+              },
+              {
+                path: 'returns',
+                handle: {
+                  breadcrumb: () => 'Zwroty',
+                },
+                children: [
+                  {
+                    index: true,
+                    lazy: async () => {
+                      const mod = await import('../../routes/requests/returns-list/page');
+                      return { Component: mod.default };
+                    },
+                  },
+                  {
+                    path: ':id',
+                    handle: {
+                      breadcrumb: () => 'Szczegóły zwrotu',
+                    },
+                    lazy: async () => {
+                      // Use correct path format for dynamic routes without brackets
+                      const mod = await import('../../routes/requests/returns-list/_id/page');
+                      return { Component: mod.default };
+                    },
+                  },
+                ],
+              },
+              {
+                path: 'categories',
+                handle: {
+                  breadcrumb: () => 'Categories requests',
+                },
+                lazy: async () => {
+                  const { RequestsCategoriesList } =
+                    await import(
+                      '../../routes/requests/requests-list'
+                    );
+
+                  return {
+                    Component: RequestsCategoriesList,
+                  };
+                },
+                children: [
+                  {
+                    path: 'create',
+                    lazy: () =>
+                      import(
+                        '../../routes/categories/category-create'
+                      ),
+                  },
+                  {
+                    path: ':id/edit',
+                    lazy: () =>
+                      import(
+                        '../../routes/categories/category-edit'
+                      ),
+                  },
+                ],
+              },
+              {
+                path: 'collections',
+                handle: {
+                  breadcrumb: () => 'Collection requests',
+                },
+                lazy: async () => {
+                  const { RequestsCollectionsList } =
+                    await import(
+                      '../../routes/requests/requests-list'
+                    );
+
+                  return {
+                    Component: RequestsCollectionsList,
+                  };
+                },
+              },
+              {
+                path: 'reviews',
+                handle: {
+                  breadcrumb: () => 'Reviews requests',
+                },
+                lazy: async () => {
+                  const { RequestReviewsList } =
+                    await import(
+                      '../../routes/requests/requests-list'
+                    );
+
+                  return {
+                    Component: RequestReviewsList,
+                  };
+                },
+              },
+              {
+                path: 'orders',
+                handle: {
+                  breadcrumb: () => 'Orders requests',
+                },
+                lazy: async () => {
+                  const { RequestOrdersList } =
+                    await import(
+                      '../../routes/requests/requests-list'
+                    );
+
+                  return {
+                    Component: RequestOrdersList,
+                  };
+                },
+              },
+              {
+                path: ':id',
+                lazy: async () => {
+                  const { Component, Breadcrumb, loader } =
+                    await import(
+                      '../../routes/requests/request-detail'
+                    );
+
+                  return {
+                    Component,
+                    loader,
+                    handle: {
+                      breadcrumb: (match: UIMatch<any>) => (
+                        <Breadcrumb {...match} />
+                      ),
+                    },
+                  };
+                },
+              },
+            ],
+          },
+          // Removed duplicate requests route
+          {
+            path: 'settings',
+            errorElement: <ErrorBoundary />,
+            handle: {
+              breadcrumb: () => 'Settings',
             },
             children: [
               {
@@ -197,9 +449,9 @@ export const RouteMap: RouteObject[] = [
                     Component,
                     loader,
                     handle: {
-                      breadcrumb: (match: UIMatch<any>) => (
-                        <Breadcrumb {...match} />
-                      ),
+                      breadcrumb: (
+                        match: UIMatch<any>
+                      ) => <Breadcrumb {...match} />,
                     },
                   };
                 },
@@ -263,10 +515,9 @@ export const RouteMap: RouteObject[] = [
                 path: ':id',
                 errorElement: <ErrorBoundary />,
                 lazy: async () => {
-                  const { Breadcrumb, loader } =
-                    await import(
-                      '../../routes/products/product-detail'
-                    );
+                  const { Breadcrumb, loader } = await import(
+                    '../../routes/products/product-detail'
+                  );
 
                   return {
                     Component: Outlet,
@@ -281,10 +532,14 @@ export const RouteMap: RouteObject[] = [
                 children: [
                   {
                     path: '',
-                    lazy: () =>
-                      import(
+                    lazy: async () => {
+                      const { Component } = await import(
                         '../../routes/products/product-detail'
-                      ),
+                      );
+                      return {
+                        Component,
+                      };
+                    },
                     children: [
                       {
                         path: 'edit',
@@ -375,6 +630,25 @@ export const RouteMap: RouteObject[] = [
                         lazy: () =>
                           import(
                             '../../routes/products/product-metadata'
+                          ),
+                      },
+                      {
+                        path: 'edit-gpsr',
+                        lazy: async () => {
+                          const { EditGPSR } = await import(
+                            '../../routes/products/product-detail/edit-gpsr'
+                          );
+                          
+                          return {
+                            Component: EditGPSR,
+                          };
+                        },
+                      },
+                      {
+                        path: 'additional-attributes',
+                        lazy: () =>
+                          import(
+                            '../../routes/products/product-additional-attributes'
                           ),
                       },
                     ],
@@ -929,6 +1203,7 @@ export const RouteMap: RouteObject[] = [
               },
             ],
           },
+          ...productVariantRoutes,
           {
             path: '/customers',
             errorElement: <ErrorBoundary />,
@@ -1212,6 +1487,13 @@ export const RouteMap: RouteObject[] = [
                     lazy: () =>
                       import(
                         '../../routes/inventory/inventory-detail/components/adjust-inventory'
+                      ),
+                  },
+                  {
+                    path: 'variant-attributes',
+                    lazy: () =>
+                      import(
+                        '../../routes/inventory/inventory-detail/components/edit-variant-attributes'
                       ),
                   },
                 ],
@@ -2142,7 +2424,10 @@ export const RouteMap: RouteObject[] = [
           },
           {
             path: '/register',
-            lazy: () => import('../../routes/register'),
+            lazy:
+              __DISABLE_SELLERS_REGISTRATION__ === 'false'
+                ? () => import('../../routes/register')
+                : undefined,
           },
           {
             path: '/reset-password',

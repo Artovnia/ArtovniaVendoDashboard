@@ -37,12 +37,14 @@ export function OrderCreateShipmentForm({
     resolver: zodResolver(CreateShipmentSchema),
   })
 
-  const { fields: labels, append } = useFieldArray({
+  const { fields: labels, append, remove } = useFieldArray({
     name: "labels",
     control: form.control,
   })
 
   const handleSubmit = form.handleSubmit(async (data) => {
+    // Only send fields that the backend validator expects (items and labels)
+    // The backend validator doesn't accept no_notification field
     await createShipment(
       {
         items: fulfillment?.items?.map((i) => ({
@@ -56,7 +58,7 @@ export function OrderCreateShipmentForm({
             tracking_url: "#",
             label_url: "#",
           })),
-        no_notification: !data.send_notification,
+        // no_notification field is used in the UI but not sent to the API
       },
       {
         onSuccess: () => {
@@ -105,11 +107,23 @@ export function OrderCreateShipmentForm({
                       render={({ field }) => {
                         return (
                           <Form.Item className="mb-4">
-                            {index === 0 && (
-                              <Form.Label>
-                                {t("orders.shipment.trackingNumber")}
-                              </Form.Label>
-                            )}
+                            <div className="flex items-center justify-between">
+                              {index === 0 && (
+                                <Form.Label>
+                                  {t("orders.shipment.trackingNumber")}
+                                </Form.Label>
+                              )}
+                              {index > 0 && (
+                                <Button
+                                  type="button"
+                                  size="small"
+                                  variant="secondary"
+                                  onClick={() => remove(index)}
+                                >
+                                  {t("actions.remove")}
+                                </Button>
+                              )}
+                            </div>
                             <Form.Control>
                               <Input {...field} placeholder="123-456-789" />
                             </Form.Control>

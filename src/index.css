@@ -27,9 +27,81 @@
     src: url("./assets/fonts/RobotoMono-Medium.ttf") format("truetype");
   }
 
+  /* Light mode theme variables */
   :root {
+    --ui-bg-base: #FAF3EB;         /* Main background color - light cream */
+    --ui-bg-subtle: #F5EBE0;       /* Subtle background color - slightly darker cream */
+    --ui-bg-component: #FAF3EB;    /* Component background color */
+    --ui-bg-field: #FFFFFF;        /* Form field background color - keeping white for readability */
+    --ui-bg-highlight: #E4D7CB;    /* Highlighted background color - light brown */
+    --ui-bg-interactive: #EFE2D3;  /* Interactive element background color - intermediate cream */
+    --ui-bg-overlay: rgba(83, 41, 10, 0.2); /* Overlay background color with brown tint */
+    --ui-fg-base: #53290A;         /* Base text color - dark brown */
+    --ui-fg-subtle: #694736;       /* Subtle text color - medium brown */
+    --ui-fg-interactive: #53290A;  /* Interactive text color - dark brown */
+    --ui-fg-muted: #8C6E5A;        /* Muted text color - lighter brown */
+    --ui-fg-disabled: #BEA99A;     /* Disabled text color - very light brown */
+    --ui-fg-on-color: #FFFFFF;     /* Text color on colored backgrounds - white for contrast */
+    --ui-border-base: #E4D7CB;     /* Base border color - light brown */
+    --ui-border-strong: #C9B6A7;   /* Strong border color - medium brown */
+    --ui-border-interactive: #E4D7CB; /* Interactive border color - light brown */
+    --ui-border-highlight: #8C6E5A; /* Highlight border color - medium-dark brown */
+    --ui-color-component-bg: #FAF3EB; /* Component background color - light cream */
+    --ui-color-component-text: #53290A; /* Component text color - dark brown */
+    
+    /* Button colors */
+    --ui-button-default-bg: #694736; /* Default button background - medium brown */
+    --ui-button-default-text: #FFFFFF; /* Default button text - white */
+    --ui-button-hover-bg: #53290A; /* Button hover background - dark brown */
+    --ui-button-hover-text: #FFFFFF; /* Button hover text - white */
+    --ui-button-pressed-bg: #7D5642; /* Button pressed background - lighter brown */
+    --ui-button-disabled-bg: #E4D7CB; /* Disabled button background - light brown */
+    --ui-button-disabled-text: #BEA99A; /* Disabled button text - very light brown */
+    
+    /* Hover states */
+    --ui-hover-base: rgba(83, 41, 10, 0.05); /* Base hover background - transparent brown */
+    --ui-hover-highlight: #E4D7CB; /* Highlight hover background - light brown */
+    --ui-hover-interactive: #D8C8B8; /* Interactive hover background - medium-light brown */
+    
     @apply bg-ui-bg-subtle text-ui-fg-base antialiased;
     text-rendering: optimizeLegibility;
+  }
+
+  /* Dark mode theme variables */
+  .dark {
+    --ui-bg-base: #140F2D;       /* Main background color - deep purple */
+    --ui-bg-subtle: #1D1640;      /* Subtle background color - slightly lighter purple */
+    --ui-bg-component: #251D4F;   /* Component background color - medium purple */
+    --ui-bg-field: #1D1640;       /* Form field background color */
+    --ui-bg-highlight: #2D2463;   /* Highlighted background color - richer purple */
+    --ui-bg-interactive: #2D2463; /* Interactive element background color */
+    --ui-bg-overlay: rgba(20, 15, 45, 0.7); /* Overlay background color */
+    --ui-fg-base: #F2F0FF;        /* Base text color - off-white with purple tint */
+    --ui-fg-subtle: #C4BDFF;      /* Subtle text color - light purple */
+    --ui-fg-interactive: #F2F0FF; /* Interactive text color */
+    --ui-fg-muted: #9B93E8;       /* Muted text color - muted purple */
+    --ui-fg-disabled: #4A4273;    /* Disabled text color - dark muted purple */
+    --ui-fg-on-color: #FFFFFF;    /* Text color on colored backgrounds */
+    --ui-border-base: #2D2463;    /* Base border color */
+    --ui-border-strong: #3A2F80;  /* Strong border color - brighter purple */
+    --ui-border-interactive: #3A2F80; /* Interactive border color */
+    --ui-border-highlight: #5747B1; /* Highlight border color - vibrant purple */
+    --ui-color-component-bg: #1D1640; /* Component background color */
+    --ui-color-component-text: #F2F0FF; /* Component text color */
+    
+    /* Button colors */
+    --ui-button-default-bg: #3A2F80;  /* Default button background - medium purple */
+    --ui-button-default-text: #FFFFFF; /* Default button text - white */
+    --ui-button-hover-bg: #5747B1;     /* Button hover background - brighter purple */
+    --ui-button-hover-text: #FFFFFF;   /* Button hover text - white */
+    --ui-button-pressed-bg: #2D2463;   /* Button pressed background - darker purple */
+    --ui-button-disabled-bg: #251D4F;  /* Disabled button background - muted purple */
+    --ui-button-disabled-text: #4A4273; /* Disabled button text - dark muted purple */
+    
+    /* Hover states */
+    --ui-hover-base: rgba(87, 71, 177, 0.1); /* Base hover background - transparent purple */
+    --ui-hover-highlight: #2D2463;     /* Highlight hover background - medium purple */
+    --ui-hover-interactive: #3A2F80;   /* Interactive hover background - brighter purple */
   }
 }
 
@@ -50,3 +122,43 @@
 }
 
 
+
+/* Target Radix Select viewport and content */
+[data-radix-select-viewport],
+.SelectViewport,
+[data-radix-scroll-area-viewport],
+[data-radix-popper-content-wrapper] [role="listbox"] {
+  max-height: 20rem !important;
+  overflow-y: auto !important;
+  scrollbar-width: thin !important;
+}
+
+/* Webkit browsers custom scrollbar */
+[data-radix-select-viewport]::-webkit-scrollbar,
+.SelectViewport::-webkit-scrollbar,
+[data-radix-scroll-area-viewport]::-webkit-scrollbar,
+[data-radix-popper-content-wrapper] [role="listbox"]::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+}
+
+[data-radix-select-viewport]::-webkit-scrollbar-thumb,
+.SelectViewport::-webkit-scrollbar-thumb,
+[data-radix-scroll-area-viewport]::-webkit-scrollbar-thumb,
+[data-radix-popper-content-wrapper] [role="listbox"]::-webkit-scrollbar-thumb {
+  background: #ccc !important;
+  border-radius: 4px !important;
+}
+
+/* Sometimes Radix nests content in a positioned container */
+.SelectContent,
+[data-state="open"] {
+  max-height: none !important; /* Let the inner viewport control scrolling */
+}
+
+/* Direct approach targeting by role */
+[role="listbox"] {
+  max-height: 20rem !important;
+  overflow-y: auto !important;
+  scrollbar-width: thin !important;
+}

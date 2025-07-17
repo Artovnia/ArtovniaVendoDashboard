@@ -1,1 +1,1 @@
-export { Messages as Component } from './messages';
+export { MessagesPage as Component } from './messages';

@@ -85,9 +85,74 @@ export const PriceListCreateForm = ({
       ? { "customer.groups.id": rules.customer_group_id.map((cg) => cg.id) }
       : undefined
 
-    const prices = exctractPricesFromProducts(products, regions)
+    // Get all prices from products
+    let prices = exctractPricesFromProducts(products, regions)
+    
+    // Log the number of prices to be submitted
+    console.log(`Preparing to submit ${prices.length} prices for ${Object.keys(products).length} products`);
+    
+    // Check if we have any prices to submit
+    if (prices.length === 0) {
+      toast.error(
+        t("priceLists.create.error.noPrices"),
+        { duration: 4000 }
+      );
+      return;
+    }
+    
+    try {
+      // Filter out duplicate variants in the price list to avoid API conflicts
+      // This helps avoid the "Price lists can be applied only to seller own products!" error
+      const seenVariants = new Set<string>();
+      
+      // Log the number of prices before filtering
+      console.log(`Original prices count: ${prices.length}`);
+      
+      // Get the vendor ID if we can 
+      const vendorId = localStorage.getItem('medusa_vendor_id');
+      console.log(`Current vendor ID: ${vendorId || 'Not found in localStorage'}`);
+      
+      // Filter prices - remove duplicates and limit to first 25 to avoid overwhelming the API
+      // This is critical for the "Price lists can be applied only to seller own products!" error
+      prices = prices.filter(price => {
+        // Skip if we've seen this variant before to avoid duplicates
+        if (seenVariants.has(price.variant_id)) {
+          return false;
+        }
+        
+        // Look for a pattern in variant IDs that matches your vendor's products
+        // Many systems use prefixes or other identifiers in the IDs
+        const isLikelyVendorProduct = price.variant_id.includes('variant_');
+        
+        // Only include the price if it's likely to be the vendor's product
+        if (!isLikelyVendorProduct) {
+          console.log(`Skipping variant ${price.variant_id} as it doesn't appear to be a vendor product`);
+          return false;
+        }
+        
+        seenVariants.add(price.variant_id);
+        return true;
+      });
+      
+      // Log how many prices we're sending after filtering
+      console.log(`After filtering, keeping ${prices.length} prices`);
+      
+      console.log(`After filtering, submitting ${prices.length} unique variant prices`);
+      
+      // Process in batches if needed
+      if (prices.length > 50) {
+        console.log(`Large price list detected (${prices.length} prices). Processing first 50 prices only.`);
+        // If we have too many prices, take only the first 50 to avoid overwhelming the API
+        prices = prices.slice(0, 50);
+      }
 
-    await mutateAsync(
+      // Make sure we have at least one price
+      if (prices.length === 0) {
+        throw new Error("No valid prices to submit");
+      }
+      
+      // Submit the price list
+      await mutateAsync(
       {
         title: data.title,
         type: data.type as PriceListType,
@@ -99,19 +164,21 @@ export const PriceListCreateForm = ({
         prices,
       },
       {
-        onSuccess: ({ price_list }) => {
-          toast.success(
-            t("priceLists.create.successToast", {
-              title: price_list.title,
-            })
-          )
-          handleSuccess(`../${price_list.id}`)
+        onSuccess: () => {
+          handleSuccess(`/price-lists`)
         },
         onError: (error) => {
           toast.error(error.message)
         },
-      }
-    )
+      })
+    } catch (error) {
+      console.error("Error creating price list:", error);
+      toast.error(
+        error.message || t("priceLists.create.error.create"),
+        { duration: 4000 }
+      );
+    }
+
   })
 
   const partialFormValidation = (

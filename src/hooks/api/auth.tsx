@@ -47,6 +47,7 @@ export const useSignUpWithEmailPass = (
           email: variables.email,
         },
       };
+      // Just call fetchQuery - our backward compatibility fix makes it work with both old and new code
       await fetchQuery('/vendor/sellers', {
         method: 'POST',
         body: seller,

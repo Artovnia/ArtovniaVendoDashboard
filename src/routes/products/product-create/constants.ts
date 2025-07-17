@@ -28,6 +28,7 @@ const ProductCreateVariantSchema = z.object({
   sku: z.string().optional(),
   manage_inventory: z.boolean().optional(),
   allow_backorder: z.boolean().optional(),
+  inventory_quantity: optionalInt,
   inventory_kit: z.boolean().optional(),
   options: z.record(z.string(), z.string()),
   variant_rank: z.number(),
@@ -87,6 +88,22 @@ export const ProductCreateSchema = z
     enable_variants: z.boolean(),
     variants: z.array(ProductCreateVariantSchema).min(1),
     media: z.array(MediaSchema).optional(),
+    // Record of variant IDs to color IDs for color assignments (array of colors per variant)
+    color_assignments: z.record(z.string(), z.array(z.string())).optional(),
+    metadata: z.object({
+      gpsr_producer_name: z.string().min(1, "Nazwa producenta jest wymagana"),
+      gpsr_producer_address: z.string().min(1, "Adres producenta jest wymagany"),
+      gpsr_producer_contact: z.string().min(1, "Kontakt do producenta jest wymagany"),
+      gpsr_importer_name: z.string().optional(),
+      gpsr_importer_address: z.string().optional(),
+      gpsr_importer_contact: z.string().optional(),
+      gpsr_instructions: z.string().min(1, "Instrukcje/ostrzeżenia są wymagane"),
+      gpsr_certificates: z.string().optional(),
+      shipping_profile_id: z.string().optional(),
+      // Color assignment metadata fields
+      raw_color_assignments: z.record(z.string(), z.array(z.string())).optional(),
+      handle_colors_via_api: z.boolean().optional(),
+    }).optional(),
   })
   .superRefine((data, ctx) => {
     if (data.variants.every((v) => !v.should_create)) {
@@ -160,4 +177,16 @@ export const PRODUCT_CREATE_FORM_DEFAULTS: Partial<
   type_id: "",
   weight: "",
   width: "",
+  color_assignments: {},  // Will be initialized with arrays in the form
+  metadata: {
+    gpsr_producer_name: "",
+    gpsr_producer_address: "",
+    gpsr_producer_contact: "",
+    gpsr_importer_name: "",
+    gpsr_importer_address: "",
+    gpsr_importer_contact: "",
+    gpsr_instructions: "",
+    gpsr_certificates: "",
+    shipping_profile_id: "",
+  },
 }

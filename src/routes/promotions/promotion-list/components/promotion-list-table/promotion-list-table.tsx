@@ -1,12 +1,11 @@
 import { PencilSquare, Trash } from "@medusajs/icons"
-import { PromotionDTO } from "@medusajs/types"
+import { HttpTypes, PromotionDTO } from "@medusajs/types"
 import { Button, Container, Heading, usePrompt } from "@medusajs/ui"
 import { createColumnHelper } from "@tanstack/react-table"
 import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
-import { Link, Outlet, useLoaderData, useNavigate } from "react-router-dom"
+import { Link, Outlet, useNavigate } from "react-router-dom"
 
-import { keepPreviousData } from "@tanstack/react-query"
 import { ActionMenu } from "../../../../../components/common/action-menu"
 import { _DataTable } from "../../../../../components/table/data-table"
 import {
@@ -17,31 +16,33 @@ import { usePromotionTableColumns } from "../../../../../hooks/table/columns/use
 import { usePromotionTableFilters } from "../../../../../hooks/table/filters/use-promotion-table-filters"
 import { usePromotionTableQuery } from "../../../../../hooks/table/query/use-promotion-table-query"
 import { useDataTable } from "../../../../../hooks/use-data-table"
-import { promotionsLoader } from "../../loader"
 
 const PAGE_SIZE = 20
 
 export const PromotionListTable = () => {
   const { t } = useTranslation()
-  const initialData = useLoaderData() as Awaited<
-    ReturnType<ReturnType<typeof promotionsLoader>>
-  >
 
-  const { searchParams, raw } = usePromotionTableQuery({ pageSize: PAGE_SIZE })
-  const { promotions, count, isLoading, isError, error } = usePromotions(
-    { ...searchParams },
-    {
-      initialData,
-      placeholderData: keepPreviousData,
-    }
-  )
+  const { raw } = usePromotionTableQuery({
+    pageSize: PAGE_SIZE,
+  })
+  const {
+    promotions: data,
+    count,
+    isLoading,
+    isError,
+    error,
+  } = usePromotions({
+    fields: "+status",
+  })
+
+  const promotions = data?.filter((item) => item !== null)
 
   const filters = usePromotionTableFilters()
   const columns = useColumns()
 
   const { table } = useDataTable({
-    data: (promotions ?? []) as PromotionDTO[],
-    columns,
+    data: (promotions ?? []) as HttpTypes.AdminPromotion[],
+    columns: columns as any,
     count,
     enablePagination: true,
     pageSize: PAGE_SIZE,
@@ -74,8 +75,14 @@ export const PromotionListTable = () => {
         queryObject={raw}
         navigateTo={(row) => `${row.original.id}`}
         orderBy={[
-          { key: "created_at", label: t("fields.createdAt") },
-          { key: "updated_at", label: t("fields.updatedAt") },
+          {
+            key: "created_at",
+            label: t("fields.createdAt"),
+          },
+          {
+            key: "updated_at",
+            label: t("fields.updatedAt"),
+          },
         ]}
       />
       <Outlet />
@@ -92,7 +99,9 @@ const PromotionActions = ({ promotion }: { promotion: PromotionDTO }) => {
   const handleDelete = async () => {
     const res = await prompt({
       title: t("general.areYouSure"),
-      description: t("promotions.deleteWarning", { code: promotion.code! }),
+      description: t("promotions.deleteWarning", {
+        code: promotion.code!,
+      }),
       confirmText: t("actions.delete"),
       cancelText: t("actions.cancel"),
       verificationInstruction: t("general.typeToConfirm"),

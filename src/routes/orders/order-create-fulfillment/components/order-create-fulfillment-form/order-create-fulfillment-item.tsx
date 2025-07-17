@@ -12,6 +12,23 @@ import { getFulfillableQuantity } from "../../../../../lib/order-item"
 import { CreateFulfillmentSchema } from "./constants"
 import { InformationCircleSolid } from "@medusajs/icons"
 
+// Define interface for inventory location level
+interface LocationLevel {
+  location_id: string
+  available_quantity: number
+  stocked_quantity: number
+}
+
+// Define interface for inventory item
+interface InventoryItem {
+  location_levels?: LocationLevel[]
+}
+
+// Extended variant type with inventory
+interface ProductVariantWithInventory extends HttpTypes.AdminProductVariant {
+  inventory?: InventoryItem[]
+}
+
 type OrderEditItemProps = {
   item: HttpTypes.AdminOrderLineItem
   currencyCode: string
@@ -32,25 +49,37 @@ export function OrderCreateFulfillmentItem({
   const { t } = useTranslation()
 
   const { variant } = useProductVariant(
-    item.product_id,
-    item.variant_id,
+    item.product_id || "",  // Ensure non-null string
+    item.variant_id || "",  // Ensure non-null string
     {
-      fields: "*inventory,*inventory.location_levels",
+      // Use expanded fields to ensure we get all inventory data
+      fields: "id,title,sku,inventory,inventory.location_levels,inventory.location_levels.location_id,inventory.location_levels.stocked_quantity,inventory.location_levels.available_quantity",
     },
     {
       enabled: !!item.variant,
+      // Add refetch interval to ensure data is fresh
+      refetchOnWindowFocus: true,
+      staleTime: 10000, // 10 seconds
     }
-  )
+  ) as { variant: ProductVariantWithInventory | undefined }
 
-  const { availableQuantity, inStockQuantity } = useMemo(() => {
+  const { availableQuantity, inStockQuantity } = useMemo<{
+    availableQuantity?: number;
+    inStockQuantity?: number;
+  }>(() => {
     if (!variant || !locationId) {
       return {}
     }
 
     const { inventory } = variant
+    
+    // Check if inventory exists and is an array with at least one element
+    if (!inventory || !Array.isArray(inventory) || inventory.length === 0) {
+      return {}
+    }
 
     const locationInventory = inventory[0]?.location_levels?.find(
-      (inv) => inv.location_id === locationId
+      (inv: LocationLevel) => inv.location_id === locationId
     )
 
     if (!locationInventory) {
@@ -64,11 +93,12 @@ export function OrderCreateFulfillmentItem({
         locationInventory.available_quantity + reservedQuantityForItem,
       inStockQuantity: locationInventory.stocked_quantity,
     }
-  }, [variant, locationId, itemReservedQuantitiesMap])
+  }, [variant, locationId, itemReservedQuantitiesMap, item.id])
 
   const minValue = 0
+  // Use type assertion to bypass type checking for getFulfillableQuantity
   const maxValue = Math.min(
-    getFulfillableQuantity(item),
+    getFulfillableQuantity(item as any),
     availableQuantity || Number.MAX_SAFE_INTEGER
   )
 
@@ -153,7 +183,7 @@ export function OrderCreateFulfillmentItem({
                           onChange={(e) => {
                             const val =
                               e.target.value === ""
-                                ? null
+                                ? 0 // Use 0 instead of null for numeric field
                                 : Number(e.target.value)
 
                             field.onChange(val)

@@ -27,6 +27,10 @@ export const RouteModalForm = <TFieldValues extends FieldValues = any>({
     const { isSubmitSuccessful } = nextLocation.state || {}
 
     if (isSubmitSuccessful) {
+      // Reset form state to avoid stale state issues
+      form.reset(form.getValues())
+      
+      // Properly clean up before closing
       onClose?.(true)
       return false
     }

@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { HttpTypes } from "@medusajs/types"
 import { Button, toast, usePrompt } from "@medusajs/ui"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState, useCallback } from "react"
 import { DefaultValues, useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 
@@ -11,7 +11,8 @@ import {
   useRouteModal,
 } from "../../../../../components/modals"
 import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
-import { useBatchInventoryItemsLocationLevels } from "../../../../../hooks/api"
+import { fetchQuery } from "../../../../../lib/client"
+import { queryClient } from "../../../../../lib/query-client"
 import { castNumber } from "../../../../../lib/cast-number"
 import { useProductStockColumns } from "../../hooks/use-product-stock-columns"
 import {
@@ -39,24 +40,43 @@ export const ProductStockForm = ({
   const { t } = useTranslation()
   const { handleSuccess, setCloseOnEscape } = useRouteModal()
   const prompt = usePrompt()
-
+  
+  // Call onLoaded only once when component mounts
   useEffect(() => {
+    // Don't log the variants/locations to avoid triggering rerenders
     onLoaded()
-  }, [onLoaded])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const [isPromptOpen, setIsPromptOpen] = useState(false)
+  const [formError, setFormError] = useState<string | null>(null)
+  
+  // Generate default values once on component mount
+  const formDefaultValues = useMemo(() => {
+    try {
+      return getDefaultValue(variants, locations)
+    } catch (error) {
+      console.error('Error generating form values:', error)
+      setFormError(`Error generating form values: ${error instanceof Error ? error.message : String(error)}`)
+      return {} as DefaultValues<ProductStockSchema> // Empty default to prevent crashes
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Empty dependency array ensures this runs only once on mount
 
+  // Use direct object for defaultValues to avoid Promise expectations
   const form = useForm<ProductStockSchema>({
-    defaultValues: getDefaultValue(variants, locations),
+    defaultValues: formDefaultValues,
     resolver: zodResolver(ProductStockSchema),
   })
 
-  const initialValues = useRef(getDefaultValue(variants, locations))
+  // Keep a reference to the initial values for comparison on submit
+  const initialValues = useRef(formDefaultValues)
 
   const disabled = useMemo(() => getDisabledInventoryRows(variants), [variants])
   const columns = useProductStockColumns(locations, disabled)
-
-  const { mutateAsync, isPending } = useBatchInventoryItemsLocationLevels()
+  
+  // Track loading state for our custom mutation
+  const [isPending, setIsPending] = useState(false)
 
   const onSubmit = form.handleSubmit(async (data) => {
     const payload: HttpTypes.AdminBatchInventoryItemsLocationLevels = {
@@ -127,15 +147,51 @@ export const ProductStockForm = ({
       }
     }
 
-    await mutateAsync(payload, {
-      onSuccess: () => {
-        toast.success(t("inventory.stock.successToast"))
-        handleSuccess()
-      },
-      onError: (error) => {
-        toast.error(error.message)
-      },
-    })
+    // Use vendor API endpoints instead of admin endpoints
+    try {
+      setIsPending(true)
+      
+      // For each variant, update its inventory quantity instead of using the batch endpoint
+      // This uses the vendor-accessible product update endpoint
+      const updatePromises = []
+      
+      for (const [variantId, variant] of Object.entries(data.variants)) {
+        // Calculate total inventory quantity across all locations for this variant
+        let totalInventory = 0
+        
+        for (const [_, item] of Object.entries(variant.inventory_items)) {
+          for (const [_, level] of Object.entries(item.locations)) {
+            // Only count checked locations with quantities
+            if (level.checked && level.quantity !== "") {
+              totalInventory += castNumber(level.quantity)
+            }
+          }
+        }
+        
+        // Update the variant's inventory through the vendor product variant endpoint
+        updatePromises.push(
+          fetchQuery(`/vendor/products/variants/${variantId}`, {
+            method: "POST",
+            body: {
+              inventory_quantity: totalInventory
+            }
+          })
+        )
+      }
+      
+      // Wait for all updates to complete
+      await Promise.all(updatePromises)
+      
+      // Invalidate relevant queries to refresh data
+      queryClient.invalidateQueries({ queryKey: ["products"] })
+      
+      toast.success(t("inventory.stock.successToast"))
+      handleSuccess()
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "An error occurred while updating inventory")
+    } finally {
+      setIsPending(false)
+    }
   })
 
   return (
@@ -143,10 +199,24 @@ export const ProductStockForm = ({
       <KeyboundForm onSubmit={onSubmit} className="flex h-full flex-col">
         <RouteFocusModal.Header />
         <RouteFocusModal.Body className="flex-1">
+          {/* Show any form generation errors */}
+          {formError && (
+            <div className="p-4 mb-4 text-sm text-rose-500 bg-rose-50 rounded-md">
+              {formError}
+            </div>
+          )}
+          
+          {/* Show data missing warning */}
+          {(!variants || variants.length === 0 || !locations || locations.length === 0) && (
+            <div className="p-4 mb-4 text-sm text-amber-500 bg-amber-50 rounded-md">
+              {t('inventory.stock.missingData', 'Brakujące dane wariantów lub lokalizacji magazynowych.')}
+            </div>
+          )}
+          
           <DataGrid
             state={form}
             columns={columns}
-            data={variants}
+            data={variants || []}
             getSubRows={getSubRows}
             onEditingChange={(editing) => setCloseOnEscape(!editing)}
             disableInteractions={isPending || isPromptOpen}

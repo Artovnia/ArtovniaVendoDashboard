@@ -1,8 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Button, Heading, Input, Text, toast } from "@medusajs/ui"
-import { useForm } from "react-hook-form"
+import { Button, Heading, Input, Select, Text, toast } from "@medusajs/ui"
+import { useForm, useWatch } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import * as zod from "zod"
+import { useState, useEffect } from "react"
 
 import { Form } from "../../../../../components/common/form"
 import {
@@ -17,9 +18,60 @@ const CreateShippingOptionsSchema = zod.object({
   type: zod.string().min(1),
 })
 
+// Define shipping profile categories and options
+// Define a type to help with TypeScript indexing
+type ShippingProfileOptionsType = {
+  [key: string]: string[];
+};
+
+const shippingProfileOptions: ShippingProfileOptionsType = {
+  "Listy i przesyłki pocztowe": [
+    "List zwykły",
+    "List polecony",
+    "Przesyłka dokumentowa"
+  ],
+  "Paczki standardowe": [
+    "Mała paczka",
+    "Średnia paczka",
+    "Duża paczka",
+    "Paczkomaty – gabaryt A",
+    "Paczkomaty – gabaryt B",
+    "Paczkomaty – gabaryt C"
+  ],
+  "Paczki niestandardowe": [
+    "Kształt nieregularny",
+    "Z wystającymi elementami",
+    "Delikatne lub łatwo tłukące się",
+    "Z dodatkowym zabezpieczeniem"
+  ],
+  "Towary gabarytowe / wielkogabarytowe": [
+    "Meble",
+    "Sprzęt AGD/RTV",
+    "Rowery, hulajnogi, wózki dziecięce",
+    "Zamówienia internetowe z wniesieniem"
+  ],
+  "Palety (transport ciężki)": [
+    "Paleta EURO",
+    "Paleta przemysłowa",
+    "Paleta niestandardowa",
+    "Paleta półciężka",
+    "Paleta piętrowana / stretchowana"
+  ],
+  "Transport nietypowy i specjalistyczny": [
+    "Transport mebli z montażem",
+    "Towary ADR (niebezpieczne)",
+    "Towary chłodnicze",
+    "Transport sprzętu medycznego, laboratoryjnego",
+    "Przesyłki lotnicze (Air cargo)",
+    "Morski kontenerowy (FCL/LCL)",
+    "Maszyny, pojazdy, konstrukcje stalowe"
+  ],
+};
+
 export function CreateShippingProfileForm() {
   const { t } = useTranslation()
   const { handleSuccess } = useRouteModal()
+  const [availableNames, setAvailableNames] = useState<string[]>([])
 
   const form = useForm<zod.infer<typeof CreateShippingOptionsSchema>>({
     defaultValues: {
@@ -30,6 +82,27 @@ export function CreateShippingProfileForm() {
   })
 
   const { mutateAsync, isPending } = useCreateShippingProfile()
+  
+  // Watch for changes in the selected type
+  const selectedType = useWatch({
+    control: form.control,
+    name: "type"
+  });
+  
+  // Update available names when type changes
+  useEffect(() => {
+    if (selectedType && shippingProfileOptions[selectedType]) {
+      setAvailableNames(shippingProfileOptions[selectedType])
+      
+      // Reset name field if current value isn't valid for the new type
+      const currentName = form.getValues("name")
+      if (!shippingProfileOptions[selectedType].includes(currentName)) {
+        form.setValue("name", "")
+      }
+    } else {
+      setAvailableNames([])
+    }
+  }, [selectedType, form])
 
   const handleSubmit = form.handleSubmit(async (values) => {
     await mutateAsync(
@@ -58,12 +131,16 @@ export function CreateShippingProfileForm() {
 
   return (
     <RouteFocusModal.Form form={form}>
-      <KeyboundForm
-        onSubmit={handleSubmit}
-        className="flex h-full flex-col overflow-hidden"
-      >
-        <RouteFocusModal.Header />
-        <RouteFocusModal.Body className="flex flex-1 flex-col overflow-hidden">
+      <KeyboundForm onSubmit={handleSubmit}>
+        <RouteFocusModal.Header>
+          <RouteFocusModal.Title>
+            {t("shippingProfile.create.title", { defaultValue: "Stworz profil wysyłki" })}
+          </RouteFocusModal.Title>
+          <RouteFocusModal.Description>
+            {t("shippingProfile.create.description", { defaultValue: "Stworz nowy profil wysyłki" })}
+          </RouteFocusModal.Description>
+        </RouteFocusModal.Header>
+        <RouteFocusModal.Body className="flex flex-col gap-y-8 overflow-y-auto">
           <div className="flex flex-1 flex-col items-center overflow-y-auto">
             <div className="mx-auto flex w-full max-w-[720px] flex-col gap-y-8 px-2 py-16">
               <div>
@@ -83,7 +160,20 @@ export function CreateShippingProfileForm() {
                       <Form.Item>
                         <Form.Label>{t("fields.name")}</Form.Label>
                         <Form.Control>
-                          <Input {...field} />
+                          <Select
+                            {...field}
+                            onValueChange={field.onChange}
+                            disabled={!selectedType}
+                          >
+                            <Select.Trigger>
+                              <Select.Value placeholder="opcja transportu" />
+                            </Select.Trigger>
+                            <Select.Content>
+                              {availableNames.map((name) => (
+                                <Select.Item key={name} value={name}>{name}</Select.Item>
+                              ))}
+                            </Select.Content>
+                          </Select>
                         </Form.Control>
                         <Form.ErrorMessage />
                       </Form.Item>
@@ -100,7 +190,19 @@ export function CreateShippingProfileForm() {
                           {t("fields.type")}
                         </Form.Label>
                         <Form.Control>
-                          <Input {...field} />
+                          <Select
+                            {...field}
+                            onValueChange={field.onChange}
+                          >
+                            <Select.Trigger>
+                              <Select.Value placeholder="typ transportu" />
+                            </Select.Trigger>
+                            <Select.Content>
+                              {Object.keys(shippingProfileOptions).map((type) => (
+                                <Select.Item key={type} value={type}>{type}</Select.Item>
+                              ))}
+                            </Select.Content>
+                          </Select>
                         </Form.Control>
                         <Form.ErrorMessage />
                       </Form.Item>

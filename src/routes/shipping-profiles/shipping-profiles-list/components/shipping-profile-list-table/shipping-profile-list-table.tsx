@@ -1,6 +1,5 @@
 import { Button, Container, Heading, Text } from "@medusajs/ui"
 import { Link } from "react-router-dom"
-
 import { keepPreviousData } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 import { _DataTable } from "../../../../../components/table/data-table"
@@ -37,7 +36,22 @@ export const ShippingProfileListTable = () => {
   })
 
   if (isError) {
-    throw error
+    console.error("Shipping profiles error:", error)
+    return (
+      <Container className="p-6">
+        <div className="text-center">
+          <Heading className="text-ui-fg-error">
+            Error Loading Shipping Profiles
+          </Heading>
+          <Text className="mt-2">
+            Unable to load shipping profiles. Please try again later or contact support.
+          </Text>
+          <pre className="mt-4 p-4 bg-ui-bg-base border rounded text-left overflow-auto">
+            {error?.message || "Unknown error"}
+          </pre>
+        </div>
+      </Container>
+    )
   }
 
   return (

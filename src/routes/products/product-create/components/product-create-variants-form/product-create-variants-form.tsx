@@ -87,7 +87,7 @@ export const ProductCreateVariantsForm = ({
 };
 
 const columnHelper = createDataGridHelper<
-  ProductCreateVariantSchema,
+  ProductCreateVariantSchema & { originalIndex: number },
   ProductCreateSchemaType
 >();
 
@@ -103,6 +103,19 @@ const useColumns = ({
   pricePreferences?: HttpTypes.AdminPricePreference[];
 }) => {
   const { t } = useTranslation();
+
+  // Polish translations for column headers
+  const polishHeaders = {
+    options: 'Opcje',
+    title: 'Nazwa',
+    sku: 'SKU',
+    ean: 'EAN',
+    barcode: 'Kod kreskowy',
+    inventory_quantity: 'Ilość w magazynie',
+    manage_inventory: 'Zarządzaj zapasami',
+    allow_backorder: 'Zezwalaj na zamówienia oczekujące',
+    price: 'Cena (PLN)',
+  };
 
   return useMemo(
     () => [
@@ -131,8 +144,8 @@ const useColumns = ({
       }),
       columnHelper.column({
         id: 'title',
-        name: t('fields.title'),
-        header: t('fields.title'),
+        name: polishHeaders.title,
+        header: polishHeaders.title,
         field: (context) =>
           `variants.${context.row.original.originalIndex}.title`,
         type: 'text',
@@ -142,8 +155,8 @@ const useColumns = ({
       }),
       columnHelper.column({
         id: 'sku',
-        name: t('fields.sku'),
-        header: t('fields.sku'),
+        name: polishHeaders.sku,
+        header: polishHeaders.sku,
         field: (context) =>
           `variants.${context.row.original.originalIndex}.sku`,
         type: 'text',
@@ -151,9 +164,76 @@ const useColumns = ({
           return <DataGrid.TextCell context={context} />;
         },
       }),
-
+      columnHelper.column({
+        id: 'ean',
+        name: polishHeaders.ean,
+        header: polishHeaders.ean,
+        field: (context) =>
+          `variants.${context.row.original.originalIndex}.ean`,
+        type: 'text',
+        cell: (context) => {
+          return <DataGrid.TextCell context={context} />;
+        },
+      }),
+      columnHelper.column({
+        id: 'barcode',
+        name: polishHeaders.barcode,
+        header: polishHeaders.barcode,
+        field: (context) =>
+          `variants.${context.row.original.originalIndex}.barcode`,
+        type: 'text',
+        cell: (context) => {
+          return <DataGrid.TextCell context={context} />;
+        },
+      }),
+      columnHelper.column({
+        id: 'inventory_quantity',
+        name: polishHeaders.inventory_quantity,
+        header: polishHeaders.inventory_quantity,
+        field: (context) =>
+          `variants.${context.row.original.originalIndex}.inventory_quantity`,
+        type: 'number',
+        cell: (context) => {
+          return <DataGrid.NumberCell context={context} />;
+        },
+      }),
+      columnHelper.column({
+        id: 'manage_inventory',
+        name: polishHeaders.manage_inventory,
+        header: polishHeaders.manage_inventory,
+        field: (context) =>
+          `variants.${context.row.original.originalIndex}.manage_inventory`,
+        type: 'boolean',
+        cell: (context) => {
+          return <DataGrid.BooleanCell context={context} />;
+        },
+      }),
+      columnHelper.column({
+        id: 'allow_backorder',
+        name: polishHeaders.allow_backorder,
+        header: polishHeaders.allow_backorder,
+        field: (context) =>
+          `variants.${context.row.original.originalIndex}.allow_backorder`,
+        type: 'boolean',
+        cell: (context) => {
+          return <DataGrid.BooleanCell context={context} />;
+        },
+      }),
+      // Add explicit price column before the auto-generated price columns
+      columnHelper.column({
+        id: 'price',
+        name: polishHeaders.price,
+        header: polishHeaders.price,
+        field: (context) =>
+          `variants.${context.row.original.originalIndex}.prices.default`,
+        type: 'text',
+        cell: (context) => {
+          // Use NumberCell instead of CurrencyCell to avoid the error
+          return <DataGrid.NumberCell context={context} />;
+        },
+      }),
       ...createDataGridPriceColumns<
-        ProductCreateVariantSchema,
+        ProductCreateVariantSchema & { originalIndex: number },
         ProductCreateSchemaType
       >({
         currencies,

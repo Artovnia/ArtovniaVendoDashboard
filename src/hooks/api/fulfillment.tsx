@@ -15,8 +15,20 @@ export const useCreateFulfillment = (
   options?: UseMutationOptions<any, FetchError, any>
 ) => {
   return useMutation({
-    mutationFn: (payload: any) => sdk.admin.fulfillment.create(payload),
+    mutationFn: (payload: any) => {
+      console.log('Creating fulfillment with payload:', payload)
+      return sdk.admin.fulfillment.create(payload)
+        .catch(error => {
+          console.error('Fulfillment creation error details:', error)
+          // Log more specific error information if available
+          if (error.response) {
+            console.error('Error response:', error.response.data)
+          }
+          throw error
+        })
+    },
     onSuccess: (data: any, variables: any, context: any) => {
+      console.log('Fulfillment created successfully:', data)
       queryClient.invalidateQueries({ queryKey: fulfillmentsQueryKeys.lists() })
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.all,

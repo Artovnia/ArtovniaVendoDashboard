@@ -1,3 +1,4 @@
+// shipping-profiles.tsx - Frontend Hooks
 import {
   QueryKey,
   useMutation,
@@ -8,16 +9,14 @@ import {
 
 import { FetchError } from '@medusajs/js-sdk';
 import { HttpTypes } from '@medusajs/types';
-import { fetchQuery, sdk } from '../../lib/client';
+import { fetchQuery } from '../../lib/client';
 import { queryClient } from '../../lib/query-client';
 import { queryKeysFactory } from '../../lib/query-key-factory';
 
-const SHIPPING_PROFILE_QUERY_KEY =
-  'shipping_profile' as const;
-export const shippingProfileQueryKeys = queryKeysFactory(
-  SHIPPING_PROFILE_QUERY_KEY
-);
+const SHIPPING_PROFILE_QUERY_KEY = 'shipping_profile' as const;
+export const shippingProfileQueryKeys = queryKeysFactory(SHIPPING_PROFILE_QUERY_KEY);
 
+// Create shipping profile for vendor
 export const useCreateShippingProfile = (
   options?: UseMutationOptions<
     HttpTypes.AdminShippingProfileResponse,
@@ -27,7 +26,10 @@ export const useCreateShippingProfile = (
 ) => {
   return useMutation({
     mutationFn: (payload) =>
-      sdk.admin.shippingProfile.create(payload),
+      fetchQuery('/vendor/shipping-profiles', {
+        method: 'POST',
+        body: payload,
+      }),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
         queryKey: shippingProfileQueryKeys.lists(),
@@ -39,6 +41,7 @@ export const useCreateShippingProfile = (
   });
 };
 
+// Get a single shipping profile
 export const useShippingProfile = (
   id: string,
   query?: Record<string, any>,
@@ -53,15 +56,25 @@ export const useShippingProfile = (
   >
 ) => {
   const { data, ...rest } = useQuery({
-    queryFn: () =>
-      sdk.admin.shippingProfile.retrieve(id, query),
+    queryFn: async () => {
+      const response = await fetchQuery(`/vendor/shipping-profiles/${id}`, {
+        method: 'GET',
+        query: query as { [key: string]: string | number },
+      });
+      console.log('API response in hook:', response);
+      return response;
+    },
     queryKey: shippingProfileQueryKeys.detail(id, query),
     ...options,
   });
 
-  return { ...data, ...rest };
+  return { 
+    shipping_profile: data?.shipping_profile,
+    ...rest 
+  };
 };
 
+// Get all shipping profiles
 export const useShippingProfiles = (
   query?: HttpTypes.AdminShippingProfileListParams,
   options?: Omit<
@@ -76,7 +89,7 @@ export const useShippingProfiles = (
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: () =>
-      fetchQuery('/vendor/shipping-options', {
+      fetchQuery('/vendor/shipping-profiles', {
         method: 'GET',
         query: query as { [key: string]: string | number },
       }),
@@ -84,9 +97,14 @@ export const useShippingProfiles = (
     ...options,
   });
 
-  return { ...data, ...rest };
+  return { 
+    shipping_profiles: data?.shipping_profiles,
+    count: data?.count,
+    ...rest 
+  };
 };
 
+// Update a shipping profile
 export const useUpdateShippingProfile = (
   id: string,
   options?: UseMutationOptions<
@@ -95,9 +113,12 @@ export const useUpdateShippingProfile = (
     HttpTypes.AdminUpdateShippingProfile
   >
 ) => {
-  const { data, ...rest } = useMutation({
+  return useMutation({
     mutationFn: (payload) =>
-      sdk.admin.shippingProfile.update(id, payload),
+      fetchQuery(`/vendor/shipping-profiles/${id}`, {
+        method: 'POST',
+        body: payload,
+      }),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
         queryKey: shippingProfileQueryKeys.detail(id),
@@ -110,10 +131,9 @@ export const useUpdateShippingProfile = (
     },
     ...options,
   });
-
-  return { ...data, ...rest };
 };
 
+// Delete a shipping profile
 export const useDeleteShippingProfile = (
   id: string,
   options?: UseMutationOptions<
@@ -123,7 +143,10 @@ export const useDeleteShippingProfile = (
   >
 ) => {
   return useMutation({
-    mutationFn: () => sdk.admin.shippingProfile.delete(id),
+    mutationFn: () => 
+      fetchQuery(`/vendor/shipping-profiles/${id}`, {
+        method: 'DELETE',
+      }),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
         queryKey: shippingProfileQueryKeys.detail(id),

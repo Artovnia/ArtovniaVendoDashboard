@@ -27,6 +27,7 @@ VITE_MEDUSA_STOREFRONT_URL=http://localhost:3000
 VITE_MEDUSA_BACKEND_URL=http://localhost:9000
 VITE_PUBLISHABLE_API_KEY=<your publishable api key here>
 VITE_TALK_JS_APP_ID=<talkjs public key here>
+VITE_DISABLE_SELLERS_REGISTRATION=false 
 ```
 &nbsp;
 

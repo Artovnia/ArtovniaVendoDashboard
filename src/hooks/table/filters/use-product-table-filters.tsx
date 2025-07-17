@@ -53,7 +53,8 @@ export const useProductTableFilters = (
     }
   )
 
-  const isCategoryExcluded = exclude?.includes("categories")
+  // Category and collection filters are commented out, but we'll keep the checks for future use
+  // const isCategoryExcluded = exclude?.includes("categories")
 
   // const { product_categories } = useAdminProductCategories({
   //   limit: 1000,
@@ -64,7 +65,7 @@ export const useProductTableFilters = (
   //  enabled: !isCategoryExcluded,
   // })
 
-  const isCollectionExcluded = exclude?.includes("collections")
+  // const isCollectionExcluded = exclude?.includes("collections")
 
   // const { collections } = useAdminCollections(
   //   {
@@ -205,5 +206,5 @@ export const useProductTableFilters = (
 
   filters = [...filters, statusFilter, ...dateFilters]
 
-  return filters
+  return { filters }
 }

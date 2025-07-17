@@ -8,13 +8,14 @@ import { HttpTypes } from '@medusajs/types';
 import {
   Badge,
   clx,
-  Container,
   createDataTableColumnHelper,
   createDataTableCommandHelper,
   createDataTableFilterHelper,
   DataTableAction,
   Tooltip,
   usePrompt,
+  Container,
+  Heading,
 } from '@medusajs/ui';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -27,6 +28,7 @@ import { useDataTableDateFilters } from '../../../../../components/data-table/he
 import { useDeleteVariantLazy } from '../../../../../hooks/api/products';
 import { PRODUCT_VARIANT_IDS_KEY } from '../../../common/constants';
 import { useInventoryItemLevels } from '../../../../../hooks/api';
+import { VariantColorSection } from '../variant-color-section';
 
 type ProductVariantSectionProps = {
   product: HttpTypes.AdminProduct;
@@ -48,7 +50,12 @@ export const ProductVariantSection = ({
   const count = variants ? variants?.length : 0;
 
   return (
-    <Container className='divide-y p-0'>
+    <div className="tab-content space-y-xlarge">
+      <Container className="p-0">
+        <div className="flex items-center justify-between px-6 py-4">
+          <Heading level="h2">{t('products.variants.header')}</Heading>
+        </div>
+      
       <DataTable
         data={variants || undefined}
         columns={columns}
@@ -57,6 +64,7 @@ export const ProductVariantSection = ({
         getRowId={(row) => row.id}
         pageSize={PAGE_SIZE}
         heading={t('products.variants.header')}
+        rowHref={(row) => `variants/${row.id}`}
         emptyState={{
           empty: {
             heading: t('products.variants.empty.heading'),
@@ -97,7 +105,18 @@ export const ProductVariantSection = ({
         }}
         commands={commands}
       />
-    </Container>
+      </Container>
+      
+      {variants?.map((variant) => (
+        <Container key={variant.id} className="p-0 mt-4">
+          <VariantColorSection 
+            productId={product.id}
+            variantId={variant.id} 
+            variantTitle={variant.title || ''} 
+          />
+        </Container>
+      ))}
+    </div>
   );
 };
 
@@ -216,7 +235,7 @@ const useColumns = (product: HttpTypes.AdminProduct) => {
           break;
         case 1: {
           const inventoryItemLink = `/inventory/${
-            variant.inventory_items![0].id
+            variant.inventory_items![0].inventory_item_id
           }`;
 
           mainActions.push({
@@ -288,7 +307,7 @@ const useColumns = (product: HttpTypes.AdminProduct) => {
       });
 
       const { location_levels } = useInventoryItemLevels(
-        variant.inventory_items?.[0].inventory_item_id!
+        variant?.inventory_items?.[0]?.inventory_item_id!
       );
 
       const quantity =

@@ -35,6 +35,8 @@ export const Requests = () => {
     requests?.filter(
       ({ type }: { type: string }) => type === 'orders'
     ) || [];
+  // Returns are handled separately through a dedicated API endpoint
+  // We don't need to filter them from the general requests list
 
   const categoryRequestCount = categoryRequests.length;
   const collectionRequestCount = collectionRequests.length;
@@ -110,6 +112,18 @@ export const Requests = () => {
               <div className='flex gap-4 items-center'>
                 <Badge>{ordersRequestsCount}</Badge>
                 Orders requests
+              </div>
+              <TriangleRightMini color='grey' />
+            </Button>
+          </Link>
+          <Link to='/requests/returns'>
+            <Button
+              variant='secondary'
+              className='w-full justify-between py-4'
+            >
+              <div className='flex gap-4 items-center'>
+                <Badge color='orange'>New</Badge>
+                Returns requests
               </div>
               <TriangleRightMini color='grey' />
             </Button>

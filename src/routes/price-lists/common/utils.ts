@@ -115,9 +115,29 @@ export const exctractPricesFromProducts = (
   products: PriceListCreateProductsSchema,
   regions: HttpTypes.AdminRegion[]
 ) => {
-  return Object.values(products).flatMap(({ variants }) =>
+  // Collect all prices from variants
+  const allPrices = Object.values(products).flatMap(({ variants }) =>
     Object.entries(variants).flatMap(([variantId, variant]) =>
       extractPricesFromVariants(variantId, variant, regions)
     )
-  )
+  );
+  
+  // Create a map to track unique variant+currency combinations
+  const uniquePriceCombinations = new Map();
+  const uniquePrices = [];
+  
+  // Deduplicate prices (keep only one price per variant+currency)
+  for (const price of allPrices) {
+    // Create a unique key for each variant+currency combination
+    const key = `${price.variant_id}_${price.currency_code}`;
+    
+    // Only keep the first price for each variant+currency combination
+    if (!uniquePriceCombinations.has(key)) {
+      uniquePriceCombinations.set(key, true);
+      uniquePrices.push(price);
+    }
+  }
+  
+  console.log(`Processed ${allPrices.length} prices -> ${uniquePrices.length} unique variant+currency combinations`);
+  return uniquePrices;
 }

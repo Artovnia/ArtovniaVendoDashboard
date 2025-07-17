@@ -2,6 +2,7 @@ import inject from '@medusajs/admin-vite-plugin';
 import react from '@vitejs/plugin-react';
 import { defineConfig, loadEnv } from 'vite';
 import inspect from 'vite-plugin-inspect';
+import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -16,6 +17,8 @@ export default defineConfig(({ mode }) => {
   const PUBLISHABLE_API_KEY =
     env.VITE_PUBLISHABLE_API_KEY || '';
   const TALK_JS_APP_ID = env.VITE_TALK_JS_APP_ID || '';
+  const DISABLE_SELLERS_REGISTRATION =
+    env.VITE_DISABLE_SELLERS_REGISTRATION || 'false';
 
   /**
    * Add this to your .env file to specify the project to load admin extensions from.
@@ -26,6 +29,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       inspect(),
+      // Using default React plugin settings
       react(),
       inject({
         sources,
@@ -39,18 +43,44 @@ export default defineConfig(({ mode }) => {
         PUBLISHABLE_API_KEY
       ),
       __TALK_JS_APP_ID__: JSON.stringify(TALK_JS_APP_ID),
+      __DISABLE_SELLERS_REGISTRATION__: JSON.stringify(
+        DISABLE_SELLERS_REGISTRATION
+      ),
     },
     server: {
       open: true,
+      proxy: {
+        '/vendor': {
+          target: BACKEND_URL,
+          changeOrigin: true,
+          secure: false,
+          cookieDomainRewrite: 'localhost',
+          withCredentials: true
+        }
+      },
+      hmr: {
+        // Increase timeout for HMR connections
+        timeout: 5000,
+        // Improve error overlay
+        overlay: true
+      }
     },
     optimizeDeps: {
       entries: [],
+      // Pre-bundle these dependencies to avoid optimization during development
+      include: ['recharts', 'copy-to-clipboard', '@tanstack/react-query'],
+    },
+    resolve: {
+      // Improve module resolution
+      alias: {
+        '@': path.resolve(__dirname, 'src'),
+      },
     },
     build: {
       rollupOptions: {
         external: [
           'talkjs',
-          'recharts',
+          // 'recharts',
           'react-day-picker',
           'react-day-picker/src/style.css',
         ],

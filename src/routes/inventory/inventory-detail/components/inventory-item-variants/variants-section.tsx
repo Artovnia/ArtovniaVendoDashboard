@@ -21,7 +21,7 @@ export const InventoryItemVariantsSection = ({
 
   return (
     <Container className="p-0">
-      <div className="flex items-center justify-between px-6 py-4">
+      <div className="flex items-center justify-between px-6 py-4 ">
         <Heading level="h2">{t("inventory.associatedVariants")}</Heading>
       </div>
 
@@ -34,10 +34,10 @@ export const InventoryItemVariantsSection = ({
           const Inner = (
             <div className="shadow-elevation-card-rest bg-ui-bg-component rounded-md px-4 py-2 transition-colors">
               <div className="flex items-center gap-3">
-                <div className="shadow-elevation-card-rest rounded-md">
+                <div className="shadow-elevation-card-rest rounded-md bg-red-500">
                   <Thumbnail src={variant.product?.thumbnail} />
                 </div>
-                <div className="flex flex-1 flex-col">
+                <div className="flex flex-1 flex-col ">
                   <span className="text-ui-fg-base font-medium">
                     {variant.title}
                   </span>
@@ -60,7 +60,7 @@ export const InventoryItemVariantsSection = ({
             <Link
               to={link}
               key={variant.id}
-              className="outline-none focus-within:shadow-borders-interactive-with-focus rounded-md [&:hover>div]:bg-ui-bg-component-hover"
+              className="outline-none focus-within:shadow-borders-interactive-with-focus  rounded-md [&:hover>div]:bg-ui-bg-component-hover"
             >
               {Inner}
             </Link>

@@ -6,6 +6,7 @@ import {
   toast,
   usePrompt,
 } from '@medusajs/ui';
+import { useQueryClient } from '@tanstack/react-query';
 import { keepPreviousData } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
 import { useMemo } from 'react';
@@ -23,6 +24,7 @@ import { _DataTable } from '../../../../../components/table/data-table';
 import {
   useDeleteProduct,
   useProducts,
+  productsQueryKeys,
 } from '../../../../../hooks/api/products';
 import { useProductTableColumns } from '../../../../../hooks/table/columns/use-product-table-columns';
 import { useProductTableFilters } from '../../../../../hooks/table/filters/use-product-table-filters';
@@ -55,7 +57,7 @@ export const ProductListTable = () => {
       }
     );
 
-  const filters = useProductTableFilters();
+  const { filters } = useProductTableFilters();
   const columns = useColumns();
 
   const { table } = useDataTable({
@@ -127,7 +129,40 @@ const ProductActions = ({
 }) => {
   const { t } = useTranslation();
   const prompt = usePrompt();
-  const { mutateAsync } = useDeleteProduct(product.id);
+  
+  // Get the queryClient to manually invalidate and refetch after deletion
+  const queryClient = useQueryClient();
+  
+  // Pass the product.id to useDeleteProduct with proper error handling
+  const { mutateAsync } = useDeleteProduct(product.id, {
+    onSuccess: () => {
+      toast.success(
+        t('products.toasts.delete.success.header'),
+        {
+          description: t(
+            'products.toasts.delete.success.description',
+            {
+              title: product.title,
+            }
+          ),
+        }
+      );
+      
+      // Explicitly refetch the products list after successful deletion
+      queryClient.invalidateQueries({
+        queryKey: productsQueryKeys.lists(),
+      });
+      queryClient.refetchQueries({
+        queryKey: productsQueryKeys.lists(),
+      });
+    },
+    onError: (e: Error) => {
+      toast.error(
+        t('products.toasts.delete.error.header'),
+        { description: e.message }
+      );
+    }
+  });
 
   const handleDelete = async () => {
     const res = await prompt({
@@ -143,29 +178,13 @@ const ProductActions = ({
       return;
     }
 
-    await mutateAsync(undefined, {
-      onSuccess: () => {
-        toast.success(
-          t('products.toasts.delete.success.header'),
-          {
-            description: t(
-              'products.toasts.delete.success.description',
-              {
-                title: product.title,
-              }
-            ),
-          }
-        );
-      },
-      onError: (e) => {
-        toast.error(
-          t('products.toasts.delete.error.header'),
-          {
-            description: e.message,
-          }
-        );
-      },
-    });
+    try {
+      // Call mutateAsync without parameters since we already set the id and callbacks
+      await mutateAsync();
+    } catch (error) {
+      // Error handling is already set up in the useDeleteProduct hook
+      console.error('Error deleting product:', error);
+    }
   };
 
   return (

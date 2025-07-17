@@ -7,8 +7,15 @@
  * @param id - The ID of the provider
  * @returns A formatted string
  */
-export const formatProvider = (id: string) => {
-  const [_, name, type] = id.split("_")
+export const formatProvider = (id?: string) => {
+  if (!id) return "Unknown Provider";
+  
+  const parts = id.split("_");
+  if (parts.length < 2) return id; // Return the original ID if it doesn't match expected format
+  
+  const [_, name, type] = parts;
+  if (!name) return id;
+  
   return (
     name
       .split("-")

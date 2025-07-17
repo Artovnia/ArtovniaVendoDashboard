@@ -7,7 +7,7 @@ import {
   useMutation,
   useQuery,
 } from '@tanstack/react-query';
-import { fetchQuery, sdk } from '../../lib/client';
+import { fetchQuery } from '../../lib/client';
 import { queryClient } from '../../lib/query-client';
 import { queryKeysFactory } from '../../lib/query-key-factory';
 import { shippingOptionsQueryKeys } from './shipping-options';
@@ -72,14 +72,28 @@ export const useFulfillmentSetServiceZone = (
   >
 ) => {
   const { data, ...rest } = useQuery({
-    queryFn: () =>
-      sdk.admin.fulfillmentSet.retrieveServiceZone(
-        fulfillmentSetId,
-        serviceZoneId,
-        query
-      ),
+    queryFn: async () => {
+      // Validate IDs to ensure they have the correct prefixes
+      if (!fulfillmentSetId.startsWith('fuset_')) {
+        console.warn('Warning: fulfillmentSetId does not start with fuset_ prefix');
+      }
+      if (!serviceZoneId.startsWith('serzo_')) {
+        console.warn('Warning: serviceZoneId does not start with serzo_ prefix');
+      }
+      
+      console.log(`Fetching service zone with ID: ${serviceZoneId} for fulfillment set: ${fulfillmentSetId}`);
+      
+      // Use fetchQuery with the vendor endpoint instead of the admin SDK
+      return fetchQuery(
+        `/vendor/fulfillment-sets/${fulfillmentSetId}/service-zones/${serviceZoneId}`,
+        { 
+          method: 'GET',
+          query: query as { [key: string]: string | number }
+        }
+      );
+    },
     queryKey: fulfillmentSetsQueryKeys.detail(
-      fulfillmentSetId,
+      `${fulfillmentSetId}_${serviceZoneId}`,
       query
     ),
     ...options,
@@ -134,11 +148,23 @@ export const useUpdateFulfillmentSetServiceZone = (
   >
 ) => {
   return useMutation({
-    mutationFn: (payload) =>
-      fetchQuery(
+    mutationFn: (payload) => {
+      // Validate IDs to ensure they have the correct prefixes
+      if (!fulfillmentSetId.startsWith('fuset_')) {
+        console.warn('Warning: fulfillmentSetId does not start with fuset_ prefix');
+      }
+      if (!serviceZoneId.startsWith('serzo_')) {
+        console.warn('Warning: serviceZoneId does not start with serzo_ prefix');
+      }
+      
+      console.log(`Updating service zone with ID: ${serviceZoneId} for fulfillment set: ${fulfillmentSetId}`);
+      
+      // Use fetchQuery with the vendor endpoint
+      return fetchQuery(
         `/vendor/fulfillment-sets/${fulfillmentSetId}/service-zones/${serviceZoneId}`,
         { method: 'POST', body: payload }
-      ),
+      );
+    },
     onSuccess: async (data, variables, context) => {
       await queryClient.invalidateQueries({
         queryKey: fulfillmentSetsQueryKeys.lists(),
@@ -166,11 +192,23 @@ export const useDeleteFulfillmentServiceZone = (
   >
 ) => {
   return useMutation({
-    mutationFn: () =>
-      sdk.admin.fulfillmentSet.deleteServiceZone(
-        fulfillmentSetId,
-        serviceZoneId
-      ),
+    mutationFn: () => {
+      // Validate IDs to ensure they have the correct prefixes
+      if (!fulfillmentSetId.startsWith('fuset_')) {
+        console.warn('Warning: fulfillmentSetId does not start with fuset_ prefix');
+      }
+      if (!serviceZoneId.startsWith('serzo_')) {
+        console.warn('Warning: serviceZoneId does not start with serzo_ prefix');
+      }
+      
+      console.log(`Deleting service zone with ID: ${serviceZoneId} for fulfillment set: ${fulfillmentSetId}`);
+      
+      // Use fetchQuery with the vendor endpoint instead of the admin SDK
+      return fetchQuery(
+        `/vendor/fulfillment-sets/${fulfillmentSetId}/service-zones/${serviceZoneId}`,
+        { method: 'DELETE' }
+      );
+    },
     onSuccess: async (data, variables, context) => {
       await queryClient.invalidateQueries({
         queryKey: fulfillmentSetsQueryKeys.lists(),

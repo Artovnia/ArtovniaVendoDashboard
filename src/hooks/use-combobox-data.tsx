@@ -58,14 +58,17 @@ export const useComboboxData = <
         limit: pageSize,
         offset: pageParam,
       } as TParams)
-    },
+  },
     initialPageParam: 0,
     getNextPageParam: (lastPage) => {
+      if (!lastPage || !lastPage.count || !lastPage.offset || !lastPage.limit) {
+        return undefined; // Handle null or missing properties
+      }
       const moreItemsExist = lastPage.count > lastPage.offset + lastPage.limit
       return moreItemsExist ? lastPage.offset + lastPage.limit : undefined
     },
     placeholderData: keepPreviousData,
-  })
+  });
 
   const options = data?.pages.flatMap((page) => getOptions(page)) ?? []
   const defaultOptions = initialData ? getOptions(initialData) : []

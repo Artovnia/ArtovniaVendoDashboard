@@ -8,6 +8,7 @@ import {
 } from "../../../../../extensions"
 import { ProductCreateSchemaType } from "../../types"
 import { ProductCreateGeneralSection } from "./components/product-create-details-general-section"
+import { ProductCreateGPSRSection } from "./components/product-create-gpsr-section-new"
 import { ProductCreateMediaSection } from "./components/product-create-details-media-section"
 import { ProductCreateVariantsSection } from "./components/product-create-details-variant-section"
 
@@ -24,12 +25,19 @@ export const ProductCreateDetailsForm = ({ form }: ProductAttributesProps) => {
       <div className="flex w-full max-w-[720px] flex-col gap-y-8">
         <Header />
         <div className="flex flex-col gap-y-6">
-          <ProductCreateGeneralSection form={form} />
-          <FormExtensionZone fields={fields} form={form} />
-          <ProductCreateMediaSection form={form} />
+          <div className="flex flex-col gap-y-8 divide-y">
+            <ProductCreateGeneralSection form={form} />
+            <FormExtensionZone fields={fields} form={form} />
+            <div className="pt-8">
+              <ProductCreateMediaSection form={form} />
+            </div>
+            <div className="pt-8">
+              <ProductCreateGPSRSection form={form} />
+            </div>
+          </div>
+          <Divider />
+          <ProductCreateVariantsSection form={form} />
         </div>
-        <Divider />
-        <ProductCreateVariantsSection form={form} />
       </div>
     </div>
   )

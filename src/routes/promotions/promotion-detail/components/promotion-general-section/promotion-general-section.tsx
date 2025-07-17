@@ -1,14 +1,6 @@
 import { PencilSquare, Trash } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
-import {
-  Badge,
-  Container,
-  Copy,
-  Heading,
-  StatusBadge,
-  Text,
-  usePrompt,
-} from "@medusajs/ui"
+import { Badge, Container, Copy, Heading, Text, usePrompt } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 
@@ -16,7 +8,7 @@ import { ActionMenu } from "../../../../../components/common/action-menu"
 import { useDeletePromotion } from "../../../../../hooks/api/promotions"
 import { formatCurrency } from "../../../../../lib/format-currency"
 import { formatPercentage } from "../../../../../lib/percentage-helpers"
-import { getPromotionStatus } from "../../../../../lib/promotions"
+import { StatusCell } from "../../../../../components/table/table-cells/promotion/status-cell"
 
 type PromotionGeneralSectionProps = {
   promotion: HttpTypes.AdminPromotion
@@ -75,7 +67,6 @@ export const PromotionGeneralSection = ({
     })
   }
 
-  const [color, text] = getPromotionStatus(promotion)
   const displayValue = getDisplayValue(promotion)
 
   return (
@@ -86,7 +77,7 @@ export const PromotionGeneralSection = ({
         </div>
 
         <div className="flex items-center gap-x-2">
-          <StatusBadge color={color}>{text}</StatusBadge>
+          <StatusCell promotion={promotion} />
           <ActionMenu
             groups={[
               {

@@ -9,7 +9,7 @@ import {
   DateCell,
   DateHeader,
 } from '../../../components/table/table-cells/common/date-cell';
-import { CountryCell } from '../../../components/table/table-cells/order/country-cell';
+// import { CountryCell } from '../../../components/table/table-cells/order/country-cell';
 import {
   CustomerCell,
   CustomerHeader,
@@ -66,12 +66,20 @@ export const useOrderTableColumns = (
           return <DateCell date={date} />;
         },
       }),
-      columnHelper.accessor('customer', {
+      columnHelper.display({
+        id: 'customer',
         header: () => <CustomerHeader />,
-        cell: ({ getValue }) => {
-          const customer = getValue();
-
+        cell: ({ row }) => {
+          const customer = row.original.customer;
           return <CustomerCell customer={customer} />;
+        },
+      }),
+      columnHelper.display({
+        id: 'sales_channel',
+        header: () => <SalesChannelHeader />,
+        cell: ({ row }) => {
+          const salesChannel = row.original.sales_channel;
+          return <SalesChannelCell channel={salesChannel} />;
         },
       }),
       columnHelper.accessor('payment_status', {
@@ -93,24 +101,21 @@ export const useOrderTableColumns = (
       columnHelper.accessor('total', {
         header: () => <TotalHeader />,
         cell: ({ getValue, row }) => {
+          // Check the entire row object to see what data we have
+          console.log('Order row data:', row.original);
+          
           const total = getValue();
           const currencyCode = row.original.currency_code;
+          
+          console.log('Total value:', total, typeof total);
+          console.log('Currency code:', currencyCode, typeof currencyCode);
 
           return (
             <TotalCell
-              currencyCode={currencyCode}
-              total={total}
+              currencyCode={currencyCode || 'PLN'} // Use PLN as a fallback currency
+              total={typeof total === 'number' ? total : 0} // Ensure we have a valid number
             />
           );
-        },
-      }),
-      columnHelper.display({
-        id: 'actions',
-        cell: ({ row }) => {
-          const country =
-            row.original.shipping_address?.country;
-
-          return <CountryCell country={country} />;
         },
       }),
     ],

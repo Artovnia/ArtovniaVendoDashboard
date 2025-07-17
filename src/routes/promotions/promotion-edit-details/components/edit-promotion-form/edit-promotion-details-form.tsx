@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { AdminPromotion } from "@medusajs/types"
-import { Button, CurrencyInput, Input, RadioGroup, Text } from "@medusajs/ui"
-import { useForm, useWatch } from "react-hook-form"
+import { Button, Input, RadioGroup, Text } from "@medusajs/ui"
+import { useForm } from "react-hook-form"
 import { Trans, useTranslation } from "react-i18next"
 import * as zod from "zod"
 
@@ -10,7 +10,6 @@ import { DeprecatedPercentageInput } from "../../../../../components/inputs/perc
 import { RouteDrawer, useRouteModal } from "../../../../../components/modals"
 import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
 import { useUpdatePromotion } from "../../../../../hooks/api/promotions"
-import { getCurrencySymbol } from "../../../../../lib/data/currencies"
 
 type EditPromotionFormProps = {
   promotion: AdminPromotion
@@ -22,7 +21,6 @@ const EditPromotionSchema = zod.object({
   status: zod.enum(["active", "inactive", "draft"]),
   value_type: zod.enum(["fixed", "percentage"]),
   value: zod.number(),
-  allocation: zod.enum(["each", "across"]),
 })
 
 export const EditPromotionDetailsForm = ({
@@ -37,18 +35,10 @@ export const EditPromotionDetailsForm = ({
       code: promotion.code,
       status: promotion.status,
       value: promotion.application_method!.value,
-      allocation: promotion.application_method!.allocation,
       value_type: promotion.application_method!.type,
     },
     resolver: zodResolver(EditPromotionSchema),
   })
-
-  const watchValueType = useWatch({
-    control: form.control,
-    name: "value_type",
-  })
-
-  const isFixedValueType = watchValueType === "fixed"
 
   const { mutateAsync, isPending } = useUpdatePromotion(promotion.id)
 
@@ -60,8 +50,6 @@ export const EditPromotionDetailsForm = ({
         status: data.status,
         application_method: {
           value: data.value,
-          type: data.value_type as any,
-          allocation: data.allocation as any,
         },
       },
       {
@@ -71,6 +59,8 @@ export const EditPromotionDetailsForm = ({
       }
     )
   })
+
+  console.log(form.getValues())
 
   return (
     <RouteDrawer.Form form={form}>
@@ -193,126 +183,32 @@ export const EditPromotionDetailsForm = ({
 
             <Form.Field
               control={form.control}
-              name="value_type"
-              render={({ field }) => {
-                return (
-                  <Form.Item>
-                    <Form.Label>{t("promotions.fields.value_type")}</Form.Label>
-                    <Form.Control>
-                      <RadioGroup
-                        className="flex-col gap-y-3"
-                        {...field}
-                        onValueChange={field.onChange}
-                      >
-                        <RadioGroup.ChoiceBox
-                          value={"fixed"}
-                          label={t("promotions.form.value_type.fixed.title")}
-                          description={t(
-                            "promotions.form.value_type.fixed.description"
-                          )}
-                        />
-
-                        <RadioGroup.ChoiceBox
-                          value={"percentage"}
-                          label={t(
-                            "promotions.form.value_type.percentage.title"
-                          )}
-                          description={t(
-                            "promotions.form.value_type.percentage.description"
-                          )}
-                        />
-                      </RadioGroup>
-                    </Form.Control>
-                    <Form.ErrorMessage />
-                  </Form.Item>
-                )
-              }}
-            />
-
-            <Form.Field
-              control={form.control}
               name="value"
               render={({ field: { onChange, ...field } }) => {
-                const currencyCode =
-                  promotion.application_method?.currency_code ?? "USD"
-
                 return (
                   <Form.Item>
-                    <Form.Label>
-                      {isFixedValueType
-                        ? t("fields.amount")
-                        : t("fields.percentage")}
-                    </Form.Label>
+                    <Form.Label>{t("fields.percentage")}</Form.Label>
                     <Form.Control>
-                      {isFixedValueType ? (
-                        <CurrencyInput
-                          min={0}
-                          onValueChange={(val) =>
-                            onChange(val ? parseInt(val) : null)
-                          }
-                          code={currencyCode}
-                          symbol={getCurrencySymbol(currencyCode)}
-                          {...field}
-                          value={field.value}
-                        />
-                      ) : (
-                        <DeprecatedPercentageInput
-                          key="amount"
-                          min={0}
-                          max={100}
-                          {...field}
-                          value={field.value || ""}
-                          onChange={(e) => {
-                            onChange(
-                              e.target.value === ""
-                                ? null
-                                : parseInt(e.target.value)
-                            )
-                          }}
-                        />
-                      )}
-                    </Form.Control>
-                    <Form.ErrorMessage />
-                  </Form.Item>
-                )
-              }}
-            />
-
-            <Form.Field
-              control={form.control}
-              name="allocation"
-              render={({ field }) => {
-                return (
-                  <Form.Item>
-                    <Form.Label>{t("promotions.fields.allocation")}</Form.Label>
-                    <Form.Control>
-                      <RadioGroup
-                        className="flex-col gap-y-3"
+                      <DeprecatedPercentageInput
+                        key="amount"
+                        min={0}
+                        max={100}
                         {...field}
-                        onValueChange={field.onChange}
-                      >
-                        <RadioGroup.ChoiceBox
-                          value={"each"}
-                          label={t("promotions.form.allocation.each.title")}
-                          description={t(
-                            "promotions.form.allocation.each.description"
-                          )}
-                        />
-
-                        <RadioGroup.ChoiceBox
-                          value={"across"}
-                          label={t("promotions.form.allocation.across.title")}
-                          description={t(
-                            "promotions.form.allocation.across.description"
-                          )}
-                        />
-                      </RadioGroup>
+                        value={field.value || ""}
+                        onChange={(e) => {
+                          onChange(
+                            e.target.value === ""
+                              ? null
+                              : parseInt(e.target.value)
+                          )
+                        }}
+                      />
                     </Form.Control>
                     <Form.ErrorMessage />
                   </Form.Item>
                 )
               }}
-            />
+            /> 
           </div>
         </RouteDrawer.Body>
 

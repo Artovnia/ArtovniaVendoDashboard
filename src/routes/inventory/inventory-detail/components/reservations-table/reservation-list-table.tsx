@@ -22,24 +22,32 @@ export const ReservationItemTable = ({
     pageSize: PAGE_SIZE,
   })
 
-  const { reservations, count, isPending, isError, error } =
+  // The backend API doesn't support filtering by inventory_item_id
+  // We'll fetch all reservations and filter them client-side
+  const { reservations: allReservations, count, isPending, isError, error } =
     useReservationItems({
       ...searchParams,
-      inventory_item_id: [inventoryItem.id],
     })
 
+  // Get filtered reservations first to use for stock location IDs
+  const filteredReservations = useMemo(() => {
+    return (allReservations || []).filter((r: any) => 
+      r.inventory_item_id === inventoryItem.id
+    );
+  }, [allReservations, inventoryItem.id]);
+
   const { stock_locations } = useStockLocations({
-    id: (reservations || []).map((r) => r.location_id),
+    id: filteredReservations.map((r: any) => r.location_id),
   })
 
   const data = useMemo<ExtendedReservationItem[]>(() => {
     const locationMap = new Map((stock_locations || []).map((l) => [l.id, l]))
 
-    return (reservations || []).map((r) => ({
+    return filteredReservations.map((r: any) => ({
       ...r,
       location: locationMap.get(r.location_id),
     }))
-  }, [reservations, stock_locations])
+  }, [filteredReservations, stock_locations])
 
   const columns = useReservationTableColumn({ sku: inventoryItem.sku! })
 

@@ -3,14 +3,8 @@ import { Button, Heading, Text, toast } from '@medusajs/ui';
 import { useCreateStripeOnboarding } from '../../../hooks/api';
 import { Link } from 'react-router-dom';
 
-export const Connected = ({
-  status,
-}: {
-  status: 'connected' | 'pending' | 'not connected';
-}) => {
-  const { mutateAsync, isPending } =
-    useCreateStripeOnboarding();
-
+export const Connected = ({ status }: { status: 'connected' | 'pending' | 'not connected' }) => {
+  const { mutateAsync, isPending } = useCreateStripeOnboarding();
   const hostname = window.location.href;
 
   const handleOnboarding = async () => {
@@ -21,42 +15,47 @@ export const Connected = ({
           return_url: hostname,
         },
       });
-      window.location.replace(
-        payout_account.onboarding.data.url
-      );
+      window.location.replace(payout_account.onboarding.data.url);
     } catch {
-      toast.error('Connection error!');
+      toast.error('Błąd połączenia ze Stripe!');
     }
   };
 
-  return status === 'connected' ? (
-    <div className='flex items-center justify-center text-center my-32 flex-col'>
-      <Heading level='h2' className='mt-4'>
-        Your Stripe Account is ready
-      </Heading>
-      <Link
-        to='https://dashboard.stripe.com/payments'
-        target='_blank'
-      >
-        <Button className='mt-4'>Go to Stripe</Button>
-      </Link>
-    </div>
-  ) : (
-    <div className='flex items-center justify-center text-center my-32 flex-col'>
-      <ExclamationCircle />
-      <Heading level='h2' className='mt-4'>
-        Not onboarded
-      </Heading>
-      <Text className='text-ui-fg-subtle' size='small'>
-        Go to Stripe Onboarding page
-      </Text>
-      <Button
-        isLoading={isPending}
-        className='mt-4'
-        onClick={() => handleOnboarding()}
-      >
-        Stripe Onboarding
-      </Button>
-    </div>
-  );
+  if (status === 'connected') {
+    return (
+      <div className='flex items-center justify-center text-center my-32 flex-col'>
+        <Heading level='h2' className='mt-4'>
+          Twoje konto Stripe jest gotowe
+        </Heading>
+        <Link
+          to='https://dashboard.stripe.com/payments'
+          target='_blank'
+        >
+          <Button className='mt-4'>Idź do Stripe</Button>
+        </Link>
+      </div>
+    );
+  }
+  if (status === 'pending') {
+    return (
+      <div className='flex items-center justify-center text-center my-32 flex-col'>
+        <ExclamationCircle />
+        <Heading level='h2' className='mt-4'>
+          Konto Stripe oczekuje na weryfikację
+        </Heading>
+        <Text className='text-ui-fg-subtle' size='small'>
+          Twoje konto Stripe jest w trakcie weryfikacji. Proszę sprawdzić skrzynkę mailową lub panel Stripe.
+        </Text>
+        <Button
+          isLoading={isPending}
+          className='mt-4'
+          onClick={handleOnboarding}
+        >
+          Rejestracja Stripe
+        </Button>
+      </div>
+    );
+  }
+  return null;
 };
+

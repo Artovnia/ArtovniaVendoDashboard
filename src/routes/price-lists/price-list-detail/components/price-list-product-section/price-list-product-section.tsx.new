@@ -1,0 +1,426 @@
+import { PencilSquare, Plus, Trash } from "@medusajs/icons"
+import { HttpTypes } from "@medusajs/types"
+import { Checkbox, Container, Heading, toast, usePrompt } from "@medusajs/ui"
+import { RowSelectionState, createColumnHelper } from "@tanstack/react-table"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { useTranslation } from "react-i18next"
+import { useNavigate } from "react-router-dom"
+import { fetchQuery } from "../../../../../lib/client"
+
+import { ActionMenu } from "../../../../../components/common/action-menu"
+import { _DataTable } from "../../../../../components/table/data-table"
+import { usePriceListLinkProducts } from "../../../../../hooks/api/price-lists"
+import { useProducts } from "../../../../../hooks/api/products"
+import { useProductTableColumns } from "../../../../../hooks/table/columns/use-product-table-columns"
+import { useProductTableFilters } from "../../../../../hooks/table/filters/use-product-table-filters"
+import { useProductTableQuery } from "../../../../../hooks/table/query/use-product-table-query"
+import { useDataTable } from "../../../../../hooks/use-data-table"
+
+type PriceListProductSectionProps = {
+  priceList: HttpTypes.AdminPriceList
+}
+
+const PAGE_SIZE = 10
+const PREFIX = "p"
+
+export const PriceListProductSection = ({
+  priceList,
+}: PriceListProductSectionProps) => {
+  const { t } = useTranslation()
+  const navigate = useNavigate()
+  const prompt = usePrompt()
+
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
+  const [priceListProducts, setPriceListProducts] = useState<string[]>([])
+  const [isLoadingProductIds, setIsLoadingProductIds] = useState<boolean>(true)
+
+  // We only need the raw query params for displaying the URL in the UI
+  const { raw } = useProductTableQuery({
+    pageSize: PAGE_SIZE,
+    prefix: PREFIX,
+  })
+
+  // Fetch product IDs for the price list
+  const fetchPriceListProducts = useCallback(async () => {
+    if (!priceList?.id) return
+    
+    try {
+      setIsLoadingProductIds(true)
+      console.log('------------- DEBUG: PRICE LIST PRODUCT FETCHING -------------')
+      console.log('Price list ID:', priceList.id)
+      
+      // Step 1: Fetch detailed price list data with prices
+      const priceListResponse = await fetchQuery(`/vendor/price-lists/${priceList.id}`, {
+        method: 'GET',
+      })
+      
+      // Extract price list data
+      const priceListData = Array.isArray(priceListResponse?.price_list) 
+        ? priceListResponse?.price_list[0] 
+        : priceListResponse?.price_list
+      
+      if (!priceListData) {
+        console.error('Could not extract price list data from response')
+        setPriceListProducts([])
+        return
+      }
+      
+      // Check prices array
+      if (!priceListData.prices || !Array.isArray(priceListData.prices) || priceListData.prices.length === 0) {
+        console.warn('No prices array found in price list or it is empty')
+        setPriceListProducts([])
+        return
+      }
+      
+      console.log('Price list prices count:', priceListData.prices.length)
+      
+      // Step 2: Extract variant IDs from prices - finding them inside price_set.variant
+      let variantIds: string[] = []
+      
+      if (priceListData.prices[0].price_set?.variant?.id) {
+        // Extract variant IDs from price_set.variant
+        variantIds = priceListData.prices
+          .filter((price: any) => price.price_set?.variant?.id)
+          .map((price: any) => price.price_set.variant.id)
+      }
+      else if (priceListData.prices[0].variant_id) {
+        // Fallback to direct variant_id property if available
+        variantIds = priceListData.prices
+          .filter((price: any) => price.variant_id)
+          .map((price: any) => price.variant_id)
+      }
+      
+      // Deduplicate variant IDs
+      const uniqueVariantIds = [...new Set(variantIds)]
+      console.log(`Found ${uniqueVariantIds.length} unique variant IDs in price list:`, uniqueVariantIds)
+      
+      if (uniqueVariantIds.length === 0) {
+        console.warn('No variant IDs found in price list prices')
+        setPriceListProducts([])
+        return
+      }
+      
+      // Step 3: Get all products
+      const allProductsResponse = await fetchQuery('/vendor/products', {
+        method: 'GET',
+        query: {
+          limit: 100, // Get a reasonable number of products
+        },
+      })
+      
+      if (!allProductsResponse?.products) {
+        console.error('Failed to fetch products')
+        setPriceListProducts([])
+        return
+      }
+      
+      // Convert variant IDs to product IDs by simply replacing the prefix
+      // This is a common pattern in Medusa: variant_XXX -> prod_XXX
+      const productIdsFromVariants = uniqueVariantIds.map(variantId => 
+        variantId.replace('variant_', 'prod_')
+      )
+      
+      // Deduplicate
+      const uniqueProductIds = [...new Set(productIdsFromVariants)]
+      console.log(`Found ${uniqueProductIds.length} unique product IDs for variants`)
+      
+      // Set the product IDs state
+      setPriceListProducts(uniqueProductIds)
+      
+    } catch (err) {
+      console.error('Error fetching price list products:', err)
+      toast.error('Failed to load price list products')
+      setPriceListProducts([])
+    } finally {
+      setIsLoadingProductIds(false)
+    }
+  }, [priceList?.id])
+
+  // Fetch product IDs when price list changes
+  useEffect(() => {
+    fetchPriceListProducts()
+  }, [fetchPriceListProducts, priceList?.id])
+
+  // Fetch all products - we'll do filtering on the client side
+  const productsQuery = useProducts(
+    { limit: 100 },
+    { enabled: !isLoadingProductIds }
+  )
+  
+  // Extract products from the query result with safer type handling
+  const productsData = useMemo(() => {
+    if (productsQuery.isSuccess && productsQuery.products) {
+      console.log(`Found ${productsQuery.products.length} products in query result`)
+      return productsQuery.products || []
+    }
+    console.log('No products found in query result', productsQuery)
+    return []
+  }, [productsQuery.isSuccess, productsQuery.products])
+  
+  // We'll use the loading state from the products query
+  const loadingProducts = productsQuery.isLoading || isLoadingProductIds
+
+  // Since we can't filter on the server side, we need to filter products client-side
+  // This implementation manually filters to only include products that are in our price list
+  // Filter products to only include those in our price list
+  const filteredProducts = useMemo(() => {
+    if (priceListProducts.length === 0) {
+      return []
+    }
+    
+    // Create a set for faster lookups
+    const priceListProductSet = new Set(priceListProducts)
+    
+    // Filter products to only include those in our price list
+    return productsData.filter((product: HttpTypes.AdminProduct) => 
+      priceListProductSet.has(product.id)
+    )
+  }, [productsData, priceListProducts])
+
+  // Count for pagination
+  const count = filteredProducts.length
+  
+  const getRowId = (row: HttpTypes.AdminProduct) => row.id
+
+  const columns = useColumns(priceList)
+  const { mutateAsync } = usePriceListLinkProducts(priceList.id)
+
+  // Use default filters without customization to avoid errors
+  const { filters } = useProductTableFilters([])
+
+  // Set up the data table with our filtered products 
+  const { table } = useDataTable({
+    columns: columns,
+    data: filteredProducts, // Use our client-side filtered data instead of query data
+    pageSize: PAGE_SIZE,
+    getRowId,
+    rowSelection: {
+      state: rowSelection,
+      updater: setRowSelection,
+    },
+  })
+  
+  // Use loading state from product queries
+  const isLoading = loadingProducts
+
+  const handleDelete = async () => {
+    const res = await prompt({
+      title: t("general.areYouSure"),
+      description: t("priceLists.products.delete.confirmation", {
+        count: Object.keys(rowSelection).length,
+      }),
+      confirmText: t("actions.delete"),
+      cancelText: t("actions.cancel"),
+    })
+
+    if (!res) {
+      return
+    }
+
+    mutateAsync(
+      {
+        product_ids: Object.keys(rowSelection),
+        unlink: true, // Flag to indicate we want to remove these products from the price list
+      },
+      {
+        onSuccess: () => {
+          toast.success(
+            t("priceLists.products.delete.successToast", {
+              count: Object.keys(rowSelection).length,
+            })
+          )
+
+          setRowSelection({})
+        },
+        onError: (e) => {
+          toast.error(e.message)
+        },
+      }
+    )
+  }
+
+  const handleEdit = async () => {
+    const ids = Object.keys(rowSelection).join(",")
+
+    navigate(`products/edit?ids[]=${ids}`)
+  }
+
+  // Handle potential errors from the products query
+  if (productsQuery.isError) {
+    throw productsQuery.error
+  }
+
+  return (
+    <Container className="divide-y p-0">
+      <div className="flex items-center justify-between px-6 py-4">
+        <Heading>{t("priceLists.products.header")}</Heading>
+        <ActionMenu
+          groups={[
+            {
+              actions: [
+                {
+                  label: t("priceLists.products.actions.addProducts"),
+                  to: "products/add",
+                  icon: <Plus />,
+                },
+                {
+                  label: t("priceLists.products.actions.editPrices"),
+                  to: "products/edit",
+                  icon: <PencilSquare />,
+                },
+              ],
+            },
+          ]}
+        />
+      </div>
+      <_DataTable
+        table={table}
+        filters={filters}
+        columns={columns}
+        count={count}
+        pageSize={PAGE_SIZE}
+        isLoading={isLoading}
+        navigateTo={(row) => `/products/${row.original.id}`}
+        orderBy={[
+          { key: "title", label: t("fields.title") },
+          { key: "created_at", label: t("fields.createdAt") },
+          { key: "updated_at", label: t("fields.updatedAt") },
+        ]}
+        commands={[
+          {
+            action: handleEdit,
+            label: t("actions.edit"),
+            shortcut: "e",
+          },
+          {
+            action: handleDelete,
+            label: t("actions.delete"),
+            shortcut: "d",
+          },
+        ]}
+        pagination
+        search
+        prefix={PREFIX}
+        queryObject={raw}
+      />
+    </Container>
+  )
+}
+
+const ProductRowAction = ({
+  product,
+  priceList,
+}: {
+  product: HttpTypes.AdminProduct
+  priceList: HttpTypes.AdminPriceList
+}) => {
+  const { t } = useTranslation()
+  const prompt = usePrompt()
+  const { mutateAsync } = usePriceListLinkProducts(priceList.id)
+
+  const handleDelete = async () => {
+    const res = await prompt({
+      title: t("general.areYouSure"),
+      description: t("priceLists.products.delete.confirmation", {
+        count: 1,
+      }),
+      confirmText: t("actions.delete"),
+      cancelText: t("actions.cancel"),
+    })
+
+    if (!res) {
+      return
+    }
+
+    mutateAsync(
+      {
+        product_ids: [product.id],
+        unlink: true,
+      },
+      {
+        onSuccess: () => {
+          toast.success(
+            t("priceLists.products.delete.successToast", {
+              count: 1,
+            })
+          )
+        },
+        onError: (e) => {
+          toast.error(e.message)
+        },
+      }
+    )
+  }
+
+  return (
+    <ActionMenu
+      groups={[
+        {
+          actions: [
+            {
+              icon: <PencilSquare />,
+              label: t("priceLists.products.actions.editPrices"),
+              to: `products/edit?ids[]=${product.id}`,
+            },
+          ],
+        },
+        {
+          actions: [
+            {
+              icon: <Trash />,
+              label: t("actions.remove"),
+              onClick: handleDelete,
+            },
+          ],
+        },
+      ]}
+    />
+  )
+}
+
+const columnHelper = createColumnHelper<HttpTypes.AdminProduct>()
+
+const useColumns = (priceList: HttpTypes.AdminPriceList) => {
+  const base = useProductTableColumns()
+
+  return useMemo(
+    () => [
+      columnHelper.display({
+        id: "select",
+        header: ({ table }) => {
+          return (
+            <Checkbox
+              checked={
+                table.getIsSomePageRowsSelected()
+                  ? "indeterminate"
+                  : table.getIsAllPageRowsSelected()
+              }
+              onCheckedChange={(value) =>
+                table.toggleAllPageRowsSelected(!!value)
+              }
+            />
+          )
+        },
+        cell: ({ row }) => {
+          return (
+            <Checkbox
+              checked={row.getIsSelected()}
+              onCheckedChange={(value) => row.toggleSelected(!!value)}
+              onClick={(e) => {
+                e.stopPropagation()
+              }}
+            />
+          )
+        },
+      }),
+      ...base,
+      columnHelper.display({
+        id: "actions",
+        cell: ({ row }) => (
+          <ProductRowAction product={row.original} priceList={priceList} />
+        ),
+      }),
+    ],
+    [base, priceList]
+  )
+}

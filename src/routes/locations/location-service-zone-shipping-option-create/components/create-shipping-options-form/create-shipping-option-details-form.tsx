@@ -1,13 +1,13 @@
 import {
   Divider,
   Heading,
-  Input,
   RadioGroup,
   Select,
   Text,
 } from '@medusajs/ui';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { useEffect, useMemo } from 'react';
 
 import { HttpTypes } from '@medusajs/types';
 
@@ -15,6 +15,8 @@ import { Form } from '../../../../../components/common/form';
 import { SwitchBox } from '../../../../../components/common/switch-box';
 import { Combobox } from '../../../../../components/inputs/combobox';
 import { useComboboxData } from '../../../../../hooks/use-combobox-data';
+import { useShippingProfiles } from '../../../../../hooks/api/shipping-profiles';
+import { useFulfillmentProviders } from '../../../../../hooks/api/fulfillment-providers';
 import { sdk } from '../../../../../lib/client';
 import { formatProvider } from '../../../../../lib/format-provider';
 import {
@@ -46,30 +48,46 @@ export const CreateShippingOptionDetailsForm = ({
 
   const isPickup = type === FulfillmentSetType.Pickup;
 
-  const shippingProfiles = useComboboxData({
-    queryFn: (params) =>
-      sdk.admin.shippingProfile.list(params),
-    queryKey: ['shipping_profiles'],
-    getOptions: (data) =>
-      data.shipping_profiles.map((profile) => ({
-        label: profile.name,
-        value: profile.id,
-      })),
-  });
+  // Use the vendor profiles instead of admin profiles
+  const { shipping_profiles = [], isLoading: isProfilesLoading } = useShippingProfiles();
+  
+  // If there are shipping profiles and no value is selected, set the first one as default
+  useEffect(() => {
+    if (shipping_profiles.length > 0 && !form.watch('shipping_profile_id')) {
+      form.setValue('shipping_profile_id', shipping_profiles[0].id);
+    }
+  }, [shipping_profiles, form]);
 
-  const fulfillmentProviders = useComboboxData({
-    queryFn: (params) =>
-      sdk.admin.fulfillmentProvider.list({
-        ...params,
-        stock_location_id: locationId,
-      }),
-    queryKey: ['fulfillment_providers'],
-    getOptions: (data) =>
-      data.fulfillment_providers.map((provider) => ({
-        label: formatProvider(provider.id),
-        value: provider.id,
-      })),
-  });
+  // Use the vendor fulfillment providers API - don't pass stock_location_id as it's not supported
+  const { fulfillment_providers = [], isLoading: isProvidersLoading } = useFulfillmentProviders();
+  
+  // Set a default provider when providers are loaded and none is selected
+  useEffect(() => {
+    if (fulfillment_providers.length > 0 && !selectedProviderId) {
+      // Look for manual provider first, otherwise use the first available provider
+      const manualProvider = fulfillment_providers.find(p => p.id.includes('manual'));
+      form.setValue('provider_id', manualProvider?.id || fulfillment_providers[0].id);
+      
+      // Log available providers for debugging
+      console.log('Available providers:', fulfillment_providers.map(p => p.id));
+    }
+  }, [fulfillment_providers, form, selectedProviderId]);
+
+  // Create provider options for the dropdown
+  const providerOptions = useMemo(() => {
+    return fulfillment_providers.map(provider => ({
+      label: formatProvider(provider.id),
+      value: provider.id,
+    }));
+  }, [fulfillment_providers]);
+
+  // Use the combobox data hook for compatibility with the UI
+  const fulfillmentProviders = {
+    options: providerOptions,
+    searchValue: '',
+    onSearchValueChange: () => {},
+    disabled: isProvidersLoading,
+  };
 
   return (
     <div className='flex flex-1 flex-col items-center overflow-y-auto'>
@@ -164,14 +182,31 @@ export const CreateShippingOptionDetailsForm = ({
                     {t('fields.name')}
                   </Form.Label>
                   <Form.Control>
-                    <Input {...field} />
+                    <Select
+                      {...field}
+                      onValueChange={field.onChange}
+                    >
+                      <Select.Trigger ref={field.ref}>
+                        <Select.Value />
+                      </Select.Trigger>
+
+                      <Select.Content>
+                        <Select.Item value="Inpost Kurier">Inpost Kurier</Select.Item>
+                        <Select.Item value="Inpost paczkomat">Inpost paczkomat</Select.Item>
+                        <Select.Item value="DHL">DHL</Select.Item>
+                        <Select.Item value="Fedex">Fedex</Select.Item>
+                        <Select.Item value="DPD">DPD</Select.Item>
+                        <Select.Item value="GLS">GLS</Select.Item>
+                        <Select.Item value="UPS">UPS</Select.Item>
+                      </Select.Content>
+                    </Select>
                   </Form.Control>
                   <Form.ErrorMessage />
                 </Form.Item>
               );
             }}
           />
-          {/* <Form.Field
+           <Form.Field
             control={form.control}
             name='shipping_profile_id'
             render={({ field }) => {
@@ -183,26 +218,35 @@ export const CreateShippingOptionDetailsForm = ({
                     )}
                   </Form.Label>
                   <Form.Control>
-                    <Combobox
+                    <Select
                       {...field}
-                      options={shippingProfiles.options}
-                      searchValue={
-                        shippingProfiles.searchValue
-                      }
-                      onSearchValueChange={
-                        shippingProfiles.onSearchValueChange
-                      }
-                      disabled={shippingProfiles.disabled}
-                    />
+                      onValueChange={field.onChange}
+                      disabled={isProfilesLoading || shipping_profiles.length === 0}
+                    >
+                      <Select.Trigger ref={field.ref}>
+                        <Select.Value />
+                      </Select.Trigger>
+
+                      <Select.Content>
+                        {shipping_profiles.map((profile) => (
+                          <Select.Item
+                            value={profile.id}
+                            key={profile.id}
+                          >
+                            {profile.name}
+                          </Select.Item>
+                        ))}
+                      </Select.Content>
+                    </Select>
                   </Form.Control>
                   <Form.ErrorMessage />
                 </Form.Item>
               );
             }}
-          /> */}
+          /> 
         </div>
 
-        {/* <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+         <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
           <Form.Field
             control={form.control}
             name='provider_id'
@@ -279,7 +323,7 @@ export const CreateShippingOptionDetailsForm = ({
                               value={option.id}
                               key={option.id}
                             >
-                              {option.name || option.id}
+                              {option.id}
                             </Select.Item>
                           ))}
                       </Select.Content>
@@ -290,7 +334,7 @@ export const CreateShippingOptionDetailsForm = ({
               );
             }}
           />
-        </div> */}
+        </div> 
 
         <Divider />
         <SwitchBox

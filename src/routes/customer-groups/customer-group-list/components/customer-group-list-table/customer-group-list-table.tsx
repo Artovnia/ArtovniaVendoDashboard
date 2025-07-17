@@ -6,7 +6,6 @@ import {
   toast,
   usePrompt,
 } from '@medusajs/ui';
-import { keepPreviousData } from '@tanstack/react-query';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -20,22 +19,14 @@ import {
   useDeleteCustomerGroupLazy,
 } from '../../../../../hooks/api';
 import { useDate } from '../../../../../hooks/use-date';
-import { useQueryParams } from '../../../../../hooks/use-query-params';
+import { _DataTable } from '../../../../../components/table/data-table';
+import { TextCell } from '../../../../../components/table/table-cells/common/text-cell';
 
 const PAGE_SIZE = 10;
 
 export const CustomerGroupListTable = () => {
   const { t } = useTranslation();
   const { getWidgets } = useDashboardExtension();
-
-  const { q, order, offset, created_at, updated_at } =
-    useQueryParams([
-      'q',
-      'order',
-      'offset',
-      'created_at',
-      'updated_at',
-    ]);
 
   const columns = useColumns();
   const filters = useFilters();
@@ -46,28 +37,15 @@ export const CustomerGroupListTable = () => {
     isPending,
     isError,
     error,
-  } = useCustomerGroups(
-    {
-      q,
-      order,
-      offset: offset ? parseInt(offset) : undefined,
-      limit: PAGE_SIZE,
-      created_at: created_at
-        ? JSON.parse(created_at)
-        : undefined,
-      updated_at: updated_at
-        ? JSON.parse(updated_at)
-        : undefined,
-      fields: 'id,name,created_at,updated_at,customers.id',
-    },
-    {
-      placeholderData: keepPreviousData,
-    }
-  );
+  } = useCustomerGroups();
 
   if (isError) {
     throw error;
   }
+
+  const filteredList = customer_groups?.filter(
+    (group) => group.customers && group.customers.length > 0
+  );
 
   return (
     <SingleColumnPage
@@ -78,14 +56,16 @@ export const CustomerGroupListTable = () => {
     >
       <Container className='overflow-hidden p-0'>
         <DataTable
-          data={customer_groups}
+          data={filteredList}
           columns={columns}
           filters={filters}
           heading={t('customerGroups.domain')}
           subHeading='Organize customers into groups. Groups can have different promotions and prices.'
           rowCount={count}
           getRowId={(row) => row.id}
-          rowHref={(row) => `/customer-groups/${row.id}`}
+          rowHref={(row) => {
+            return `/customer-groups/${row.original.customer_group_id}`;
+          }}
           action={{
             label: t('actions.create'),
             to: '/customer-groups/create',
@@ -178,48 +158,26 @@ const useColumns = () => {
         sortDescLabel: t(
           'filters.sorting.alphabeticallyDesc'
         ),
+        cell: ({ row }) => {
+          return (
+            <TextCell
+              text={
+                row?.original?.customer_group?.name || '-'
+              }
+            />
+          );
+        },
       }),
       columnHelper.accessor('customers', {
         header: t('customers.domain'),
         cell: ({ row }) => {
           return (
             <span>
-              {row.original.customers?.length ?? 0}
+              {row?.original?.customer_group?.customers
+                ?.length ?? 0}
             </span>
           );
         },
-      }),
-      columnHelper.accessor('created_at', {
-        header: t('fields.createdAt'),
-        cell: ({ row }) => {
-          return (
-            <span>
-              {getFullDate({
-                date: row.original.created_at,
-                includeTime: true,
-              })}
-            </span>
-          );
-        },
-        enableSorting: true,
-        sortAscLabel: t('filters.sorting.dateAsc'),
-        sortDescLabel: t('filters.sorting.dateDesc'),
-      }),
-      columnHelper.accessor('updated_at', {
-        header: t('fields.updatedAt'),
-        cell: ({ row }) => {
-          return (
-            <span>
-              {getFullDate({
-                date: row.original.updated_at,
-                includeTime: true,
-              })}
-            </span>
-          );
-        },
-        enableSorting: true,
-        sortAscLabel: t('filters.sorting.dateAsc'),
-        sortDescLabel: t('filters.sorting.dateDesc'),
       }),
       columnHelper.action({
         actions: [
@@ -227,9 +185,9 @@ const useColumns = () => {
             {
               icon: <PencilSquare />,
               label: t('actions.edit'),
-              onClick: (row) => {
+              onClick: ({ row }) => {
                 navigate(
-                  `/customer-groups/${row.row.original.id}/edit`
+                  `/customer-groups/${row.original.customer_group_id}/edit`
                 );
               },
             },
@@ -238,10 +196,11 @@ const useColumns = () => {
             {
               icon: <Trash />,
               label: t('actions.delete'),
-              onClick: (row) => {
+              onClick: ({ row }) => {
                 handleDeleteCustomerGroup({
-                  id: row.row.original.id,
-                  name: row.row.original.name ?? '',
+                  id: row.original.customer_group_id,
+                  name:
+                    row.original.customer_group.name ?? '',
                 });
               },
             },

@@ -1,99 +1,68 @@
-import { PencilSquare, SquareTwoStack, Trash, XCircle } from "@medusajs/icons"
-import { AdminApiKeyResponse } from "@medusajs/types"
-import { toast, usePrompt } from "@medusajs/ui"
-import { useTranslation } from "react-i18next"
-import { ActionMenu } from "../../../../../components/common/action-menu"
-import {
-  useDeleteApiKey,
-  useRevokeApiKey,
-} from "../../../../../hooks/api/api-keys"
+import { SquareTwoStack, Trash } from '@medusajs/icons';
+import { AdminApiKeyResponse } from '@medusajs/types';
+import { toast, usePrompt } from '@medusajs/ui';
+import { useTranslation } from 'react-i18next';
+import { ActionMenu } from '../../../../../components/common/action-menu';
+import { useDeleteApiKey } from '../../../../../hooks/api/api-keys';
 
 export const ApiKeyRowActions = ({
   apiKey,
 }: {
-  apiKey: AdminApiKeyResponse["api_key"]
+  apiKey: AdminApiKeyResponse['api_key'];
 }) => {
-  const { mutateAsync: revokeAsync } = useRevokeApiKey(apiKey.id)
-  const { mutateAsync: deleteAsync } = useDeleteApiKey(apiKey.id)
+  const { mutateAsync: deleteAsync } = useDeleteApiKey(
+    apiKey.id
+  );
 
-  const { t } = useTranslation()
-  const prompt = usePrompt()
+  const { t } = useTranslation();
+  const prompt = usePrompt();
 
   const handleDelete = async () => {
     const res = await prompt({
-      title: t("general.areYouSure"),
-      description: t("apiKeyManagement.delete.warning", {
+      title: t('general.areYouSure'),
+      description: t('apiKeyManagement.delete.warning', {
         title: apiKey.title,
       }),
-      confirmText: t("actions.delete"),
-      cancelText: t("actions.cancel"),
-    })
+      confirmText: t('actions.delete'),
+      cancelText: t('actions.cancel'),
+    });
 
     if (!res) {
-      return
+      return;
     }
 
     await deleteAsync(undefined, {
       onSuccess: () => {
         toast.success(
-          t("apiKeyManagement.delete.successToast", {
+          t('apiKeyManagement.delete.successToast', {
             title: apiKey.title,
           })
-        )
+        );
       },
       onError: (err) => {
-        toast.error(err.message)
+        toast.error(err.message);
       },
-    })
-  }
-
-  const handleRevoke = async () => {
-    const res = await prompt({
-      title: t("general.areYouSure"),
-      description: t("apiKeyManagement.revoke.warning", {
-        title: apiKey.title,
-      }),
-      confirmText: t("apiKeyManagement.actions.revoke"),
-      cancelText: t("actions.cancel"),
-    })
-
-    if (!res) {
-      return
-    }
-
-    await revokeAsync(undefined, {
-      onSuccess: () => {
-        toast.success(
-          t("apiKeyManagement.revoke.successToast", {
-            title: apiKey.title,
-          })
-        )
-      },
-      onError: (err) => {
-        toast.error(err.message)
-      },
-    })
-  }
+    });
+  };
 
   const handleCopyToken = () => {
-    navigator.clipboard.writeText(apiKey.token)
-    toast.success(t("apiKeyManagement.actions.copySuccessToast"))
-  }
+    navigator.clipboard.writeText(apiKey.token);
+    toast.success(
+      t('apiKeyManagement.actions.copySuccessToast')
+    );
+  };
 
   return (
     <ActionMenu
       groups={[
         {
           actions: [
-            {
-              icon: <PencilSquare />,
-              label: t("actions.edit"),
-              to: `${apiKey.id}/edit`,
-            },
-            ...(apiKey.type !== "secret"
+            ...(apiKey.type !== 'secret'
               ? [
                   {
-                    label: t("apiKeyManagement.actions.copy"),
+                    label: t(
+                      'apiKeyManagement.actions.copy'
+                    ),
                     onClick: handleCopyToken,
                     icon: <SquareTwoStack />,
                   },
@@ -104,20 +73,13 @@ export const ApiKeyRowActions = ({
         {
           actions: [
             {
-              icon: <XCircle />,
-              label: t("apiKeyManagement.actions.revoke"),
-              onClick: handleRevoke,
-              disabled: !!apiKey.revoked_at,
-            },
-            {
               icon: <Trash />,
-              label: t("actions.delete"),
+              label: t('actions.delete'),
               onClick: handleDelete,
-              disabled: !apiKey.revoked_at,
             },
           ],
         },
       ]}
     />
-  )
-}
+  );
+};

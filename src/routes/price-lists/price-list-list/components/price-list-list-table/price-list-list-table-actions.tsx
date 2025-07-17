@@ -1,19 +1,21 @@
-import { PencilSquare, Trash } from "@medusajs/icons"
-import { HttpTypes } from "@medusajs/types"
+import { PencilSquare, Trash } from '@medusajs/icons';
+import { HttpTypes } from '@medusajs/types';
 
-import { useTranslation } from "react-i18next"
-import { ActionMenu } from "../../../../../components/common/action-menu"
-import { useDeletePriceListAction } from "../../../common/hooks/use-delete-price-list-action"
+import { useTranslation } from 'react-i18next';
+import { ActionMenu } from '../../../../../components/common/action-menu';
+import { useDeletePriceListAction } from '../../../common/hooks/use-delete-price-list-action';
 
 type PriceListListTableActionsProps = {
-  priceList: HttpTypes.AdminPriceList
-}
+  priceList: HttpTypes.AdminPriceList;
+};
 
 export const PriceListListTableActions = ({
   priceList,
 }: PriceListListTableActionsProps) => {
-  const { t } = useTranslation()
-  const handleDelete = useDeletePriceListAction({ priceList })
+  const { t } = useTranslation();
+  const handleDelete = useDeletePriceListAction({
+    priceList,
+  });
 
   return (
     <ActionMenu
@@ -21,8 +23,8 @@ export const PriceListListTableActions = ({
         {
           actions: [
             {
-              label: t("actions.edit"),
-              to: `${priceList.id}/edit`,
+              label: t('actions.edit'),
+              to: `${priceList.price_list_id}/edit`,
               icon: <PencilSquare />,
             },
           ],
@@ -30,7 +32,7 @@ export const PriceListListTableActions = ({
         {
           actions: [
             {
-              label: t("actions.delete"),
+              label: t('actions.delete'),
               onClick: handleDelete,
               icon: <Trash />,
             },
@@ -38,5 +40,5 @@ export const PriceListListTableActions = ({
         },
       ]}
     />
-  )
-}
+  );
+};

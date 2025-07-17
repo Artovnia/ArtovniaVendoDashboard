@@ -25,13 +25,24 @@ export const getLocaleAmount = (amount: number, currencyCode: string) => {
 }
 
 export const getNativeSymbol = (currencyCode: string) => {
-  const formatted = new Intl.NumberFormat([], {
-    style: "currency",
-    currency: currencyCode,
-    currencyDisplay: "narrowSymbol",
-  }).format(0)
+  // Handle missing or invalid currency code
+  if (!currencyCode) {
+    return "";
+  }
+  
+  try {
+    const formatted = new Intl.NumberFormat([], {
+      style: "currency",
+      currency: currencyCode,
+      currencyDisplay: "narrowSymbol",
+    }).format(0)
 
-  return formatted.replace(/\d/g, "").replace(/[.,]/g, "").trim()
+    return formatted.replace(/\d/g, "").replace(/[.,]/g, "").trim()
+  } catch (error) {
+    // Fallback if currency code is invalid
+    console.error(`Invalid currency code: ${currencyCode}`, error);
+    return "";
+  }
 }
 
 /**
@@ -41,21 +52,33 @@ export const getNativeSymbol = (currencyCode: string) => {
  * currency code and symbol explicitly, e.g. for totals.
  */
 export const getStylizedAmount = (amount: number, currencyCode: string) => {
-  const symbol = getNativeSymbol(currencyCode)
-  const decimalDigits = getDecimalDigits(currencyCode)
+  // Safely handle missing currency code
+  if (!currencyCode) {
+    return `${amount.toLocaleString()}`;
+  }
 
-  const lessThanRoundingPrecission = isAmountLessThenRoundingError(
-    amount,
-    currencyCode
-  )
+  try {
+    const symbol = getNativeSymbol(currencyCode)
+    const decimalDigits = getDecimalDigits(currencyCode)
 
-  const total = amount.toLocaleString(undefined, {
-    minimumFractionDigits: decimalDigits,
-    maximumFractionDigits: decimalDigits,
-    signDisplay: lessThanRoundingPrecission ? "exceptZero" : "auto",
-  })
+    const lessThanRoundingPrecission = isAmountLessThenRoundingError(
+      amount,
+      currencyCode
+    )
 
-  return `${symbol} ${total} ${currencyCode.toUpperCase()}`
+    const total = amount.toLocaleString(undefined, {
+      minimumFractionDigits: decimalDigits,
+      maximumFractionDigits: decimalDigits,
+      signDisplay: lessThanRoundingPrecission ? "exceptZero" : "auto",
+    })
+
+    // Only include currency code and symbol if they're valid
+    return symbol ? `${symbol} ${total} ${currencyCode.toUpperCase()}` : `${total}`;
+  } catch (error) {
+    // Fallback for any formatting errors
+    console.error('Error formatting amount:', error);
+    return `${amount.toLocaleString()}`;
+  }
 }
 
 /**

@@ -30,8 +30,19 @@ const Root = ({ prev = "..", children }: RouteFocusModalProps) => {
 
   const handleOpenChange = (open: boolean) => {
     if (!open) {
-      document.body.style.pointerEvents = "auto"
-      navigate(prev, { replace: true })
+      // First set the state to trigger proper React lifecycle
+      setOpen(false)
+      
+      // Use requestAnimationFrame to ensure DOM updates before navigation
+      requestAnimationFrame(() => {
+        // Reset pointer events
+        document.body.style.pointerEvents = "auto"
+        
+        // Then navigate with a small delay to allow cleanup
+        setTimeout(() => {
+          navigate(prev, { replace: true })
+        }, 0)
+      })
       return
     }
 

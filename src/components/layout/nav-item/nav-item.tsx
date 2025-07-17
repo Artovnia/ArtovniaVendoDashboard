@@ -27,6 +27,7 @@ export type INavItem = {
   type?: ItemType;
   from?: string;
   nested?: string;
+  endIcon?: ReactNode;
 };
 
 const BASE_NAV_LINK_CLASSES =
@@ -95,6 +96,7 @@ export const NavItem = ({
   items,
   type = 'core',
   from,
+  endIcon,
 }: INavItem) => {
   const { pathname } = useLocation();
   const [open, setOpen] = useState(
@@ -133,7 +135,7 @@ export const NavItem = ({
   const isSetting = type === 'setting';
 
   return (
-    <div className='px-3 mt-2'>
+    <div className='px-3'>
       <NavItemTooltip to={to}>
         <NavLink
           to={to}
@@ -170,6 +172,8 @@ export const NavItem = ({
           >
             {label}
           </Text>
+          {/* Render endIcon if provided */}
+          {endIcon && <div className="ml-auto">{endIcon}</div>}
         </NavLink>
       </NavItemTooltip>
       {items && items.length > 0 && (

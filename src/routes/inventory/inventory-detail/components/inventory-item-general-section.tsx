@@ -6,8 +6,18 @@ import { useTranslation } from 'react-i18next';
 import { ActionMenu } from '../../../../components/common/action-menu';
 import { SectionRow } from '../../../../components/common/section';
 
+// Extend the inventory item type with additional properties
+type InventoryItemType = HttpTypes.AdminInventoryItemResponse['inventory_item'];
+
+// Export the interface so it can be used by other components
+export interface ExtendedInventoryItem extends InventoryItemType {
+  title?: string;
+  stocked_quantity?: number;
+  reserved_quantity?: number;
+}
+
 type InventoryItemGeneralSectionProps = {
-  inventoryItem: HttpTypes.AdminInventoryItemResponse['inventory_item'];
+  inventoryItem: ExtendedInventoryItem;
 };
 export const InventoryItemGeneralSection = ({
   inventoryItem,
@@ -56,8 +66,10 @@ export const InventoryItemGeneralSection = ({
       <SectionRow
         title={t('inventory.available')}
         value={getQuantityFormat(
-          inventoryItem.stocked_quantity -
-            inventoryItem.reserved_quantity,
+          calculateAvailableQuantity(
+            inventoryItem.stocked_quantity,
+            inventoryItem.reserved_quantity
+          ),
           inventoryItem.location_levels?.length
         )}
       />
@@ -66,12 +78,22 @@ export const InventoryItemGeneralSection = ({
 };
 
 const getQuantityFormat = (
-  quantity: number,
+  quantity: number | undefined,
   locations?: number
-) => {
+): string => {
   if (quantity !== undefined && !isNaN(quantity)) {
     return `${quantity} across ${locations ?? '-'} locations`;
   }
 
   return '-';
+};
+
+// Helper function to safely calculate available quantity
+const calculateAvailableQuantity = (
+  stocked?: number,
+  reserved?: number
+): number | undefined => {
+  if (stocked === undefined) return undefined;
+  const reservedValue = reserved || 0;
+  return stocked - reservedValue;
 };

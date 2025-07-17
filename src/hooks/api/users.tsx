@@ -1,50 +1,51 @@
-import { FetchError } from '@medusajs/js-sdk';
-import { HttpTypes } from '@medusajs/types';
+import { FetchError } from "@medusajs/js-sdk"
+import { HttpTypes } from "@medusajs/types"
 import {
   QueryKey,
   UseMutationOptions,
   UseQueryOptions,
   useMutation,
   useQuery,
-} from '@tanstack/react-query';
-import { fetchQuery, sdk } from '../../lib/client';
-import { queryClient } from '../../lib/query-client';
-import { queryKeysFactory } from '../../lib/query-key-factory';
-import {
-  StoreVendor,
-  TeamMemberProps,
-} from '../../types/user';
+} from "@tanstack/react-query"
+import { fetchQuery } from "../../lib/client"
+import { queryClient } from "../../lib/query-client"
+import { queryKeysFactory } from "../../lib/query-key-factory"
+import { StoreVendor, TeamMemberProps } from "../../types/user"
 
-const USERS_QUERY_KEY = 'users' as const;
+const USERS_QUERY_KEY = "users" as const
 const usersQueryKeys = {
   ...queryKeysFactory(USERS_QUERY_KEY),
-  me: () => [USERS_QUERY_KEY, 'me'],
-};
+  me: () => [USERS_QUERY_KEY, "me"],
+}
 
 export const useMe = (
   options?: UseQueryOptions<
     HttpTypes.AdminUserResponse,
     FetchError,
     HttpTypes.AdminUserResponse & {
-      seller: StoreVendor;
+      seller: StoreVendor
     },
     QueryKey
   >
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: async () =>
-      fetchQuery('/vendor/sellers/me', {
-        method: 'GET',
+      fetchQuery("/vendor/sellers/me", {
+        method: "GET",
+        query: {
+          fields:
+            "id,name,description,phone,email,media,address_line,postal_code,country_code,city,region,metadata,tax_id,photo",
+        },
       }),
     queryKey: usersQueryKeys.me(),
     ...options,
-  });
+  })
 
   return {
     seller: data?.seller,
     ...rest,
-  };
-};
+  }
+}
 
 export const useUpdateMe = (
   options?: UseMutationOptions<
@@ -56,54 +57,55 @@ export const useUpdateMe = (
 ) => {
   return useMutation({
     mutationFn: (body) =>
-      fetchQuery('/vendor/sellers/me', {
-        method: 'POST',
+      fetchQuery("/vendor/sellers/me", {
+        method: "POST",
         body,
       }),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
         queryKey: usersQueryKeys.lists(),
-      });
+      })
 
       queryClient.invalidateQueries({
         queryKey: usersQueryKeys.me(),
-      });
+      })
 
-      options?.onSuccess?.(data, variables, context);
+      options?.onSuccess?.(data, variables, context)
     },
     ...options,
-  });
-};
+  })
+}
 
 export const useOnboarding = () => {
   const { data, ...rest } = useQuery({
-    queryFn: async () =>
-      fetchQuery('/vendor/sellers/me/onboarding', {
-        method: 'GET',
+    queryFn: () =>
+      fetchQuery("/vendor/sellers/me/onboarding", {
+        method: "GET",
       }),
-    queryKey: [usersQueryKeys.me(), 'onboarding'],
-  });
+    queryKey: ["onboarding"],
+    staleTime: 0,
+  })
 
   return {
     ...data,
     ...rest,
-  };
-};
+  }
+}
 
 export const useUpdateOnboarding = () => {
   return useMutation({
     mutationFn: () =>
-      fetchQuery('/vendor/sellers/me/onboarding', {
-        method: 'POST',
+      fetchQuery("/vendor/sellers/me/onboarding", {
+        method: "POST",
         body: {},
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [usersQueryKeys.me(), 'onboarding'],
-      });
+        queryKey: ["onboarding"],
+      })
     },
-  });
-};
+  })
+}
 
 export const useUserMe = (
   query?: HttpTypes.AdminUserParams,
@@ -112,46 +114,37 @@ export const useUserMe = (
       HttpTypes.AdminUserResponse,
       FetchError,
       HttpTypes.AdminUserResponse & {
-        member: TeamMemberProps;
+        member: TeamMemberProps
       },
       QueryKey
     >,
-    'queryFn' | 'queryKey'
+    "queryFn" | "queryKey"
   >
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: () =>
       fetchQuery(`/vendor/me`, {
-        method: 'GET',
+        method: "GET",
         query: query as { [key: string]: string | number },
       }),
-    queryKey: [USERS_QUERY_KEY, 'user', 'me'],
+    queryKey: [USERS_QUERY_KEY, "user", "me"],
     ...options,
-  });
+  })
 
-  return { ...data, ...rest };
-};
+  return { ...data, ...rest }
+}
 
-export const useStatistics = ({
-  from,
-  to,
-}: {
-  from: string;
-  to: string;
-}) => {
+export const useStatistics = ({ from, to }: { from: string; to: string }) => {
   const { data, ...rest } = useQuery({
     queryFn: () =>
-      fetchQuery(
-        `/vendor/statistics?time_from=${from}&time_to=${to}`,
-        {
-          method: 'GET',
-        }
-      ),
-    queryKey: [USERS_QUERY_KEY, 'statistics'],
-  });
+      fetchQuery(`/vendor/statistics?time_from=${from}&time_to=${to}`, {
+        method: "GET",
+      }),
+    queryKey: [USERS_QUERY_KEY, "statistics"],
+  })
 
-  return { ...data, ...rest };
-};
+  return { ...data, ...rest }
+}
 
 export const useUser = (
   id: string,
@@ -161,25 +154,25 @@ export const useUser = (
       HttpTypes.AdminUserResponse,
       FetchError,
       HttpTypes.AdminUserResponse & {
-        member: TeamMemberProps;
+        member: TeamMemberProps
       },
       QueryKey
     >,
-    'queryFn' | 'queryKey'
+    "queryFn" | "queryKey"
   >
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: () =>
       fetchQuery(`/vendor/members/${id}`, {
-        method: 'GET',
+        method: "GET",
         query: query as { [key: string]: string | number },
       }),
     queryKey: usersQueryKeys.detail(id),
     ...options,
-  });
+  })
 
-  return { ...data, ...rest };
-};
+  return { ...data, ...rest }
+}
 
 export const useUsers = (
   query?: HttpTypes.AdminUserListParams,
@@ -190,44 +183,21 @@ export const useUsers = (
       HttpTypes.AdminUserListResponse & { members: any[] },
       QueryKey
     >,
-    'queryFn' | 'queryKey'
+    "queryFn" | "queryKey"
   >
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: () =>
-      fetchQuery('/vendor/members', {
-        method: 'GET',
+      fetchQuery("/vendor/members", {
+        method: "GET",
         query: query as { [key: string]: string | number },
       }),
     queryKey: usersQueryKeys.list(query),
     ...options,
-  });
+  })
 
-  return { ...data, ...rest };
-};
-
-export const useCreateUser = (
-  query?: HttpTypes.AdminUserParams,
-  options?: UseMutationOptions<
-    HttpTypes.AdminUserResponse,
-    FetchError,
-    HttpTypes.AdminCreateUser,
-    QueryKey
-  >
-) => {
-  return useMutation({
-    mutationFn: (payload) =>
-      sdk.admin.user.create(payload, query),
-    onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({
-        queryKey: usersQueryKeys.lists(),
-      });
-
-      options?.onSuccess?.(data, variables, context);
-    },
-    ...options,
-  });
-};
+  return { ...data, ...rest }
+}
 
 export const useUpdateUser = (
   id: string,
@@ -235,11 +205,11 @@ export const useUpdateUser = (
     TeamMemberProps,
     FetchError,
     {
-      name?: string;
-      photo?: string;
-      language?: string;
-      phone?: string;
-      bio?: string;
+      name?: string
+      photo?: string
+      language?: string
+      phone?: string
+      bio?: string
     },
     QueryKey
   >
@@ -247,27 +217,27 @@ export const useUpdateUser = (
   return useMutation({
     mutationFn: (body) =>
       fetchQuery(`/vendor/members/${id}`, {
-        method: 'POST',
+        method: "POST",
         body,
       }),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
         queryKey: usersQueryKeys.detail(id),
-      });
+      })
       queryClient.invalidateQueries({
         queryKey: usersQueryKeys.lists(),
-      });
+      })
 
       // We invalidate the me query in case the user updates their own profile
       queryClient.invalidateQueries({
-        queryKey: [USERS_QUERY_KEY, 'user', 'me'],
-      });
+        queryKey: [USERS_QUERY_KEY, "user", "me"],
+      })
 
-      options?.onSuccess?.(data, variables, context);
+      options?.onSuccess?.(data, variables, context)
     },
     ...options,
-  });
-};
+  })
+}
 
 export const useDeleteUser = (
   id: string,
@@ -280,23 +250,23 @@ export const useDeleteUser = (
   return useMutation({
     mutationFn: () =>
       fetchQuery(`/vendor/members/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
       }),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
         queryKey: usersQueryKeys.detail(id),
-      });
+      })
       queryClient.invalidateQueries({
         queryKey: usersQueryKeys.lists(),
-      });
+      })
 
       // We invalidate the me query in case the user updates their own profile
       queryClient.invalidateQueries({
         queryKey: usersQueryKeys.me(),
-      });
+      })
 
-      options?.onSuccess?.(data, variables, context);
+      options?.onSuccess?.(data, variables, context)
     },
     ...options,
-  });
-};
+  })
+}

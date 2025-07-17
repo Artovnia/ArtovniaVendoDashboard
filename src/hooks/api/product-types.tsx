@@ -73,7 +73,10 @@ export const useCreateProductType = (
 ) => {
   return useMutation({
     mutationFn: (payload) =>
-      sdk.admin.productType.create(payload),
+      fetchQuery('/vendor/product-types', {
+        method: 'POST',
+        body: payload,
+      }),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
         queryKey: productTypesQueryKeys.lists(),

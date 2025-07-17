@@ -23,7 +23,7 @@ export const useLocationListTableColumns = () => {
 
   return useMemo(
     () => [
-      columnHelper.accessor("stock_locations.0.name", {
+      columnHelper.accessor((row) => row.stock_locations?.[0]?.name || "", {
         header: t("fields.location"),
         cell: ({ getValue }) => {
           const locationName = getValue()

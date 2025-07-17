@@ -1,6 +1,7 @@
+// C:\repo\mercur\vendor-panel\src\routes\locations\location-service-zone-shipping-option-edit\components\edit-region-form\edit-shipping-option-form.tsx
 import { zodResolver } from "@hookform/resolvers/zod"
 import { HttpTypes } from "@medusajs/types"
-import { Button, Divider, Input, RadioGroup, toast } from "@medusajs/ui"
+import { Button, Divider, RadioGroup, Select, toast } from "@medusajs/ui"
 import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import * as zod from "zod"
@@ -11,9 +12,7 @@ import { Combobox } from "../../../../../components/inputs/combobox"
 import { RouteDrawer, useRouteModal } from "../../../../../components/modals"
 import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
 import { useUpdateShippingOptions } from "../../../../../hooks/api/shipping-options"
-import { useComboboxData } from "../../../../../hooks/use-combobox-data"
-import { sdk } from "../../../../../lib/client"
-import { pick } from "../../../../../lib/common"
+import { useShippingProfiles } from "../../../../../hooks/api/shipping-profiles"
 import { isOptionEnabledInStore } from "../../../../../lib/shipping-options"
 import {
   FulfillmentSetType,
@@ -27,10 +26,10 @@ type EditShippingOptionFormProps = {
 }
 
 const EditShippingOptionSchema = zod.object({
-  name: zod.string().min(1),
-  price_type: zod.nativeEnum(ShippingOptionPriceType),
-  enabled_in_store: zod.boolean().optional(),
-  shipping_profile_id: zod.string(),
+  name: zod.string().min(1, { message: "Name is required" }),
+  price_type: zod.nativeEnum(ShippingOptionPriceType, { errorMap: () => ({ message: "Price type is required" }) }),
+  enabled_in_store: zod.boolean(),
+  shipping_profile_id: zod.string().min(1, { message: "Shipping profile is required" }),
 })
 
 export const EditShippingOptionForm = ({
@@ -43,22 +42,20 @@ export const EditShippingOptionForm = ({
 
   const isPickup = type === FulfillmentSetType.Pickup
 
-  const shippingProfiles = useComboboxData({
-    queryFn: (params) => sdk.admin.shippingProfile.list(params),
-    queryKey: ["shipping_profiles"],
-    getOptions: (data) =>
-      data.shipping_profiles.map((profile) => ({
-        label: profile.name,
-        value: profile.id,
-      })),
-    defaultValue: shippingOption.shipping_profile_id,
-  })
+  const { shipping_profiles = [], isLoading: isLoadingProfiles } = useShippingProfiles()
+  
+  const shippingProfileOptions = (shipping_profiles || []).map(profile => ({
+    label: profile.name,
+    value: profile.id,
+  }))
 
+  const isEnabled = Boolean(isOptionEnabledInStore(shippingOption))
+  
   const form = useForm<zod.infer<typeof EditShippingOptionSchema>>({
     defaultValues: {
       name: shippingOption.name,
       price_type: shippingOption.price_type as ShippingOptionPriceType,
-      enabled_in_store: isOptionEnabledInStore(shippingOption),
+      enabled_in_store: isEnabled,
       shipping_profile_id: shippingOption.shipping_profile_id,
     },
     resolver: zodResolver(EditShippingOptionSchema),
@@ -69,44 +66,55 @@ export const EditShippingOptionForm = ({
   )
 
   const handleSubmit = form.handleSubmit(async (values) => {
-    const rules = shippingOption.rules.map((r) => ({
-      ...pick(r, ["id", "attribute", "operator", "value"]),
-    })) as HttpTypes.AdminUpdateShippingOptionRule[]
-
-    const storeRule = rules.find((r) => r.attribute === "enabled_in_store")
-
-    if (!storeRule) {
-      // NOTE: should always exist since we always create this rule when we create a shipping option
-      rules.push({
-        value: values.enabled_in_store ? "true" : "false",
-        attribute: "enabled_in_store",
-        operator: "eq",
-      })
-    } else {
-      storeRule.value = values.enabled_in_store ? "true" : "false"
-    }
-
-    await mutateAsync(
-      {
+    try {
+      const existingRules = shippingOption.rules || []
+      
+      // Build new rules array, preserving all existing rules except enabled_in_store
+      // Filter out rules with null values and don't include the id field
+      const preservedRules = existingRules
+        .filter(rule => rule.attribute !== "enabled_in_store" && rule.value !== null)
+        .map(rule => ({
+          attribute: rule.attribute,
+          operator: rule.operator,
+          value: rule.value as string | string[], // Safe cast since we filtered out null values
+        }))
+      
+      // Add the updated enabled_in_store rule
+      const updatedRules: (HttpTypes.AdminUpdateShippingOptionRule | HttpTypes.AdminCreateShippingOptionRule)[] = [
+        ...preservedRules,
+        {
+          attribute: "enabled_in_store",
+          operator: "eq" as const,
+          value: values.enabled_in_store ? "true" : "false"
+        }
+      ]
+      
+      await mutateAsync({
         name: values.name,
-        price_type: values.price_type,
         shipping_profile_id: values.shipping_profile_id,
-        rules,
-      },
-      {
-        onSuccess: ({ shipping_option }) => {
-          toast.success(
-            t("stockLocations.shippingOptions.edit.successToast", {
-              name: shipping_option.name,
-            })
-          )
-          handleSuccess(`/settings/locations/${locationId}`)
-        },
-        onError: (e) => {
-          toast.error(e.message)
-        },
+        rules: updatedRules,
+      })
+      
+      toast.success(
+        t("stockLocations.shippingOptions.edit.successToast", {
+          name: values.name,
+        })
+      )
+      handleSuccess(`/settings/locations/${locationId}`)
+      
+    } catch (error) {
+      console.error("Update failed:", error)
+      
+      // Better error handling
+      let errorMessage = "Failed to update shipping option"
+      if (error && typeof error === 'object' && 'message' in error) {
+        errorMessage = (error as any).message
+      } else if (error && typeof error === 'string') {
+        errorMessage = error
       }
-    )
+      
+      toast.error(errorMessage)
+    }
   })
 
   return (
@@ -167,7 +175,23 @@ export const EditShippingOptionForm = ({
                       <Form.Item>
                         <Form.Label>{t("fields.name")}</Form.Label>
                         <Form.Control>
-                          <Input {...field} />
+                          <Select
+                            value={field.value}
+                            onValueChange={field.onChange}
+                          >
+                            <Select.Trigger>
+                              <Select.Value />
+                            </Select.Trigger>
+                            <Select.Content>
+                              <Select.Item value="Inpost Kurier">Inpost Kurier</Select.Item>
+                              <Select.Item value="Inpost paczkomat">Inpost paczkomat</Select.Item>
+                              <Select.Item value="DHL">DHL</Select.Item>
+                              <Select.Item value="Fedex">Fedex</Select.Item>
+                              <Select.Item value="DPD">DPD</Select.Item>
+                              <Select.Item value="GLS">GLS</Select.Item>
+                              <Select.Item value="UPS">UPS</Select.Item>
+                            </Select.Content>
+                          </Select>
                         </Form.Control>
                         <Form.ErrorMessage />
                       </Form.Item>
@@ -187,12 +211,9 @@ export const EditShippingOptionForm = ({
                         <Form.Control>
                           <Combobox
                             {...field}
-                            options={shippingProfiles.options}
-                            searchValue={shippingProfiles.searchValue}
-                            onSearchValueChange={
-                              shippingProfiles.onSearchValueChange
-                            }
-                            disabled={shippingProfiles.disabled}
+                            options={shippingProfileOptions}
+                            disabled={isLoadingProfiles}
+                            placeholder="Select shipping profile"
                           />
                         </Form.Control>
                         <Form.ErrorMessage />

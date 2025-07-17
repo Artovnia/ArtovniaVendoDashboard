@@ -51,7 +51,7 @@ const FormExtensionField = ({ field, form }: FormExtensionFieldProps) => {
   return (
     <Form.Field
       control={control}
-      name={`additional_data.${field.name}`}
+      name={`metadata.${field.name}`}
       render={({ field }) => {
         return (
           <Form.Item>

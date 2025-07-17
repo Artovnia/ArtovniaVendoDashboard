@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { RouteModalForm } from "../route-modal-form"
 import { RouteModalProvider } from "../route-modal-provider/route-provider"
 import { StackedModalProvider } from "../stacked-modal-provider"
+import { VisuallyHidden } from "../../utilities/visually-hidden"
 
 type RouteDrawerProps = PropsWithChildren<{
   prev?: string
@@ -47,6 +48,10 @@ const Root = ({ prev = "..", children }: RouteDrawerProps) => {
               "!bg-ui-bg-disabled !inset-y-5 !right-5": stackedModalOpen,
             })}
           >
+            {/* Add a visually hidden title for accessibility */}
+            <VisuallyHidden>
+              <Drawer.Title>Drawer Content</Drawer.Title>
+            </VisuallyHidden>
             {children}
           </Drawer.Content>
         </StackedModalProvider>

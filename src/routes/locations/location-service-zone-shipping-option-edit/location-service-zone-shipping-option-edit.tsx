@@ -1,9 +1,10 @@
+// C:\repo\mercur\vendor-panel\src\routes\locations\location-service-zone-shipping-option-edit\location-service-zone-shipping-option-edit.tsx
 import { Heading } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
 import { json, useParams } from "react-router-dom"
 
 import { RouteDrawer } from "../../../components/modals"
-import { useShippingOptions } from "../../../hooks/api/shipping-options"
+import { useShippingOption } from "../../../hooks/api/shipping-options"
 import { EditShippingOptionForm } from "./components/edit-region-form"
 import { FulfillmentSetType } from "../common/constants"
 
@@ -12,15 +13,36 @@ export const LocationServiceZoneShippingOptionEdit = () => {
 
   const { location_id, so_id } = useParams()
 
-  const { shipping_options, isPending, isFetching, isError, error } =
-    useShippingOptions({
-      id: so_id,
-      fields: "+service_zone.fulfillment_set.type",
+  if (!so_id) {
+    throw json(
+      { message: "Shipping option ID is required" },
+      400
+    )
+  }
+
+  // Load the shipping option with all necessary fields including rules
+  const { shipping_option, isPending, isFetching, isError, error } =
+    useShippingOption(so_id, {
+      fields: [
+        "id",
+        "name",
+        "provider_id",
+        "service_zone_id",
+        "price_type",
+        "type",
+        "shipping_profile_id",
+        "data",
+        "metadata",
+        "rules",
+        "rules.id",
+        "rules.attribute",
+        "rules.operator",
+        "rules.value",
+        "service_zone.fulfillment_set.type"
+      ].join(",")
     })
 
-  const shippingOption = shipping_options?.find((so) => so.id === so_id)
-
-  if (!isPending && !isFetching && !shippingOption) {
+  if (!isPending && !isFetching && !shipping_option) {
     throw json(
       { message: `Shipping option with ID ${so_id} was not found` },
       404
@@ -32,7 +54,7 @@ export const LocationServiceZoneShippingOptionEdit = () => {
   }
 
   const isPickup =
-    shippingOption?.service_zone.fulfillment_set.type ===
+    shipping_option?.service_zone?.fulfillment_set?.type ===
     FulfillmentSetType.Pickup
 
   return (
@@ -44,13 +66,12 @@ export const LocationServiceZoneShippingOptionEdit = () => {
           )}
         </Heading>
       </RouteDrawer.Header>
-      {shippingOption && (
+      {shipping_option && (
         <EditShippingOptionForm
-          shippingOption={shippingOption}
+          shippingOption={shipping_option}
           locationId={location_id!}
           type={
-            shippingOption.service_zone.fulfillment_set
-              .type as FulfillmentSetType
+            shipping_option.service_zone?.fulfillment_set?.type as FulfillmentSetType
           }
         />
       )}

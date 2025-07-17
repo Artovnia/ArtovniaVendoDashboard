@@ -7,12 +7,12 @@ export type CreateShippingOptionSchema = z.infer<
 >;
 
 export const CreateShippingOptionDetailsSchema = z.object({
-  name: z.string().min(1),
-  price_type: z.nativeEnum(ShippingOptionPriceType),
+  name: z.string().min(1, { message: "Name is required" }),
+  price_type: z.nativeEnum(ShippingOptionPriceType, { errorMap: () => ({ message: "Price type is required" }) }),
   enabled_in_store: z.boolean(),
-  shipping_profile_id: z.string().min(1),
-  provider_id: z.string().min(1),
-  fulfillment_option_id: z.string().optional(),
+  shipping_profile_id: z.string().min(1, { message: "Shipping profile is required" }),
+  provider_id: z.string().min(1, { message: "Fulfillment provider is required" }),
+  fulfillment_option_id: z.string().min(1, { message: "Fulfillment option is required" }),
 });
 
 export const ShippingOptionConditionalPriceSchema =

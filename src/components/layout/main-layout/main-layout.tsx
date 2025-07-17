@@ -13,6 +13,7 @@ import {
   Star,
   ListCheckbox,
   ChatBubbleLeftRight,
+  Calendar,
 } from '@medusajs/icons';
 import { Divider, Text, clx } from '@medusajs/ui';
 import { Collapsible as RadixCollapsible } from 'radix-ui';
@@ -24,8 +25,10 @@ import { Shell } from '../../layout/shell';
 
 import { useLocation } from 'react-router-dom';
 import { useMe } from '../../../hooks/api';
+import { useUnreadMessages } from '../../../hooks/api/useUnreadMessages';
 
 import { useSearch } from '../../../providers/search-provider';
+import { NotificationBadge } from '../../common/notification-badge';
 import { UserMenu } from '../user-menu';
 import { StripeIcon } from '../../../assets/icons/Stripe';
 
@@ -69,7 +72,7 @@ const Header = () => {
   const fallback = seller?.photo || 'M';
 
   return (
-    <div className='w-full p-3 p-0.5 pr-2 bg-ui-bg-subtle grid w-full grid-cols-[24px_1fr_15px] items-center gap-x-3'>
+    <div className='bg-ui-bg-subtle grid grid-cols-[24px_1fr_15px] items-center gap-x-3 w-full p-3 pr-2'>
       {fallback ? (
         <div className='w-6 h-6'>
           <img src={seller?.photo || '/logo.svg'} />
@@ -97,6 +100,8 @@ const Header = () => {
 
 const useCoreRoutes = (): Omit<INavItem, 'pathname'>[] => {
   const { t } = useTranslation();
+  const { data: unreadMessagesData } = useUnreadMessages();
+  const unreadCount = unreadMessagesData?.unreadCount || 0;
 
   return [
     {
@@ -176,18 +181,24 @@ const useCoreRoutes = (): Omit<INavItem, 'pathname'>[] => {
     },
     {
       icon: <Star />,
-      label: 'Reviews',
+      label: 'Recenzje',
       to: '/reviews',
     },
     {
       icon: <ChatBubbleLeftRight />,
-      label: 'Messages',
+      label: 'Wiadomości',
       to: '/messages',
+      endIcon: unreadCount > 0 ? <NotificationBadge count={unreadCount} showCount className="ml-2"/> : undefined,
     },
     {
       icon: <ListCheckbox />,
-      label: 'Requests',
+      label: 'Zapytania',
       to: '/requests',
+    },
+    {
+      icon: <Calendar />,
+      label: 'Wakacje i zawieszenia',
+      to: '/holiday-mode',
     },
   ];
 };
@@ -198,9 +209,9 @@ const useExtensionRoutes = (): Omit<
 >[] => {
   return [
     {
-      icon: <StripeIcon />,
-      label: 'Stripe Connect',
-      to: '/stripe-connect',
+      icon: <CurrencyDollar />,
+      label: 'Konto wypłat',
+      to: '/payout-provider-select',
     },
   ];
 };

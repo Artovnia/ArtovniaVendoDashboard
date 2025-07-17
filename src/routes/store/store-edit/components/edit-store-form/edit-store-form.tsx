@@ -149,6 +149,7 @@ export const EditStoreForm = ({
         name: values.name,
         email: values.email,
         description: values.description,
+        phone: values.phone,
         photo: uploadedMedia[0]?.url || '',
       },
       {

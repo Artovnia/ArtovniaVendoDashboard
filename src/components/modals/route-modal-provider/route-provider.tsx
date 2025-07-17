@@ -17,7 +17,14 @@ export const RouteModalProvider = ({
   const handleSuccess = useCallback(
     (path?: string) => {
       const to = path || prev
-      navigate(to, { replace: true, state: { isSubmitSuccessful: true } })
+      
+      // Reset any lingering pointer-events styles
+      document.body.style.pointerEvents = ""
+      
+      // Use setTimeout to ensure DOM updates before navigation
+      setTimeout(() => {
+        navigate(to, { replace: true, state: { isSubmitSuccessful: true } })
+      }, 10)
     },
     [navigate, prev]
   )

@@ -8,7 +8,8 @@ import {
 } from "@tanstack/react-query"
 
 import { FetchError } from "@medusajs/js-sdk"
-import { sdk } from "../../lib/client"
+import { sdk } from "../../lib/client/client"
+import { fetchQuery } from "../../lib/client/client"
 import { queryClient } from "../../lib/query-client"
 import { queryKeysFactory } from "../../lib/query-key-factory"
 import { ordersQueryKeys } from "./orders"
@@ -25,7 +26,13 @@ export const useReturn = (
   >
 ) => {
   const { data, ...rest } = useQuery({
-    queryFn: async () => sdk.admin.return.retrieve(id, query),
+    queryFn: async () => {
+      const response = await fetchQuery(`/vendor/returns/${id}`, {
+        method: 'GET',
+        query: query as { [key: string]: string | number },
+      });
+      return response.data;
+    },
     queryKey: returnsQueryKeys.detail(id, query),
     ...options,
   })
@@ -45,8 +52,53 @@ export const useReturns = (
     "queryFn" | "queryKey"
   >
 ) => {
+  // Extract fields for backend query and keep other filters for client-side filtering
+  const fields = query?.fields || '';
+  const limit = query?.limit;
+  const offset = query?.offset;
+  
+  // Store filters for client-side filtering
+  const status = query?.status;
+  const orderId = query?.order_id;
+  
   const { data, ...rest } = useQuery({
-    queryFn: async () => sdk.admin.return.list(query),
+    queryFn: async () => {
+      // Only send supported query params to backend
+      const supportedQuery: Record<string, string | number> = {};
+      
+      if (fields) supportedQuery.fields = fields;
+      if (limit) supportedQuery.limit = limit;
+      if (offset) supportedQuery.offset = offset;
+      
+      const response = await fetchQuery('/vendor/returns', {
+        method: 'GET',
+        query: supportedQuery,
+      });
+      
+      const result = response.data;
+      
+      // Apply client-side filtering if needed
+      if (result && result.returns && (status || orderId)) {
+        result.returns = result.returns.filter((returnItem: any) => {
+          let matches = true;
+          
+          if (status && returnItem.status !== status) {
+            matches = false;
+          }
+          
+          if (orderId && returnItem.order_id !== orderId) {
+            matches = false;
+          }
+          
+          return matches;
+        });
+        
+        // Update count to reflect client-side filtering
+        result.count = result.returns.length;
+      }
+      
+      return result;
+    },
     queryKey: returnsQueryKeys.list(query),
     ...options,
   })
@@ -63,8 +115,13 @@ export const useInitiateReturn = (
   >
 ) => {
   return useMutation({
-    mutationFn: (payload: HttpTypes.AdminInitiateReturnRequest) =>
-      sdk.admin.return.initiateRequest(payload),
+    mutationFn: async (payload: HttpTypes.AdminInitiateReturnRequest) => {
+      const response = await fetchQuery('/vendor/returns/request', {
+        method: 'POST',
+        body: payload,
+      });
+      return response.data;
+    },
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.details(),
@@ -89,7 +146,12 @@ export const useCancelReturn = (
   options?: UseMutationOptions<HttpTypes.AdminReturnResponse, FetchError>
 ) => {
   return useMutation({
-    mutationFn: () => sdk.admin.return.cancel(id),
+    mutationFn: async () => {
+      const response = await fetchQuery(`/vendor/returns/${id}/cancel`, {
+        method: 'POST',
+      });
+      return response.data;
+    },
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.details(),
@@ -126,8 +188,13 @@ export const useConfirmReturnRequest = (
   >
 ) => {
   return useMutation({
-    mutationFn: (payload: HttpTypes.AdminConfirmReturnRequest) =>
-      sdk.admin.return.confirmRequest(id, payload),
+    mutationFn: async (payload: HttpTypes.AdminConfirmReturnRequest) => {
+      const response = await fetchQuery(`/vendor/returns/${id}/confirm-request`, {
+        method: 'POST',
+        body: payload,
+      });
+      return response.data;
+    },
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.details(),
@@ -155,7 +222,12 @@ export const useCancelReturnRequest = (
   options?: UseMutationOptions<HttpTypes.AdminReturnResponse, FetchError>
 ) => {
   return useMutation({
-    mutationFn: () => sdk.admin.return.cancelRequest(id),
+    mutationFn: async () => {
+      const response = await fetchQuery(`/vendor/returns/${id}/cancel-request`, {
+        method: 'POST',
+      });
+      return response.data;
+    },
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.details(),
@@ -190,8 +262,13 @@ export const useAddReturnItem = (
   >
 ) => {
   return useMutation({
-    mutationFn: (payload: HttpTypes.AdminAddReturnItems) =>
-      sdk.admin.return.addReturnItem(id, payload),
+    mutationFn: async (payload: HttpTypes.AdminAddReturnItems) => {
+      const response = await fetchQuery(`/vendor/returns/${id}/items`, {
+        method: 'POST',
+        body: payload,
+      });
+      return response.data;
+    },
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.details(),
@@ -217,11 +294,15 @@ export const useUpdateReturnItem = (
   >
 ) => {
   return useMutation({
-    mutationFn: ({
+    mutationFn: async ({
       actionId,
       ...payload
     }: HttpTypes.AdminUpdateReturnItems & { actionId: string }) => {
-      return sdk.admin.return.updateReturnItem(id, actionId, payload)
+      const response = await fetchQuery(`/vendor/returns/${id}/items/${actionId}`, {
+        method: 'POST',
+        body: payload,
+      });
+      return response.data;
     },
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
@@ -248,8 +329,12 @@ export const useRemoveReturnItem = (
   >
 ) => {
   return useMutation({
-    mutationFn: (actionId: string) =>
-      sdk.admin.return.removeReturnItem(id, actionId),
+    mutationFn: async (actionId: string) => {
+      const response = await fetchQuery(`/vendor/returns/${id}/items/${actionId}`, {
+        method: 'DELETE',
+      });
+      return response.data;
+    },
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.details(),
@@ -279,8 +364,12 @@ export const useUpdateReturn = (
   >
 ) => {
   return useMutation({
-    mutationFn: (payload: HttpTypes.AdminUpdateReturnRequest) => {
-      return sdk.admin.return.updateRequest(id, payload)
+    mutationFn: async (payload: HttpTypes.AdminUpdateReturnRequest) => {
+      const response = await fetchQuery(`/vendor/returns/${id}`, {
+        method: 'POST',
+        body: payload,
+      });
+      return response.data;
     },
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
@@ -307,8 +396,13 @@ export const useAddReturnShipping = (
   >
 ) => {
   return useMutation({
-    mutationFn: (payload: HttpTypes.AdminAddReturnShipping) =>
-      sdk.admin.return.addReturnShipping(id, payload),
+    mutationFn: async (payload: HttpTypes.AdminAddReturnShipping) => {
+      const response = await fetchQuery(`/vendor/returns/${id}/shipping`, {
+        method: 'POST',
+        body: payload,
+      });
+      return response.data;
+    },
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.details(),
@@ -334,11 +428,16 @@ export const useUpdateReturnShipping = (
   >
 ) => {
   return useMutation({
-    mutationFn: ({
+    mutationFn: async ({
       actionId,
       ...payload
-    }: HttpTypes.AdminAddReturnShipping & { actionId: string }) =>
-      sdk.admin.return.updateReturnShipping(id, actionId, payload),
+    }: HttpTypes.AdminAddReturnShipping & { actionId: string }) => {
+      const response = await fetchQuery(`/vendor/returns/${id}/shipping/${actionId}`, {
+        method: 'POST',
+        body: payload,
+      });
+      return response.data;
+    },
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.details(),
@@ -364,8 +463,12 @@ export const useDeleteReturnShipping = (
   >
 ) => {
   return useMutation({
-    mutationFn: (actionId: string) =>
-      sdk.admin.return.deleteReturnShipping(id, actionId),
+    mutationFn: async (actionId: string) => {
+      const response = await fetchQuery(`/vendor/returns/${id}/shipping/${actionId}`, {
+        method: 'DELETE',
+      });
+      return response.data;
+    },
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.details(),
@@ -395,12 +498,17 @@ export const useInitiateReceiveReturn = (
   options?: UseMutationOptions<
     HttpTypes.AdminReturnResponse,
     FetchError,
-    HttpTypes.AdminInitiateReceiveReturn
+    HttpTypes.AdminInitiateReturnRequest
   >
 ) => {
   return useMutation({
-    mutationFn: (payload: HttpTypes.AdminInitiateReceiveReturn) =>
-      sdk.admin.return.initiateReceive(id, payload),
+    mutationFn: async (payload: HttpTypes.AdminInitiateReturnRequest) => {
+      const response = await fetchQuery(`/vendor/returns/${id}/receive`, {
+        method: 'POST',
+        body: payload,
+      });
+      return response.data;
+    },
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.details(),
@@ -426,8 +534,13 @@ export const useAddReceiveItems = (
   >
 ) => {
   return useMutation({
-    mutationFn: (payload: HttpTypes.AdminReceiveItems) =>
-      sdk.admin.return.receiveItems(id, payload),
+    mutationFn: async (payload: HttpTypes.AdminReceiveItems) => {
+      const response = await fetchQuery(`/vendor/returns/${id}/receive/items`, {
+        method: 'POST',
+        body: payload,
+      });
+      return response.data;
+    },
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.details(),
@@ -453,11 +566,15 @@ export const useUpdateReceiveItem = (
   >
 ) => {
   return useMutation({
-    mutationFn: ({
+    mutationFn: async ({
       actionId,
       ...payload
     }: HttpTypes.AdminUpdateReceiveItems & { actionId: string }) => {
-      return sdk.admin.return.updateReceiveItem(id, actionId, payload)
+      const response = await fetchQuery(`/vendor/returns/${id}/receive/items/${actionId}`, {
+        method: 'POST',
+        body: payload,
+      });
+      return response.data;
     },
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
@@ -484,8 +601,11 @@ export const useRemoveReceiveItems = (
   >
 ) => {
   return useMutation({
-    mutationFn: (actionId: string) => {
-      return sdk.admin.return.removeReceiveItem(id, actionId)
+    mutationFn: async (actionId: string) => {
+      const response = await fetchQuery(`/vendor/returns/${id}/receive/items/${actionId}`, {
+        method: 'DELETE',
+      });
+      return response.data;
     },
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
@@ -512,8 +632,13 @@ export const useAddDismissItems = (
   >
 ) => {
   return useMutation({
-    mutationFn: (payload: HttpTypes.AdminDismissItems) =>
-      sdk.admin.return.dismissItems(id, payload),
+    mutationFn: async (payload: HttpTypes.AdminDismissItems) => {
+      const response = await fetchQuery(`/vendor/returns/${id}/dismiss`, {
+        method: 'POST',
+        body: payload,
+      });
+      return response.data;
+    },
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.details(),
@@ -539,11 +664,15 @@ export const useUpdateDismissItem = (
   >
 ) => {
   return useMutation({
-    mutationFn: ({
+    mutationFn: async ({
       actionId,
       ...payload
-    }: HttpTypes.AdminUpdateReceiveItems & { actionId: string }) => {
-      return sdk.admin.return.updateDismissItem(id, actionId, payload)
+    }: HttpTypes.AdminUpdateDismissItems & { actionId: string }) => {
+      const response = await fetchQuery(`/vendor/returns/${id}/dismiss/${actionId}`, {
+        method: 'POST',
+        body: payload,
+      });
+      return response.data;
     },
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
@@ -570,8 +699,11 @@ export const useRemoveDismissItem = (
   >
 ) => {
   return useMutation({
-    mutationFn: (actionId: string) => {
-      return sdk.admin.return.removeDismissItem(id, actionId)
+    mutationFn: async (actionId: string) => {
+      const response = await fetchQuery(`/vendor/returns/${id}/dismiss/${actionId}`, {
+        method: 'DELETE',
+      });
+      return response.data;
     },
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
@@ -598,8 +730,13 @@ export const useConfirmReturnReceive = (
   >
 ) => {
   return useMutation({
-    mutationFn: (payload: HttpTypes.AdminConfirmReceiveReturn) =>
-      sdk.admin.return.confirmReceive(id, payload),
+    mutationFn: async (payload: HttpTypes.AdminConfirmReceiveReturn) => {
+      const response = await fetchQuery(`/vendor/returns/${id}/receive/confirm`, {
+        method: 'POST',
+        body: payload,
+      });
+      return response.data;
+    },
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({
         queryKey: ordersQueryKeys.details(),

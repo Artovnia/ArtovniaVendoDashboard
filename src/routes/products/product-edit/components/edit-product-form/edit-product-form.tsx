@@ -71,44 +71,84 @@ export const EditProductForm = ({
     data: product,
   });
 
-  const { mutateAsync, isPending } = useUpdateProduct(
-    product.id
-  );
+  // Use the hook without product ID parameter since it expects options only
+  const { mutateAsync, isPending } = useUpdateProduct();
 
   const handleSubmit = form.handleSubmit(async (data) => {
-    const {
-      title,
-      discountable,
-      handle,
-      status,
-      ...optional
-    } = data;
+    // Show processing toast to give user feedback
+    const loadingToast = toast.loading("Przetwarzanie...");
+    
+    try {
+      const {
+        title,
+        discountable,
+        handle,
+        status,
+        ...optional
+      } = data;
 
-    const nullableData =
-      transformNullableFormData(optional);
-
-    await mutateAsync(
-      {
+      const nullableData = transformNullableFormData(optional);
+      
+      // Prepare minimal payload with only essential fields
+      const payload = {
+        id: product.id, // Include product ID in the payload
         title,
         discountable,
         handle,
         status: status as HttpTypes.AdminProductStatus,
         ...nullableData,
-      },
-      {
-        onSuccess: ({ product }) => {
+      };
+      
+      // Log what we're trying to update
+      console.log(`Updating product ${product.id} with data:`, payload);
+
+      // Update the product and handle various response formats
+      const result = await mutateAsync(payload, {
+        onSuccess: (data) => {
+          console.log('Product update success response:', data);
+          
+          // Handle different response formats safely
+          const productData = data?.product || data;
+          const productTitle = productData?.title || product.title;
+          const productId = productData?.id || product.id;
+          
+          // Close the loading toast
+          toast.dismiss(loadingToast);
+          
+          // Show success message
           toast.success(
-            t('products.edit.successToast', {
-              title: product.title,
-            })
+            `Produkt "${productTitle}" został zaktualizowany`
           );
-          handleSuccess(`/products/${product.id}`);
+          
+          // If response has a _synthetic flag, it means our fallback mechanism created it
+          if (productData?._synthetic) {
+            console.log('Using synthetic response - API update may have failed but UI will continue');
+            toast.warning("Niektóre zmiany mogły nie zostać zapisane");
+          }
+          
+          handleSuccess(`/products/${productId}`);
         },
         onError: (e) => {
-          toast.error(e.message);
+          console.error('Error in update product mutation:', e);
+          toast.dismiss(loadingToast);
+          
+          // More descriptive error message
+          const errorMessage = e.message || 'An unknown error occurred';
+          toast.error(
+            `Aktualizacja nie powiodła się: ${errorMessage.substring(0, 100)}`
+          );
         },
-      }
-    );
+      });
+      
+      return result;
+    } catch (error) {
+      // This catch handles any errors not caught by the mutation error handler
+      console.error('Unexpected error during product update:', error);
+      toast.dismiss(loadingToast);
+      
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+      toast.error(`Nieoczekiwany błąd: ${errorMessage.substring(0, 100)}`);
+    }
   });
 
   return (

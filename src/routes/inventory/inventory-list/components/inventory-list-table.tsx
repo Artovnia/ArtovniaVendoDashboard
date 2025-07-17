@@ -1,21 +1,15 @@
 import { InventoryTypes } from '@medusajs/types';
-import {
-  Button,
-  Container,
-  Heading,
-  Text,
-} from '@medusajs/ui';
+import { Container, Heading, Text } from '@medusajs/ui';
 
 import { RowSelectionState } from '@tanstack/react-table';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { _DataTable } from '../../../../components/table/data-table';
 import { useInventoryItems } from '../../../../hooks/api/inventory';
 import { useDataTable } from '../../../../hooks/use-data-table';
 import { INVENTORY_ITEM_IDS_KEY } from '../../common/constants';
 import { useInventoryTableColumns } from './use-inventory-table-columns';
-import { useInventoryTableFilters } from './use-inventory-table-filters';
 import { useInventoryTableQuery } from './use-inventory-table-query';
 
 const PAGE_SIZE = 20;
@@ -27,7 +21,7 @@ export const InventoryListTable = () => {
   const [selection, setSelection] =
     useState<RowSelectionState>({});
 
-  const { raw } = useInventoryTableQuery({
+  const { raw, searchParams } = useInventoryTableQuery({
     pageSize: PAGE_SIZE,
   });
 
@@ -39,9 +33,10 @@ export const InventoryListTable = () => {
     error,
   } = useInventoryItems({
     limit: PAGE_SIZE,
+    offset: searchParams?.offset,
+    fields: 'id,title,sku,*location_levels',
   });
 
-  const filters = useInventoryTableFilters();
   const columns = useInventoryTableColumns();
 
   const { table } = useDataTable({
@@ -72,9 +67,6 @@ export const InventoryListTable = () => {
             {t('inventory.subtitle')}
           </Text>
         </div>
-        <Button size='small' variant='secondary' asChild>
-          <Link to='create'>{t('actions.create')}</Link>
-        </Button>
       </div>
       <_DataTable
         table={table}
@@ -83,21 +75,7 @@ export const InventoryListTable = () => {
         count={count}
         isLoading={isLoading}
         pagination
-        search
-        filters={filters}
         queryObject={raw}
-        orderBy={[
-          { key: 'title', label: t('fields.title') },
-          { key: 'sku', label: t('fields.sku') },
-          {
-            key: 'stocked_quantity',
-            label: t('fields.inStock'),
-          },
-          {
-            key: 'reserved_quantity',
-            label: t('inventory.reserved'),
-          },
-        ]}
         navigateTo={(row) => `${row.id}`}
         commands={[
           {

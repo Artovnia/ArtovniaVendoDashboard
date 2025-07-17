@@ -9,10 +9,15 @@ const locationQuery = (id: string) => ({
   queryKey: stockLocationsQueryKeys.detail(id, {
     fields: LOCATION_DETAILS_FIELD,
   }),
-  queryFn: async () =>
-    fetchQuery(`/vendor/stock-locations/${id}`, {
+  queryFn: async () => {
+    
+    return fetchQuery(`/vendor/stock-locations/${id}`, {
       method: 'GET',
-    }),
+      query: {
+        fields: LOCATION_DETAILS_FIELD.join(',')
+      }
+    });
+  },
 });
 
 export const locationLoader = async ({

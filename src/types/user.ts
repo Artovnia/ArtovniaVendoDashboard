@@ -25,6 +25,7 @@ export interface StoreVendor {
   city?: string;
   country_code?: string;
   tax_id?: string;
+  availability?: VendorAvailability;
 }
 
 export interface TeamMemberProps {
@@ -36,4 +37,26 @@ export interface TeamMemberProps {
   bio?: string;
   phone?: string;
   role: string;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  first_name?: string;
+  last_name?: string;
+  vendor?: StoreVendor;
+  vendor_id?: string; // Direct vendor ID in some API responses
+  role?: string;     // User role (e.g., 'vendor', 'admin')
+  created_at: string;
+  updated_at: string;
+}
+
+export interface VendorAvailability {
+  is_holiday_mode: boolean;
+  holiday_start_date: string | null;
+  holiday_end_date: string | null;
+  holiday_message: string | null;
+  is_suspended: boolean;
+  suspension_reason: string | null;
+  suspended_at: string | null;
 }

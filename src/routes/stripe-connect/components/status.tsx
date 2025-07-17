@@ -1,30 +1,16 @@
-import { StatusCell as StatusCell_ } from '../../../components/table/table-cells/common/status-cell';
+import { useStripeAccount } from '../../../hooks/api/stripe';
+import { Connected } from './connected';
+import { NotConnected } from './not-connected';
 
-type StatusCellProps = {
-  status: 'pending' | 'connected' | 'not connected';
-};
+const Status = () => {
+  const { payout_account, isLoading } = useStripeAccount();
 
-const getStatusColor: any = (status: string) => {
-  switch (status) {
-    case 'pending':
-      return 'orange';
-    case 'connected':
-      return 'green';
-    case 'not connected':
-      return 'red';
-    default:
-      return 'grey';
+  if (isLoading) return <div>Ładowanie...</div>;
+  if (!payout_account || payout_account.status === 'not connected') {
+    return <NotConnected />;
   }
+  return <Connected status={payout_account.status} />;
 };
 
-export const Status = ({ status }: StatusCellProps) => {
-  return (
-    <div className='flex h-full w-full items-center overflow-hidden'>
-      <span className='truncate capitalize'>
-        <StatusCell_ color={getStatusColor(status)}>
-          {status}
-        </StatusCell_>
-      </span>
-    </div>
-  );
-};
+export default Status;
+

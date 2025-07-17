@@ -8,7 +8,7 @@ import { ActionMenu } from "../../../../../components/common/action-menu"
 
 type ProductShippingProfileSectionProps = {
   product: HttpTypes.AdminProduct & {
-    shipping_profile: HttpTypes.AdminShippingProfile
+    shipping_profile?: HttpTypes.AdminShippingProfile
   }
 }
 

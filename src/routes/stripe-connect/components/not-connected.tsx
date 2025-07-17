@@ -21,14 +21,14 @@ export const NotConnected = () => {
         onClick={() =>
           mutateAsync({
             context: {
-              country: 'US',
-              external_account: {
-                object: 'bank_account',
-                country: 'US', // Kod kraju banku np. "PL" dla Polski
-                currency: 'usd', // Waluta konta bankowego np. "pln"
-                account_number: '000123456789', // Numer konta
-                routing_number: '110000000', // Kod banku (dla USA - routing number, dla Europy - IBAN)
-              },
+              country: 'PL',
+              //external_account: {
+                //object: 'bank_account',
+               // country: 'PL', // Kod kraju banku np. "PL" dla Polski
+              //  currency: 'pln', // Waluta konta bankowego np. "pln"
+              //  account_number: '000123456789', // Numer konta
+              //  routing_number: '110000000', // Kod banku (dla USA - routing number, dla Europy - IBAN)
+              //},
             },
           })
         }
@@ -38,3 +38,4 @@ export const NotConnected = () => {
     </div>
   );
 };
+  

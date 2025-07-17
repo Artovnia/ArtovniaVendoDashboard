@@ -1,12 +1,19 @@
 import { LoaderFunctionArgs } from "react-router-dom"
 
 import { shippingProfileQueryKeys } from "../../../hooks/api/shipping-profiles"
-import { sdk } from "../../../lib/client"
+import { fetchQuery } from "../../../lib/client"
 import { queryClient } from "../../../lib/query-client"
 
 const shippingProfileQuery = (id: string) => ({
   queryKey: shippingProfileQueryKeys.detail(id),
-  queryFn: async () => sdk.admin.shippingProfile.retrieve(id),
+  queryFn: async () => {
+    const response = await fetchQuery(`/vendor/shipping-profiles/${id}`, {
+      method: "GET",
+    });
+    console.log('API response in loader:', response);
+    // Return the full response, not just shipping_profile
+    return response;
+  },
 })
 
 export const shippingProfileLoader = async ({ params }: LoaderFunctionArgs) => {

@@ -30,7 +30,7 @@ export function LocationList() {
   );
 
   const { getWidgets } = useDashboardExtension();
-
+ 
   if (isError) {
     throw error;
   }
@@ -47,7 +47,6 @@ export function LocationList() {
           'location.details.side.before'
         ),
       }}
-      showJSON
     >
       <TwoColumnPage.Main>
         <LocationListHeader />

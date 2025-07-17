@@ -1,9 +1,9 @@
 import { PencilSquare, Plus, Trash } from "@medusajs/icons"
-import { Badge, Container, Heading, usePrompt } from "@medusajs/ui"
+import { Badge, Container, Heading, usePrompt, Button, toast } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
 import { ActionMenu } from "../../../../../components/common/action-menu"
 import { SectionRow } from "../../../../../components/common/section"
-import { useDeleteProductOption } from "../../../../../hooks/api/products"
+import { useDeleteProductOption, useAddColorOption } from "../../../../../hooks/api/products"
 import { HttpTypes } from "@medusajs/types"
 
 const OptionActions = ({
@@ -68,24 +68,54 @@ export const ProductOptionSection = ({
   product,
 }: ProductOptionSectionProps) => {
   const { t } = useTranslation()
+  const { mutateAsync: addColorOption, isPending: isAddingColor } = useAddColorOption();
+
+  // Check if the product already has a color option
+  const hasColorOption = product.options?.some(
+    (option) => option.title.toLowerCase() === "kolor"
+  );
+
+  const handleAddColorOption = async () => {
+    try {
+      await addColorOption(product.id);
+      toast.success(t("products.options.colorOptionAdded", "Opcja koloru została dodana pomyślnie"));
+    } catch (error) {
+      console.error("Error adding color option:", error);
+      toast.error(t("products.options.colorOptionError", "Nie udało się dodać opcji koloru"));
+    }
+  };
 
   return (
     <Container className="divide-y p-0">
       <div className="flex items-center justify-between px-6 py-4">
         <Heading level="h2">{t("products.options.header")}</Heading>
-        <ActionMenu
-          groups={[
-            {
-              actions: [
-                {
-                  label: t("actions.create"),
-                  to: "options/create",
-                  icon: <Plus />,
-                },
-              ],
-            },
-          ]}
-        />
+        <div className="flex items-center gap-2">
+          {!hasColorOption && (
+            <Button
+              variant="secondary"
+              size="small"
+              onClick={handleAddColorOption}
+              isLoading={isAddingColor}
+            >
+              <Plus className="text-ui-fg-subtle" />
+              <span className="ml-1">{t("products.options.addColorOption", "Dodaj opcję koloru")}</span>
+              
+            </Button>
+          )}
+          <ActionMenu
+            groups={[
+              {
+                actions: [
+                  {
+                    label: t("actions.create"),
+                    to: "options/create",
+                    icon: <Plus />,
+                  },
+                ],
+              },
+            ]}
+          />
+        </div>
       </div>
 
       {product.options?.map((option) => {

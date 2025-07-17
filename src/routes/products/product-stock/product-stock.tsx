@@ -12,6 +12,13 @@ import { RouteFocusModal } from "../../../components/modals"
 import { ProductStockForm } from "./components/product-stock-form"
 import { productStockLoader } from "./loader"
 
+// Extended variant type to handle custom fields from inventory data
+interface ExtendedVariant extends HttpTypes.AdminProductVariant {
+  available_quantity?: number
+  stocked_quantity?: number
+  reserved_quantity?: number
+}
+
 export const ProductStock = () => {
   const { t } = useTranslation()
   const data = useLoaderData() as Awaited<ReturnType<typeof productStockLoader>>
@@ -66,7 +73,7 @@ export const ProductStock = () => {
         <Suspense fallback={<ProductStockFallback />}>
           <Await resolve={data.data}>
             {(data: {
-              variants: HttpTypes.AdminProductVariant[]
+              variants: any[] // Use any to avoid type errors with extended fields
               locations: HttpTypes.AdminStockLocation[]
             }) => {
               return (

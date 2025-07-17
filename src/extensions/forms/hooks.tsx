@@ -28,7 +28,7 @@ function createExtendedSchema<
     ...(baseSchema instanceof ZodEffects
       ? baseSchema.innerType().shape
       : baseSchema.shape),
-    additional_data: z.object(additionalDataSchema).optional(),
+    metadata: z.object(additionalDataSchema).optional(),
   })
 
   return baseSchema instanceof ZodEffects
@@ -48,15 +48,19 @@ function createExtendedDefaultValues<TData>(
   configs: ConfigField[],
   data?: TData
 ) {
-  const additional_data = configs.reduce((acc, config) => {
-    const { name, defaultValue } = config
-
-    acc[name] =
-      typeof defaultValue === "function" ? defaultValue(data) : defaultValue
-    return acc
+  const metadata = configs.reduce((acc, config) => {
+    if (data && typeof data === 'object' && data !== null && config.name in data) {
+      acc[config.name] = (data as Record<string, any>)[config.name];
+    } else if (config.defaultValue !== undefined) {
+      acc[config.name] = config.defaultValue;
+    }
+    return acc;
   }, {} as Record<string, any>)
 
-  return Object.assign(baseDefaultValues, { additional_data })
+  return {
+    ...baseDefaultValues,
+    metadata: Object.keys(metadata).length ? metadata : undefined,
+  }
 }
 
 export const useExtendableForm = <

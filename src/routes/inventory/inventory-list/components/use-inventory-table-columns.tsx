@@ -18,6 +18,7 @@ interface ExtendedInventoryItem
   variants?: ProductVariantDTO[] | null;
   stocked_quantity?: number;
   reserved_quantity?: number;
+  location_levels?: any[]; // Add location_levels property to fix TypeScript errors
 }
 
 const columnHelper =
@@ -90,34 +91,51 @@ export const useInventoryTableColumns = () => {
           );
         },
       }),
-      columnHelper.accessor('reserved_quantity', {
+      columnHelper.accessor((row) => row.location_levels, {
+        id: 'reserved_quantity',
         header: t('inventory.reserved'),
         cell: ({ getValue }) => {
-          const quantity = getValue();
+          const locations = getValue() as any[];
 
-          if (Number.isNaN(quantity)) {
+          const totalReserved = locations ? locations.reduce(
+            (sum: number, level: any) =>
+              sum + level.reserved_quantity,
+            0
+          ) : 0;
+
+          if (Number.isNaN(totalReserved)) {
             return <PlaceholderCell />;
           }
 
           return (
             <div className='flex size-full items-center overflow-hidden'>
-              <span className='truncate'>{quantity}</span>
+              <span className='truncate'>
+                {totalReserved}
+              </span>
             </div>
           );
         },
       }),
-      columnHelper.accessor('stocked_quantity', {
+      columnHelper.accessor((row) => row.location_levels, {
+        id: 'available_quantity',
         header: t('fields.inStock'),
         cell: ({ getValue }) => {
-          const quantity = getValue();
+          const locations = getValue() as any[];
+          const totalAvailable = locations ? locations.reduce(
+            (sum: number, level: any) =>
+              sum + level.available_quantity,
+            0
+          ) : 0;
 
-          if (Number.isNaN(quantity)) {
+          if (Number.isNaN(totalAvailable)) {
             return <PlaceholderCell />;
           }
 
           return (
             <div className='flex size-full items-center overflow-hidden'>
-              <span className='truncate'>{quantity}</span>
+              <span className='truncate'>
+                {totalAvailable}
+              </span>
             </div>
           );
         },

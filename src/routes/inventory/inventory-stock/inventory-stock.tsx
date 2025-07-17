@@ -45,7 +45,7 @@ export const InventoryStock = () => {
         <span className="sr-only">{t("inventory.stock.title")}</span>
       </RouteFocusModal.Title>
       <RouteFocusModal.Description asChild>
-        <span className="sr-only">{t("inventory.stock.description")}</span>
+        <span className="sr-only ">{t("inventory.stock.description")}</span>
       </RouteFocusModal.Description>
       {ready && (
         <InventoryStockForm

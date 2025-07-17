@@ -1,6 +1,14 @@
 import { z } from "zod"
-import { EditProductMediaSchema, ProductCreateSchema } from "./constants"
+import { EditProductMediaSchema, ProductCreateSchema, ProductCreateOptionSchema, ProductCreateVariantSchema } from "./constants"
 
 export type ProductCreateSchemaType = z.infer<typeof ProductCreateSchema>
 
 export type EditProductMediaSchemaType = z.infer<typeof EditProductMediaSchema>
+
+export type ProductCreateFormType = Omit<
+  ProductCreateSchemaType,
+  'options' | 'variants'
+> & {
+  options: ProductCreateOptionSchema[]
+  variants: ProductCreateVariantSchema[]
+}

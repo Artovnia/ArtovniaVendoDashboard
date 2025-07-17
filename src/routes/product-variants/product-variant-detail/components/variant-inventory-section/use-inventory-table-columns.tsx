@@ -8,10 +8,12 @@ import { useTranslation } from 'react-i18next';
 
 export interface ExtendedInventoryItem {
   required_quantity: number;
-  variant: ProductVariantDTO[] & {
-    inventory_items: any[];
+  variant: ProductVariantDTO & {
+    inventory_items?: any[];
     id: string;
   };
+  id?: string;
+  inventory_item_id?: string;
 }
 
 const columnHelper =
@@ -75,10 +77,12 @@ export const useInventoryTableColumns = () => {
         header: t('fields.inventory'),
         cell: ({
           row: {
-            original: { variant },
+            original,
           },
         }) => {
-          if (!variant.inventory_items?.length) {
+          // Safely access variant and inventory_items
+          const variant = original?.variant;
+          if (!variant || !variant.inventory_items || !variant.inventory_items.length) {
             return <PlaceholderCell />;
           }
 
@@ -95,11 +99,59 @@ export const useInventoryTableColumns = () => {
       }),
       columnHelper.display({
         id: 'actions',
-        cell: ({ row }) => (
-          <InventoryActions
-            item={row.original.variant.id}
-          />
-        ),
+        cell: ({ row }) => {
+          const originalData = row.original;
+          
+          // Extract inventory item ID using a consistent approach
+          let inventoryItemId = null;
+          
+          // Priority 1: Check if the inventory_item_id property exists directly on the original data
+          if (originalData.inventory_item_id && 
+              typeof originalData.inventory_item_id === 'string' && 
+              originalData.inventory_item_id.startsWith('iitem_')) {
+            inventoryItemId = originalData.inventory_item_id;
+          }
+          // Priority 2: Check if the id property is a valid inventory item ID
+          else if (originalData.id && 
+                   typeof originalData.id === 'string' && 
+                   originalData.id.startsWith('iitem_')) {
+            inventoryItemId = originalData.id;
+          }
+          // Priority 3: Look for inventory_item_id in the variant's inventory_items array
+          else if (originalData.variant?.inventory_items && 
+                   Array.isArray(originalData.variant.inventory_items)) {
+            // First try to find an item with inventory_item_id
+            const inventoryItem = originalData.variant.inventory_items.find(item => 
+              item.inventory_item_id && 
+              typeof item.inventory_item_id === 'string' && 
+              item.inventory_item_id.startsWith('iitem_')
+            );
+            
+            if (inventoryItem) {
+              inventoryItemId = inventoryItem.inventory_item_id;
+            }
+            // If no inventory_item_id, try to find an item with id
+            else {
+              const itemWithId = originalData.variant.inventory_items.find(item => 
+                item.id && 
+                typeof item.id === 'string' && 
+                item.id.startsWith('iitem_')
+              );
+              
+              if (itemWithId) {
+                inventoryItemId = itemWithId.id;
+              }
+            }
+          }
+          
+          // Pass both the variant ID and inventory item ID to InventoryActions
+          return (
+            <InventoryActions 
+              item={originalData.variant?.id} 
+              inventoryItemId={inventoryItemId} 
+            />
+          );
+        },
       }),
     ],
     [t]

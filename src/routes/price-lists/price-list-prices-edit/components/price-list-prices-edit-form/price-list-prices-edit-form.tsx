@@ -12,7 +12,7 @@ import {
   useRouteModal,
 } from "../../../../../components/modals"
 import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
-import { useBatchPriceListPrices } from "../../../../../hooks/api/price-lists"
+import { useBatchPriceListPrices } from "../../../../../hooks/api/price-lists-batch"
 import { castNumber } from "../../../../../lib/cast-number"
 import { usePriceListGridColumns } from "../../../common/hooks/use-price-list-grid-columns"
 import {
@@ -63,11 +63,37 @@ export const PriceListPricesEditForm = ({
       regions
     )
 
+    // Convert our sorted prices into the format expected by the API
+    // The API expects a prices array containing all price operations
+    const prices = [
+      // Prices to create
+      ...pricesToCreate.map(price => ({
+        ...price,
+        // No operation needed, creating is the default
+      })),
+      // Prices to update
+      ...pricesToUpdate.map(price => ({
+        ...price,
+        // Make sure we include the ID for updates
+        id: price.id,
+      })),
+      // Prices to delete
+      ...pricesToDelete.map(id => ({
+        id: id,
+        delete: true, // Flag that this price should be deleted
+      })),
+    ]
+
+    console.log('Submitting batch prices update with', {
+      totalPrices: prices.length,
+      create: pricesToCreate.length,
+      update: pricesToUpdate.length,
+      delete: pricesToDelete.length
+    });
+
     mutateAsync(
       {
-        delete: pricesToDelete,
-        update: pricesToUpdate,
-        create: pricesToCreate,
+        prices: prices, // Use the proper format expected by the API
       },
       {
         onSuccess: () => {
@@ -126,49 +152,141 @@ function initRecord(
   priceList: HttpTypes.AdminPriceList,
   products: HttpTypes.AdminProduct[]
 ): PriceListUpdateProductsSchema {
+  // Initialize an empty record
   const record: PriceListUpdateProductsSchema = {}
 
-  const variantPrices = priceList.prices?.reduce((variants, price) => {
-    const variantObject = variants[price.variant_id] || {}
-
-    const isRegionPrice = !!price.rules?.region_id
-
-    if (isRegionPrice) {
-      const regionId = price.rules.region_id as string
-
-      variantObject.region_prices = {
-        ...variantObject.region_prices,
-        [regionId]: {
-          amount: price.amount.toString(),
-          id: price.id,
-        },
-      }
-    } else {
-      variantObject.currency_prices = {
-        ...variantObject.currency_prices,
-        [price.currency_code]: {
-          amount: price.amount.toString(),
-          id: price.id,
-        },
+  // Safety check for price list prices
+  if (!priceList?.prices || !Array.isArray(priceList.prices)) {
+    console.log('No prices found in price list or prices is not an array')
+    // Return empty record with product structure
+    for (const product of products || []) {
+      if (product?.id) {
+        record[product.id] = {
+          variants: {}
+        }
       }
     }
+    return record
+  }
 
-    variants[price.variant_id] = variantObject
-    return variants
-  }, {} as PriceListUpdateProductVariantsSchema)
+  console.log(`Processing ${priceList.prices.length} prices from price list`)
+  
+  // First, create a map of price_set_id to prices
+  const priceSetMap = new Map<string, any[]>()
+  
+  // Create a map to track which price sets belong to which variants
+  const variantPriceSetMap = new Map<string, string>()
+  
+  // Step 1: Collect all price sets from variants in products
+  for (const product of products || []) {
+    if (product.variants && Array.isArray(product.variants)) {
+      for (const variant of product.variants) {
+        if (variant.prices && Array.isArray(variant.prices)) {
+          for (const price of variant.prices) {
+            if (price.price_set_id) {
+              // Map this variant to its price set
+              variantPriceSetMap.set(variant.id, price.price_set_id)
+              console.log(`Mapped variant ${variant.id} to price set ${price.price_set_id}`)
+              break // We only need one price to identify the price set
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  console.log('Variant to price set mapping:', Array.from(variantPriceSetMap.entries()))
+  
+  // Step 2: Group price list prices by price_set_id
+  for (const price of priceList.prices) {
+    if (price.price_set_id) {
+      if (!priceSetMap.has(price.price_set_id)) {
+        priceSetMap.set(price.price_set_id, [])
+      }
+      const prices = priceSetMap.get(price.price_set_id)
+      if (prices) {
+        prices.push(price)
+      }
+      console.log(`Added price ${price.id} with amount ${price.amount} to price set ${price.price_set_id}`)
+    } else {
+      console.log('Price has no price_set_id:', price)
+    }
+  }
+  
+  console.log('Price sets with prices:', Array.from(priceSetMap.keys()))
 
-  for (const product of products) {
+  // Step 3: Process each product and its variants
+  for (const product of products || []) {
+    if (!product?.id) {
+      console.log('Skipping product without ID')
+      continue
+    }
+
+    // Initialize product record
     record[product.id] = {
-      variants:
-        product.variants?.reduce((variants, variant) => {
-          const prices = variantPrices[variant.id] || {}
-          variants[variant.id] = prices
+      variants: {}
+    }
 
+    // Process variants if they exist
+    if (product.variants && Array.isArray(product.variants)) {
+      const variantMap = product.variants.reduce((variants, variant) => {
+        if (!variant?.id) {
+          console.log('Skipping variant without ID')
           return variants
-        }, {} as PriceListUpdateProductVariantsSchema) || {},
+        }
+        
+        // Initialize prices for this variant
+        const variantPrices: any = {
+          currency_prices: {},
+          region_prices: {}
+        }
+        
+        // Get the price_set_id for this variant from our mapping
+        const variantPriceSetId = variantPriceSetMap.get(variant.id)
+        
+        if (variantPriceSetId && priceSetMap.has(variantPriceSetId)) {
+          // Get all prices for this price set
+          const priceSetPrices = priceSetMap.get(variantPriceSetId) || []
+          console.log(`Found ${priceSetPrices.length} prices for variant ${variant.id} via price_set_id ${variantPriceSetId}`)
+          
+          // Process each price in the price set
+          priceSetPrices.forEach((price: any) => {
+            // Determine if this is a region price or currency price
+            const isRegionPrice = !!price.rules?.region_id
+            
+            if (isRegionPrice) {
+              const regionId = price.rules.region_id as string
+              
+              // Add region price
+              variantPrices.region_prices[regionId] = {
+                amount: price.amount.toString(),
+                id: price.id,
+              }
+              console.log(`Added region price ${price.id} for region ${regionId} to variant ${variant.id}`)
+            } else {
+              // Add currency price
+              variantPrices.currency_prices[price.currency_code] = {
+                amount: price.amount.toString(),
+                id: price.id,
+              }
+              console.log(`Added currency price ${price.id} for currency ${price.currency_code} to variant ${variant.id}`)
+            }
+          })
+        } else {
+          console.log(`No price set found for variant ${variant.id} with price_set_id ${variantPriceSetId || 'undefined'}`)
+        }
+        
+        // Store prices for this variant
+        variants[variant.id] = variantPrices
+        return variants
+      }, {} as PriceListUpdateProductVariantsSchema)
+
+      // Assign variants to product record
+      record[product.id].variants = variantMap
     }
   }
 
+  console.log('Final record:', record)
   return record
 }
 
@@ -186,10 +304,13 @@ function convertToPriceArray(
 ) {
   const prices: PriceObject[] = []
 
-  const regionCurrencyMap = regions.reduce((map, region) => {
-    map[region.id] = region.currency_code
-    return map
-  }, {} as Record<string, string>)
+  const regionCurrencyMap = regions.reduce(
+    (map, region) => {
+      map[region.id] = region.currency_code
+      return map
+    },
+    {} as Record<string, string>
+  )
 
   for (const [_productId, product] of Object.entries(data || {})) {
     const { variants } = product || {}
@@ -247,15 +368,21 @@ function comparePrices(initialPrices: PriceObject[], newPrices: PriceObject[]) {
   const pricesToCreate: HttpTypes.AdminCreatePriceListPrice[] = []
   const pricesToDelete: string[] = []
 
-  const initialPriceMap = initialPrices.reduce((map, price) => {
-    map[createMapKey(price)] = price
-    return map
-  }, {} as Record<string, (typeof initialPrices)[0]>)
+  const initialPriceMap = initialPrices.reduce(
+    (map, price) => {
+      map[createMapKey(price)] = price
+      return map
+    },
+    {} as Record<string, (typeof initialPrices)[0]>
+  )
 
-  const newPriceMap = newPrices.reduce((map, price) => {
-    map[createMapKey(price)] = price
-    return map
-  }, {} as Record<string, (typeof newPrices)[0]>)
+  const newPriceMap = newPrices.reduce(
+    (map, price) => {
+      map[createMapKey(price)] = price
+      return map
+    },
+    {} as Record<string, (typeof newPrices)[0]>
+  )
 
   const keys = new Set([
     ...Object.keys(initialPriceMap),

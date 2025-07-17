@@ -168,6 +168,8 @@ export const EditProductMediaForm = ({
 
       await mutateAsync(
         {
+          id: product.id, // Add this line
+
           images: withUpdatedUrls.map((file) => ({
             url: file.url,
             id: file.id,

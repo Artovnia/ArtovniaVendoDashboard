@@ -1,3 +1,4 @@
+// C:\repo\mercur\vendor-panel\src\routes\locations\location-service-zone-shipping-option-pricing\components\create-shipping-options-form\edit-shipping-options-pricing-form.tsx
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -33,12 +34,9 @@ import {
   UpdateConditionalPriceSchema,
 } from "../../../common/schema"
 import { ConditionalPriceInfo } from "../../../common/types"
-import { buildShippingOptionPriceRules } from "../../../common/utils/price-rule-helpers"
 
-type PriceRecord = {
-  id?: string
-  currency_code?: string
-  region_id?: string
+type SimplePriceRecord = {
+  currency_code: string
   amount: number
 }
 
@@ -85,7 +83,7 @@ export function EditShippingOptionsPricingForm({
   }
 
   const form = useForm<zod.infer<typeof EditShippingOptionPricingSchema>>({
-    defaultValues: getDefaultValues(shippingOption.prices),
+    defaultValues: getDefaultValues(shippingOption.prices || []),
     resolver: zodResolver(EditShippingOptionPricingSchema),
   })
 
@@ -130,92 +128,52 @@ export function EditShippingOptionsPricingForm({
   )
 
   const handleSubmit = form.handleSubmit(async (data) => {
-    const currencyPrices = Object.entries(data.currency_prices)
-      .map(([code, value]) => {
+    try {
+      const allPrices: SimplePriceRecord[] = []
+      
+      // Process currency prices - only basic currency pricing for now
+      Object.entries(data.currency_prices).forEach(([code, value]) => {
         if (
-          !value ||
-          !currencies.some((c) => c.toLowerCase() === code.toLowerCase())
+          value &&
+          currencies.some((c) => c.toLowerCase() === code.toLowerCase())
         ) {
-          return undefined
+          allPrices.push({
+            currency_code: code,
+            amount: castNumber(value),
+          })
         }
-
-        const priceRecord: PriceRecord = {
-          currency_code: code,
-          amount: castNumber(value),
-        }
-
-        const existingPrice = shippingOption.prices.find(
-          (p) => p.currency_code === code && !p.price_rules!.length
-        )
-
-        if (existingPrice) {
-          priceRecord.id = existingPrice.id
-        }
-
-        return priceRecord
       })
-      .filter((p): p is PriceRecord => !!p)
 
-    const conditionalCurrencyPrices = Object.entries(
-      data.conditional_currency_prices
-    ).flatMap(([currency_code, value]) =>
-      value?.map((rule) => ({
-        id: rule.id,
-        currency_code,
-        amount: castNumber(rule.amount),
-        rules: buildShippingOptionPriceRules(rule),
-      }))
-    )
-
-    /**
-     * TODO: If we try to update an existing region price the API throws an error.
-     * Instead we re-create region prices.
-     */
-    const regionPrices = Object.entries(data.region_prices)
-      .map(([region_id, value]) => {
-        if (!value || !regions?.some((region) => region.id === region_id)) {
-          return undefined
-        }
-
-        const priceRecord: PriceRecord = {
-          region_id,
-          amount: castNumber(value),
-        }
-
-        return priceRecord
-      })
-      .filter((p): p is PriceRecord => !!p)
-
-    const conditionalRegionPrices = Object.entries(
-      data.conditional_region_prices
-    ).flatMap(([region_id, value]) =>
-      value?.map((rule) => ({
-        id: rule.id,
-        region_id,
-        amount: castNumber(rule.amount),
-        rules: buildShippingOptionPriceRules(rule),
-      }))
-    )
-
-    const allPrices = [
-      ...currencyPrices,
-      ...conditionalCurrencyPrices,
-      ...regionPrices,
-      ...conditionalRegionPrices,
-    ]
-
-    await mutateAsync(
-      { prices: allPrices },
-      {
-        onSuccess: () => {
-          toast.success(t("general.success"))
-          handleSuccess()
+      // Send ONLY the prices - do not include rules at all
+      // This will preserve existing rules completely
+      await mutateAsync(
+        { 
+          prices: allPrices
+          // Intentionally NOT including rules or any rule-related fields
         },
-        onError: (e) => {
-          toast.error(e.message)
-        },
-      }
-    )
+        {
+          onSuccess: () => {
+            toast.success(t("general.success"))
+            handleSuccess()
+          },
+          onError: (error) => {
+            console.error("Price update failed:", error)
+            
+            let errorMessage = "Failed to update shipping option prices"
+            if (error && typeof error === 'object' && 'message' in error) {
+              errorMessage = (error as any).message
+            } else if (error && typeof error === 'string') {
+              errorMessage = error
+            }
+            
+            toast.error(errorMessage)
+          },
+        }
+      )
+    } catch (error) {
+      console.error("Unexpected error:", error)
+      toast.error("An unexpected error occurred")
+    }
   })
 
   const isLoading =
@@ -291,87 +249,26 @@ export function EditShippingOptionsPricingForm({
   )
 }
 
-const findRuleValue = (
-  rules: HttpTypes.AdminShippingOptionPriceRule[],
-  operator: string
-) => {
-  const fallbackValue = ["eq", "gt", "lt"].includes(operator) ? undefined : null
-
-  return (
-    rules?.find(
-      (r) => r.attribute === ITEM_TOTAL_ATTRIBUTE && r.operator === operator
-    )?.value || fallbackValue
-  )
-}
-
-const mapToConditionalPrice = (
-  price: HttpTypes.AdminShippingOptionPrice
-): UpdateConditionalPrice => {
-  const rules = price.price_rules || []
-
-  return {
-    id: price.id,
-    amount: price.amount,
-    gte: findRuleValue(rules, "gte"),
-    lte: findRuleValue(rules, "lte"),
-    gt: findRuleValue(rules, "gt") as undefined | null,
-    lt: findRuleValue(rules, "lt") as undefined | null,
-    eq: findRuleValue(rules, "eq") as undefined | null,
-  }
-}
-
+// Simplified helper functions
 const getDefaultValues = (prices: HttpTypes.AdminShippingOptionPrice[]) => {
-  const hasAttributes = (
-    price: HttpTypes.AdminShippingOptionPrice,
-    required: string[],
-    forbidden: string[] = []
-  ) => {
-    const attributes = price.price_rules?.map((r) => r.attribute) || []
-    return (
-      required.every((attr) => attributes.includes(attr)) &&
-      !forbidden.some((attr) => attributes.includes(attr))
-    )
-  }
-
   const currency_prices: Record<string, number> = {}
-  const conditional_currency_prices: Record<string, UpdateConditionalPrice[]> =
-    {}
+  const conditional_currency_prices: Record<string, UpdateConditionalPrice[]> = {}
   const region_prices: Record<string, number> = {}
   const conditional_region_prices: Record<string, UpdateConditionalPrice[]> = {}
 
+  if (!prices || !Array.isArray(prices)) {
+    return {
+      currency_prices,
+      conditional_currency_prices,
+      region_prices,
+      conditional_region_prices,
+    }
+  }
+
   prices.forEach((price) => {
-    if (!price.price_rules?.length) {
-      currency_prices[price.currency_code!] = price.amount
-      return
-    }
-
-    if (hasAttributes(price, [ITEM_TOTAL_ATTRIBUTE], [REGION_ID_ATTRIBUTE])) {
-      const code = price.currency_code!
-      if (!conditional_currency_prices[code]) {
-        conditional_currency_prices[code] = []
-      }
-      conditional_currency_prices[code].push(mapToConditionalPrice(price))
-      return
-    }
-
-    if (hasAttributes(price, [REGION_ID_ATTRIBUTE], [ITEM_TOTAL_ATTRIBUTE])) {
-      const regionId = price.price_rules.find(
-        (r) => r.attribute === REGION_ID_ATTRIBUTE
-      )?.value
-
-      region_prices[regionId] = price.amount
-      return
-    }
-
-    if (hasAttributes(price, [REGION_ID_ATTRIBUTE, ITEM_TOTAL_ATTRIBUTE])) {
-      const regionId = price.price_rules.find(
-        (r) => r.attribute === REGION_ID_ATTRIBUTE
-      )?.value
-
-      if (!conditional_region_prices[regionId]) {
-        conditional_region_prices[regionId] = []
-      }
-      conditional_region_prices[regionId].push(mapToConditionalPrice(price))
+    // For now, only handle simple currency prices
+    if (!price.price_rules?.length && price.currency_code) {
+      currency_prices[price.currency_code] = price.amount
     }
   })
 

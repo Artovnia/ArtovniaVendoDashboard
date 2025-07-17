@@ -12,15 +12,18 @@ const PAGE_SIZE = 20;
 
 export const OrderListTable = () => {
   const { t } = useTranslation();
-  const { raw } = useOrderTableQuery({
+  const { raw, searchParams } = useOrderTableQuery({
     pageSize: PAGE_SIZE,
   });
 
+  // Fetch all necessary fields including nested fields using the * prefix pattern
   const { orders, count, isError, error, isLoading } =
     useOrders({
       limit: 1000,
       offset: 0,
-      fields: '*customer',
+      // Fields including nested fields with * prefix
+      fields: 'display_id,created_at,total,payment_status,fulfillment_status,*customer,*sales_channel',
+      ...searchParams,
     });
 
   const filters = useOrderTableFilters();

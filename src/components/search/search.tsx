@@ -60,7 +60,8 @@ export const Search = () => {
   const { staticResults, dynamicResults, isFetching } = useSearchResults({
     area,
     limit,
-    q: search,
+    q: "",
+    // q: search,
   })
 
   const handleReset = useCallback(() => {

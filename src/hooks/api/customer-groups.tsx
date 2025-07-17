@@ -20,7 +20,7 @@ export const customerGroupsQueryKeys = queryKeysFactory(
 
 export const useCustomerGroup = (
   id: string,
-  query?: HttpTypes.AdminGetCustomerGroupParams,
+  query?: Record<string, string | number>,
   options?: Omit<
     UseQueryOptions<
       HttpTypes.AdminCustomerGroupResponse,
@@ -34,7 +34,10 @@ export const useCustomerGroup = (
   const { data, ...rest } = useQuery({
     queryKey: customerGroupsQueryKeys.detail(id, query),
     queryFn: async () =>
-      sdk.admin.customerGroup.retrieve(id, query),
+      fetchQuery(`/vendor/customer-groups/${id}`, {
+        method: 'GET',
+        query,
+      }),
     ...options,
   });
 
@@ -47,7 +50,9 @@ export const useCustomerGroups = (
     UseQueryOptions<
       HttpTypes.AdminGetCustomerGroupsParams,
       FetchError,
-      HttpTypes.AdminCustomerGroupListResponse,
+      HttpTypes.AdminCustomerGroupListResponse & {
+        customer_group?: any;
+      },
       QueryKey
     >,
     'queryFn' | 'queryKey'
@@ -75,7 +80,10 @@ export const useCreateCustomerGroup = (
 ) => {
   return useMutation({
     mutationFn: (payload) =>
-      sdk.admin.customerGroup.create(payload),
+      fetchQuery('/vendor/customer-groups', {
+        method: 'POST',
+        body: payload,
+      }),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
         queryKey: customerGroupsQueryKeys.lists(),
@@ -144,7 +152,9 @@ export const useDeleteCustomerGroupLazy = (
 ) => {
   return useMutation({
     mutationFn: ({ id }) =>
-      sdk.admin.customerGroup.delete(id),
+      fetchQuery(`/vendor/customer-groups/${id}`, {
+        method: 'DELETE',
+      }),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
         queryKey: customerGroupsQueryKeys.lists(),
@@ -171,9 +181,13 @@ export const useAddCustomersToGroup = (
 ) => {
   return useMutation({
     mutationFn: (payload) =>
-      sdk.admin.customerGroup.batchCustomers(id, {
-        add: payload,
-      }),
+      fetchQuery(
+        `/vendor/customer-groups/${id}/customers`,
+        {
+          method: 'POST',
+          body: { add: payload },
+        }
+      ),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
         queryKey: customerGroupsQueryKeys.lists(),
@@ -201,9 +215,13 @@ export const useRemoveCustomersFromGroup = (
 ) => {
   return useMutation({
     mutationFn: (payload) =>
-      sdk.admin.customerGroup.batchCustomers(id, {
-        remove: payload,
-      }),
+      fetchQuery(
+        `/vendor/customer-groups/${id}/customers`,
+        {
+          method: 'POST',
+          body: { remove: payload },
+        }
+      ),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
         queryKey: customerGroupsQueryKeys.lists(),

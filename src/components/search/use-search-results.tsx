@@ -632,10 +632,10 @@ const transformMap: TransformMap = {
   promotion: {
     dataKey: 'promotions',
     transform: (promotion: HttpTypes.AdminPromotion) => ({
-      id: promotion.id,
-      title: promotion.code!,
-      to: `/promotions/${promotion.id}`,
-      value: `promotion:${promotion.id}`,
+      id: promotion?.id,
+      title: promotion?.code!,
+      to: `/promotions/${promotion?.id}`,
+      value: `promotion:${promotion?.id}`,
     }),
   },
   campaign: {
@@ -781,7 +781,7 @@ const transformMap: TransformMap = {
 };
 
 function transformDynamicSearchResults<
-  T extends { count: number },
+  T extends { count?: number } & Record<string, any>,
 >(
   type: SearchArea,
   limit: number,
@@ -799,11 +799,14 @@ function transformDynamicSearchResults<
     return undefined;
   }
 
+  // Ensure count is a number (default to data.length if count is undefined)
+  const count = typeof response.count === 'number' ? response.count : data.length;
+  
   return {
     title: t(`app.search.groups.${type}`),
     area: type,
-    hasMore: response.count > limit,
-    count: response.count,
+    hasMore: count > limit,
+    count: count,
     items: data.map(transform),
   };
 }

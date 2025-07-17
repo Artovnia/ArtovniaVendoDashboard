@@ -2453,11 +2453,11 @@
   },
   "login": {
     "forgotPassword": "Zapomniałeś hasła? - <0>Resetuj</0>",
-    "title": "Witamy w Meduzie",
+    "title": "Witamy w Artovni",
     "hint": "Zaloguj się, aby uzyskać dostęp do obszaru konta"
   },
   "invite": {
-    "title": "Witamy w Meduzie",
+    "title": "Witamy w Artovnia",
     "hint": "Utwórz swoje konto poniżej",
     "backToLogin": "Powrót do logowania",
     "createAccount": "Utwórz konto",
@@ -2465,8 +2465,8 @@
     "emailTooltip": "Nie można zmienić Twojego adresu e-mail. Jeśli chcesz skorzystać z innego adresu e-mail, należy wysłać nowe zaproszenie.",
     "invalidInvite": "Zaproszenie jest nieprawidłowe lub wygasło.",
     "successTitle": "Twoje konto zostało zarejestrowane",
-    "successHint": "Zacznij od razu z Medusa Admin.",
-    "successAction": "Uruchom administratora Meduzy",
+    "successHint": "Zacznij od razu z Artovni.",
+    "successAction": "Uruchom administratora Artovnia",
     "invalidTokenTitle": "Twój token zaproszenia jest nieprawidłowy",
     "invalidTokenHint": "Spróbuj poprosić o nowy link z zaproszeniem.",
     "passwordMismatch": "Hasła nie pasują",

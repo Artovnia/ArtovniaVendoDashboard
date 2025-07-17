@@ -1,5 +1,4 @@
 import { Trash } from "@medusajs/icons"
-import { AdminShippingProfileResponse } from "@medusajs/types"
 import { Container, Heading, toast, usePrompt } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
@@ -8,12 +7,13 @@ import { SectionRow } from "../../../../../components/common/section"
 import { useDeleteShippingProfile } from "../../../../../hooks/api/shipping-profiles"
 
 type ShippingProfileGeneralSectionProps = {
-  profile: AdminShippingProfileResponse["shipping_profile"]
+  profile: any // Using any temporarily to handle different data structures
 }
 
 export const ShippingProfileGeneralSection = ({
   profile,
 }: ShippingProfileGeneralSectionProps) => {
+  console.log('Shipping profile in component:', profile);
   const { t } = useTranslation()
   const prompt = usePrompt()
   const navigate = useNavigate()

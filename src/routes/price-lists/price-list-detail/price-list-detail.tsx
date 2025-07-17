@@ -12,10 +12,34 @@ import { useDashboardExtension } from "../../../extensions"
 export const PriceListDetails = () => {
   const { id } = useParams()
 
-  const { price_list, isLoading, isError, error } = usePriceList(id!)
+  const { price_list, isLoading, isError, error } = usePriceList(id!, {
+    // Don't include 'products' field as it's not supported by the backend
+    fields: "*",
+  })
+
   const { getWidgets } = useDashboardExtension()
 
-  if (isLoading || !price_list) {
+  // Handle different response formats
+  let list = null
+  if (price_list) {
+    if (Array.isArray(price_list)) {
+      list = price_list[0]
+    } else if (typeof price_list === 'object') {
+      list = price_list
+    }
+  }
+
+  // Add debug logging
+  console.log('Price list data:', price_list)
+  console.log('Processed price list:', list)
+  
+  // Ensure the price list has a prices array
+  if (list && !list.prices && price_list?.prices) {
+    list = { ...list, prices: price_list.prices }
+    console.log('Added prices to list:', list.prices)
+  }
+
+  if (isLoading || !list) {
     return (
       <TwoColumnPageSkeleton mainSections={2} sidebarSections={1} showJSON />
     )
@@ -34,14 +58,13 @@ export const PriceListDetails = () => {
         sideBefore: getWidgets("price_list.details.side.before"),
       }}
       data={price_list}
-      showJSON
     >
       <TwoColumnPage.Main>
-        <PriceListGeneralSection priceList={price_list} />
-        <PriceListProductSection priceList={price_list} />
+        <PriceListGeneralSection priceList={list} />
+        <PriceListProductSection priceList={list} />
       </TwoColumnPage.Main>
       <TwoColumnPage.Sidebar>
-        <PriceListConfigurationSection priceList={price_list} />
+        <PriceListConfigurationSection priceList={list} />
       </TwoColumnPage.Sidebar>
     </TwoColumnPage>
   )

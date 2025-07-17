@@ -63,11 +63,12 @@ export const ProductAttributesForm = ({
     data: product,
   })
 
-  const { mutateAsync, isPending } = useUpdateProduct(product.id)
+  const { mutateAsync, isPending } = useUpdateProduct()
 
   const handleSubmit = form.handleSubmit(async (data) => {
     await mutateAsync(
       {
+        id: product.id, // Include the product ID in the payload
         weight: data.weight ? data.weight : undefined,
         length: data.length ? data.length : undefined,
         width: data.width ? data.width : undefined,

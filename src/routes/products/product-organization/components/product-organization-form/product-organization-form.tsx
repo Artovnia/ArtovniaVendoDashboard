@@ -97,13 +97,12 @@ export const ProductOrganizationForm = ({
     data: product,
   });
 
-  const { mutateAsync, isPending } = useUpdateProduct(
-    product.id
-  );
+  const { mutateAsync, isPending } = useUpdateProduct();
 
   const handleSubmit = form.handleSubmit(async (data) => {
     await mutateAsync(
       {
+        id: product.id, // Include the product ID in the payload
         type_id: data.type_id || null,
         collection_id: data.collection_id || null,
         categories: data.category_ids.map((c) => ({

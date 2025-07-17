@@ -52,6 +52,8 @@ import {
   ShippingOptionPriceType,
 } from '../../../common/constants';
 
+// Using the improved isReturnOption function from shipping-options.ts
+
 type LocationGeneralSectionProps = {
   location: HttpTypes.AdminStockLocation;
 };
@@ -67,7 +69,7 @@ export const LocationGeneralSection = ({
             <Heading>{location.name}</Heading>
             <Text className='text-ui-fg-subtle txt-small'>
               {getFormattedAddress({
-                address: location.address,
+                address: location.address as any,
               }).join(', ')}
             </Text>
           </div>
@@ -156,8 +158,9 @@ function ShippingOption({
     <div className='flex items-center justify-between px-3 py-2'>
       <div className='flex-1'>
         <Text size='small' weight='plus'>
-          {option.name} - {option.shipping_profile.name} (
-          {formatProvider(option.provider_id)})
+          {option.name || 'Unnamed Option'}{' '}
+          {option?.shipping_profile?.name && `- ${option.shipping_profile.name}`}{' '}
+          ({formatProvider(option.provider_id || 'manual')})
         </Text>
       </div>
       <Badge
@@ -223,13 +226,24 @@ function ServiceZoneOptions({
 }: ServiceZoneOptionsProps) {
   const { t } = useTranslation();
 
-  const shippingOptions = zone.shipping_options.filter(
-    (o) => !isReturnOption(o)
-  );
-
-  const returnOptions = zone.shipping_options.filter((o) =>
-    isReturnOption(o)
-  );
+  const [shippingOptions, returnOptions] = useMemo(() => {
+    const options = zone?.shipping_options || [];
+    
+    const regularOptions: HttpTypes.AdminShippingOption[] = [];
+    const returnOpts: HttpTypes.AdminShippingOption[] = [];
+    
+    options.forEach(option => {
+      const isReturn = isReturnOption(option, 'ServiceZoneOptions');
+      
+      if (isReturn) {
+        returnOpts.push(option);
+      } else {
+        regularOptions.push(option);
+      }
+    });
+      
+    return [regularOptions, returnOpts];
+  }, [zone?.shipping_options]);
 
   return (
     <div>
@@ -254,7 +268,7 @@ function ServiceZoneOptions({
           <div className='shadow-elevation-card-rest bg-ui-bg-subtle grid divide-y rounded-md'>
             {shippingOptions.map((o) => (
               <ShippingOption
-                key={o.id}
+                key={`regular-${o.id}`}
                 option={o}
                 locationId={locationId}
                 fulfillmentSetId={fulfillmentSetId}
@@ -357,9 +371,10 @@ function ServiceZone({
   };
 
   const countries = useMemo(() => {
-    const countryGeoZones = zone.geo_zones.filter(
+    // Check if geo_zones exists before filtering
+    const countryGeoZones = zone.geo_zones?.filter(
       (g) => g.type === 'country'
-    );
+    ) || [];
 
     const countries = countryGeoZones
       .map(({ country_code }) =>
@@ -369,23 +384,6 @@ function ServiceZone({
       )
       .filter((c) => !!c) as StaticCountry[];
 
-    if (
-      process.env.NODE_ENV === 'development' &&
-      countryGeoZones?.length !== countries?.length
-    ) {
-      console.warn(
-        'Some countries are missing in the static countries list',
-        countryGeoZones
-          .filter(
-            (g) =>
-              !countries.find(
-                (c) => c.iso_2 === g.country_code
-              )
-          )
-          .map((g) => g.country_code)
-      );
-    }
-
     return countries.sort((c1, c2) =>
       c1.name.localeCompare(c2.name)
     );
@@ -393,17 +391,26 @@ function ServiceZone({
 
   const [shippingOptionsCount, returnOptionsCount] =
     useMemo(() => {
-      const options = zone.shipping_options;
-
-      const optionsCount = options.filter(
-        (o) => !isReturnOption(o)
-      )?.length;
-
-      const returnOptionsCount =
-        options.filter(isReturnOption)?.length;
-
-      return [optionsCount, returnOptionsCount];
-    }, [zone.shipping_options]);
+      const options = zone?.shipping_options || [];
+      
+      // Use typed arrays to ensure consistent typing
+      const regularOptions: HttpTypes.AdminShippingOption[] = [];
+      const returnOptions: HttpTypes.AdminShippingOption[] = [];
+      
+      // Use the same approach as ServiceZoneOptions component
+      options.forEach(option => {
+        // Use the proper isReturnOption function without any overrides
+        const isReturn = isReturnOption(option, 'ServiceZone');
+        
+        if (isReturn) {
+          returnOptions.push(option);
+        } else {
+          regularOptions.push(option);
+        }
+      });
+      
+      return [regularOptions.length, returnOptions.length];
+    }, [zone?.shipping_options]);
 
   return (
     <div className='flex flex-col'>

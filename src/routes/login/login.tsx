@@ -28,8 +28,7 @@ export const Login = () => {
   const navigate = useNavigate();
   const { getWidgets } = useDashboardExtension();
 
-  const from =
-    location.state?.from?.pathname || '/dashboard';
+  const from = '/dashboard';
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -70,7 +69,7 @@ export const Login = () => {
           onSuccess: () => {
             setTimeout(() => {
               navigate(from, { replace: true });
-            }, 600);
+            }, 1000);
           },
         }
       );
@@ -193,17 +192,19 @@ export const Login = () => {
             ]}
           />
         </span>
-        <span className='text-ui-fg-muted txt-small'>
-          <Trans
-            i18nKey='login.notSellerYet'
-            components={[
-              <Link
-                to='/register'
-                className='text-ui-fg-interactive transition-fg hover:text-ui-fg-interactive-hover focus-visible:text-ui-fg-interactive-hover font-medium outline-none'
-              />,
-            ]}
-          />
-        </span>
+        {__DISABLE_SELLERS_REGISTRATION__ === 'false' && (
+          <span className='text-ui-fg-muted txt-small'>
+            <Trans
+              i18nKey='login.notSellerYet'
+              components={[
+                <Link
+                  to='/register'
+                  className='text-ui-fg-interactive transition-fg hover:text-ui-fg-interactive-hover focus-visible:text-ui-fg-interactive-hover font-medium outline-none'
+                />,
+              ]}
+            />
+          </span>
+        )}
       </div>
     </div>
   );
