@@ -3,7 +3,7 @@
   publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "20.11.1"
+  NODE_VERSION = "16.20.2"
   YARN_VERSION = "3.2.1"
   YARN_ENABLE_IMMUTABLE_INSTALLS = "false"
 
