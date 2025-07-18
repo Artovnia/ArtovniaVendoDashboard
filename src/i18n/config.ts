@@ -10,7 +10,7 @@ export const defaultI18nOptions: InitOptions = {
     lookupLocalStorage: "lng",
     order: ["cookie", "localStorage", "header"],
   },
-  fallbackLng: "pl",
+  fallbackLng: "en",
   interpolation: {
     escapeValue: false,
   },
