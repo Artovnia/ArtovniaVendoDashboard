@@ -2,7 +2,7 @@ import { useStripeAccount } from '../../../hooks/api/stripe';
 import { Connected } from './connected';
 import { NotConnected } from './not-connected';
 
-const Status = () => {
+export const Status = () => {
   const { payout_account, isLoading } = useStripeAccount();
 
   if (isLoading) return <div>Ładowanie...</div>;
@@ -11,6 +11,4 @@ const Status = () => {
   }
   return <Connected status={payout_account.status} />;
 };
-
-export default Status;
 
