@@ -91,6 +91,7 @@
     "@vitejs/plugin-react": "4.2.1",
     "ajv": "^8.17.1",
     "autoprefixer": "^10.4.17",
+    "esbuild": "0.17.19",
     "postcss": "^8.4.33",
     "prettier": "^3.1.1",
     "tailwindcss": "^3.4.1",
