@@ -55,6 +55,7 @@
     "@tanstack/react-virtual": "^3.8.3",
     "@uiw/react-json-view": "^2.0.0-alpha.17",
     "awilix": "^9.0.0",
+    "@babel/runtime": "^7.23.9",
     "cmdk": "^0.2.0",
     "date-fns": "^3.6.0",
     "i18next": "23.7.11",
@@ -91,7 +92,7 @@
     "@vitejs/plugin-react": "4.2.1",
     "ajv": "^8.17.1",
     "autoprefixer": "^10.4.17",
-    "esbuild": "0.17.19",
+    "esbuild": "0.14.54",
     "postcss": "^8.4.33",
     "prettier": "^3.1.1",
     "tailwindcss": "^3.4.1",
@@ -103,6 +104,6 @@
   },
   "packageManager": "yarn@3.2.1",
   "resolutions": {
-    "esbuild": "0.17.19"
+    "esbuild": "0.14.54"
   }
 }
