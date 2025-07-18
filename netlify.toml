@@ -1,9 +1,9 @@
 [build]
-  command = "yarn install && yarn build:preview"
+  command = "NODE_OPTIONS=--openssl-legacy-provider yarn install && NODE_OPTIONS=--openssl-legacy-provider yarn build:preview"
   publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "16.20.0"
+  NODE_VERSION = "20.10.0"
   YARN_VERSION = "3.2.1"
   YARN_ENABLE_IMMUTABLE_INSTALLS = "false"
 
