@@ -46,10 +46,10 @@
     "@dnd-kit/sortable": "^8.0.0",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "3.4.2",
-    "@medusajs/admin-shared": "2.5.0",
-    "@medusajs/icons": "2.5.0",
-    "@medusajs/js-sdk": "2.5.0",
-    "@medusajs/ui": "4.0.5",
+    "@medusajs/admin-shared": "^2.5.0",
+    "@medusajs/icons": "^2.5.0",
+    "@medusajs/js-sdk": "^2.5.0",
+    "@medusajs/ui": "~4.0.5",
     "@talkjs/react": "^0.1.11",
     "@tanstack/react-query": "5.64.2",
     "@tanstack/react-table": "8.20.5",
@@ -81,10 +81,10 @@
     "zod": "3.22.4"
   },
   "devDependencies": {
-    "@medusajs/admin-shared": "2.5.0",
-    "@medusajs/admin-vite-plugin": "2.5.0",
-    "@medusajs/types": "2.5.0",
-    "@medusajs/ui-preset": "2.5.0",
+    "@medusajs/admin-shared": "^2.5.0",
+    "@medusajs/admin-vite-plugin": "^2.5.0",
+    "@medusajs/types": "^2.5.0",
+    "@medusajs/ui-preset": "^2.5.0",
     "@types/lodash": "^4.17.16",
     "@types/node": "^20.11.15",
     "@types/react": "^18.2.79",
@@ -105,9 +105,6 @@
   "packageManager": "yarn@3.2.1",
   "resolutions": {
     "esbuild": "0.14.54",
-    "awilix": "9.0.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "@medusajs/admin-shared": "2.5.0"
+    "awilix": "9.0.0" 
   }
 }

@@ -1,5 +1,5 @@
 [build]
-  command = "yarn build:preview"
+  command = "yarn install && yarn build:preview"
   publish = "dist"
 
 [build.environment]
