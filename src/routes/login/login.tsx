@@ -87,12 +87,12 @@ export const Login = () => {
       <div className='m-4 flex w-full max-w-[280px] flex-col items-center'>
         <AvatarBox />
         <div className='mb-4 flex flex-col items-center'>
-          <Heading>{t('login.title')}</Heading>
+          <Heading>Logowanie</Heading>
           <Text
             size='small'
             className='text-ui-fg-subtle text-center'
           >
-            {t('login.hint')}
+            Zaloguj się do panelu sprzedawcy
           </Text>
         </div>
         <div className='flex w-full flex-col gap-y-3'>
@@ -118,7 +118,7 @@ export const Login = () => {
                             autoComplete='email'
                             {...field}
                             className='bg-ui-bg-field-component'
-                            placeholder={t('fields.email')}
+                            placeholder="Email"
                           />
                         </Form.Control>
                       </Form.Item>
@@ -138,9 +138,7 @@ export const Login = () => {
                             autoComplete='current-password'
                             {...field}
                             className='bg-ui-bg-field-component'
-                            placeholder={t(
-                              'fields.password'
-                            )}
+                            placeholder="Hasło"
                           />
                         </Form.Control>
                       </Form.Item>
@@ -172,7 +170,7 @@ export const Login = () => {
                 type='submit'
                 isLoading={isPending}
               >
-                Sign In
+                Zaloguj się
               </Button>
             </form>
           </Form>
@@ -181,28 +179,24 @@ export const Login = () => {
           })}
         </div>
         <span className='text-ui-fg-muted txt-small my-6'>
-          <Trans
-            i18nKey='login.forgotPassword'
-            components={[
-              <Link
-                key='reset-password-link'
-                to='/reset-password'
-                className='text-ui-fg-interactive transition-fg hover:text-ui-fg-interactive-hover focus-visible:text-ui-fg-interactive-hover font-medium outline-none'
-              />,
-            ]}
-          />
+          Nie pamiętasz hasła?{' '}
+          <Link
+            key='reset-password-link'
+            to='/reset-password'
+            className='text-ui-fg-interactive transition-fg hover:text-ui-fg-interactive-hover focus-visible:text-ui-fg-interactive-hover font-medium outline-none'
+          >
+            Zresetuj hasło
+          </Link>
         </span>
         {__DISABLE_SELLERS_REGISTRATION__ === 'false' && (
           <span className='text-ui-fg-muted txt-small'>
-            <Trans
-              i18nKey='login.notSellerYet'
-              components={[
-                <Link
-                  to='/register'
-                  className='text-ui-fg-interactive transition-fg hover:text-ui-fg-interactive-hover focus-visible:text-ui-fg-interactive-hover font-medium outline-none'
-                />,
-              ]}
-            />
+            Nie masz jeszcze konta sprzedawcy?{' '}
+            <Link
+              to='/register'
+              className='text-ui-fg-interactive transition-fg hover:text-ui-fg-interactive-hover focus-visible:text-ui-fg-interactive-hover font-medium outline-none'
+            >
+              Zarejestruj się
+            </Link>
           </span>
         )}
       </div>
