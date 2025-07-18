@@ -100,5 +100,8 @@
     "vite-plugin-inspect": "^0.8.7",
     "vitest": "^3.0.5"
   },
-  "packageManager": "yarn@3.2.1"
+  "packageManager": "yarn@3.2.1",
+  "resolutions": {
+    "esbuild": "0.17.19"
+  }
 }
