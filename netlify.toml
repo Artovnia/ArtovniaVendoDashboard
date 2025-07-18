@@ -13,3 +13,9 @@
   for = "/*"
   [headers.values]
     cache-control = "no-cache"
+    
+# SPA redirect rule for client-side routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
