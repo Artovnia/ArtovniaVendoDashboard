@@ -6,7 +6,7 @@ import { DayPicker } from 'react-day-picker';
 import { ChevronLeft, ChevronRight } from '@medusajs/icons';
 import { clx } from '@medusajs/ui';
 
-import 'react-day-picker/src/style.css';
+import 'react-day-picker/dist/style.css';
 
 export type CalendarProps = React.ComponentProps<
   typeof DayPicker
@@ -63,22 +63,20 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        PreviousMonthButton: ({ className, ...props }) => (
+        PreviousMonthButton: ({ className }) => (
           <ChevronLeft
             className={clx(
               'absolute left-2 top-5',
               className
             )}
-            {...props}
           />
         ),
-        NextMonthButton: ({ className, ...props }) => (
+        NextMonthButton: ({ className }) => (
           <ChevronRight
             className={clx(
               'absolute right-2 top-5',
               className
             )}
-            {...props}
           />
         ),
       }}
