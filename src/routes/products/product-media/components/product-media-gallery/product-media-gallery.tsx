@@ -179,7 +179,7 @@ export const ProductMediaGallery = ({ product }: ProductMediaGalleryProps) => {
           </IconButton>
           <Button variant="secondary" size="small" asChild>
             <Link to={{ pathname: ".", search: "view=edit" }}>
-              {t("actions.edit")}Fiut
+              {t("actions.edit")}
             </Link>
           </Button>
         </div>
