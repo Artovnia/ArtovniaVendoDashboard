@@ -231,7 +231,7 @@ export const ProductCreateColorSchemeForm = ({
                             return (
                               <div 
                                 key={colorId} 
-                                className="flex items-center gap-2 border border-ui-border-base rounded-md px-3 py-2 bg-ui-bg-base group"
+                                className="flex items-center gap-2 border border-ui-border-base rounded-md px-3 py-2  group"
                               >
                                 <div 
                                   className="w-4 h-4 rounded-full border border-ui-border-base flex-shrink-0" 
