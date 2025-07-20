@@ -79,10 +79,10 @@ export default defineConfig(({ mode }) => {
     build: {
       rollupOptions: {
         external: [
-          'talkjs',
+         // 'talkjs',
           // 'recharts',
-          'react-day-picker',
-          'react-day-picker/src/style.css',
+          //'react-day-picker',
+          //'react-day-picker/src/style.css',
         ],
       },
     },
