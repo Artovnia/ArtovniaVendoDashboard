@@ -114,7 +114,7 @@ export const VariantColorSection = ({
                 {assignedColors.map(color => (
                   <div 
                     key={color.id} 
-                    className="flex items-center gap-2 border border-ui-border-base rounded-md px-3 py-2 bg-white"
+                    className="flex items-center gap-2 border border-ui-border-base rounded-md px-3 py-2 "
                   >
                     <div 
                       className="w-4 h-4 rounded-full border border-ui-border-base flex-shrink-0" 

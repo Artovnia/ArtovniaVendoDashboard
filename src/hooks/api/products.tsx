@@ -776,7 +776,28 @@ export const useUpdateProduct = (
       
       console.log(`Updating product ${id} with data:`, JSON.stringify(updateData, null, 2));
       
-      // EXTREME MINIMAL APPROACH - Only send description field initially as a test
+      // Check if we have images or thumbnail in the payload
+      const hasMediaUpdate = updateData.images || updateData.thumbnail;
+      
+      // If this is a media update, use the complete payload
+      if (hasMediaUpdate) {
+        console.log('Detected media update, sending complete payload with images');
+        
+        try {
+          const response = await fetchQuery(`/vendor/products/${id}`, {
+            method: 'POST',
+            body: updateData, // Send complete payload including images
+          });
+          
+          console.log('Media update response:', response);
+          return response;
+        } catch (mediaError: any) {
+          console.error('Media update failed:', mediaError);
+          throw mediaError; // Propagate the error to allow proper error handling
+        }
+      }
+      
+      // For non-media updates, continue with the existing approach
       try {
         // Step 1: Try first with just the description to test if that works
         if (updateData.description !== undefined) {

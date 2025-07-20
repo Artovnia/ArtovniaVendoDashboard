@@ -9,10 +9,11 @@ import { Button, IconButton, Text, Tooltip, clx, usePrompt } from "@medusajs/ui"
 import { useCallback, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Link, useLocation } from "react-router-dom"
+import { toast } from "@medusajs/ui"
 
 import { HttpTypes } from "@medusajs/types"
-import { RouteFocusModal } from "../../../../../components/modals"
-import { useUpdateProduct } from "../../../../../hooks/api/products"
+import { RouteFocusModal } from "../../../../../../src/components/modals"
+import { useUpdateProduct } from "../../../../../../src/hooks/api/products"
 
 type ProductMediaGalleryProps = {
   product: HttpTypes.AdminProduct
@@ -24,7 +25,7 @@ export const ProductMediaGallery = ({ product }: ProductMediaGalleryProps) => {
 
   const { t } = useTranslation()
   const prompt = usePrompt()
-  const { mutateAsync, isPending } = useUpdateProduct(product.id)
+  const { mutateAsync, isPending } = useUpdateProduct()
 
   const media = getMedia(product.images, product.thumbnail)
 
@@ -72,8 +73,16 @@ export const ProductMediaGallery = ({ product }: ProductMediaGalleryProps) => {
   }
 
   const handleDeleteCurrent = async () => {
-    const current = media[curr]
+    // Exit early if no media is available
+    if (!media.length || media.length === 0) {
+      return;
+    }
+    
+    const current = media[curr];
+    
+    console.log('Attempting to delete image:', current.id, 'from product:', product.id);
 
+    // Confirm deletion with user
     const res = await prompt({
       title: t("general.areYouSure"),
       description: current.isThumbnail
@@ -81,25 +90,47 @@ export const ProductMediaGallery = ({ product }: ProductMediaGalleryProps) => {
         : t("products.media.deleteWarning", { count: 1 }),
       confirmText: t("actions.delete"),
       cancelText: t("actions.cancel"),
-    })
+    });
 
     if (!res) {
-      return
+      return;
     }
+    
+    try {
+      // Keep all images except the one being deleted
+      const mediaToKeep =
+        product.images
+          ?.filter((i) => i.id !== current.id)
+          .map((i) => ({ url: i.url, id: i.id })) || [];
 
-    const mediaToKeep =
-      product.images
-        ?.filter((i) => i.id !== current.id)
-        .map((i) => ({ url: i.url })) || []
+      // Update current position if needed
+      if (curr === media.length - 1 && curr > 0) {
+        setCurr((prev) => prev - 1);
+      }
 
-    if (curr === media.length - 1) {
-      setCurr((prev) => prev - 1)
+      console.log(`Deleting image from product ${product.id}, remaining images:`, mediaToKeep);
+
+      // Call the API to update the product
+      const response = await mutateAsync({
+        id: product.id,
+        images: mediaToKeep,
+        thumbnail: current.isThumbnail ? "" : undefined,
+      });
+      
+      console.log('Image deleted successfully, API response:', response);
+      
+      // Add toast notification for successful deletion
+      toast.success("Zdjęcie usunięte");
+      
+      // If no images left, refresh to show empty state
+      if (mediaToKeep.length === 0) {
+        // Force a refresh of the component
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      toast.error("Wystąpił błąd podczas usuwania zdjęcia");
     }
-
-    await mutateAsync({
-      images: mediaToKeep,
-      thumbnail: current.isThumbnail ? "" : undefined,
-    })
   }
 
   useEffect(() => {
@@ -148,7 +179,7 @@ export const ProductMediaGallery = ({ product }: ProductMediaGalleryProps) => {
           </IconButton>
           <Button variant="secondary" size="small" asChild>
             <Link to={{ pathname: ".", search: "view=edit" }}>
-              {t("actions.edit")}
+              {t("actions.edit")}Fiut
             </Link>
           </Button>
         </div>

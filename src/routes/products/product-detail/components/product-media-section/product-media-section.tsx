@@ -39,7 +39,7 @@ export const ProductMediaSection = ({ product }: ProductMedisaSectionProps) => {
     })
   }
 
-  const { mutateAsync } = useUpdateProduct(product.id)
+  const { mutateAsync } = useUpdateProduct()
 
   const handleDelete = async () => {
     const ids = Object.keys(selection)
@@ -65,11 +65,12 @@ export const ProductMediaSection = ({ product }: ProductMedisaSectionProps) => {
     }
 
     const mediaToKeep = product.images
-      .filter((i) => !ids.includes(i.id))
-      .map((i) => ({ url: i.url}))
+      ?.filter((i) => !ids.includes(i.id))
+      .map((i) => ({ url: i.url, id: i.id })) || []
 
     await mutateAsync(
       {
+        id: product.id, // Add product ID to the payload
         images: mediaToKeep,
         thumbnail: includingThumbnail ? "" : undefined,
       },
@@ -187,10 +188,10 @@ type Media = {
   isThumbnail: boolean
 }
 
-const getMedia = (product: Product) => {
+const getMedia = (product: HttpTypes.AdminProduct) => {
   const { images = [], thumbnail } = product
 
-  const media: Media[] = images.map((image) => ({
+  const media: Media[] = images.map((image: HttpTypes.AdminProductImage) => ({
     id: image.id,
     url: image.url,
     isThumbnail: image.url === thumbnail,

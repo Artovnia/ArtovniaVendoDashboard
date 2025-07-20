@@ -68,40 +68,13 @@ export const ProductOptionSection = ({
   product,
 }: ProductOptionSectionProps) => {
   const { t } = useTranslation()
-  const { mutateAsync: addColorOption, isPending: isAddingColor } = useAddColorOption();
-
-  // Check if the product already has a color option
-  const hasColorOption = product.options?.some(
-    (option) => option.title.toLowerCase() === "kolor"
-  );
-
-  const handleAddColorOption = async () => {
-    try {
-      await addColorOption(product.id);
-      toast.success(t("products.options.colorOptionAdded", "Opcja koloru została dodana pomyślnie"));
-    } catch (error) {
-      console.error("Error adding color option:", error);
-      toast.error(t("products.options.colorOptionError", "Nie udało się dodać opcji koloru"));
-    }
-  };
 
   return (
     <Container className="divide-y p-0">
       <div className="flex items-center justify-between px-6 py-4">
         <Heading level="h2">{t("products.options.header")}</Heading>
         <div className="flex items-center gap-2">
-          {!hasColorOption && (
-            <Button
-              variant="secondary"
-              size="small"
-              onClick={handleAddColorOption}
-              isLoading={isAddingColor}
-            >
-              <Plus className="text-ui-fg-subtle" />
-              <span className="ml-1">{t("products.options.addColorOption", "Dodaj opcję koloru")}</span>
-              
-            </Button>
-          )}
+      
           <ActionMenu
             groups={[
               {
