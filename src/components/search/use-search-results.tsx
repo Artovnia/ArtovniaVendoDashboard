@@ -114,6 +114,15 @@ const useDynamicSearchResults = (
 
   const debouncedSearch = useDebouncedSearch(q, 300);
 
+  // Only enable queries when there's an actual search query or when specifically searching in that area
+  const shouldEnableQuery = (area: SearchArea) => {
+    // Don't run queries on initial load without search query
+    if (!debouncedSearch && currentArea === 'all') {
+      return false;
+    }
+    return isAreaEnabled(currentArea, area);
+  };
+
   const orderResponse = useOrders(
     {
       q: debouncedSearch?.replace(/^#/, ''), // Since we display the ID with a # prefix, it's natural for the user to include it in the search. This will however cause no results to be returned, so we remove the # prefix from the search query.
@@ -121,7 +130,7 @@ const useDynamicSearchResults = (
       fields: 'id,display_id,email',
     },
     {
-      enabled: isAreaEnabled(currentArea, 'order'),
+      enabled: shouldEnableQuery('order'),
       placeholderData: keepPreviousData,
     }
   );
@@ -133,7 +142,7 @@ const useDynamicSearchResults = (
       fields: 'id,title,thumbnail',
     },
     {
-      enabled: isAreaEnabled(currentArea, 'product'),
+      enabled: shouldEnableQuery('product'),
       placeholderData: keepPreviousData,
     }
   );
@@ -158,7 +167,7 @@ const useDynamicSearchResults = (
       fields: 'id,name',
     },
     {
-      enabled: isAreaEnabled(currentArea, 'category'),
+      enabled: shouldEnableQuery('category'),
       placeholderData: keepPreviousData,
     }
   );
@@ -170,7 +179,7 @@ const useDynamicSearchResults = (
       fields: 'id,title',
     },
     {
-      enabled: isAreaEnabled(currentArea, 'collection'),
+      enabled: shouldEnableQuery('collection'),
       placeholderData: keepPreviousData,
     }
   );
@@ -182,7 +191,7 @@ const useDynamicSearchResults = (
       fields: 'id,email,first_name,last_name',
     },
     {
-      enabled: isAreaEnabled(currentArea, 'customer'),
+      enabled: shouldEnableQuery('customer'),
       placeholderData: keepPreviousData,
     }
   );
@@ -194,7 +203,7 @@ const useDynamicSearchResults = (
       fields: 'id,name',
     },
     {
-      enabled: isAreaEnabled(currentArea, 'customerGroup'),
+      enabled: shouldEnableQuery('customerGroup'),
       placeholderData: keepPreviousData,
     }
   );
@@ -206,7 +215,7 @@ const useDynamicSearchResults = (
       fields: 'id,title,sku',
     },
     {
-      enabled: isAreaEnabled(currentArea, 'inventory'),
+      enabled: shouldEnableQuery('inventory'),
       placeholderData: keepPreviousData,
     }
   );
@@ -218,7 +227,7 @@ const useDynamicSearchResults = (
       fields: 'id,code,status',
     },
     {
-      enabled: isAreaEnabled(currentArea, 'promotion'),
+      enabled: shouldEnableQuery('promotion'),
       placeholderData: keepPreviousData,
     }
   );
@@ -230,7 +239,7 @@ const useDynamicSearchResults = (
       fields: 'id,name',
     },
     {
-      enabled: isAreaEnabled(currentArea, 'campaign'),
+      enabled: shouldEnableQuery('campaign'),
       placeholderData: keepPreviousData,
     }
   );
@@ -242,7 +251,7 @@ const useDynamicSearchResults = (
       fields: 'id,title',
     },
     {
-      enabled: isAreaEnabled(currentArea, 'priceList'),
+      enabled: shouldEnableQuery('priceList'),
       placeholderData: keepPreviousData,
     }
   );
@@ -254,7 +263,7 @@ const useDynamicSearchResults = (
       fields: 'id,email,first_name,last_name',
     },
     {
-      enabled: isAreaEnabled(currentArea, 'user'),
+      enabled: shouldEnableQuery('user'),
       placeholderData: keepPreviousData,
     }
   );
@@ -266,7 +275,7 @@ const useDynamicSearchResults = (
       fields: 'id,name',
     },
     {
-      enabled: isAreaEnabled(currentArea, 'region'),
+      enabled: shouldEnableQuery('region'),
       placeholderData: keepPreviousData,
     }
   );
@@ -302,7 +311,7 @@ const useDynamicSearchResults = (
       fields: 'id,name',
     },
     {
-      enabled: isAreaEnabled(currentArea, 'salesChannel'),
+      enabled: shouldEnableQuery('salesChannel'),
       placeholderData: keepPreviousData,
     }
   );
@@ -313,7 +322,7 @@ const useDynamicSearchResults = (
       fields: 'id,value',
     },
     {
-      enabled: isAreaEnabled(currentArea, 'productType'),
+      enabled: shouldEnableQuery('productType'),
       placeholderData: keepPreviousData,
     }
   );

@@ -99,6 +99,18 @@ export const fetchQuery = async (
     ''
   );
   
+  // Add debugging for reviews endpoint
+  if (url.includes('reviews')) {
+    console.log('🔍 [CLIENT] Making request to reviews endpoint:', {
+      url: `${backendUrl}${url}${params && `?${params}`}`,
+      method,
+      bearer: bearer ? 'Present' : 'Missing',
+      publishableApiKey: publishableApiKey ? 'Present' : 'Missing',
+      params,
+      query
+    });
+  }
+  
   try {
     const response = await fetch(
       `${backendUrl}${url}${params && `?${params}`}`,
@@ -113,6 +125,15 @@ export const fetchQuery = async (
         body: body ? JSON.stringify(body) : null,
       }
     );
+    
+    // Add debugging for reviews endpoint response
+    if (url.includes('reviews')) {
+      console.log('🔍 [CLIENT] Reviews endpoint response:', {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok
+      });
+    }
     
     // Handle session expiration (401 Unauthorized)
     if (response.status === 401 && bearer) {
