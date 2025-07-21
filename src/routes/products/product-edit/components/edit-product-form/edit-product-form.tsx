@@ -1,3 +1,4 @@
+import { useState, useMemo } from 'react';
 import {
   Button,
   Input,
@@ -50,29 +51,56 @@ export const EditProductForm = ({
 }: EditProductFormProps) => {
   const { t } = useTranslation();
   const { handleSuccess } = useRouteModal();
+  
+  // Add reference to track when form needs to be refreshed
+  const [lastUpdatedAt, setLastUpdatedAt] = useState<string | null>(null);
 
   const { getFormFields, getFormConfigs } =
     useDashboardExtension();
   const fields = getFormFields('product', 'edit');
   const configs = getFormConfigs('product', 'edit');
 
+  // Ensure we have a valid product object with required fields
+  const validProduct = useMemo(() => {
+    if (!product) {
+      console.error('Product data is missing in EditProductForm');
+      return null;
+    }
+    
+    // Log product data to verify it's loaded correctly
+    console.log('Current product data in EditProductForm:', product);
+    
+    if (!product.id || !product.title) {
+      console.error('Product is missing required fields:', product);
+      return null;
+    }
+    
+    return product;
+  }, [product, lastUpdatedAt]); // Re-evaluate when product or lastUpdatedAt changes
+
+  // Setup form with product data
   const form = useExtendableForm({
     defaultValues: {
-      status: product.status,
-      title: product.title,
-      material: product.material || '',
-      subtitle: product.subtitle || '',
-      handle: product.handle || '',
-      description: product.description || '',
-      discountable: product.discountable,
+      status: validProduct?.status || 'draft',
+      title: validProduct?.title || '',
+      material: validProduct?.material || '',
+      subtitle: validProduct?.subtitle || '',
+      handle: validProduct?.handle || '',
+      description: validProduct?.description || '',
+      discountable: validProduct?.discountable ?? true,
     },
     schema: EditProductSchema,
     configs: configs,
-    data: product,
+    data: validProduct,
   });
 
   // Use the hook without product ID parameter since it expects options only
-  const { mutateAsync, isPending } = useUpdateProduct();
+  const { mutateAsync, isPending } = useUpdateProduct({
+    onSuccess: () => {
+      // Update the lastUpdatedAt timestamp when a successful update occurs
+      setLastUpdatedAt(new Date().toISOString());
+    },
+  });
 
   const handleSubmit = form.handleSubmit(async (data) => {
     // Show processing toast to give user feedback
@@ -89,15 +117,19 @@ export const EditProductForm = ({
 
       const nullableData = transformNullableFormData(optional);
       
-      // Prepare minimal payload with only essential fields
+      // Prepare payload with only fields accepted by the vendor API
+      // Note: 'status' field is excluded as it's rejected by the vendor API
       const payload = {
         id: product.id, // Include product ID in the payload
         title,
         discountable,
         handle,
-        status: status as HttpTypes.AdminProductStatus,
+        // status field removed - not supported in vendor API
         ...nullableData,
       };
+      
+      // Log the filtered payload
+      console.log('Filtered payload for vendor API:', payload);
       
       // Log what we're trying to update
       console.log(`Updating product ${product.id} with data:`, payload);
@@ -111,6 +143,9 @@ export const EditProductForm = ({
           const productData = data?.product || data;
           const productTitle = productData?.title || product.title;
           const productId = productData?.id || product.id;
+          
+          // Update the lastUpdatedAt timestamp to track successful updates
+          setLastUpdatedAt(new Date().toISOString());
           
           // Close the loading toast
           toast.dismiss(loadingToast);
@@ -126,28 +161,30 @@ export const EditProductForm = ({
             toast.warning("Niektóre zmiany mogły nie zostać zapisane");
           }
           
+          // Force refresh product data when navigating back to product list
           handleSuccess(`/products/${productId}`);
         },
         onError: (e) => {
           console.error('Error in update product mutation:', e);
+          
+          // Close loading toast
           toast.dismiss(loadingToast);
           
-          // More descriptive error message
-          const errorMessage = e.message || 'An unknown error occurred';
+          // Show error message
           toast.error(
-            `Aktualizacja nie powiodła się: ${errorMessage.substring(0, 100)}`
+            `Nie udało się zaktualizować produktu: ${e.message}`
           );
         },
       });
       
       return result;
-    } catch (error) {
-      // This catch handles any errors not caught by the mutation error handler
-      console.error('Unexpected error during product update:', error);
-      toast.dismiss(loadingToast);
+    } catch (e) {
+      console.error('Error in update product submit handler:', e);
       
-      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
-      toast.error(`Nieoczekiwany błąd: ${errorMessage.substring(0, 100)}`);
+      // Show error message for unexpected errors
+      toast.error(
+        `Wystąpił nieoczekiwany błąd: ${e instanceof Error ? e.message : 'Unknown error'}`
+      );
     }
   });
 

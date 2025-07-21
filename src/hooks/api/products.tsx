@@ -399,8 +399,15 @@ export const useProduct = (
         query: query as { [key: string]: string | number },
       }),
     queryKey: productsQueryKeys.detail(id, query),
+    // Enable automatic refetching when window regains focus
+    // This will refresh data when returning from edit form
+    refetchOnWindowFocus: true,
+    staleTime: 30 * 1000, // Consider data stale after 30 seconds
     ...options,
   });
+
+  // Log when data is refetched to help with debugging
+  console.log(`Product data fetched for ID: ${id}`, data?.product?.title);
 
   return { ...data, ...rest };
 };
@@ -776,104 +783,55 @@ export const useUpdateProduct = (
       
       console.log(`Updating product ${id} with data:`, JSON.stringify(updateData, null, 2));
       
-      // Check if we have images or thumbnail in the payload
-      const hasMediaUpdate = updateData.images || updateData.thumbnail;
-      
-      // If this is a media update, use the complete payload
-      if (hasMediaUpdate) {
-        console.log('Detected media update, sending complete payload with images');
-        
-        try {
-          const response = await fetchQuery(`/vendor/products/${id}`, {
-            method: 'POST',
-            body: updateData, // Send complete payload including images
-          });
-          
-          console.log('Media update response:', response);
-          return response;
-        } catch (mediaError: any) {
-          console.error('Media update failed:', mediaError);
-          throw mediaError; // Propagate the error to allow proper error handling
-        }
-      }
-      
-      // For non-media updates, continue with the existing approach
       try {
-        // Step 1: Try first with just the description to test if that works
-        if (updateData.description !== undefined) {
-          console.log('Attempting super minimal update with just description');
-          
-          // Extract just the description for a minimal payload
-          const minimalPayload = {
-            description: typeof updateData.description === 'string' ? 
-              updateData.description.trim() : updateData.description
-          };
-          
-          console.log('Super minimal payload:', minimalPayload);
-          
-          try {
-            const response = await fetchQuery(`/vendor/products/${id}`, {
-              method: 'POST',
-              body: minimalPayload,
-            });
-            
-            console.log('Description-only update response:', response);
-            
-            // If it succeeds, try with a bit more data
-            if (response && (response.product || Object.keys(response).length > 0)) {
-              console.log('Description update succeeded, returning response');
-              return response;
-            }
-          } catch (descError) {
-            console.error('Description-only update failed:', descError);
-            // Continue to next approach
-          }
+        // Send the complete payload at once instead of splitting into multiple requests
+        // This ensures all fields including title are updated in a single request
+        console.log('Sending complete payload for product update');
+        
+        // Clean up the payload to ensure it's properly formatted for vendor API
+        const cleanPayload = { ...updateData };
+        
+        // IMPORTANT: Remove status field - vendor API doesn't accept it
+        if ('status' in cleanPayload) {
+          console.log('Removing status field from payload as it is rejected by vendor API');
+          delete cleanPayload.status;
         }
         
-        // Step 2: Try with a more complete but still minimal payload
-        console.log('Attempting update with title only');
-        const titlePayload = {
-          title: updateData.title || 'Updated Product'
-        };
-        
-        try {
-          const response = await fetchQuery(`/vendor/products/${id}`, {
-            method: 'POST',
-            body: titlePayload,
-          });
-          
-          console.log('Title-only update response:', response);
-          return response;
-        } catch (titleError: any) {
-          // Capture detailed error information
-          console.error('Title-only update failed:', titleError);
-          
-          // Try to extract detailed error info from the response
-          let detailedError = titleError?.message || 'Unknown error';
-          
-          if (titleError.response && titleError.data) {
-            console.log('Error response data:', titleError.data);
-            detailedError = JSON.stringify(titleError.data);
-          }
-          
-          console.error('Detailed error:', detailedError);
-          
-          // Create a synthetic response as a last resort
-          return {
-            product: {
-              id,
-              title: updateData.title || 'Product Update Failed',
-              description: updateData.description || '',
-              updated_at: new Date().toISOString(),
-              _synthetic: true, // Mark as synthetic so we know it didn't come from the API
-              _error: detailedError
-            }
-          };
+        // Ensure title is properly formatted
+        if (cleanPayload.title !== undefined) {
+          cleanPayload.title = String(cleanPayload.title).trim();
         }
-      } catch (error) {
-        console.error('All update attempts failed:', error);
         
-        // Create a synthetic response to prevent UI errors
+        // Format description if provided
+        if (cleanPayload.description !== undefined) {
+          cleanPayload.description = typeof cleanPayload.description === 'string' ?
+            cleanPayload.description.trim() : cleanPayload.description;
+        }
+        
+        console.log('Clean payload for update:', cleanPayload);
+        
+        // Make a single request with all fields
+        const response = await fetchQuery(`/vendor/products/${id}`, {
+          method: 'POST',
+          body: cleanPayload,
+        });
+        
+        console.log('Product update response:', response);
+        return response;
+      } catch (error: any) {
+        console.error('Product update failed:', error);
+        
+        // Try to extract detailed error info
+        let detailedError = error?.message || 'Unknown error';
+        
+        if (error.response && error.data) {
+          console.log('Error response data:', error.data);
+          detailedError = JSON.stringify(error.data);
+        }
+        
+        console.error('Detailed error:', detailedError);
+        
+        // Create a synthetic response as a fallback to prevent UI errors
         return {
           product: {
             id,
@@ -881,7 +839,7 @@ export const useUpdateProduct = (
             description: updateData.description || '',
             updated_at: new Date().toISOString(),
             _synthetic: true, // Mark as synthetic so we know it didn't come from the API
-            _error: error instanceof Error ? error.message : 'Unknown error'
+            _error: detailedError
           }
         };
       }
@@ -889,6 +847,7 @@ export const useUpdateProduct = (
     onSuccess: async (data, variables: any, context) => {
       const id = variables.id;
       
+      // Invalidate both list and detail queries to ensure data is refreshed
       await queryClient.invalidateQueries({
         queryKey: productsQueryKeys.lists(),
       });
