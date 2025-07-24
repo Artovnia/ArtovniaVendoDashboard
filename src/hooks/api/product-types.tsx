@@ -64,9 +64,20 @@ export const useProductTypes = (
   return { ...data, ...rest };
 };
 
+// Define a custom response type for product type requests
+type VendorProductTypeRequestResponse = {
+  request: {
+    id: string;
+    type: string;
+    data: { value: string };
+    status: string;
+    created_at: Date;
+  };
+};
+
 export const useCreateProductType = (
   options?: UseMutationOptions<
-    HttpTypes.AdminProductTypeResponse,
+    VendorProductTypeRequestResponse,
     FetchError,
     HttpTypes.AdminCreateProductType
   >

@@ -42,29 +42,24 @@ export const useNotifications = (
     "queryFn" | "queryKey"
   >
 ) => {
-  // Log the auth token before making the request
-  const checkAuthToken = async () => {
-    const token = await window.localStorage.getItem('medusa_auth_token');
-    console.log('Auth token available:', !!token, token ? `${token.substring(0, 10)}...` : 'none');
-    return token;
-  };
-  
   const { data, ...rest } = useQuery({
     queryFn: async () => {
-      await checkAuthToken();
+      console.log('🔔 [NOTIFICATION] Fetching vendor notifications with query:', query);
       
-      // Try using SDK method instead of direct fetchQuery
       try {
-        return fetchQuery("/vendor/notifications", {
+        const result = await fetchQuery("/vendor/notifications", {
           method: "GET",
           query: query as Record<string, string | number>,
-          headers: {
-            // Ensure authentication headers are set
-            'Cache-Control': 'no-cache',
-          }
         });
+        
+        console.log('✅ [NOTIFICATION] Successfully fetched notifications:', {
+          count: result?.notifications?.length || 0,
+          total: result?.count || 0
+        });
+        
+        return result;
       } catch (error) {
-        console.error('Error fetching notifications:', error);
+        console.error('❌ [NOTIFICATION] Error fetching notifications:', error);
         throw error;
       }
     },

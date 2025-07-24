@@ -31,14 +31,14 @@ export const CreateProductTypeForm = () => {
   const handleSubmit = form.handleSubmit(
     async (values: z.infer<typeof CreateProductTypeSchema>) => {
       await mutateAsync(values, {
-        onSuccess: ({ product_type }) => {
+        onSuccess: ({ request }) => {
           toast.success(
             t("productTypes.create.successToast", {
-              value: product_type.value,
+              value: request.data.value,
             })
           )
 
-          handleSuccess(`/settings/product-types/${product_type.id}`)
+          handleSuccess(`/settings/product-types`)
         },
         onError: (e) => {
           toast.error(e.message)
