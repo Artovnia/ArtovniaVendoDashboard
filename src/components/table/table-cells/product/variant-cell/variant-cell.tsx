@@ -1,3 +1,4 @@
+
 import { useTranslation } from "react-i18next"
 
 import { PlaceholderCell } from "../../common/placeholder-cell"
@@ -17,7 +18,7 @@ export const VariantCell = ({ variants }: VariantCellProps) => {
   return (
     <div className="flex h-full w-full items-center overflow-hidden">
       <span className="truncate">
-        {t("products.variantCount", { count: variants.length })}
+        Warianty: {variants.length}
       </span>
     </div>
   )
@@ -28,7 +29,7 @@ export const VariantHeader = () => {
 
   return (
     <div className="flex h-full w-full items-center">
-      <span>{t("fields.variants")}</span>
+      <span>Warianty</span>
     </div>
   )
 }

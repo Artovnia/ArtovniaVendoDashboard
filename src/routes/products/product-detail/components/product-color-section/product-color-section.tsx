@@ -1,12 +1,14 @@
 import { Container, Heading, Text } from '@medusajs/ui'
 import { Swatch } from '@medusajs/icons'
 import { useProductColors } from '../../../../../hooks/api/colors'
+import { useTranslation } from 'react-i18next'
 
 interface ProductColorSectionProps {
   productId: string
 }
 
 export const ProductColorSection = ({ productId }: ProductColorSectionProps) => {
+  const { t } = useTranslation()
   const {
     data: productColorsData,
     isLoading
@@ -17,11 +19,11 @@ export const ProductColorSection = ({ productId }: ProductColorSectionProps) => 
   return (
     <Container className="p-0">
       <div className="flex items-center justify-between px-6 py-4">
-        <Heading level="h2">Kolory produktu</Heading>
+        <Heading level="h2">{t('products.colors.header', 'Colors')}</Heading>
       </div>
       <div className="px-6 py-4">
         {isLoading ? (
-          <Text className="text-ui-fg-subtle">Ładowanie...</Text>
+          <Text className="text-ui-fg-subtle">{t('products.colors.loading', 'Loading colors...')}</Text>
         ) : assignedColors.length > 0 ? (
           <div className="flex flex-wrap gap-2">
             {assignedColors.map((color: { id: string; display_name: string; hex_code?: string }) => (
@@ -38,7 +40,7 @@ export const ProductColorSection = ({ productId }: ProductColorSectionProps) => 
             ))}
           </div>
         ) : (
-          <Text className="text-ui-fg-subtle">Brak przypisanych kolorów</Text>
+          <Text className="text-ui-fg-subtle">{t('products.colors.noColors', 'No colors assigned to this product')}</Text>
         )}
       </div>
     </Container>

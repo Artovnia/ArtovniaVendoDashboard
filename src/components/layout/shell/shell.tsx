@@ -15,6 +15,7 @@ import {
 import { KeybindProvider } from "../../../providers/keybind-provider"
 import { useGlobalShortcuts } from "../../../providers/keybind-provider/hooks"
 import { useSidebar } from "../../../providers/sidebar-provider"
+import { LanguageSwitcher } from "../../common/language-switcher/language-switcher"
 import { ProgressBar } from "../../common/progress-bar"
 import { Notifications } from "../notifications"
 
@@ -199,6 +200,7 @@ const Topbar = () => {
         <Breadcrumbs />
       </div>
       <div className="flex items-center justify-end gap-x-3">
+        <LanguageSwitcher />
         <Notifications />
       </div>
     </div>

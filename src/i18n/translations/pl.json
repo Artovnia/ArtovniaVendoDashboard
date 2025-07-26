@@ -1,6 +1,7 @@
 {
   "$schema": "./$schema.json",
   "general": {
+    "search": "Szukaj",
     "ascending": "Rosnąco",
     "descending": "Malejąco",
     "add": "Dodaj",
@@ -140,6 +141,114 @@
   },
   "operators": {
     "in": "W"
+  },
+  "products": {
+    "color_scheme": {
+      "title": "Schemat kolorów",
+      "emptyState": "Nie wybrano schematu kolorów",
+      "search": "Szukaj kolorów",
+      "create": "Utwórz nowy schemat kolorów"
+    },
+    "variants": {
+      "header": "Warianty",
+      "empty": {
+        "heading": "Brak wariantów",
+        "description": "Nie masz jeszcze żadnych wariantów. Dodaj pierwszy wariant, aby rozpocząć."
+      },
+      "variantColumn": "Wariant",
+      "priceColumn": "Cena",
+      "stockColumn": "Stan",
+      "actionsColumn": "Akcje"
+    },
+    "editPrices": "Edytuj ceny"
+  },
+
+  "holidayMode": {
+    "title": "Tryb wakacyjny",
+    "subtitle": "Ustaw swój sklep w tryb wakacyjny, gdy planujesz być nieobecny lub robić sobie przerwę.",
+    "loading": "Ładowanie...",
+    "enableHolidayMode": "Włącz tryb wakacyjny",
+    "enableDescription": "Gdy tryb wakacyjny jest włączony, klienci zobaczą wiadomość o tymczasowym zamknięciu.",
+    "startDate": "Data rozpoczęcia",
+    "endDate": "Data zakończenia",
+    "customerMessage": "Wiadomość dla klientów",
+    "customerMessagePlaceholder": "Wprowadź wiadomość, która będzie wyświetlana klientom podczas Twojej nieobecności",
+    "status": {
+      "status": "Status",
+      "enabled": "Włączony",
+      "disabled": "Wyłączony",
+      "planned": "Zaplanowany",
+      "active": "Aktywny",
+      "ended": "Zakończony"
+    },
+    "details": {
+      "title": "Szczegóły trybu wakacyjnego",
+      "edit": "Edytuj",
+      "holidayMode": "Tryb wakacyjny:",
+      "startDate": "Data rozpoczęcia:",
+      "endDate": "Data zakończenia:",
+      "message": "Wiadomość dla klientów:",
+      "noMessage": "Brak wiadomości",
+      "notSet": "Nie ustawiono",
+      "invalidDate": "Nieprawidłowa data"
+    },
+    "errors": {
+      "noSellerId": "Nie można zaktualizować ustawień - nie znaleziono identyfikatora sprzedawcy",
+      "updateFailed": "Nie udało się zaktualizować ustawień trybu wakacyjnego",
+      "cantLoadSettings": "Nie można załadować ustawień trybu wakacyjnego. Nie znaleziono identyfikatora sprzedawcy."
+    },
+    "success": {
+      "settingsUpdated": "Ustawienia trybu wakacyjnego zostały pomyślnie zaktualizowane"
+    },
+    "validation": {
+      "startDateRequired": "Data rozpoczęcia jest wymagana"
+    },
+    "edit": "Edytuj",
+    "required": "Data początkowa jest wymagana"
+  },
+  "messages": {
+    "title": "Wiadomości",
+    "admin": "Admin",
+    "user": "Klienci",
+    "adminDescription": "Komunikuj się z administratorami marketplace. Wszystkie wiadomości są zapisywane w celach referencyjnych.",
+    "userDescription": "Komunikuj się ze swoimi klientami na temat zamówień, produktów i zapytań.",
+    "newMessage": "Nowa Wiadomość",
+    "sendMessage": "Wyślij Wiadomość",
+    "replyToThread": "Odpowiedz",
+    "subject": "Temat",
+    "message": "Wiadomość",
+    "attachFile": "Załącz plik",
+    "send": "Wyślij",
+    "sendReply": "Wyślij odpowiedź",
+    "sending": "Wysyłanie...",
+    "cancel": "Anuluj",
+    "reply": "Odpowiedz",
+    "noThreadsFound": "Nie znaleziono wątków wiadomości.",
+    "startConversation": "Rozpocznij rozmowę, wysyłając wiadomość powyżej.",
+    "noMessagesInThread": "Brak wiadomości w tym wątku.",
+    "noMessages": "Brak wiadomości w tym wątku.",
+    "pagination": "Strona {{current}} z {{total}}",
+    "previous": "Poprzednia",
+    "next": "Następna",
+    "attachment": "Załącznik",
+    "language": "Język",
+    "threads": "Wątki",
+    "loadingThreads": "Ładowanie wątków wiadomości...",
+    "new": "Nowa",
+    "conversations": "Konwersacje",
+    "attachmentOptional": "Załącznik (opcjonalnie)",
+    "remove": "Usuń",
+    "noSubject": "Brak tematu",
+    "conversation": "Rozmowa z",
+    "subjectPlaceholder": "Wpisz temat wiadomości",
+    "messagePlaceholder": "Wpisz swoją wiadomość...",
+    "replyPlaceholder": "Wpisz swoją odpowiedź...",
+    "senderTypes": {
+      "admin": "Admin",
+      "seller": "Ty",
+      "customer": "Klient",
+      "user": "Klient"
+    }
   },
   "app": {
     "search": {
@@ -385,6 +494,11 @@
     "domain": "Produkty",
     "list": {
       "noRecordsMessage": "Utwórz swój pierwszy produkt, aby rozpocząć sprzedaż."
+    },
+    "attributes": "Atrybuty produktu",
+    "options": {
+      "header": "Opcje produktu",
+      "deleteWarning": "Czy na pewno chcesz usunąć opcję '{{title}}'?"
     },
     "edit": {
       "header": "Edytuj produkt",
@@ -2768,6 +2882,90 @@
     "endDate": "Data końcowa",
     "draft": "Projekt",
     "values": "Wartości"
+  },
+  "stockLocations": {
+    "shippingOptions": {
+      "fields": {
+        "count": {
+          "shipping": "{{count}} opcji wysyłki",
+          "pickup": "{{count}} opcji odbioru",
+          "returns": "{{count}} opcji zwrotu"
+        }
+      }
+    }
+  },
+  "products": {
+    "create": {
+      "color_scheme": {
+        "default_variant": "Domyślny wariant",
+        "variant_name": "Wariant: {{name}}",
+        "assigned_colors": "Przypisane kolory",
+        "add_more_colors": "Dodaj więcej kolorów",
+        "add_color": "Dodaj kolor",
+        "select_color": "Wybierz kolor dla tego wariantu",
+        "color": "Kolor"
+      }
+    },
+    "colors": {
+      "header": "Kolory produktu",
+      "loading": "Ładowanie...",
+      "noColors": "Brak przypisanych kolorów"
+    },
+    "domain": "Produkty",
+    "list": {
+      "noRecordsMessage": "Nie znaleziono produktów"
+    },
+    "productStatus": {
+      "draft": "Szkic",
+      "proposed": "Zaproponowany",
+      "published": "Opublikowany",
+      "rejected": "Odrzucony"
+    },
+    "variants": {
+      "header": "Warianty",
+      "empty": {
+        "heading": "Brak wariantów",
+        "description": "Nie masz jeszcze żadnych wariantów. Dodaj pierwszy wariant, aby rozpocząć."
+      }
+    },
+    "editPrices": "Edytuj ceny",
+    "variant": {
+      "goToInventory": "Przejdź do magazynu"
+    },
+    "gpsr": {
+      "title": "Informacje GPSR",
+      "producer": {
+        "section": "Dane Producenta",
+        "name": {
+          "label": "Nazwa Producenta"
+        },
+        "address": {
+          "label": "Adres Producenta"
+        },
+        "contact": {
+          "label": "Kontakt do Producenta"
+        }
+      },
+      "importer": {
+        "section": "Dane Importera",
+        "name": {
+          "label": "Nazwa Importera"
+        },
+        "address": {
+          "label": "Adres Importera"
+        },
+        "contact": {
+          "label": "Kontakt do Importera"
+        }
+      },
+      "instructions": {
+        "label": "Instrukcje / Ostrzeżenia"
+      },
+      "certificates": {
+        "label": "Certyfikaty"
+      },
+      "no_data": "Nie dodano jeszcze informacji GPSR dla tego produktu. Informacje GPSR obejmują dane producenta, importera, instrukcje oraz certyfikaty zgodności."
+    }
   },
   "dateTime": {
     "years_one": "Rok",

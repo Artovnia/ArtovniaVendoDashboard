@@ -13,6 +13,7 @@ import { useHolidayMode, useUpdateHolidayMode } from '../../hooks/api/holiday-mo
 import { useMe } from '../../hooks/api/users';
 import { useForm } from 'react-hook-form';
 import { HolidayModeDetails } from './components/holiday-mode-details';
+import { useTranslation } from 'react-i18next';
 
 interface HolidayModeFormValues {
   is_holiday_mode: boolean;
@@ -22,6 +23,7 @@ interface HolidayModeFormValues {
 }
 
 export const HolidayMode = () => {
+  const { t } = useTranslation();
   const { seller, isLoading: isLoadingUser } = useMe();
   
   // State to control whether to show form or details view
@@ -69,7 +71,7 @@ export const HolidayMode = () => {
   // Form submission handler
   const onSubmit = async (data: HolidayModeFormValues) => {
     if (!seller?.id) {
-      toast.error('Nie można zaktualizować ustawień - brak identyfikatora sprzedawcy');
+      toast.error(t('holidayMode.errors.noSellerId', 'Seller ID not found'));
       return;
     }
     
@@ -84,27 +86,27 @@ export const HolidayMode = () => {
       // Refresh holiday mode data
       await refetch();
       
-      toast.success('Ustawienia trybu wakacyjnego zostały pomyślnie zaktualizowane');
+      toast.success(t('holidayMode.success.settingsUpdated', 'Holiday mode settings updated successfully'));
       
       // Switch to details view after successful update
       setShowForm(false);
     } catch (error) {
       console.error('Failed to update holiday mode:', error);
-      toast.error('Nie udało się zaktualizować ustawień trybu wakacyjnego');
+      toast.error(t('holidayMode.errors.updateFailed', 'Failed to update holiday mode'));
     }
   };
 
   if (isLoading) {
-    return <div className="flex justify-center p-12"><Text>Ładowanie...</Text></div>;
+    return <div className="flex justify-center p-12"><Text>{t('common.loading', 'Loading...')}</Text></div>;
   }
   
   if (!seller?.id) {
     return (
       <div className="p-6 border rounded-lg bg-ui-bg-base">
-        <Text className="text-ui-fg-subtle">Nie można załadować ustawień trybu wakacyjnego. Nie znaleziono identyfikatora sprzedawcy.</Text>
+        <Text className="text-ui-fg-subtle">{t('holidayMode.errors.cantLoadSettings', 'Cannot load holiday mode settings')}</Text>
         {seller && (
           <div className="mt-4 p-3 border-t border-ui-border-base">
-            <Text className="text-xs text-ui-fg-muted">Debug info: {JSON.stringify(seller)}</Text>
+            <Text className="text-xs text-ui-fg-muted">{t('common.debugInfo', 'Debug Info')}: {JSON.stringify(seller)}</Text>
           </div>
         )}
       </div>
@@ -120,18 +122,18 @@ export const HolidayMode = () => {
     <form onSubmit={handleSubmit(onSubmit)}>
       <Container className="border rounded-lg shadow-sm bg-ui-bg-base">
         <div className="px-6 pt-6 pb-4">
-          <Heading level="h2">Tryb wakacyjny</Heading>
+          <Heading level="h2">{t('holidayMode.title', 'Holiday Mode')}</Heading>
           <Text className="text-ui-fg-subtle mt-2">
-            Ustaw sklep w tryb wakacyjny, gdy planowany jest twój wyjazd lub przerwa w działalności.
+            {t('holidayMode.description', 'Configure your shop\'s holiday mode settings here.')}
           </Text>
         </div>
         
         <div className="px-6 py-4">
           <div className="flex items-center justify-between mb-6 p-2">
             <div>
-              <Text className="font-medium">Włącz tryb wakacyjny</Text>
+              <Text className="font-medium">{t('holidayMode.enableHolidayMode', 'Enable Holiday Mode')}</Text>
               <Text className="text-ui-fg-subtle text-sm">
-                Kiedy tryb wakacyjny jest włączony, klienci będą widzieć komunikat o twoim tymczasowym zamknięciu.
+                {t('holidayMode.enableDescription', 'When enabled, your customers will be notified that your shop is on holiday.')}
               </Text>
             </div>
             <Switch
@@ -145,11 +147,11 @@ export const HolidayMode = () => {
             <div className="grid gap-y-4">
               <div>
                 <Text className="font-medium mb-2 block">
-                  Data początkowa*
+                  {t('holidayMode.startDate', 'Start date')}*
                 </Text>
                 <DatePicker 
                   {...register('holiday_start_date', { 
-                    required: isEnabled ? "Data początkowa jest wymagana" : false 
+                    required: isEnabled ? t('holidayMode.validation.startDateRequired', 'Start date is required when holiday mode is enabled') : false 
                   })}
                   value={watch('holiday_start_date')}
                   onChange={(date) => setValue('holiday_start_date', date)}
@@ -163,7 +165,7 @@ export const HolidayMode = () => {
               
               <div>
                 <Text className="font-medium mb-2 block">
-                  Data końcowa
+                  {t('holidayMode.endDate', 'End date')}
                 </Text>
                 <DatePicker 
                   {...register('holiday_end_date')}
@@ -174,11 +176,11 @@ export const HolidayMode = () => {
               
               <div>
                 <Text className="font-medium mb-2 block">
-                  Wiadomość dla klientów
+                  {t('holidayMode.customerMessage', 'Message for customers')}
                 </Text>
                 <Textarea 
                   {...register('holiday_message')}
-                  placeholder="Wpisz wiadomość, która będzie wyświetlana klientom podczas twojej nieobecności"
+                  placeholder={t('holidayMode.customerMessagePlaceholder', 'Enter a message to display to your customers when your shop is on holiday...')}
                   rows={3}
                   className="w-full"
                 />
@@ -194,7 +196,7 @@ export const HolidayMode = () => {
             disabled={isSubmitting}
             variant="primary"
           >
-            Zapisz
+            {t('common.save', 'Save')}
           </Button>
         </div>
       </Container>

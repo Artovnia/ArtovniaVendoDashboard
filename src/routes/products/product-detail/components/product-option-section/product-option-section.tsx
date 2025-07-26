@@ -21,7 +21,7 @@ const OptionActions = ({
     const res = await prompt({
       title: t("general.areYouSure"),
       description: t("products.options.deleteWarning", {
-        title: option.title,
+        title: option.title
       }),
       confirmText: t("actions.delete"),
       cancelText: t("actions.cancel"),

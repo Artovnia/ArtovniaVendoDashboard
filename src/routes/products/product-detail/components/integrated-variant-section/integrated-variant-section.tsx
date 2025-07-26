@@ -112,10 +112,10 @@ export const IntegratedVariantSection = ({
         <div className="border-t border-ui-border-base">
           {/* Table headers for better readability */}
           <div className="flex items-center px-6 py-2 bg-ui-bg-base border-b border-ui-border-base text-ui-fg-subtle text-sm font-medium">
-            <div className="flex-1">Wariant</div>
-            <div className="w-20 text-right">Cena</div>
-            <div className="w-20 text-right">Stan</div>
-            <div className="w-24 text-right">Akcje</div>
+            <div className="flex-1">{t('products.variants.variantColumn', 'Variant')}</div>
+            <div className="w-20 text-right">{t('products.variants.priceColumn', 'Price')}</div>
+            <div className="w-20 text-right">{t('products.variants.stockColumn', 'Stock')}</div>
+            <div className="w-24 text-right">{t('products.variants.actionsColumn', 'Actions')}</div>
           </div>
           
           {variants.map((variant) => (

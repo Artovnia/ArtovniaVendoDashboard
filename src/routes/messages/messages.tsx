@@ -2,6 +2,8 @@ import { Container, Tabs, Text, Button, Heading, Textarea, Input, Label, Badge }
 import { useState, useEffect, useMemo } from "react";
 import { PlusMini, ArrowDownLeft, PaperClip, ChevronDown, ChevronUpMini } from "@medusajs/icons";
 import { format } from "date-fns";
+import { pl, enUS } from "date-fns/locale";
+import { useTranslation } from "react-i18next";
 import { useVendorThreads, useSendVendorMessage, useMarkThreadAsRead, useCustomersDetails, MessageThread as BaseMessageThread } from "../../hooks/api/useMessages";
 import { uploadFilesQuery } from "../../lib/client";
 import { toast } from "@medusajs/ui";
@@ -13,6 +15,7 @@ type MessageThread = BaseMessageThread & {
 };
 
 export function MessagesPage() {
+  const { t, i18n } = useTranslation();
   const [activeTab, setActiveTab] = useState<'admin' | 'user'>('admin');
   const [message, setMessage] = useState("");
   const [subject, setSubject] = useState("");
@@ -230,7 +233,9 @@ export function MessagesPage() {
   };
   
   const formatDate = (dateString: string) => {
-    return format(new Date(dateString), "MMM d, yyyy h:mm a");
+    const locale = i18n.language === 'pl' ? pl : enUS;
+    const formatPattern = i18n.language === 'pl' ? "d MMM yyyy, HH:mm" : "MMM d, yyyy h:mm a";
+    return format(new Date(dateString), formatPattern, { locale });
   };
   
   // Extract unique customer IDs from threads that don't have emails
@@ -267,7 +272,7 @@ export function MessagesPage() {
   }, [customersData]);
   
   // Helper function to get sender name based on type
-  const getSenderName = (senderType: string, thread?: MessageThread) => {
+  const getSenderName = (senderType: string, thread?: MessageThread): string => {
     if (senderType === 'seller') {
       return 'You';
     } else if (senderType === 'admin') {
@@ -372,7 +377,7 @@ export function MessagesPage() {
   
   return (
     <Container className="p-6 rounded-lg shadow-md max-w-4xl mx-auto">
-      <Heading className="text-xl font-bold mb-4">Wiadomości</Heading>
+      <Heading className="text-xl font-bold mb-4">{t('messages.title', 'Messages')}</Heading>
       
       <Tabs 
         value={activeTab} 
@@ -380,29 +385,29 @@ export function MessagesPage() {
         className="mb-6"
       >
         <Tabs.List className="border-b border-ui-border-base w-full">
-          <Tabs.Trigger value="admin" className="pb-2">Admin</Tabs.Trigger>
-          <Tabs.Trigger value="user" className="pb-2 ml-4">Klienci</Tabs.Trigger>
+          <Tabs.Trigger value="admin" className="pb-2">{t('messages.admin', 'Admin')}</Tabs.Trigger>
+          <Tabs.Trigger value="user" className="pb-2 ml-4">{t('messages.user', 'Clients')}</Tabs.Trigger>
         </Tabs.List>
       </Tabs>
       
       <div className="mb-6">
         <Text className="text-gray-600 mb-4">
           {activeTab === 'admin' 
-            ? "Communicate with marketplace administrators. All messages are recorded for reference."
-            : "Communicate with your customers about orders, products, and inquiries."
+            ? t('messages.adminDescription', 'Communicate with marketplace administrators. All messages are recorded for reference.')
+            : t('messages.userDescription', 'Communicate with your customers about orders, products, and inquiries.')
           }
         </Text>
         
         {showNewMessageForm ? (
           <div className="space-y-4 mb-8 p-4 border rounded-lg">
             <div className="flex justify-between items-center">
-              <Heading className="text-lg">Nowa wiadomość</Heading>
+              <Heading className="text-lg">{t('messages.newMessage', 'New message')}</Heading>
             </div>
             
             <div>
-              <Text className="font-semibold mb-1">Temat</Text>
+              <Text className="font-semibold mb-1">{t('messages.subject', 'Subject')}</Text>
               <Input
-                placeholder="Wpisz temat wiadomości"
+                placeholder={t('messages.subjectPlaceholder', 'Enter message subject')}
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 className="w-full"
@@ -410,9 +415,9 @@ export function MessagesPage() {
             </div>
             
             <div>
-              <Text className="font-semibold mb-1">Wiadomość</Text>
+              <Text className="font-semibold mb-1">{t('messages.message', 'Message')}</Text>
               <Textarea
-                placeholder="Wpisz swoją wiadomość..."
+                placeholder={t('messages.messagePlaceholder', 'Type your message...')}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 className="w-full"
@@ -421,7 +426,7 @@ export function MessagesPage() {
             </div>
             
             <div>
-              <Label className="font-semibold mb-2 block">Załącznik (opcjonalnie)</Label>
+              <Label className="font-semibold mb-2 block">{t('messages.attachmentOptional', 'Attachment (optional)')}</Label>
               <div className="flex items-center space-x-2">
                 <Input
                   type="file"
@@ -450,30 +455,30 @@ export function MessagesPage() {
                 className="flex items-center gap-2"
               >
                 <PlusMini className="w-4 h-4" />
-                {isSending ? "Sending..." : "Send Message"}
+                {isSending ? t('messages.sending', 'Sending...') : t('messages.send', 'Send')}
               </Button>
             </div>
           </div>
         ) : selectedThreadId ? (
           <div className="space-y-4 mb-8 p-4 border rounded-lg">
             <div className="flex justify-between items-center">
-              <Heading className="text-lg">Odpowiedz do wątku</Heading>
+              <Heading className="text-lg">{t('messages.replyToThread', 'Reply to thread')}</Heading>
               <Button variant="secondary" onClick={() => {
                 setSelectedThreadId(null);
                 setShowNewMessageForm(true);
-              }}>Nowa wiadomość</Button>
+              }}>{t('messages.newMessage', 'New message')}</Button>
             </div>
             
             <div>
               <Badge>
-                {threads?.find(t => t.id === selectedThreadId)?.subject || ""}
+                {threads?.find(t => t.id === selectedThreadId)?.subject || t('messages.noSubject', 'No Subject')}
               </Badge>
             </div>
             
             <div>
-              <Text className="font-semibold mb-1">Odpowiedz</Text>
+              <Text className="font-semibold mb-1">{t('messages.reply', 'Reply')}</Text>
               <Textarea
-                placeholder="Type your reply here..."
+                placeholder={t('messages.replyPlaceholder', 'Type your reply here...')}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 className="w-full"
@@ -482,7 +487,7 @@ export function MessagesPage() {
             </div>
             
             <div>
-              <Label className="font-semibold mb-2 block">Attachment (optional)</Label>
+              <Label className="font-semibold mb-2 block">{t('messages.attachmentOptional', 'Attachment (optional)')}</Label>
               <div className="flex items-center space-x-2">
                 <Input
                   type="file"
@@ -511,7 +516,7 @@ export function MessagesPage() {
                 className="flex items-center gap-2"
               >
                 <ArrowDownLeft className="w-4 h-4" />
-                {isSending ? "Sending..." : "Send Reply"}
+                {isSending ? t('messages.sending', 'Sending...') : t('messages.sendReply', 'Send Reply')}
               </Button>
             </div>
           </div>
@@ -519,10 +524,10 @@ export function MessagesPage() {
         
         {/* Message Threads */}
         <div className="mt-8">
-          <Heading className="text-lg font-semibold mb-4">Wątki</Heading>
+          <Heading className="text-lg font-semibold mb-4">{t('messages.threads', 'Threads')}</Heading>
           
           {isLoadingThreads ? (
-            <Text>Loading message threads...</Text>
+            <Text>{t('messages.loadingThreads', 'Loading message threads...')}</Text>
           ) : currentThreads && currentThreads.length > 0 ? (
             <div className="space-y-4">
               {currentThreads.map((thread) => (
@@ -536,7 +541,7 @@ export function MessagesPage() {
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <Heading level="h3" className="text-base font-medium">
-                          {thread.subject}
+                          {thread.subject || t('messages.noSubject', 'No Subject')}
                         </Heading>
                         
                         {/* Show customer email badge in user tab */}
@@ -547,10 +552,17 @@ export function MessagesPage() {
                         )}
                         
                         {hasUnreadMessages(thread) && (
-                          <Badge className="ml-2 bg-blue-100 text-blue-800">New</Badge>
+                          <Badge className="ml-2 bg-blue-100 text-blue-800">{t('messages.new', 'New')}</Badge>
                         )}
                       </div>
-                      <Text className="text-sm text-gray-500">{formatDate(thread.created_at)}</Text>
+                      <Text className="text-sm text-gray-500">
+                        {thread.subject ? (
+                          <span className="font-medium">{thread.subject} • </span>
+                        ) : (
+                          <span className="font-medium">{t('messages.noSubject', 'No Subject')} • </span>
+                        )}
+                        {formatDate(thread.created_at)}
+                      </Text>
                     </div>
                     
                     <div className="flex items-center gap-2">
@@ -571,7 +583,7 @@ export function MessagesPage() {
                   {!collapsedThreads[thread.id] && (
                     <div className="p-4">
                       <div className="flex justify-between items-center mb-4">
-                        <Text className="text-sm text-gray-500">Konwersacje:</Text>
+                        <Text className="text-sm text-gray-500">{t('messages.conversation', 'Conversation with')}:</Text>
                         <Button 
                           variant="secondary" 
                           size="small"
@@ -579,7 +591,7 @@ export function MessagesPage() {
                           className="flex items-center gap-1"
                         >
                           <ArrowDownLeft className="w-3 h-3" />
-                          Reply
+                          {t('messages.reply', 'Reply')}
                         </Button>
                       </div>
                       
@@ -628,7 +640,7 @@ export function MessagesPage() {
                           ))}
                         </div>
                       ) : (
-                        <Text className="text-gray-500 italic">No messages in this thread yet.</Text>
+                        <Text className="text-gray-500 italic">{t('messages.noMessages', 'No messages in this thread yet.')}</Text>
                       )}
                     </div>
                   )}
@@ -637,8 +649,8 @@ export function MessagesPage() {
             </div>
           ) : (
             <div className="p-6 text-center border rounded-lg">
-              <Text className="text-gray-500">No message threads found.</Text>
-              <Text className="text-sm text-gray-400 mt-1">Start a conversation by sending a message above.</Text>
+              <Text className="text-gray-500">{t('messages.noThreadsFound', 'No message threads found.')}</Text>
+              <Text className="text-sm text-gray-400 mt-1">{t('messages.startConversation', 'Start a conversation by sending a message above.')}</Text>
             </div>
           )}
           
@@ -651,7 +663,7 @@ export function MessagesPage() {
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
               >
-                Previous
+                {t('messages.previous', 'Previous')}
               </Button>
               
               <div className="flex space-x-2">
@@ -674,7 +686,7 @@ export function MessagesPage() {
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
               >
-                Next
+                {t('messages.next', 'Next')}
               </Button>
             </div>
           )}
