@@ -56,6 +56,7 @@ export const ProductCreateForm = ({
   pricePreferences,
 }: ProductCreateFormProps) => {
   const [tab, setTab] = useState<Tab>(Tab.DETAILS);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [tabState, setTabState] = useState<TabState>({
     [Tab.DETAILS]: 'in-progress',
     [Tab.ORGANIZE]: 'not-started',
@@ -105,6 +106,9 @@ export const ProductCreateForm = ({
 
   const onSubmit = form.handleSubmit(
     async (values, e) => {
+      // Set submitting state to prevent duplicate submissions
+      setIsSubmitting(true);
+      
       let isDraftSubmission = false;
       if (e?.nativeEvent instanceof SubmitEvent) {
         const submitter = e.nativeEvent
@@ -389,6 +393,7 @@ export const ProductCreateForm = ({
         },
         {
           onSuccess: async (data: any) => {
+          setIsSubmitting(false); // Reset submitting state on success
             try {
               console.log('Product creation response:', data);
               
@@ -497,8 +502,9 @@ export const ProductCreateForm = ({
             }
           },
           onError: (error: Error) => {
-            toast.error(error.message);
-          }
+          setIsSubmitting(false); // Reset submitting state on error
+          toast.error(t('errors.productCreateFailed'));
+        },
         }
       );
     }
@@ -718,7 +724,7 @@ export const ProductCreateForm = ({
               data-name={SAVE_DRAFT_BUTTON}
               size='small'
               type='submit'
-              isLoading={isPending}
+              isLoading={isPending || isSubmitting}
               className='whitespace-nowrap'
             >
               {t('actions.saveAsDraft')}
@@ -726,7 +732,7 @@ export const ProductCreateForm = ({
             <PrimaryButton
               tab={tab}
               next={onNext}
-              isLoading={isPending}
+              isLoading={isPending || isSubmitting}
               showInventoryTab={showInventoryTab}
             />
           </div>
