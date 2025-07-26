@@ -16,10 +16,12 @@ import { countries } from "../../../../../lib/data/countries"
 import { GeoZoneForm } from "../../../common/components/geo-zone-form"
 import { GEO_ZONE_STACKED_MODAL_ID } from "../../../common/constants"
 
-const EditeServiceZoneSchema = z.object({
+const EditServiceZoneSchema = z.object({
   countries: z
     .array(z.object({ iso_2: z.string().min(2), display_name: z.string() }))
-    .min(1),
+    .refine((countries) => countries.length === 1, {
+      message: "Only one country can be selected per service zone. Please create a new service zone for additional countries.",
+    })
 })
 
 type EditServiceZoneAreasFormProps = {
@@ -36,7 +38,7 @@ export function EditServiceZoneAreasForm({
   const { t } = useTranslation()
   const { handleSuccess } = useRouteModal()
 
-  const form = useForm<z.infer<typeof EditeServiceZoneSchema>>({
+  const form = useForm<z.infer<typeof EditServiceZoneSchema>>({
     defaultValues: {
       countries: zone.geo_zones.map((z) => {
         const country = countries.find((c) => c.iso_2 === z.country_code)
@@ -47,7 +49,7 @@ export function EditServiceZoneAreasForm({
         }
       }),
     },
-    resolver: zodResolver(EditeServiceZoneSchema),
+    resolver: zodResolver(EditServiceZoneSchema),
   })
 
   const { mutateAsync: editServiceZone, isPending: isLoading } =
@@ -56,7 +58,7 @@ export function EditServiceZoneAreasForm({
   const handleSubmit = form.handleSubmit(async (data) => {
     await editServiceZone(
       {
-        geo_zones: data.countries.map(({ iso_2 }) => ({
+        geo_zones: data.countries.map(({ iso_2 }: { iso_2: string; display_name: string }) => ({
           country_code: iso_2,
           type: "country",
         })),

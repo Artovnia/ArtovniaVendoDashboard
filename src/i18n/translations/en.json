@@ -142,81 +142,7 @@
   "operators": {
     "in": "In"
   },
-  "holidayMode": {
-    "title": "Holiday Mode",
-    "subtitle": "Set your store to holiday mode when you plan to be away or take a break from operations.",
-    "detailsHeader": "Holiday Mode Details",
-    "form": {
-      "enable": "Enable Holiday Mode",
-      "enableDescription": "When holiday mode is enabled, customers will see a message about your temporary closure.",
-      "startDate": "Start Date*",
-      "endDate": "End Date",
-      "message": "Message for Customers",
-      "messagePlaceholder": "Enter a message that will be shown to customers during your absence",
-      "save": "Save",
-      "edit": "Edit",
-      "required": "Start date is required"
-    },
-    "status": {
-      "status": "Status",
-      "enabled": "Enabled",
-      "disabled": "Disabled",
-      "planned": "Planned",
-      "active": "Active",
-      "ended": "Ended"
-    },
-    "detailsSection": {
-      "title": "Holiday Mode Details",
-      "edit": "Edit",
-      "holidayMode": "Holiday Mode:",
-      "startDate": "Start Date:",
-      "endDate": "End Date:",
-      "message": "Message for Customers:",
-      "noMessage": "No message",
-      "notSet": "Not set",
-      "invalidDate": "Invalid date"
-    },
-    "errors": {
-      "loadingError": "Loading...",
-      "noSellerId": "Cannot load holiday mode settings. Seller ID not found.",
-      "updateFailed": "Failed to update holiday mode settings",
-      "updateSuccess": "Holiday mode settings successfully updated"
-    }
-  },
-  "messages": {
-    "title": "Messages",
-    "tabs": {
-      "admin": "Admin Messages",
-      "user": "Customer Messages"
-    },
-    "newMessage": "New Message",
-    "sendMessage": "Send Message",
-    "replyToThread": "Reply",
-    "subject": "Subject",
-    "message": "Message",
-    "attachment": "Attachment",
-    "addAttachment": "Add Attachment",
-    "removeAttachment": "Remove",
-    "sending": "Sending...",
-    "send": "Send",
-    "messageSent": "Message sent successfully",
-    "errorSending": "Error sending message",
-    "uploadingAttachment": "Uploading attachment...",
-    "uploadError": "Error uploading attachment",
-    "noThreads": "No message threads found.",
-    "startConversation": "Start a conversation by sending a message above.",
-    "noMessages": "No messages in this thread yet.",
-    "pagination": {
-      "previous": "Previous",
-      "next": "Next"
-    },
-    "senderTypes": {
-      "admin": "Admin",
-      "seller": "You",
-      "customer": "Customer"
-    }
-  },
-  "app": { 
+  "app": {
     "search": {
       "label": "Search",
       "title": "Search",
@@ -472,11 +398,6 @@
     "list": {
       "noRecordsMessage": "Create your first product to start selling."
     },
-    "attributes": "Product Attributes",
-    "options": {
-      "header": "Product Options",
-      "deleteWarning": "Are you sure you want to delete the option '{{title}}'?"
-    },
     "edit": {
       "header": "Edit Product",
       "description": "Edit the product details.",
@@ -560,7 +481,7 @@
       },
       "success": {
         "title": "We are processing your import",
-        "description": "Importing data may take while. We will notify you when we are done."
+        "description": "Importing data may take a while. We will notify you when we are done."
       }
     },
     "deleteWarning": "You are about to delete the product {{title}}. This action cannot be undone.",
@@ -2717,17 +2638,17 @@
   },
   "login": {
     "forgotPassword": "Forgot password? - <0>Reset</0>",
-    "title": "Welcome to Artovnia Seller Panel",
+    "title": "Welcome to Mercur Seller Panel",
     "hint": "Sign in to access the account area",
-    "notSellerYet":  "Not a seller yet? - <0>Create an account</0>"
+    "notSellerYet": "Not a seller yet? - <0>Create an account</0>"
   },
   "register": {
-    "title": "Join Artovnia Seller Panel",
+    "title": "Join Mercur Seller Panel",
     "hint": "Sign up to start selling",
     "alreadySeller": "Already have an account? - <0>Sign In</0>"
   },
   "invite": {
-    "title": "Welcome to Artovnia Seller Panel",
+    "title": "Welcome to Mercur Seller Panel",
     "hint": "Create your account below",
     "backToLogin": "Back to login",
     "createAccount": "Create account",
@@ -3045,139 +2966,6 @@
     "endDate": "End date",
     "draft": "Draft",
     "values": "Values"
-  },
-  "stockLocations": {
-    "shippingOptions": {
-      "fields": {
-        "count": {
-          "shipping": "{{count}} shipping options",
-          "pickup": "{{count}} pickup options",
-          "returns": "{{count}} return options"
-        }
-      }
-    }
-  },
-  "products": {
-    "create": {
-      "color_scheme": {
-        "default_variant": "Default variant",
-        "colorLabel": "Color",
-        "colorSelectPlaceholder": "Select color",
-        "codeLabel": "Code",
-        "codeTooltip": "Color code is used for API integrations",
-        "pickUpLabel": "Pick-up",
-        "onlineLabel": "Online"
-      }
-    },
-    "productStatus": {
-      "label": "Status",
-      "draft": "Draft",
-      "published": "Published"
-    },
-    "colors": {
-      "title": "Product colors",
-      "loading": "Loading colors...",
-      "noColors": "No colors assigned to this product"
-    },
-    "variants": {
-      "title": "Variants",
-      "emptyState": "No variants found",
-      "search": "Search variants...",
-      "create": "Create variant",
-      "editPrices": "Edit prices",
-      "goToInventory": "Go to inventory"
-    },
-    
-    "gpsr": {
-      "title": "GPSR Information",
-      "producer": "Producer",
-      "importer": "Importer",
-      "instructions": "Instructions",
-      "certificates": "Certificates",
-      "no_data": "No GPSR information available"
-    }
-  },
-  "messages": {
-    "title": "Messages",
-    "admin": "Admin",
-    "user": "Clients",
-    "adminDescription": "Communicate with marketplace administrators. All messages are recorded for reference.",
-    "userDescription": "Communicate with your customers about orders, products, and inquiries.",
-    "newMessage": "New message",
-    "replyToThread": "Reply to thread",
-    "subject": "Subject",
-    "message": "Message",
-    "attachFile": "Attach file",
-    "send": "Send",
-    "sendReply": "Send Reply",
-    "sending": "Sending...",
-    "cancel": "Cancel",
-    "reply": "Reply",
-    "noThreadsFound": "No message threads found.",
-    "startConversation": "Start a conversation by sending a message above.",
-    "noMessagesInThread": "No messages in this thread yet.",
-    "noMessages": "No messages in this thread yet.",
-    "previous": "Previous",
-    "next": "Next",
-    "attachment": "Attachment",
-    "language": "Language",
-    "threads": "Threads",
-    "loadingThreads": "Loading message threads...",
-    "new": "New",
-    "conversations": "Conversations",
-    "attachmentOptional": "Attachment (optional)",
-    "remove": "Remove",
-    "pagination": "Page {{current}} of {{total}}",
-    "noSubject": "No subject",
-    "conversation": "Conversation with",
-    "subjectPlaceholder": "Enter message subject",
-    "messagePlaceholder": "Type your message...",
-    "replyPlaceholder": "Type your reply here...",
-    "senderTypes": {
-      "admin": "Admin",
-      "seller": "You",
-      "customer": "Customer",
-      "user": "Customer"
-    }
-  },
-  "holidayMode": {
-    "title": "Holiday Mode",
-    "description": "Set your shop to holiday mode when you plan to be away or taking a break.",
-    "loading": "Loading...",
-    "enableHolidayMode": "Enable holiday mode",
-    "enableDescription": "When holiday mode is enabled, customers will see a message about your temporary closure.",
-    "startDate": "Start date",
-    "endDate": "End date",
-    "customerMessage": "Message for customers",
-    "customerMessagePlaceholder": "Enter a message to be displayed to customers during your absence",
-    "errors": {
-      "noSellerId": "Unable to update settings - seller ID not found",
-      "updateFailed": "Failed to update holiday mode settings",
-      "cantLoadSettings": "Unable to load holiday mode settings. No seller ID found."
-    },
-    "success": {
-      "settingsUpdated": "Holiday mode settings have been successfully updated"
-    },
-    "validation": {
-      "startDateRequired": "Start date is required"
-    },
-    "details": {
-      "title": "Holiday Mode Details",
-      "edit": "Edit",
-      "status": "Status",
-      "enabled": "Enabled",
-      "disabled": "Disabled",
-      "scheduled": "Scheduled",
-      "active": "Active",
-      "ended": "Ended",
-      "holidayMode": "Holiday mode",
-      "startDate": "Start date",
-      "endDate": "End date",
-      "messageForCustomers": "Message for customers",
-      "noMessage": "No message",
-      "notSet": "Not set",
-      "invalidDate": "Invalid date"
-    }
   },
   "dateTime": {
     "years_one": "Year",
