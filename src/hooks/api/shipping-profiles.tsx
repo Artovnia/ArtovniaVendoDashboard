@@ -31,11 +31,23 @@ export const useCreateShippingProfile = (
         body: payload,
       }),
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({
-        queryKey: shippingProfileQueryKeys.lists(),
-      });
-
-      options?.onSuccess?.(data, variables, context);
+      // Make sure data and shipping_profile exist before proceeding
+      if (data && data.shipping_profile) {
+        queryClient.invalidateQueries({
+          queryKey: shippingProfileQueryKeys.lists(),
+        });
+        options?.onSuccess?.(data, variables, context);
+      } else {
+        // This shouldn't happen with our improved backend, but just in case
+        console.error('Received success response but missing shipping_profile data', data);
+        // Just log the error and still call onSuccess to avoid disrupting the UI flow
+        // The backend should always return shipping_profile: null for errors
+        options?.onSuccess?.(data || { shipping_profile: null }, variables, context);
+      }
+    },
+    onError: (error, variables, context) => {
+      console.error('Error creating shipping profile:', error);
+      options?.onError?.(error, variables, context);
     },
     ...options,
   });

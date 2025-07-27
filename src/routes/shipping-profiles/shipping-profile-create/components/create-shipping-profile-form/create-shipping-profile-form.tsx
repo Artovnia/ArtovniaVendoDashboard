@@ -105,28 +105,69 @@ export function CreateShippingProfileForm() {
   }, [selectedType, form])
 
   const handleSubmit = form.handleSubmit(async (values) => {
-    await mutateAsync(
-      {
-        name: values.name,
-        type: values.type,
-      },
-      {
-        onSuccess: ({ shipping_profile }) => {
-          toast.success(
-            t("shippingProfile.create.successToast", {
-              name: shipping_profile.name,
-            })
-          )
+    try {
+      await mutateAsync(
+        {
+          name: values.name,
+          type: values.type,
+        },
+        {
+          onSuccess: (response) => {
+            // Safely check if shipping_profile exists in response
+            const shipping_profile = response?.shipping_profile;
+            if (shipping_profile) {
+              toast.success(
+                t("shippingProfile.create.successToast", {
+                  name: shipping_profile.name || values.name, // Fall back to form value if needed
+                })
+              );
 
-          handleSuccess(
-            `/settings/locations/shipping-profiles/${shipping_profile.id}`
-          )
-        },
-        onError: (error) => {
-          toast.error(error.message)
-        },
-      }
-    )
+              handleSuccess(
+                `/settings/locations/shipping-profiles/${shipping_profile.id}`
+              );
+            } else {
+              // This would be strange but handle it gracefully
+              console.error("Missing shipping_profile in success response:", response);
+              toast.error(
+                t("shippingProfile.create.errorMissingData", { 
+                  defaultValue: "Error creating shipping profile: Missing data in response" 
+                })
+              );
+            }
+          },
+          onError: (error) => {
+            // Enhanced error handling
+            console.error("Error creating shipping profile:", error);
+            
+            // Check if error contains info about duplicate profile
+            if (error?.message?.includes("already exists") || 
+                error?.message?.includes("You already have")) {
+              toast.error(
+                t("shippingProfile.create.duplicateError", { 
+                  defaultValue: `A shipping profile named "${values.name}" already exists.`,
+                  name: values.name 
+                })
+              );
+            } else {
+              toast.error(
+                error.message || 
+                t("shippingProfile.create.genericError", { 
+                  defaultValue: "Error creating shipping profile" 
+                })
+              );
+            }
+          },
+        }
+      );
+    } catch (unexpectedError) {
+      // Catch any unexpected errors that might occur
+      console.error("Unexpected error in shipping profile creation:", unexpectedError);
+      toast.error(
+        t("shippingProfile.create.unexpectedError", { 
+          defaultValue: "An unexpected error occurred" 
+        })
+      );
+    }
   })
 
   return (
