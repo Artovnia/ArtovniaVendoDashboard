@@ -117,26 +117,26 @@ export const Notifications = () => {
 
 const NOTIFICATION_TEMPLATES = {
   seller_product_collection_request_accepted_notification:
-    "Your product collection request has been accepted",
+    "Twoja aplikacja o stworzenie kolekcji produktów została zaakceptowana",
   seller_product_collection_request_rejected_notification:
-    "Your product collection request has been rejected",
-  seller_new_order_notification: "You have a new order",
+    "Twoja aplikacja o stworzenie kolekcji produktów została odrzucona",
+  seller_new_order_notification: "Masz nowe zamówienie",
   seller_product_category_request_accepted_notification:
-    "Your product category request has been accepted",
+    "Twoja aplikacja o stworzenie kategorii produktów została zaakceptowana",
   seller_product_category_request_rejected_notification:
-    "Your product category request has been rejected",
+    "Twoja aplikacja o stworzenie kategorii produktów została odrzucona",
   seller_product_tag_request_accepted_notification:
-    "Your product tag request has been accepted",
+    "Twoja aplikacja o stworzenie tagów produktów została zaakceptowana",
   seller_product_tag_request_rejected_notification:
-    "Your product tag request has been rejected",
+    "Twoja aplikacja o stworzenie tagów produktów została odrzucona",
   seller_product_type_request_accepted_notification:
-    "Your product type request has been accepted",
+    "Twoja aplikacja o stworzenie typów produktów została zaakceptowana",
   seller_product_type_request_rejected_notification:
-    "Your product type request has been rejected",
+    "Twoja aplikacja o stworzenie typów produktów została odrzucona",
   seller_product_request_accepted_notification:
-    "Your product request has been accepted",
+    "Twoja aplikacja o stworzenie produktu została zaakceptowana",
   seller_product_request_rejected_notification:
-    "Your product request has been rejected",
+    "Twoja aplikacja o stworzenie produktu została odrzucona",
 }
 
 const Notification = ({

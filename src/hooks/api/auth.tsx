@@ -33,15 +33,31 @@ export const useSignUpWithEmailPass = (
     HttpTypes.AdminSignInWithEmailPassword & {
       confirmPassword: string;
       name: string;
+      tax_id?: string;
+      product_description?: string;
+      portfolio_link?: string;
     }
   >
 ) => {
   return useMutation({
-    mutationFn: (payload) =>
-      sdk.auth.register('seller', 'emailpass', payload),
+    mutationFn: (payload) => {
+      // Prepare the registration payload with user metadata
+      const registrationPayload = {
+        ...payload,
+        user_metadata: {
+          tax_id: payload.tax_id,
+          product_description: payload.product_description,
+          portfolio_link: payload.portfolio_link,
+        }
+      };
+      return sdk.auth.register('seller', 'emailpass', registrationPayload);
+    },
     onSuccess: async (_, variables) => {
       const seller = {
         name: variables.name,
+        tax_id: variables.tax_id,
+        product_description: variables.product_description,
+        portfolio_link: variables.portfolio_link,
         member: {
           name: variables.name,
           email: variables.email,

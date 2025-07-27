@@ -8,7 +8,7 @@ import {
   Text,
 } from '@medusajs/ui';
 import { useForm } from 'react-hook-form';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import * as z from 'zod';
 
@@ -29,6 +29,9 @@ const RegisterSchema = z.object({
   confirmPassword: z.string().min(2, {
     message: 'Confirm Password should be a string',
   }),
+  tax_id: z.string().optional(),
+  product_description: z.string().min(1, { message: 'Please describe what you want to sell' }),
+  portfolio_link: z.string().refine(val => !val || val.startsWith('http'), { message: 'Must be a valid URL or empty' }).optional(),
 });
 
 export const Register = () => {
@@ -42,6 +45,9 @@ export const Register = () => {
       email: '',
       password: '',
       confirmPassword: '',
+      tax_id: '',
+      product_description: '',
+      portfolio_link: '',
     },
   });
 
@@ -49,7 +55,7 @@ export const Register = () => {
     useSignUpWithEmailPass();
 
   const handleSubmit = form.handleSubmit(
-    async ({ name, email, password, confirmPassword }) => {
+    async ({ name, email, password, confirmPassword, tax_id, product_description, portfolio_link }) => {
       if (password !== confirmPassword) {
         form.setError('password', {
           type: 'manual',
@@ -71,6 +77,9 @@ export const Register = () => {
           email,
           password,
           confirmPassword,
+          tax_id,
+          product_description,
+          portfolio_link,
         },
         {
           onError: (error) => {
@@ -110,19 +119,17 @@ export const Register = () => {
     return (
       <div className='bg-ui-bg-subtle flex min-h-dvh w-dvw items-center justify-center'>
         <div className='mb-4 flex flex-col items-center'>
-          <Heading>Thank You for registering!</Heading>
+          <Heading>Dziękujemy za rejestrację!</Heading>
           <Text
             size='small'
             className='text-ui-fg-subtle text-center mt-2 max-w-[320px]'
           >
-            You may need to wait for admin authorization
-            before logging in. A confirmation email will be
-            sent to you shortly.
+            Musisz poczekać na zatwierdzenie przez administratora. Email z potwierdzeniem zostanie wysłany do Ciebie po akceptacji.
           </Text>
 
           <Link to='/login'>
             <Button className='mt-8'>
-              Back to login page
+            Powrót do logowania
             </Button>
           </Link>
         </div>
@@ -134,12 +141,12 @@ export const Register = () => {
       <div className='m-4 flex w-full max-w-[280px] flex-col items-center'>
         <AvatarBox />
         <div className='mb-4 flex flex-col items-center'>
-          <Heading>{t('register.title')}</Heading>
+          <Heading>Rejestracja sprzedawcy</Heading>
           <Text
             size='small'
             className='text-ui-fg-subtle text-center'
           >
-            {t('register.hint')}
+            Wypełnij formularz rejestracji sprzedawcy
           </Text>
         </div>
         <div className='flex w-full flex-col gap-y-3'>
@@ -159,7 +166,7 @@ export const Register = () => {
                           <Input
                             {...field}
                             className='bg-ui-bg-field-component mb-2'
-                            placeholder='Company name'
+                            placeholder='Nazwa firmy'
                           />
                         </Form.Control>
                       </Form.Item>
@@ -216,7 +223,61 @@ export const Register = () => {
                             type='password'
                             {...field}
                             className='bg-ui-bg-field-component'
-                            placeholder='Confirm Password'
+                            placeholder='Potwierdź hasło'
+                          />
+                        </Form.Control>
+                      </Form.Item>
+                    );
+                  }}
+                />
+                <Form.Field
+                  control={form.control}
+                  name='tax_id'
+                  render={({ field }) => {
+                    return (
+                      <Form.Item>
+                        <Form.Label>{}</Form.Label>
+                        <Form.Control>
+                          <Input
+                            {...field}
+                            className='bg-ui-bg-field-component mt-4'
+                            placeholder='Tax ID / NIP (opcjonalne)'
+                          />
+                        </Form.Control>
+                      </Form.Item>
+                    );
+                  }}
+                />
+                <Form.Field
+                  control={form.control}
+                  name='product_description'
+                  render={({ field }) => {
+                    return (
+                      <Form.Item>
+                        <Form.Label>Opis produktu *</Form.Label>
+                        <Form.Control>
+                          <Input
+                            {...field}
+                            className='bg-ui-bg-field-component'
+                            placeholder='Opis produktu'
+                          />
+                        </Form.Control>
+                      </Form.Item>
+                    );
+                  }}
+                />
+                <Form.Field
+                  control={form.control}
+                  name='portfolio_link'
+                  render={({ field }) => {
+                    return (
+                      <Form.Item>
+                        <Form.Label>{}</Form.Label>
+                        <Form.Control>
+                          <Input
+                            {...field}
+                            className='bg-ui-bg-field-component'
+                            placeholder='Link do porfolio (opcjonalne)'
                           />
                         </Form.Control>
                       </Form.Item>
@@ -248,21 +309,19 @@ export const Register = () => {
                 type='submit'
                 isLoading={isPending}
               >
-                Sign up
+                Zarejestruj się
               </Button>
             </form>
           </Form>
         </div>
         <span className='text-ui-fg-muted txt-small my-6'>
-          <Trans
-            i18nKey='register.alreadySeller'
-            components={[
-              <Link
-                to='/login'
-                className='text-ui-fg-interactive transition-fg hover:text-ui-fg-interactive-hover focus-visible:text-ui-fg-interactive-hover font-medium outline-none'
-              />,
-            ]}
-          />
+          Masz już konto? {' '}
+          <Link
+            to='/login'
+            className='text-ui-fg-interactive transition-fg hover:text-ui-fg-interactive-hover focus-visible:text-ui-fg-interactive-hover font-medium outline-none'
+          >
+            Zaloguj się
+          </Link>
         </span>
       </div>
     </div>

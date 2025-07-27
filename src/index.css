@@ -29,39 +29,39 @@
 
   /* Light mode theme variables */
   :root {
-    --ui-bg-base: #FAF3EB;         /* Main background color - light cream */
-    --ui-bg-subtle: #F5EBE0;       /* Subtle background color - slightly darker cream */
-    --ui-bg-component: #FAF3EB;    /* Component background color */
-    --ui-bg-field: #FFFFFF;        /* Form field background color - keeping white for readability */
-    --ui-bg-highlight: #E4D7CB;    /* Highlighted background color - light brown */
-    --ui-bg-interactive: #EFE2D3;  /* Interactive element background color - intermediate cream */
-    --ui-bg-overlay: rgba(83, 41, 10, 0.2); /* Overlay background color with brown tint */
-    --ui-fg-base: #53290A;         /* Base text color - dark brown */
-    --ui-fg-subtle: #694736;       /* Subtle text color - medium brown */
-    --ui-fg-interactive: #53290A;  /* Interactive text color - dark brown */
-    --ui-fg-muted: #8C6E5A;        /* Muted text color - lighter brown */
-    --ui-fg-disabled: #BEA99A;     /* Disabled text color - very light brown */
-    --ui-fg-on-color: #FFFFFF;     /* Text color on colored backgrounds - white for contrast */
-    --ui-border-base: #E4D7CB;     /* Base border color - light brown */
-    --ui-border-strong: #C9B6A7;   /* Strong border color - medium brown */
-    --ui-border-interactive: #E4D7CB; /* Interactive border color - light brown */
-    --ui-border-highlight: #8C6E5A; /* Highlight border color - medium-dark brown */
-    --ui-color-component-bg: #FAF3EB; /* Component background color - light cream */
-    --ui-color-component-text: #53290A; /* Component text color - dark brown */
+    --ui-bg-base: #f8f8f8;         /* Main background color */
+    --ui-bg-subtle: #F4F0EB;       /* Subtle background color - secondary */
+    --ui-bg-component: #F4F0EB;    /* Component background color */
+    --ui-bg-field: #FFFFFF;        /* Form field background color */
+    --ui-bg-highlight: #BFB7AD;    /* Highlighted background color */
+    --ui-bg-interactive: #BFB7AD;  /* Interactive element background color */
+    --ui-bg-overlay: rgba(59, 54, 52, 0.2); /* Overlay background color */
+    --ui-fg-base: #3B3634;         /* Base text color */
+    --ui-fg-subtle: #3B3634;       /* Subtle text color */
+    --ui-fg-interactive: #3B3634;  /* Interactive text color */
+    --ui-fg-muted: #BFB7AD;        /* Muted text color */
+    --ui-fg-disabled: #BFB7AD;     /* Disabled text color */
+    --ui-fg-on-color: #FFFFFF;     /* Text color on colored backgrounds */
+    --ui-border-base: #BFB7AD;     /* Base border color */
+    --ui-border-strong: #BFB7AD;   /* Strong border color */
+    --ui-border-interactive: #BFB7AD; /* Interactive border color */
+    --ui-border-highlight: #3B3634; /* Highlight border color */
+    --ui-color-component-bg: #F4F0EB; /* Component background color */
+    --ui-color-component-text: #3B3634; /* Component text color */
     
     /* Button colors */
-    --ui-button-default-bg: #694736; /* Default button background - medium brown */
-    --ui-button-default-text: #FFFFFF; /* Default button text - white */
-    --ui-button-hover-bg: #53290A; /* Button hover background - dark brown */
-    --ui-button-hover-text: #FFFFFF; /* Button hover text - white */
-    --ui-button-pressed-bg: #7D5642; /* Button pressed background - lighter brown */
-    --ui-button-disabled-bg: #E4D7CB; /* Disabled button background - light brown */
-    --ui-button-disabled-text: #BEA99A; /* Disabled button text - very light brown */
+    --ui-button-default-bg: #3B3634; /* Default button background */
+    --ui-button-default-text: #FFFFFF; /* Default button text */
+    --ui-button-hover-bg: #3B3634; /* Button hover background - slightly darker */
+    --ui-button-hover-text: #3B3634; /* Button hover text */
+    --ui-button-pressed-bg: #3B3634; /* Button pressed background */
+    --ui-button-disabled-bg: #BFB7AD; /* Disabled button background */
+    --ui-button-disabled-text: #F4F0EB; /* Disabled button text */
     
     /* Hover states */
-    --ui-hover-base: rgba(83, 41, 10, 0.05); /* Base hover background - transparent brown */
-    --ui-hover-highlight: #E4D7CB; /* Highlight hover background - light brown */
-    --ui-hover-interactive: #D8C8B8; /* Interactive hover background - medium-light brown */
+    --ui-hover-base: rgba(59, 54, 52, 0.05); /* Base hover background */
+    --ui-hover-highlight: #BFB7AD; /* Highlight hover background */
+    --ui-hover-interactive: #BFB7AD; /* Interactive hover background */
     
     @apply bg-ui-bg-subtle text-ui-fg-base antialiased;
     text-rendering: optimizeLegibility;
@@ -69,39 +69,39 @@
 
   /* Dark mode theme variables */
   .dark {
-    --ui-bg-base: #140F2D;       /* Main background color - deep purple */
-    --ui-bg-subtle: #1D1640;      /* Subtle background color - slightly lighter purple */
-    --ui-bg-component: #251D4F;   /* Component background color - medium purple */
-    --ui-bg-field: #1D1640;       /* Form field background color */
-    --ui-bg-highlight: #2D2463;   /* Highlighted background color - richer purple */
-    --ui-bg-interactive: #2D2463; /* Interactive element background color */
-    --ui-bg-overlay: rgba(20, 15, 45, 0.7); /* Overlay background color */
-    --ui-fg-base: #F2F0FF;        /* Base text color - off-white with purple tint */
-    --ui-fg-subtle: #C4BDFF;      /* Subtle text color - light purple */
-    --ui-fg-interactive: #F2F0FF; /* Interactive text color */
-    --ui-fg-muted: #9B93E8;       /* Muted text color - muted purple */
-    --ui-fg-disabled: #4A4273;    /* Disabled text color - dark muted purple */
-    --ui-fg-on-color: #FFFFFF;    /* Text color on colored backgrounds */
-    --ui-border-base: #2D2463;    /* Base border color */
-    --ui-border-strong: #3A2F80;  /* Strong border color - brighter purple */
-    --ui-border-interactive: #3A2F80; /* Interactive border color */
-    --ui-border-highlight: #5747B1; /* Highlight border color - vibrant purple */
-    --ui-color-component-bg: #1D1640; /* Component background color */
-    --ui-color-component-text: #F2F0FF; /* Component text color */
+    --ui-bg-base: #1A1917;       /* Main background color */
+    --ui-bg-subtle: #3B3634;      /* Subtle background color */
+    --ui-bg-component: #2D2B28;   /* Component background color */
+    --ui-bg-field: #242220;       /* Form field background color */
+    --ui-bg-highlight: #2D2B28;   /* Highlighted background color */
+    --ui-bg-interactive: #2D2B28; /* Interactive element background color */
+    --ui-bg-overlay: rgba(26, 25, 23, 0.7); /* Overlay background color */
+    --ui-fg-base: #E8E4DF;        /* Base text color */
+    --ui-fg-subtle: #E8E4DF;      /* Subtle text color */
+    --ui-fg-interactive: #E8E4DF; /* Interactive text color */
+    --ui-fg-muted: #3A3834;       /* Muted text color */
+    --ui-fg-disabled: #3A3834;    /* Disabled text color */
+    --ui-fg-on-color: #1A1917;    /* Text color on colored backgrounds */
+    --ui-border-base: #3A3834;    /* Base border color */
+    --ui-border-strong: #3A3834;  /* Strong border color */
+    --ui-border-interactive: #3A3834; /* Interactive border color */
+    --ui-border-highlight: #E8E4DF; /* Highlight border color */
+    --ui-color-component-bg: #2D2B28; /* Component background color */
+    --ui-color-component-text: #E8E4DF; /* Component text color */
     
     /* Button colors */
-    --ui-button-default-bg: #3A2F80;  /* Default button background - medium purple */
-    --ui-button-default-text: #FFFFFF; /* Default button text - white */
-    --ui-button-hover-bg: #5747B1;     /* Button hover background - brighter purple */
-    --ui-button-hover-text: #FFFFFF;   /* Button hover text - white */
-    --ui-button-pressed-bg: #2D2463;   /* Button pressed background - darker purple */
-    --ui-button-disabled-bg: #251D4F;  /* Disabled button background - muted purple */
-    --ui-button-disabled-text: #4A4273; /* Disabled button text - dark muted purple */
+    --ui-button-default-bg: #E8E4DF;  /* Default button background */
+    --ui-button-default-text: #1A1917; /* Default button text */
+    --ui-button-hover-bg: #E8E4DF;     /* Button hover background */
+    --ui-button-hover-text: #1A1917;   /* Button hover text */
+    --ui-button-pressed-bg: #E8E4DF;   /* Button pressed background */
+    --ui-button-disabled-bg: #3A3834;  /* Disabled button background */
+    --ui-button-disabled-text: #2D2B28; /* Disabled button text */
     
     /* Hover states */
-    --ui-hover-base: rgba(87, 71, 177, 0.1); /* Base hover background - transparent purple */
-    --ui-hover-highlight: #2D2463;     /* Highlight hover background - medium purple */
-    --ui-hover-interactive: #3A2F80;   /* Interactive hover background - brighter purple */
+    --ui-hover-base: rgba(232, 228, 223, 0.1); /* Base hover background */
+    --ui-hover-highlight: #3A3834;     /* Highlight hover background */
+    --ui-hover-interactive: #3A3834;   /* Interactive hover background */
   }
 }
 
@@ -122,6 +122,66 @@
 }
 
 
+
+/* Medusa UI Button Override Styles */
+/* These stronger selectors ensure our styles take precedence */
+
+/* Light mode button colors */
+:root {
+  --medusa-button-primary-bg: #3B3634;
+  --medusa-button-primary-hover: #2a2725;
+  --medusa-button-primary-text: #FFFFFF;
+  --medusa-button-secondary-border: #3B3634;
+  --medusa-button-secondary-text: #3B3634;
+}
+
+/* Dark mode button colors */
+.dark {
+  --medusa-button-primary-bg: #E8E4DF;
+  --medusa-button-primary-hover: #d6d1ca;
+  --medusa-button-primary-text: #1A1917;
+  --medusa-button-secondary-border: #E8E4DF;
+  --medusa-button-secondary-text: #E8E4DF;
+}
+
+/* Very specific selector for primary buttons */
+button[class*="ui-button"][data-variant="primary"],
+button.ui-button[data-variant="primary"],
+.ui-button[data-variant="primary"] {
+  background-color: var(--medusa-button-primary-bg) !important;
+  color: var(--medusa-button-primary-text) !important;
+  border-color: var(--medusa-button-primary-bg) !important;
+}
+
+/* Primary button hover state */
+button[class*="ui-button"][data-variant="primary"]:hover,
+button.ui-button[data-variant="primary"]:hover,
+.ui-button[data-variant="primary"]:hover {
+  background-color: var(--medusa-button-primary-hover) !important;
+}
+
+/* Very specific selector for secondary buttons */
+button[class*="ui-button"][data-variant="secondary"],
+button.ui-button[data-variant="secondary"],
+.ui-button[data-variant="secondary"] {
+  background-color: transparent !important;
+  border: 1px solid var(--medusa-button-secondary-border) !important;
+  color: var(--medusa-button-secondary-text) !important;
+}
+
+/* Secondary button hover state */
+button[class*="ui-button"][data-variant="secondary"]:hover,
+button.ui-button[data-variant="secondary"]:hover,
+.ui-button[data-variant="secondary"]:hover {
+  background-color: rgba(59, 54, 52, 0.05) !important;
+}
+
+/* Dark mode secondary button hover */
+.dark button[class*="ui-button"][data-variant="secondary"]:hover,
+.dark button.ui-button[data-variant="secondary"]:hover,
+.dark .ui-button[data-variant="secondary"]:hover {
+  background-color: rgba(232, 228, 223, 0.05) !important;
+}
 
 /* Target Radix Select viewport and content */
 [data-radix-select-viewport],
