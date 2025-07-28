@@ -10,6 +10,7 @@ import {
   Text,
   toast
 } from '@medusajs/ui';
+import { useTranslation } from 'react-i18next';
 
 import { useCreateSimplifiedPayuAccount } from '../../../hooks/api/payu';
 
@@ -34,6 +35,7 @@ type PayoutFormData = {
  * Redirects to detail view after successful submission
  */
 const PayoutCreate: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const {
     register,
@@ -44,15 +46,15 @@ const PayoutCreate: React.FC = () => {
   // Use API hook to create payout account
   const { mutateAsync: createAccount } = useCreateSimplifiedPayuAccount({
     onSuccess: () => {
-      toast.success("Konto wypłat zostało utworzone", {
-        description: "Twoje konto wypłat zostało pomyślnie skonfigurowane."
+      toast.success(t('payout.success.accountCreated'), {
+        description: t('payout.success.accountCreatedDescription')
       });
       // Redirect to detail view after successful creation
       navigate('/payout/detail');
     },
     onError: (error) => {
-      toast.error("Nie udało się utworzyć konta wypłat", {
-        description: error.message || "Wystąpił błąd. Spróbuj ponownie."
+      toast.error(t('payout.errors.createFailed'), {
+        description: error.message || t('payout.errors.createFailedDescription')
       });
     },
   });
@@ -93,34 +95,33 @@ const PayoutCreate: React.FC = () => {
       await createAccount(payload);
     } catch (error) {
       console.error('Error creating payout account:', error);
-      toast.error("Nie udało się utworzyć konta wypłat", {
-        description: error instanceof Error ? error.message : "Wystąpił nieznany błąd"
+      toast.error(t('payout.errors.createFailed'), {
+        description: error instanceof Error ? error.message : t('payout.errors.unknownError')
       });
     }
   };
 
   return (
     <Container className="p-8 max-w-4xl mx-auto">
-      <Heading className="mb-6">Konfiguracja Konta Wypłat</Heading>
+      <Heading className="mb-6">{t('payout.title')}</Heading>
       
       <div className="bg-ui-bg-subtle p-4 rounded-lg mb-6">
         <Text>
-          Skonfiguruj swoje konto wypłat.
-          Podaj dane swojej firmy i informacje o koncie bankowym.
+          {t('payout.description')}
         </Text>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-[700px]">
         <div className="bg-ui-bg-subtle p-6 rounded-lg border border-ui-border-base">
-          <Heading level="h3" className="mb-4">Informacje o Firmie</Heading>
+          <Heading level="h3" className="mb-4">{t('payout.companyInfo')}</Heading>
           
           <div className="space-y-4">
             <div>
-              <Label htmlFor="legalName">Nazwa Prawna</Label>
+              <Label htmlFor="legalName">{t('payout.legalName')}</Label>
               <Input
                 id="legalName"
-                placeholder="Pełna nazwa prawna Twojej firmy"
-                {...register('legalName', { required: 'Nazwa prawna jest wymagana' })}
+                placeholder={t('payout.legalNamePlaceholder')}
+                {...register('legalName', { required: t('payout.validation.legalNameRequired') })}
                 className={errors.legalName ? 'border-red-500' : ''}
               />
               {errors.legalName && (
@@ -131,15 +132,15 @@ const PayoutCreate: React.FC = () => {
             </div>
 
             <div>
-              <Label htmlFor="taxId">Numer NIP</Label>
+              <Label htmlFor="taxId">{t('payout.taxId')}</Label>
               <Input
                 id="taxId"
-                placeholder="np. 1234567890"
+                placeholder={t('payout.taxIdPlaceholder')}
                 {...register('taxId', { 
-                  required: 'Numer NIP jest wymagany',
+                  required: t('payout.validation.taxIdRequired'),
                   pattern: {
-                    value: /^\d{10}$/,
-                    message: 'Proszę podać prawidłowy polski numer NIP (10 cyfr)'
+                    value: /^[0-9]{10}$/,
+                    message: t('payout.validation.taxIdInvalid')
                   }
                 })}
                 className={errors.taxId ? 'border-red-500' : ''}
@@ -153,15 +154,16 @@ const PayoutCreate: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t('payout.email')}</Label>
                 <Input
                   id="email"
-                  placeholder="firma@example.com"
+                  type="email"
+                  placeholder={t('payout.emailPlaceholder')}
                   {...register('email', { 
-                    required: 'Email jest wymagany',
+                    required: t('payout.validation.emailRequired'),
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: 'Proszę podać prawidłowy adres email'
+                      message: t('payout.validation.emailInvalid')
                     }
                   })}
                   className={errors.email ? 'border-red-500' : ''}

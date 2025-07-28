@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { Form } from '../../../../components/common/form';
+import { useTranslation } from 'react-i18next';
 import {
   RouteDrawer,
   useRouteModal,
@@ -16,13 +17,6 @@ import {
 import { useParams } from 'react-router-dom';
 import { useCreateVendorRequest } from '../../../../hooks/api';
 
-const reasonList = [
-  'The review comment is not true',
-  'The review comment is insulting',
-  'The review comment is offensive or vulgar',
-  'Other',
-];
-
 const ReviewReplySchema = z.object({
   reason: z
     .string()
@@ -33,6 +27,16 @@ const ReviewReplySchema = z.object({
 export const ReviewReportForm = () => {
   const { handleSuccess } = useRouteModal();
   const { id } = useParams();
+  const { t } = useTranslation('translation', { useSuspense: false });
+  
+  const reasonList = [
+    t('reviews.report.reasons.notTrue'),
+    t('reviews.report.reasons.insulting'),
+    t('reviews.report.reasons.offensive'),
+    t('reviews.report.reasons.other'),
+  ];
+
+
 
   const form = useForm<z.infer<typeof ReviewReplySchema>>({
     defaultValues: {
@@ -59,9 +63,8 @@ export const ReviewReportForm = () => {
       },
       {
         onSuccess: () => {
-          toast.success('Review is reported', {
-            description:
-              'Please wait for a response from the moderator.',
+          toast.success(t('reviews.report.success'), {
+            description: t('reviews.report.successDescription'),
           });
           handleSuccess(`/reviews/${id}`);
         },
@@ -76,10 +79,10 @@ export const ReviewReportForm = () => {
     <RouteDrawer>
       <RouteDrawer.Header>
         <RouteDrawer.Title asChild>
-          <Heading>Report Review</Heading>
+          <Heading>{t('reviews.report.title')}</Heading>
         </RouteDrawer.Title>
         <RouteDrawer.Description>
-          Report review from customer.
+          {t('reviews.report.description')}
         </RouteDrawer.Description>
       </RouteDrawer.Header>
       <RouteDrawer.Form form={form}>
@@ -92,7 +95,7 @@ export const ReviewReportForm = () => {
             }) => {
               return (
                 <Form.Item className='mt-4'>
-                  <Form.Label>Reason</Form.Label>
+                  <Form.Label>{t('reviews.report.reason')}</Form.Label>
                   <Form.Control>
                     <Select
                       {...field}
@@ -124,7 +127,7 @@ export const ReviewReportForm = () => {
             render={({ field }) => {
               return (
                 <Form.Item className='mt-8'>
-                  <Form.Label>Comment</Form.Label>
+                  <Form.Label>{t('reviews.report.comment')}</Form.Label>
                   <Form.Control>
                     <Textarea
                       autoComplete='off'
@@ -144,7 +147,7 @@ export const ReviewReportForm = () => {
           className='px-6'
           isLoading={isPending}
         >
-          Report review
+          {t('reviews.report.reportButton')}
         </Button>
       </RouteDrawer.Footer>
     </RouteDrawer>

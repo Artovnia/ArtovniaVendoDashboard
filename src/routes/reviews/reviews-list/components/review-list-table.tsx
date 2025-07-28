@@ -1,6 +1,7 @@
 import { Container, Heading, Text } from "@medusajs/ui"
 import { keepPreviousData } from "@tanstack/react-query"
 import { useMemo } from "react"
+import { useTranslation } from "react-i18next"
 
 import { useReviews } from "../../../../hooks/api/review"
 import { _DataTable } from "../../../../components/table/data-table"
@@ -13,6 +14,7 @@ import { useSearchParams } from "react-router-dom"
 const PAGE_SIZE = 20
 
 export const ReviewListTable = () => {
+  const { t } = useTranslation('translation', { useSuspense: false });
   const { searchParams, raw } = useReviewTableQuery({
     pageSize: PAGE_SIZE,
   })
@@ -63,13 +65,13 @@ export const ReviewListTable = () => {
     <Container className="divide-y p-0">
       <div className="flex items-center justify-between px-6 py-4">
         <div>
-          <Heading>Reviews</Heading>
+          <Heading>{t('reviews.list.title')}</Heading>
           <Text className="text-ui-fg-subtle" size="small">
-            Manage your reviews
+            {t('reviews.list.description')}
           </Text>
         </div>
         <div>
-          <Text className="text-ui-fg-subtle mb-2">{count} reviews</Text>
+          <Text className="text-ui-fg-subtle mb-2">{t('reviews.list.reviewsCount', { count })}</Text>
           <StarsRating rate={averageRating} />
         </div>
       </div>
@@ -94,7 +96,7 @@ export const ReviewListTable = () => {
         // search
         queryObject={raw}
         noRecords={{
-          message: "Your reviews will show up here.",
+          message: t('reviews.list.noReviews'),
         }}
       />
     </Container>

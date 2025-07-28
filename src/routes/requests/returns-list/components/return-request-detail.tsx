@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import { useDate } from "../../../../hooks/use-date"
+import { useTranslation } from "react-i18next";
 import {
   Badge,
   Button,
@@ -34,8 +35,6 @@ const getStatusBadge = (status: string) => {
   }
 }
 
-// Status badges configuration for return requests
-
 // Find proper item name from order items
 const getItemName = (returnItem: any, returnRequest: any) => {
   if (returnItem.title) {
@@ -53,11 +52,11 @@ const getItemName = (returnItem: any, returnRequest: any) => {
       if (orderItem.variant?.product?.title) {
         return orderItem.variant.product.title
       }
-      return orderItem.title || `Produkt ${returnItem.line_item_id.substring(0, 8)}`
+      return orderItem.title || `${t('requests.returns.returnDetail.itemName', 'Item')} ${returnItem.line_item_id.substring(0, 8)}`
     }
   }
   
-  return `Produkt ${returnItem.line_item_id.substring(0, 8)}`
+  return `Product ${returnItem.line_item_id.substring(0, 8)}`
 }
 
 type FormValues = {
@@ -69,6 +68,7 @@ export const ReturnRequestDetail = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const { getFullDate } = useDate()
+  const { t } = useTranslation('translation', { useSuspense: false })
   
   const form = useForm<FormValues>({
     defaultValues: {
@@ -112,7 +112,7 @@ export const ReturnRequestDetail = () => {
     return (
       <RouteDrawer>
         <RouteDrawer.Header>
-          <Heading>Szczegóły prośby o zwrot</Heading>
+          <Heading>{t('requests.returns.returnDetail.title', 'Return Request')}</Heading>
         </RouteDrawer.Header>
         <div className="flex h-full w-full items-center justify-center">
          
@@ -125,10 +125,10 @@ export const ReturnRequestDetail = () => {
     return (
       <RouteDrawer>
         <RouteDrawer.Header>
-          <Heading>Nie znaleziono prośby o zwrot</Heading>
+          <Heading>{t('requests.returns.returnDetail.empty', 'No return request found')}</Heading>
         </RouteDrawer.Header>
         <div className="flex h-full w-full items-center justify-center">
-          <Text>Żądana prośba o zwrot nie została znaleziona.</Text>
+          <Text>{t('requests.returns.returnDetail.error', 'Error loading return request details')}</Text>
         </div>
       </RouteDrawer>
     )
@@ -150,7 +150,7 @@ export const ReturnRequestDetail = () => {
       
       await updateReturnRequest(id, updateData)
       
-      toast.success("Prośba o zwrot została zaktualizowana", {
+      toast.success(t('requests.returns.returnDetail.statusUpdated', 'Status updated successfully'), {
         duration: 2000,
         action: {
           label: "Ok",
@@ -162,7 +162,7 @@ export const ReturnRequestDetail = () => {
       refetch()
       navigate("/requests/returns")
     } catch (error: any) {
-      toast.error(error.message || "Nie udało się zaktualizować prośby o zwrot", {
+      toast.error(error.message || t('requests.returns.returnDetail.errorUpdating', 'Error updating status'), {
         duration: 5000,
         action: {
           label: "Spróbuj ponownie",
@@ -180,44 +180,44 @@ export const ReturnRequestDetail = () => {
   return (
     <RouteDrawer>
       <RouteDrawer.Header>
-        <Heading>Prośba o zwrot #{return_request.id.substring(0, 8)}</Heading>
+        <Heading>{t('requests.returns.returnDetail.title', 'Return Request')} #{return_request.id.substring(0, 8)}</Heading>
       </RouteDrawer.Header>
       <RouteDrawer.Body className="flex flex-col gap-y-8 p-6">
         <div className="grid grid-cols-2 gap-6">
           <div>
-            <Heading level="h2" className="mb-4">Informacje o kliencie</Heading>
+            <Heading level="h2" className="mb-4">{t('requests.returns.returnDetail.customerInfo', 'Customer Information')}</Heading>
             <div className="flex flex-col gap-y-2">
               <div>
-                <Text className="text-ui-fg-subtle">Nazwa</Text>
+                <Text className="text-ui-fg-subtle">{t('requests.returns.returnDetail.name', 'Name')}</Text>
                 <Text className="font-medium">
                   {return_request.order?.customer ? `${return_request.order.customer.first_name} ${return_request.order.customer.last_name}` : "-"}
                 </Text>
               </div>
               <div>
-                <Text className="text-ui-fg-subtle">Email</Text>
+                <Text className="text-ui-fg-subtle">{t('requests.returns.returnDetail.email', 'Email')}</Text>
                 <Text className="font-medium">{return_request.order?.customer?.email || "-"}</Text>
               </div>
               <div>
-                <Text className="text-ui-fg-subtle">Numer zamówienia</Text>
+                <Text className="text-ui-fg-subtle">{t('requests.returns.returnDetail.orderNumber', 'Order Number')}</Text>
                 <Text className="font-medium">
                   {return_request.order ? `#${return_request.order.display_id}` : `-`}
                 </Text>
               </div>
               <div>
-                <Text className="text-ui-fg-subtle">ID zamówienia</Text>
+                <Text className="text-ui-fg-subtle">{t('requests.returns.returnDetail.orderId', 'Order ID')}</Text>
                 <Text className="font-medium">{return_request.order?.id.substring(0, 8) || "-"}</Text>
               </div>
             </div>
           </div>
           <div>
-            <Heading level="h2" className="mb-4">Szczegóły prośby o zwrot</Heading>
+            <Heading level="h2" className="mb-4">{t('requests.returns.returnDetail.returnDetails', 'Return Details')}</Heading>
             <div className="flex flex-col gap-y-2">
               <div>
-                <Text className="text-ui-fg-subtle">Status</Text>
+                <Text className="text-ui-fg-subtle">{t('requests.returns.returnDetail.status', 'Status')}</Text>
                 <div>{getStatusBadge(return_request.status)}</div>
               </div>
               <div>
-                <Text className="text-ui-fg-subtle">Data utworzenia</Text>
+                <Text className="text-ui-fg-subtle">{t('requests.returns.returnDetail.createdAt', 'Created At')}</Text>
                 <Text className="font-medium">
                   {(() => {
                     console.log("About to format date in detail view:", return_request.created_at)
@@ -247,7 +247,7 @@ export const ReturnRequestDetail = () => {
                 </Text>
               </div>
               <div>
-                <Text className="text-ui-fg-subtle">Notatka klienta</Text>
+                <Text className="text-ui-fg-subtle">{t('requests.returns.returnDetail.customerNote', 'Customer Note')}</Text>
                 <Text className="font-medium">{return_request.customer_note || "-"}</Text>
               </div>
             </div>
@@ -256,14 +256,13 @@ export const ReturnRequestDetail = () => {
 
         {hasReturnReasons && (
           <div>
-            <Heading level="h2" className="mb-4">Przedmioty prośby o zwrot</Heading>
+            <Heading level="h2" className="mb-4">{t('requests.returns.returnDetail.returnItems', 'Return Items')}</Heading>
             <Table>
               <Table.Header>
                 <Table.Row>
-                  <Table.HeaderCell>Nazwa przedmiotu</Table.HeaderCell>
-                  <Table.HeaderCell>Tytuł</Table.HeaderCell>
-                  <Table.HeaderCell>Przyczyna zwrotu</Table.HeaderCell>
-                  <Table.HeaderCell className="text-right">Ilość</Table.HeaderCell>
+                  <Table.HeaderCell>{t('requests.returns.returnDetail.itemName', 'Item Name')}</Table.HeaderCell>
+                  <Table.HeaderCell>{t('requests.returns.returnDetail.reason', 'Reason')}</Table.HeaderCell>
+                  <Table.HeaderCell className="text-right">{t('requests.returns.returnDetail.quantity', 'Quantity')}</Table.HeaderCell>
                 </Table.Row>
               </Table.Header>
               <Table.Body>
@@ -286,37 +285,37 @@ export const ReturnRequestDetail = () => {
 
         {canUpdate && (
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-8 pt-8 border-t border-ui-border-base">
-              <Heading level="h2">Odpowiedź sprzedawcy</Heading>
+              <Heading level="h2">{t('requests.returns.returnDetail.updateStatus', 'Update Status')}</Heading>
               
               <div className="space-y-2">
-                <label htmlFor="status" className="text-sm font-medium">Status</label>
+                <label htmlFor="status" className="text-sm font-medium">{t('requests.returns.returnDetail.status', 'Status')}</label>
                 <Select
                   onValueChange={(value) => form.setValue("status", value as "refunded" | "withdrawn" | "escalated")}
                   defaultValue={"refunded"}
                 >
                   <Select.Trigger>
-                    <Select.Value placeholder="Wybierz status" />
+                    <Select.Value placeholder={t('requests.returns.returnDetail.selectStatus', 'Select Status')} />
                   </Select.Trigger>
                   <Select.Content>
-                    <Select.Item value="refunded">Zatwierdź i zwróć</Select.Item>
-                    <Select.Item value="withdrawn">Odrzuć</Select.Item>
-                    <Select.Item value="escalated">Eskaluj do administracji</Select.Item>
+                    <Select.Item value="refunded">{t('requests.returns.returnDetail.refunded', 'Refunded')}</Select.Item>
+                    <Select.Item value="withdrawn">{t('requests.returns.returnDetail.withdrawn', 'Withdrawn')}</Select.Item>
+                    <Select.Item value="escalated">{t('requests.returns.returnDetail.escalated', 'Escalated')}</Select.Item>
                   </Select.Content>
                 </Select>
                 <input type="hidden" {...register("status", { required: true })} />
                 {errors.status && (
-                  <p className="text-ui-fg-error text-xs mt-1">Status jest wymagany</p>
+                  <p className="text-ui-fg-error text-xs mt-1">{t('requests.returns.returnDetail.statusRequired', 'Status is required')}</p>
                 )}
               </div>
               
               <div className="space-y-2">
-                <label htmlFor="vendor_reviewer_note" className="text-sm font-medium">Komentarze</label>
+                <label htmlFor="vendor_reviewer_note" className="text-sm font-medium">{t('requests.returns.returnDetail.note', 'Note')}</label>
                 <Textarea
-                  placeholder="Dodaj notatkę o tej prośbie o zwrot"
+                  placeholder={t('requests.returns.returnDetail.addNote', 'Add a note')}
                   {...register("vendor_reviewer_note", { required: true })}
                 />
                 {errors.vendor_reviewer_note && (
-                  <p className="text-ui-fg-error text-xs mt-1">Komentarz jest wymagany</p>
+                  <p className="text-ui-fg-error text-xs mt-1">{t('requests.returns.returnDetail.noteRequired', 'Note is required')}</p>
                 )}
               </div>
               
@@ -326,10 +325,10 @@ export const ReturnRequestDetail = () => {
                   variant="secondary"
                   onClick={() => navigate("/requests/returns")}
                 >
-                  Anuluj
+                  {t('requests.returns.returnDetail.cancel', 'Cancel')}
                 </Button>
                 <Button type="submit" isLoading={isSubmitting}>
-                  Wyślij odpowiedź
+                  {t('requests.returns.returnDetail.saveChanges', 'Save Changes')}
                 </Button>
               </div>
             </form>
@@ -337,21 +336,21 @@ export const ReturnRequestDetail = () => {
         
         {!canUpdate && (
           <div className="flex flex-col gap-y-4 pt-8 border-t border-ui-border-base">
-            <Heading level="h2">Odpowiedź sprzedawcy</Heading>
+            <Heading level="h2">{t('requests.returns.returnDetail.vendorResponse', 'Vendor Response')}</Heading>
             
             <div className="flex flex-col gap-y-2">
               <div>
-                <Text className="text-ui-fg-subtle">Status</Text>
+                <Text className="text-ui-fg-subtle">{t('requests.returns.returnDetail.status', 'Status')}</Text>
                 <div>{getStatusBadge(return_request.status)}</div>
               </div>
               {return_request.vendor_reviewer_note && (
                 <div>
-                  <Text className="text-ui-fg-subtle">Notatka sprzedawcy</Text>
+                  <Text className="text-ui-fg-subtle">{t('requests.returns.returnDetail.note', 'Note')}</Text>
                   <Text className="font-medium">{return_request.vendor_reviewer_note || "-"}</Text>
                 </div>
               )}
               <div>
-                <Text className="text-ui-fg-subtle">Data weryfikacji</Text>
+                <Text className="text-ui-fg-subtle">{t('requests.returns.returnDetail.updatedAt', 'Updated At')}</Text>
                 <Text className="font-medium">
                   {(() => {
                     console.log("About to format vendor_review_date:", return_request.vendor_review_date)

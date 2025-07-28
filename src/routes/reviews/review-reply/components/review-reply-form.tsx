@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { Form } from '../../../../components/common/form';
+import { useTranslation } from 'react-i18next';
 import {
   RouteDrawer,
   useRouteModal,
@@ -25,6 +26,7 @@ const ReviewReplySchema = z.object({
 export const ReviewReplyForm = () => {
   const { handleSuccess } = useRouteModal();
   const { id } = useParams();
+  const { t } = useTranslation('translation', { useSuspense: false });
 
   const { review } = useReview(id!);
 
@@ -43,7 +45,7 @@ export const ReviewReplyForm = () => {
       },
       {
         onSuccess: () => {
-          toast.success('Reply has been sent');
+          toast.success(t('reviews.reply.success'));
           handleSuccess(`/reviews/${id}`);
         },
         onError: (error) => {
@@ -58,13 +60,13 @@ export const ReviewReplyForm = () => {
       <RouteDrawer.Header>
         <RouteDrawer.Title asChild>
           <Heading>
-            {review.seller_note ? 'Edit Reply' : 'Reply'}
+            {review.seller_note ? t('reviews.reply.editTitle') : t('reviews.reply.title')}
           </Heading>
         </RouteDrawer.Title>
         <RouteDrawer.Description>
           {review.seller_note
-            ? 'Edit your reply to customer review.'
-            : 'Reply to customer review.'}
+            ? t('reviews.reply.editDescription')
+            : t('reviews.reply.description')}
         </RouteDrawer.Description>
       </RouteDrawer.Header>
       <RouteDrawer.Form form={form}>
@@ -75,7 +77,7 @@ export const ReviewReplyForm = () => {
             render={({ field }) => {
               return (
                 <Form.Item>
-                  <Form.Label>Comment</Form.Label>
+                  <Form.Label>{t('reviews.reply.comment')}</Form.Label>
                   <Form.Control>
                     <Textarea
                       autoComplete='off'
@@ -92,7 +94,7 @@ export const ReviewReplyForm = () => {
       <RouteDrawer.Footer>
         {review.seller_note && (
           <Button className='px-6' variant='secondary'>
-            Delete reply
+            {t('reviews.reply.deleteReply')}
           </Button>
         )}
         <Button
@@ -100,7 +102,7 @@ export const ReviewReplyForm = () => {
           className='px-6'
           isLoading={isPending}
         >
-          {review.seller_note ? 'Save' : 'Reply'}
+          {review.seller_note ? t('reviews.reply.save') : t('reviews.reply.reply')}
         </Button>
       </RouteDrawer.Footer>
     </RouteDrawer>

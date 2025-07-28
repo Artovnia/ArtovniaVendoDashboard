@@ -1,10 +1,12 @@
 import { Container, Heading, Text } from '@medusajs/ui';
+import { useTranslation } from 'react-i18next';
 import { SingleColumnPage } from '../../../components/layout/pages';
 import { useDashboardExtension } from '../../../extensions';
 import { RequestListTable } from './components/request-list-table';
 
 export const RequestsCollectionsList = () => {
   const { getWidgets } = useDashboardExtension();
+  const { t } = useTranslation();
 
   return (
     <SingleColumnPage
@@ -16,12 +18,12 @@ export const RequestsCollectionsList = () => {
       <Container className='divided-y p-0'>
         <div className='flex items-center justify-between px-6 py-4'>
           <div>
-            <Heading>Collection Requests</Heading>
+            <Heading>{t('requests.collections.title')}</Heading>
             <Text
               className='text-ui-fg-subtle'
               size='small'
             >
-              Your requests to add a new collection
+              {t('requests.collections.description')}
             </Text>
           </div>
         </div>

@@ -2982,5 +2982,506 @@
     "minutes_other": "Minutes",
     "seconds_one": "Second",
     "seconds_other": "Seconds"
+  },
+  "messages": {
+    "newMessage": "New message",
+    "subject": "Subject",
+    "subjectPlaceholder": "Enter message subject",
+    "message": "Message",
+    "messagePlaceholder": "Type your message...",
+    "attachmentOptional": "Attachment (optional)",
+    "sending": "Sending...",
+    "send": "Send",
+    "replyToThread": "Reply to thread",
+    "noSubject": "No Subject",
+    "reply": "Reply",
+    "replyPlaceholder": "Type your reply here...",
+    "sendReply": "Send Reply",
+    "threads": "Threads",
+    "loadingThreads": "Loading message threads...",
+    "new": "New",
+    "conversation": "Conversation with",
+    "noMessages": "No messages in this thread yet.",
+    "noThreadsFound": "No message threads found.",
+    "startConversation": "Start a conversation by sending a message above.",
+    "previous": "Previous",
+    "next": "Next"
+  },
+  "holidayMode": {
+    "title": "Holiday Mode",
+    "description": "Configure your shop's holiday mode settings here.",
+    "enableHolidayMode": "Enable Holiday Mode",
+    "enableDescription": "When enabled, your customers will be notified that your shop is on holiday.",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "customerMessage": "Message for customers",
+    "customerMessagePlaceholder": "Enter a message to display to your customers when your shop is on holiday...",
+    "validation": {
+      "startDateRequired": "Start date is required when holiday mode is enabled"
+    },
+    "success": {
+      "settingsUpdated": "Holiday mode settings updated successfully"
+    },
+    "errors": {
+      "noSellerId": "Seller ID not found",
+      "updateFailed": "Failed to update holiday mode",
+      "cantLoadSettings": "Cannot load holiday mode settings"
+    },
+    "details": {
+      "title": "Holiday Mode Details",
+      "edit": "Edit",
+      "holidayMode": "Holiday Mode",
+      "startDate": "Start date",
+      "endDate": "End date",
+      "message": "Message for customers",
+      "noMessage": "No message",
+      "notSet": "Not set",
+      "invalidDate": "Invalid date"
+    },
+    "suspension": {
+      "title": "Suspension Status",
+      "description": "Information about account status and any suspensions.",
+      "accountStatus": "Account Status",
+      "active": "Active",
+      "suspended": "Suspended",
+      "reason": "Suspension Reason",
+      "suspendedAt": "Suspension Date",
+      "expiresAt": "Suspension Expires",
+      "notSpecified": "Not specified",
+      "invalidDate": "Invalid date",
+      "contactMessage": "Your account has been suspended by administration. Contact regarding suspension:",
+      "contactEmail": "sayuri.platform@gmail.com or messages to admin",
+      "activeMessage": "Your account is active. There are no restrictions or suspensions."
+    },
+    "status": {
+      "status": "Status",
+      "planned": "Planned",
+      "ended": "Ended"
+    }
+  },
+  "payout": {
+    "title": "Payout Account Configuration",
+    "description": "Configure your payout account. Provide your company details and bank account information.",
+    "companyInfo": "Company Information",
+    "legalName": "Legal Name",
+    "legalNamePlaceholder": "Full legal name of your company",
+    "taxId": "Tax ID (NIP)",
+    "taxIdPlaceholder": "e.g. 1234567890",
+    "email": "Email",
+    "emailPlaceholder": "your@email.com",
+    "phone": "Phone",
+    "phonePlaceholder": "e.g. +48123456789",
+    "address": "Address",
+    "street": "Street",
+    "streetPlaceholder": "e.g. Main Street 123",
+    "postalCode": "Postal Code",
+    "postalCodePlaceholder": "e.g. 00-001",
+    "city": "City",
+    "cityPlaceholder": "e.g. Warsaw",
+    "bankAccount": "Bank Account",
+    "accountHolderName": "Account Holder Name",
+    "accountHolderNamePlaceholder": "Name and surname as on bank account",
+    "iban": "IBAN Number",
+    "ibanPlaceholder": "PL00 0000 0000 0000 0000 0000 0000",
+    "ibanFormat": "Format: PL with 26 digits. Spaces are allowed.",
+    "configure": "Configure Payout Account",
+    "validation": {
+      "legalNameRequired": "Legal name is required",
+      "taxIdRequired": "Tax ID is required",
+      "taxIdInvalid": "Tax ID should consist of 10 digits without dashes and spaces",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Please provide a valid email address",
+      "phoneRequired": "Phone number is required",
+      "phoneInvalid": "Please provide a valid phone number",
+      "streetRequired": "Street is required",
+      "postalCodeRequired": "Postal code is required",
+      "postalCodeInvalid": "Please provide a valid Polish postal code (XX-XXX)",
+      "cityRequired": "City is required",
+      "accountHolderNameRequired": "Account holder name is required",
+      "ibanRequired": "IBAN number is required",
+      "ibanInvalid": "Please provide a valid Polish IBAN (PL with 26 digits)"
+    },
+    "success": {
+      "accountCreated": "Payout account has been created",
+      "accountCreatedDescription": "Your payout account has been successfully configured.",
+      "dataUpdated": "Data updated",
+      "dataUpdatedDescription": "Payout account data has been successfully updated."
+    },
+    "errors": {
+      "createFailed": "Failed to create payout account",
+      "createFailedDescription": "An error occurred. Please try again.",
+      "updateFailed": "Failed to update data",
+      "updateFailedDescription": "An error occurred. Please try again.",
+      "loadFailed": "Cannot display payout account information.",
+      "unknownError": "An unknown error occurred"
+    },
+    "detail": {
+      "title": "Payout Account Data",
+      "description": "Below you can find information about your payout account. You can edit individual sections by clicking the edit button.",
+      "companyInfo": "Company Information",
+      "contactInfo": "Contact Information",
+      "address": "Address",
+      "bankAccount": "Bank Account",
+      "edit": "Edit",
+      "editCompanyInfo": "Edit company information",
+      "editContactInfo": "Edit contact information",
+      "editAddress": "Edit address",
+      "editBankAccount": "Edit bank account details",
+      "loading": "Loading payout account information...",
+      "setupAccount": "Setup payout account"
+    },
+    "edit": {
+      "bankAccount": "Edit Bank Account",
+      "address": "Edit Address",
+      "contact": "Edit Contact Information",
+      "company": "Edit Company Information",
+      "description": "Update your payout account data.",
+      "cancel": "Cancel",
+      "saveChanges": "Save changes",
+      "selectSection": "Select section to edit"
+    }
+  },
+  "stockLocations": {
+    "domain": "Locations & Shipping",
+    "list": {
+      "description": "Manage your store's stock locations and shipping options."
+    },
+    "create": {
+      "header": "Create Stock Location",
+      "hint": "A stock location is a physical place where products are stored and shipped from.",
+      "successToast": "Location {{name}} was successfully created."
+    },
+    "edit": {
+      "header": "Edit Stock Location",
+      "viewInventory": "View Inventory",
+      "successToast": "Location {{name}} was successfully updated."
+    },
+    "delete": {
+      "confirmation": "You are about to delete the stock location {{name}}. This action cannot be undone."
+    },
+    "fulfillmentProviders": {
+      "header": "Fulfillment Providers",
+      "shippingOptionsTooltip": "This dropdown will only contain providers enabled for this location. Add them to the location if the dropdown is disabled.",
+      "label": "Connected Fulfillment Providers",
+      "connectedTo": "Connected to {{count}} of {{total}} fulfillment providers",
+      "noProviders": "This stock location is not connected to any fulfillment providers.",
+      "action": "Connect Providers",
+      "successToast": "Fulfillment providers for the stock location were successfully updated."
+    },
+    "fulfillmentSets": {
+      "pickup": {
+        "header": "Pickup"
+      },
+      "shipping": {
+        "header": "Shipping"
+      },
+      "disable": {
+        "confirmation": "Are you sure you want to disable {{name}}? This will remove all associated service zones and shipping options and cannot be undone.",
+        "pickup": "Pickup was successfully disabled.",
+        "shipping": "Shipping was successfully disabled."
+      },
+      "enable": {
+        "pickup": "Pickup was successfully enabled.",
+        "shipping": "Shipping was successfully enabled."
+      }
+    },
+    "sidebar": {
+      "header": "Shipping Configuration",
+      "shippingProfiles": {
+        "label": "Shipping Profiles",
+        "description": "Group products by shipping requirements"
+      }
+    },
+    "salesChannels": {
+      "header": "Sales Channels",
+      "label": "Connected Sales Channels",
+      "connectedTo": "Connected to {{count}} of {{total}} sales channels",
+      "noChannels": "This location is not connected to any sales channels.",
+      "action": "Connect Sales Channels",
+      "successToast": "Sales channels were successfully updated."
+    },
+    "pickupOptions": {
+      "create": {
+        "pickup": {
+          "header": "Create pickup option for {{zone}}",
+          "hint": "Create a new pickup option to define how products are picked up from this location.",
+          "label": "Pickup Options",
+          "successToast": "Pickup option {{name}} was successfully created."
+        },
+        "tabs": {
+          "details": "Details",
+          "prices": "Prices"
+        },
+        "action": "Create Option"
+      },
+      "delete": {
+        "confirmation": "You are about to delete the pickup option {{name}}. This action cannot be undone.",
+        "successToast": "Pickup option {{name}} was successfully deleted."
+      },
+      "edit": {
+        "header": "Edit Pickup Option",
+        "action": "Edit Option",
+        "successToast": "Pickup option {{name}} was successfully updated."
+      },
+      "fields": {
+        "count": {
+          "pickup_one": "{{count}} pickup option",
+          "pickup_other": "{{count}} pickup options"
+        }
+      }
+    },
+    "shippingOptions": {
+      "create": {
+        "shipping": {
+          "header": "Create shipping option for {{zone}}",
+          "hint": "Create a new shipping option to define how products are shipped from this location.",
+          "label": "Shipping Options",
+          "successToast": "Shipping option {{name}} was successfully created."
+        },
+        "pickup": {
+          "header": "Create pickup option for {{zone}}",
+          "hint": "Create a new pickup option to define how products are picked up from this location.",
+          "label": "Pickup Options",
+          "successToast": "Pickup option {{name}} was successfully created."
+        },
+        "returns": {
+          "header": "Create return option for {{zone}}",
+          "hint": "Create a new return option to define how products are returned to this location.",
+          "label": "Return Options",
+          "successToast": "Return option {{name}} was successfully created."
+        },
+        "tabs": {
+          "details": "Details",
+          "prices": "Prices"
+        },
+        "action": "Create Option"
+      },
+      "delete": {
+        "confirmation": "You are about to delete the shipping option {{name}}. This action cannot be undone.",
+        "successToast": "Shipping option {{name}} was successfully deleted."
+      },
+      "edit": {
+        "header": "Edit Shipping Option",
+        "action": "Edit Option",
+        "successToast": "Shipping option {{name}} was successfully updated."
+      },
+      "pricing": {
+        "action": "Edit Prices",
+        "conditionalPrices": {
+          "label": "Conditional Prices",
+          "description": "Set different prices based on order conditions"
+        }
+      },
+      "fields": {
+        "count": {
+          "shipping_one": "{{count}} shipping option",
+          "shipping_other": "{{count}} shipping options",
+          "pickup_one": "{{count}} pickup option",
+          "pickup_other": "{{count}} pickup options",
+          "returns_one": "{{count}} return option",
+          "returns_other": "{{count}} return options"
+        },
+        "priceType": {
+          "label": "Price Type",
+          "options": {
+            "fixed": {
+              "label": "Fixed",
+              "hint": "The shipping option price is fixed and does not change based on the order contents."
+            },
+            "calculated": {
+              "label": "Calculated",
+              "hint": "The shipping option price is calculated by the fulfillment provider during the checkout process."
+            }
+          }
+        },
+        "enableInStore": {
+          "label": "Enable in store",
+          "hint": "Whether customers can use this option during checkout."
+        },
+        "fulfillmentOption": {
+          "label": "Fulfillment Option",
+          "description": "Select the fulfillment option for this shipping method"
+        },
+        "provider": "Fulfillment Provider",
+        "profile": "Shipping Profile"
+      }
+    },
+    "serviceZones": {
+      "create": {
+        "headerPickup": "Create service zone for pickup from {{location}}",
+        "headerShipping": "Create service zone for shipping from {{location}}",
+        "action": "Create Service Zone",
+        "successToast": "Service zone {{name}} was successfully created."
+      },
+      "edit": {
+        "header": "Edit Service Zone",
+        "action": "Edit Service Zone",
+        "successToast": "Service zone {{name}} was successfully updated."
+      },
+      "delete": {
+        "confirmation": "You are about to delete the service zone {{name}}. This action cannot be undone.",
+        "successToast": "Service zone {{name}} was successfully deleted."
+      },
+      "fields": {
+        "noRecords": "No service zones found"
+      }
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "debugInfo": "Debug Info"
+  },
+  "navigation": {
+    "reviews": "Reviews",
+    "messages": "Messages",
+    "requests": "Requests",
+    "holidayMode": "Holiday Mode",
+    "payoutAccount": "Payout Account"
+  },
+  "reviews": {
+    "list": {
+      "title": "Reviews",
+      "description": "Manage your reviews",
+      "reviewsCount": "{{count}} reviews",
+      "noReviews": "Your reviews will show up here."
+    },
+    "detail": {
+      "customerSection": "Customer",
+      "customerName": "Name",
+      "customerEmail": "Email",
+      "review": "Review",
+      "stars": "Stars",
+      "reviewContent": "Review",
+      "reply": "Reply",
+      "added": "Added",
+      "replyButton": "Reply",
+      "editReplyButton": "Edit Reply",
+      "orderSection": "Order"
+    },
+    "reply": {
+      "title": "Reply",
+      "editTitle": "Edit Reply",
+      "description": "Reply to customer review.",
+      "editDescription": "Edit your reply to customer review.",
+      "comment": "Comment",
+      "save": "Save",
+      "reply": "Reply",
+      "deleteReply": "Delete reply",
+      "success": "Reply has been sent"
+    },
+    "report": {
+      "title": "Report Review",
+      "description": "Report review from customer.",
+      "reason": "Reason",
+      "comment": "Comment",
+      "reportButton": "Report review",
+      "success": "Review is reported",
+      "successDescription": "Please wait for a response from the moderator.",
+      "reasonRequired": "Please select a reason",
+      "reasons": {
+        "notTrue": "The review comment is not true",
+        "insulting": "The review comment is insulting",
+        "offensive": "The review comment is offensive or vulgar",
+        "other": "Other"
+      }
+    },
+    "actions": {
+      "reportReview": "Report review"
+    },
+    "table": {
+      "product": "Product",
+      "rating": "Rating",
+      "status": "Status",
+      "date": "Date"
+    }
+  },
+  "requests": {
+    "main": {
+      "title": "Requests",
+      "description": "Check the status of your requests and add new ones",
+      "collectionsButton": "Collections requests",
+      "categoriesButton": "Categories requests",
+      "reviewsButton": "Reviews requests",
+      "ordersButton": "Orders requests",
+      "returnsButton": "Returns requests",
+      "newBadge": "New"
+    },
+    "categories": {
+      "title": "Categories Requests",
+      "description": "Your requests to add a new category",
+      "requestCategory": "Request Category"
+    },
+    "collections": {
+      "title": "Collection Requests",
+      "description": "Your requests to add a new collection"
+    },
+    "orders": {
+      "title": "Orders Cancellation Requests",
+      "description": "Your requests to cancel an order"
+    },
+    "reviews": {
+      "title": "Reviews Removal Requests",
+      "description": "Your requests to cancel a review"
+    },
+    "returns": {
+      "title": "Returns Requests",
+      "description": "Your requests for product returns",
+      "loading": "Loading...",
+      "noRequests": "No return requests",
+      "filter": {
+        "all": "All",
+        "pending": "Pending",
+        "approved": "Approved"
+      },
+      "table": {
+        "date": "Date",
+        "customer": "Customer",
+        "customerNote": "Customer Note",
+        "reason": "Most Common Reason",
+        "reasonId": "Reason",
+        "status": "Status"
+      },
+      "status": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "refunded": "Refunded",
+        "escalated": "Escalated",
+        "withdrawn": "Withdrawn"
+      },
+      "returnDetail": {
+        "loading": "Loading return request details...",
+        "error": "Error loading return request details",
+        "empty": "No return request found",
+        "title": "Return Request",
+        "status": "Status",
+        "created": "Created",
+        "customer": "Customer",
+        "customerNote": "Customer Note",
+        "orderItems": "Order Items",
+        "itemName": "Item",
+        "quantity": "Quantity",
+        "reason": "Reason",
+        "note": "Note",
+        "updateStatus": "Update Status",
+        "saveChanges": "Save Changes",
+        "statusUpdated": "Status updated successfully",
+        "errorUpdating": "Error updating status",
+        "backToList": "Back to List"
+      }
+    },
+    "table": {
+      "title": "Title",
+      "handle": "Handle",
+      "date": "Date",
+      "status": "Status",
+      "review": "Review",
+      "reason": "Reason"
+    },
+    "detail": {
+      "loading": "Loading request details...",
+      "error": "Error loading request details",
+      "empty": "No request found"
+    }
   }
 }

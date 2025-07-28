@@ -99,7 +99,7 @@ const Header = () => {
 };
 
 const useCoreRoutes = (): Omit<INavItem, 'pathname'>[] => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('translation', { useSuspense: false });
   const { data: unreadMessagesData } = useUnreadMessages();
   const unreadCount = unreadMessagesData?.unreadCount || 0;
 
@@ -181,23 +181,23 @@ const useCoreRoutes = (): Omit<INavItem, 'pathname'>[] => {
     },
     {
       icon: <Star />,
-      label: 'Recenzje',
+      label: t('navigation.reviews', 'Reviews'),
       to: '/reviews',
     },
     {
       icon: <ChatBubbleLeftRight />,
-      label: 'Wiadomości',
+      label: t('navigation.messages', 'Messages'),
       to: '/messages',
       endIcon: unreadCount > 0 ? <NotificationBadge count={unreadCount} showCount className="ml-2"/> : undefined,
     },
     {
       icon: <ListCheckbox />,
-      label: 'Zapytania',
+      label: t('navigation.requests', 'Requests'),
       to: '/requests',
     },
     {
       icon: <Calendar />,
-      label: 'Wakacje i zawieszenia',
+      label: t('navigation.holidayMode', 'Holiday Mode'),
       to: '/holiday-mode',
     },
   ];
@@ -207,10 +207,11 @@ const useExtensionRoutes = (): Omit<
   INavItem,
   'pathname'
 >[] => {
+  const { t } = useTranslation('translation', { useSuspense: false });
   return [
     {
       icon: <CurrencyDollar />,
-      label: 'Konto wypłat',
+      label: t('navigation.payoutAccount', 'Payout Account'),
       to: '/payout-provider-select',
     },
   ];

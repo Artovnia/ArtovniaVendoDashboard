@@ -136,7 +136,8 @@
     "logout": "Wyloguj się",
     "hide": "Ukryj",
     "export": "Eksportuj",
-    "import": "Importuj"
+    "import": "Importuj",
+    "cannotUndo": "Tej akcji nie można cofnąć"
   },
   "operators": {
     "in": "W"
@@ -297,6 +298,9 @@
     }
   },
   "filters": {
+    "sortLabel": "Sortuj",
+    "filterLabel": "Filtruj",
+    "searchLabel": "Szukaj",
     "date": {
       "today": "Dzisiaj",
       "lastSevenDays": "Ostatnie 7 dni",
@@ -316,13 +320,21 @@
       "greaterThanLabel": "więcej niż {{value}}",
       "andLabel": "i"
     },
+    "sorting": {
+      "alphabeticallyAsc": "A do Z",
+      "alphabeticallyDesc": "Z do A",
+      "dateAsc": "Najnowsze pierwsze",
+      "dateDesc": "Najstarsze pierwsze"
+    },
     "radio": {
       "yes": "Tak",
       "no": "Nie",
       "true": "Prawda",
       "false": "Fałsz"
     },
-    "addFilter": "Dodaj filtr"
+    "addFilter": "Dodaj filtr",
+    "starting": "Rozpoczynając",
+    "ending": "Kończąc"
   },
   "errorBoundary": {
     "badRequestTitle": "400 - Nieprawidłowe żądanie",
@@ -1421,6 +1433,36 @@
       "action": "Połącz kanały sprzedaży",
       "successToast": "Kanały sprzedaży zostały pomyślnie zaktualizowane."
     },
+    "pickupOptions": {
+      "create": {
+        "pickup": {
+          "header": "Utwórz opcję odbioru dla {{zone}}",
+          "hint": "Utwórz nową opcję odbioru, aby zdefiniować, w jaki sposób produkty są odbierane z tej lokalizacji.",
+          "label": "Opcje odbioru",
+          "successToast": "Opcja odbioru {{name}} została pomyślnie utworzona."
+        },
+        "tabs": {
+          "details": "Szczegóły",
+          "prices": "Ceny"
+        },
+        "action": "Utwórz opcję"
+      },
+      "delete": {
+        "confirmation": "Masz zamiar usunąć opcję odbioru {{name}}. Tej akcji nie można cofnąć.",
+        "successToast": "Opcja odbioru {{name}} została pomyślnie usunięta."
+      },
+      "edit": {
+        "header": "Edytuj opcję odbioru",
+        "action": "Edytuj opcję",
+        "successToast": "Opcja odbioru {{name}} została pomyślnie zaktualizowana."
+      },
+      "fields": {
+        "count": {
+          "pickup_one": "{{count}} opcja odbioru",
+          "pickup_other": "{{count}} opcje odbioru"
+        }
+      }
+    },
     "shippingOptions": {
       "create": {
         "shipping": {
@@ -1428,6 +1470,12 @@
           "hint": "Utwórz nową opcję wysyłki, aby zdefiniować, w jaki sposób produkty są wysyłane z tej lokalizacji.",
           "label": "Opcje wysyłki",
           "successToast": "Opcja wysyłki {{name}} została pomyślnie utworzona."
+        },
+        "pickup": {
+          "header": "Utwórz opcję odbioru dla {{zone}}",
+          "hint": "Utwórz nową opcję odbioru, aby zdefiniować, w jaki sposób produkty są odbierane z tej lokalizacji.",
+          "label": "Opcje odbioru",
+          "successToast": "Opcja odbioru {{name}} została pomyślnie utworzona."
         },
         "returns": {
           "header": "Utwórz opcję zwrotu dla {{zone}}",
@@ -1451,12 +1499,22 @@
         "successToast": "Opcja wysyłki {{name}} została pomyślnie zaktualizowana."
       },
       "pricing": {
-        "action": "Edytuj ceny"
+        "action": "Edytuj ceny",
+        "conditionalPrices": {
+          "label": "Ceny warunkowe",
+          "description": "Ustaw różne ceny w zależności od warunków zamówienia"
+        }
+      },
+      "conditionalPrices": {
+        "label": "Ceny warunkowe",
+        "description": "Ustaw różne ceny w zależności od warunków zamówienia"
       },
       "fields": {
         "count": {
           "shipping_one": "{{count}} opcja wysyłki",
           "shipping_other": "{{count}} opcje wysyłki",
+          "pickup_one": "{{count}} opcja odbioru",
+          "pickup_other": "{{count}} opcje odbioru",
           "returns_one": "{{count}} opcja zwrotu",
           "returns_other": "{{count}} opcje zwrotu"
         },
@@ -1476,6 +1534,10 @@
         "enableInStore": {
           "label": "Włącz w sklepie",
           "hint": "Czy klienci mogą używać tej opcji podczas płatności."
+        },
+        "fulfillmentOption": {
+          "label": "Opcja realizacji",
+          "description": "Wybierz opcję realizacji dla tej metody wysyłki"
         },
         "provider": "Dostawca realizacji",
         "profile": "Profil wysyłki"
@@ -2784,5 +2846,320 @@
     "minutes_other": "Protokół",
     "seconds_one": "Drugi",
     "seconds_other": "Towary drugiej jakości"
+  },
+  "messages": {
+    "newMessage": "Nowa wiadomość",
+    "subject": "Temat",
+    "subjectPlaceholder": "Wprowadź temat wiadomości",
+    "message": "Wiadomość",
+    "messagePlaceholder": "Napisz swoją wiadomość...",
+    "attachmentOptional": "Załącznik (opcjonalny)",
+    "sending": "Wysyłanie...",
+    "send": "Wyślij",
+    "replyToThread": "Odpowiedz na wątek",
+    "noSubject": "Brak tematu",
+    "reply": "Odpowiedz",
+    "replyPlaceholder": "Napisz swoją odpowiedź tutaj...",
+    "sendReply": "Wyślij odpowiedź",
+    "threads": "Wątki",
+    "loadingThreads": "Ładowanie wątków wiadomości...",
+    "new": "Nowy",
+    "conversation": "Rozmowa z",
+    "noMessages": "Brak wiadomości w tym wątku.",
+    "noThreadsFound": "Nie znaleziono wątków wiadomości.",
+    "startConversation": "Rozpocznij rozmowę wysyłając wiadomość powyżej.",
+    "previous": "Poprzedni",
+    "next": "Następny"
+  },
+  "holidayMode": {
+    "title": "Tryb wakacyjny",
+    "description": "Skonfiguruj ustawienia trybu wakacyjnego swojego sklepu tutaj.",
+    "enableHolidayMode": "Włącz tryb wakacyjny",
+    "enableDescription": "Gdy włączony, Twoi klienci będą powiadomieni, że Twój sklep jest na wakacjach.",
+    "startDate": "Data rozpoczęcia",
+    "endDate": "Data zakończenia",
+    "customerMessage": "Wiadomość dla klientów",
+    "customerMessagePlaceholder": "Wprowadź wiadomość do wyświetlenia klientom gdy Twój sklep jest na wakacjach...",
+    "validation": {
+      "startDateRequired": "Data rozpoczęcia jest wymagana gdy tryb wakacyjny jest włączony"
+    },
+    "success": {
+      "settingsUpdated": "Ustawienia trybu wakacyjnego zostały pomyślnie zaktualizowane"
+    },
+    "errors": {
+      "noSellerId": "Nie znaleziono ID sprzedawcy",
+      "updateFailed": "Nie udało się zaktualizować trybu wakacyjnego",
+      "cantLoadSettings": "Nie można załadować ustawień trybu wakacyjnego"
+    },
+    "details": {
+      "title": "Szczegóły trybu wakacyjnego",
+      "edit": "Edytuj",
+      "holidayMode": "Tryb wakacyjny",
+      "startDate": "Data rozpoczęcia",
+      "endDate": "Data zakończenia",
+      "message": "Wiadomość dla klientów",
+      "noMessage": "Brak wiadomości",
+      "notSet": "Nie ustawiono",
+      "invalidDate": "Nieprawidłowa data"
+    },
+    "suspension": {
+      "title": "Status zawieszenia",
+      "description": "Informacje o statusie konta i ewentualnych zawieszeniach.",
+      "accountStatus": "Status konta",
+      "active": "Aktywny",
+      "suspended": "Zawieszony",
+      "reason": "Powód zawieszenia",
+      "suspendedAt": "Data zawieszenia",
+      "expiresAt": "Data wygaśnięcia zawieszenia",
+      "notSpecified": "Nie określono",
+      "invalidDate": "Nieprawidłowa data",
+      "contactMessage": "Twoje konto zostało zawieszone przez administrację. Kontakt w sprawie zawieszenia:",
+      "contactEmail": "sayuri.platform@gmail.com lub wiadomości do admina",
+      "activeMessage": "Twoje konto jest aktywne. Nie ma żadnych ograniczeń ani zawieszeń."
+    },
+    "status": {
+      "status": "Status",
+      "planned": "Zaplanowany",
+      "ended": "Zakończony"
+    }
+  },
+  "payout": {
+    "title": "Konfiguracja konta wypłat",
+    "description": "Skonfiguruj swoje konto wypłat. Podaj dane swojej firmy i informacje o koncie bankowym.",
+    "companyInfo": "Informacje o firmie",
+    "legalName": "Nazwa prawna",
+    "legalNamePlaceholder": "Pełna nazwa prawna Twojej firmy",
+    "taxId": "Numer NIP",
+    "taxIdPlaceholder": "np. 1234567890",
+    "email": "Email",
+    "emailPlaceholder": "twoj@email.com",
+    "phone": "Telefon",
+    "phonePlaceholder": "np. +48123456789",
+    "address": "Adres",
+    "street": "Ulica",
+    "streetPlaceholder": "np. Główna 123",
+    "postalCode": "Kod pocztowy",
+    "postalCodePlaceholder": "np. 00-001",
+    "city": "Miasto",
+    "cityPlaceholder": "np. Warszawa",
+    "bankAccount": "Konto bankowe",
+    "accountHolderName": "Właściciel konta",
+    "accountHolderNamePlaceholder": "Imię i nazwisko zgodne z kontem bankowym",
+    "iban": "Numer IBAN",
+    "ibanPlaceholder": "PL00 0000 0000 0000 0000 0000 0000",
+    "ibanFormat": "Format: PL z 26 cyframi. Spacje są dozwolone.",
+    "configure": "Skonfiguruj konto wypłat",
+    "validation": {
+      "legalNameRequired": "Nazwa prawna jest wymagana",
+      "taxIdRequired": "Numer NIP jest wymagany",
+      "taxIdInvalid": "NIP powinien składać się z 10 cyfr bez myślników i spacji",
+      "emailRequired": "Email jest wymagany",
+      "emailInvalid": "Proszę podać prawidłowy adres email",
+      "phoneRequired": "Numer telefonu jest wymagany",
+      "phoneInvalid": "Proszę podać prawidłowy numer telefonu",
+      "streetRequired": "Ulica jest wymagana",
+      "postalCodeRequired": "Kod pocztowy jest wymagany",
+      "postalCodeInvalid": "Proszę podać prawidłowy polski kod pocztowy (XX-XXX)",
+      "cityRequired": "Miasto jest wymagane",
+      "accountHolderNameRequired": "Właściciel konta jest wymagany",
+      "ibanRequired": "Numer IBAN jest wymagany",
+      "ibanInvalid": "Proszę podać prawidłowy polski IBAN (PL z 26 cyframi)"
+    },
+    "success": {
+      "accountCreated": "Konto wypłat zostało utworzone",
+      "accountCreatedDescription": "Twoje konto wypłat zostało pomyślnie skonfigurowane.",
+      "dataUpdated": "Dane zaktualizowane",
+      "dataUpdatedDescription": "Dane konta wypłat zostały pomyślnie zaktualizowane."
+    },
+    "errors": {
+      "createFailed": "Nie udało się utworzyć konta wypłat",
+      "createFailedDescription": "Wystąpił błąd. Spróbuj ponownie.",
+      "updateFailed": "Nie udało się zaktualizować danych",
+      "updateFailedDescription": "Wystąpił błąd. Spróbuj ponownie.",
+      "loadFailed": "Nie można wyświetlić informacji o koncie wypłat.",
+      "unknownError": "Wystąpił nieznany błąd"
+    },
+    "detail": {
+      "title": "Dane konta wypłat",
+      "description": "Poniżej znajdują się informacje dotyczące Twojego konta wypłat. Możesz edytować poszczególne sekcje klikając przycisk edycji.",
+      "companyInfo": "Informacje o firmie",
+      "contactInfo": "Informacje kontaktowe",
+      "address": "Adres",
+      "bankAccount": "Konto bankowe",
+      "edit": "Edytuj",
+      "editCompanyInfo": "Edytuj informacje o firmie",
+      "editContactInfo": "Edytuj informacje kontaktowe",
+      "editAddress": "Edytuj adres",
+      "editBankAccount": "Edytuj dane konta bankowego",
+      "loading": "Pobieranie informacji o koncie wypłat...",
+      "setupAccount": "Skonfiguruj konto wypłat"
+    },
+    "edit": {
+      "bankAccount": "Edycja konta bankowego",
+      "address": "Edycja adresu",
+      "contact": "Edycja informacji kontaktowych",
+      "company": "Edycja informacji o firmie",
+      "description": "Zaktualizuj dane swojego konta wypłat.",
+      "cancel": "Anuluj",
+      "saveChanges": "Zapisz zmiany",
+      "selectSection": "Wybierz sekcję do edycji"
+    }
+  },
+  "common": {
+    "loading": "Ładowanie...",
+    "save": "Zapisz",
+    "debugInfo": "Informacje debugowania"
+  },
+  "navigation": {
+    "reviews": "Recenzje",
+    "messages": "Wiadomości",
+    "requests": "Zapytania",
+    "holidayMode": "Wakacje i zawieszenia",
+    "payoutAccount": "Konto wypłat"
+  },
+  "reviews": {
+    "list": {
+      "title": "Recenzje",
+      "description": "Zarządzaj swoimi recenzjami",
+      "reviewsCount": "{{count}} recenzji",
+      "noReviews": "Tutaj pojawią się twoje recenzje."
+    },
+    "detail": {
+      "customerSection": "Klient",
+      "customerName": "Imię i nazwisko",
+      "customerEmail": "Email",
+      "review": "Recenzja",
+      "stars": "Gwiazdki",
+      "reviewContent": "Recenzja",
+      "reply": "Odpowiedź",
+      "added": "Dodano",
+      "replyButton": "Odpowiedz",
+      "editReplyButton": "Edytuj odpowiedź",
+      "orderSection": "Zamówienie"
+    },
+    "reply": {
+      "title": "Odpowiedź",
+      "editTitle": "Edytuj odpowiedź",
+      "description": "Odpowiedz na recenzję klienta.",
+      "editDescription": "Edytuj swoją odpowiedź na recenzję klienta.",
+      "comment": "Komentarz",
+      "save": "Zapisz",
+      "reply": "Odpowiedz",
+      "deleteReply": "Usuń odpowiedź",
+      "success": "Odpowiedź została wysłana"
+    },
+    "report": {
+      "title": "Zgłoś recenzję",
+      "description": "Zgłoś recenzję od klienta.",
+      "reason": "Powód",
+      "comment": "Komentarz",
+      "reportButton": "Zgłoś recenzję",
+      "success": "Recenzja została zgłoszona",
+      "successDescription": "Poczekaj na odpowiedź od moderatora.",
+      "reasonRequired": "Proszę wybrać powód",
+      "reasons": {
+        "notTrue": "Treść recenzji nie jest prawdziwa",
+        "insulting": "Recenzja jest obraźliwa",
+        "offensive": "Recenzja jest nieprzyzwoita lub wulgarna",
+        "other": "Inne"
+      }
+    },
+    "actions": {
+      "reportReview": "Zgłoś recenzję"
+    },
+    "table": {
+      "product": "Produkt",
+      "rating": "Ocena",
+      "status": "Status",
+      "date": "Data"
+    }
+  },
+  "requests": {
+    "main": {
+      "title": "Prośby",
+      "description": "Sprawdź status swoich próśb i dodaj nowe",
+      "collectionsButton": "Prośby o kolekcje",
+      "categoriesButton": "Prośby o kategorie",
+      "reviewsButton": "Prośby o recenzje",
+      "ordersButton": "Prośby o zamówienia",
+      "returnsButton": "Prośby o zwroty",
+      "newBadge": "Nowe"
+    },
+    "categories": {
+      "title": "Prośby o kategorie",
+      "description": "Twoje prośby o dodanie nowej kategorii",
+      "requestCategory": "Poproś o kategorię"
+    },
+    "collections": {
+      "title": "Prośby o kolekcje",
+      "description": "Twoje prośby o dodanie nowej kolekcji"
+    },
+    "orders": {
+      "title": "Prośby o anulowanie zamówień",
+      "description": "Twoje prośby o anulowanie zamówienia"
+    },
+    "reviews": {
+      "title": "Prośby o usunięcie recenzji",
+      "description": "Twoje prośby o anulowanie recenzji"
+    },
+    "returns": {
+      "title": "Prośby o zwroty",
+      "description": "Twoje prośby o zwrot produktów",
+      "loading": "Ładowanie...",
+      "noRequests": "Brak próśb o zwrot",
+      "filter": {
+        "all": "Wszystkie",
+        "pending": "Oczekujące",
+        "approved": "Zatwierdzone"
+      },
+      "table": {
+        "date": "Data",
+        "customer": "Klient",
+        "customerNote": "Notatka klienta",
+        "reason": "Najczęstsza przyczyna",
+        "reasonId": "Przyczyna",
+        "status": "Status"
+      },
+      "status": {
+        "pending": "Oczekujący",
+        "approved": "Zatwierdzony",
+        "refunded": "Zwrócony",
+        "escalated": "Eskalowany",
+        "withdrawn": "Odrzucony"
+      },
+      "returnDetail": {
+        "loading": "Ładowanie szczegółów prośby o zwrot...",
+        "error": "Błąd podczas ładowania szczegółów prośby o zwrot",
+        "empty": "Nie znaleziono prośby o zwrot",
+        "title": "Prośba o zwrot",
+        "status": "Status",
+        "created": "Utworzono",
+        "customer": "Klient",
+        "customerNote": "Notatka klienta",
+        "orderItems": "Zamówione produkty",
+        "itemName": "Produkt",
+        "quantity": "Ilość",
+        "reason": "Przyczyna",
+        "note": "Notatka",
+        "updateStatus": "Aktualizacja statusu",
+        "saveChanges": "Zapisz zmiany",
+        "statusUpdated": "Status zaktualizowany pomyślnie",
+        "errorUpdating": "Błąd podczas aktualizacji statusu",
+        "backToList": "Powrót do listy"
+      }
+    },
+    "table": {
+      "title": "Tytuł",
+      "handle": "Uchwyt",
+      "date": "Data",
+      "status": "Status",
+      "review": "Recenzja",
+      "reason": "Powód"
+    },
+    "detail": {
+      "loading": "Ładowanie szczegółów prośby...",
+      "error": "Błąd podczas ładowania szczegółów prośby",
+      "empty": "Nie znaleziono prośby"
+    }
   }
 }

@@ -436,21 +436,29 @@ function ServiceZone({
             />
             <span>·</span>
             <Text className='text-ui-fg-subtle txt-small'>
-              {t(
-                `stockLocations.shippingOptions.fields.count.${type}`,
-                {
-                  count: shippingOptionsCount,
-                }
-              )}
+              {type === 'shipping' 
+                ? t('stockLocations.shippingOptions.fields.count.shipping_one', 
+                   { count: shippingOptionsCount },
+                   // Default value if translation is missing, dynamically pluralize based on count
+                   shippingOptionsCount === 1 
+                     ? '{{count}} shipping option' 
+                     : '{{count}} shipping options')
+                : t('stockLocations.shippingOptions.fields.count.pickup_one', 
+                   { count: shippingOptionsCount },
+                   shippingOptionsCount === 1 
+                     ? '{{count}} pickup option' 
+                     : '{{count}} pickup options')
+              }
             </Text>
             <span>·</span>
             <Text className='text-ui-fg-subtle txt-small'>
-              {t(
-                'stockLocations.shippingOptions.fields.count.returns',
-                {
-                  count: returnOptionsCount,
-                }
-              )}
+              {t('stockLocations.shippingOptions.fields.count.returns_one', 
+                  { count: returnOptionsCount },
+                  // Default value if translation is missing
+                  returnOptionsCount === 1 
+                    ? '{{count}} return option' 
+                    : '{{count}} return options')
+              }
             </Text>
           </div>
         </div>

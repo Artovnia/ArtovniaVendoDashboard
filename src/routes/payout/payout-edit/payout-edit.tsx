@@ -10,7 +10,7 @@ import {
   Text,
   toast 
 } from '@medusajs/ui';
-
+import { useTranslation } from 'react-i18next';
 import { usePayuAccount, useUpdatePayuAccount } from '../../../hooks/api/payu';
 
 /**
@@ -18,6 +18,7 @@ import { usePayuAccount, useUpdatePayuAccount } from '../../../hooks/api/payu';
  * Supports editing bank account, address and contact information
  */
 const PayoutEdit: React.FC = () => {
+  const { t } = useTranslation();
   const { section } = useParams<{ section: string }>();
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
@@ -26,14 +27,14 @@ const PayoutEdit: React.FC = () => {
   
   const { mutateAsync: updateAccount, isPending: isUpdating } = useUpdatePayuAccount({
     onSuccess: () => {
-      toast.success("Dane zaktualizowane", {
-        description: "Dane konta wypłat zostały pomyślnie zaktualizowane."
+      toast.success(t('payout.success.dataUpdated'), {
+        description: t('payout.success.dataUpdatedDescription')
       });
       navigate('/payout/detail');
     },
     onError: (error) => {
-      toast.error("Nie udało się zaktualizować danych", {
-        description: error.message || "Wystąpił błąd. Spróbuj ponownie."
+      toast.error(t('payout.errors.updateFailed'), {
+        description: error.message || t('payout.errors.tryAgain')
       });
     },
   });
@@ -207,13 +208,11 @@ const PayoutEdit: React.FC = () => {
         return (
           <div className="space-y-4">
             <div>
-              <Label htmlFor="accountHolderName">Właściciel Konta</Label>
+              <Label htmlFor="accountHolderName">{t('payout.accountHolderName')}</Label>
               <Input
                 id="accountHolderName"
-                placeholder="Imię i nazwisko zgodne z kontem bankowym"
-                {...register('accountHolderName', { 
-                  required: 'Właściciel konta jest wymagany' 
-                })}
+                placeholder={t('payout.placeholders.accountHolderName')}
+                {...register('accountHolderName', { required: t('payout.validation.accountHolderNameRequired') })}
                 className={errors.accountHolderName ? 'border-red-500' : ''}
               />
               {errors.accountHolderName && (
@@ -224,16 +223,16 @@ const PayoutEdit: React.FC = () => {
             </div>
 
             <div>
-              <Label htmlFor="iban">Numer IBAN</Label>
+              <Label htmlFor="iban">{t('payout.iban')}</Label>
               <Input
                 id="iban"
-                placeholder="PL00 0000 0000 0000 0000 0000 0000"
+                placeholder={t('payout.placeholders.iban')}
                 {...register('iban', { 
-                  required: 'Numer IBAN jest wymagany',
+                  required: t('payout.validation.ibanRequired'),
                   pattern: {
                     // Basic validation for Polish IBAN (PL + 26 digits)
                     value: /^PL[0-9]{26}$|^PL\s?[0-9]{2}\s?[0-9]{4}\s?[0-9]{4}\s?[0-9]{4}\s?[0-9]{4}\s?[0-9]{4}\s?[0-9]{4}$/i,
-                    message: 'Proszę podać prawidłowy polski IBAN (PL z 26 cyframi)'
+                    message: t('payout.validation.ibanInvalid')
                   }
                 })}
                 className={errors.iban ? 'border-red-500' : ''}
@@ -244,7 +243,7 @@ const PayoutEdit: React.FC = () => {
                 </Text>
               )}
               <Text className="text-xs text-ui-fg-subtle mt-1">
-                Format: PL z 26 cyframi. Spacje są dozwolone.
+                {t('payout.validation.ibanFormat')}
               </Text>
             </div>
           </div>
@@ -399,17 +398,17 @@ const PayoutEdit: React.FC = () => {
         );
       
       default:
-        return <Text>Wybierz sekcję do edycji</Text>;
+        return <Text>{t('payout.edit.selectSection')}</Text>;
     }
   };
 
   const getSectionTitle = () => {
     switch (section) {
-      case 'bank-account': return 'Edycja Konta Bankowego';
-      case 'address': return 'Edycja Adresu';
-      case 'contact': return 'Edycja Informacji Kontaktowych';
-      case 'company': return 'Edycja Informacji o Firmie';
-      default: return 'Edycja';
+      case 'bank-account': return t('payout.edit.bankAccount');
+      case 'address': return t('payout.edit.address');
+      case 'contact': return t('payout.edit.contact');
+      case 'company': return t('payout.edit.company');
+      default: return t('payout.edit.title');
     }
   };
 
@@ -419,7 +418,7 @@ const PayoutEdit: React.FC = () => {
       
       <div className="bg-ui-bg-subtle p-4 rounded-lg mb-6">
         <Text>
-          Zaktualizuj dane swojego konta wypłat.
+          {t('payout.edit.description')}
         </Text>
       </div>
 
@@ -434,7 +433,7 @@ const PayoutEdit: React.FC = () => {
             onClick={() => navigate('/payout/detail')}
             disabled={isUpdating}
           >
-            Anuluj
+            {t('actions.cancel')}
           </Button>
           <Button 
             variant="primary" 
@@ -442,7 +441,7 @@ const PayoutEdit: React.FC = () => {
             isLoading={isUpdating}
             disabled={isUpdating || !isEditing}
           >
-            Zapisz zmiany
+            {t('payout.edit.saveChanges')}
           </Button>
         </div>
       </form>

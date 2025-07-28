@@ -4,26 +4,28 @@ import { useState, useEffect, useMemo } from "react"
 import { useVendorReturnRequests } from "../../../hooks/api/return-requests"
 import { useDate } from "../../../hooks/use-date"
 import { fetchReturnReasons } from "../../../services/return-reasons"
+import { useTranslation } from "react-i18next"
 
 // Status badges configuration for return requests
-const getStatusBadge = (status: string) => {
+const getStatusBadge = (status: string, t: (key: string) => string) => {
   switch (status) {
     case "pending":
-      return <Badge color="orange">Oczekujący</Badge>
+      return <Badge color="orange">{t('requests.returns.status.pending')}</Badge>
     case "approved":
-      return <Badge color="green">Zatwierdzony</Badge>
+      return <Badge color="green">{t('requests.returns.status.approved')}</Badge>
     case "refunded":
-      return <Badge color="green">Zwrócony</Badge>
+      return <Badge color="green">{t('requests.returns.status.refunded')}</Badge>
     case "escalated":
-      return <Badge color="red">Eskalowany</Badge>
+      return <Badge color="red">{t('requests.returns.status.escalated')}</Badge>
     case "withdrawn":
-      return <Badge color="grey">Odrzucony</Badge>
+      return <Badge color="grey">{t('requests.returns.status.withdrawn')}</Badge>
     default:
       return <Badge color="grey">{status}</Badge>
   }
 }
 
 export const ReturnsList = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   // State for status filtering
   const [statusFilter, setStatusFilter] = useState<string>("") 
@@ -88,7 +90,7 @@ export const ReturnsList = () => {
   if (isLoading) {
     return (
       <div className="flex h-full w-full items-center justify-center">
-        <Text size="base">Ładowanie...</Text>
+        <Text size="base">{t('requests.returns.loading')}</Text>
       </div>
     )
   }
@@ -100,28 +102,28 @@ export const ReturnsList = () => {
   return (
     <div className="flex h-full flex-col gap-y-4 p-8">
       <div className="flex justify-between items-center">
-        <Heading level="h1">Prośba zwrotu</Heading>
+        <Heading level="h1">{t('requests.returns.title')}</Heading>
         <div className="inline-flex rounded-md shadow-sm">
           <Button
             className="rounded-r-none"
             variant={statusFilter === "" ? "primary" : "secondary"}
             onClick={() => setStatusFilter("")}
           >
-            Wszystkie
+            {t('requests.returns.filter.all')}
           </Button>
           <Button
             className="rounded-none border-x-0"
             variant={statusFilter === "pending" ? "primary" : "secondary"}
             onClick={() => setStatusFilter("pending")}
           >
-            Oczekujące
+            {t('requests.returns.filter.pending')}
           </Button>
           <Button
             className="rounded-l-none"
             variant={statusFilter === "approved,refunded" ? "primary" : "secondary"}
             onClick={() => setStatusFilter("approved,refunded")}
           >
-            Zatwierdzone
+            {t('requests.returns.filter.approved')}
           </Button>
         </div>
       </div>
@@ -130,11 +132,11 @@ export const ReturnsList = () => {
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>#</Table.HeaderCell>
-            <Table.HeaderCell>Data</Table.HeaderCell>
-            <Table.HeaderCell>Klient</Table.HeaderCell>
-            <Table.HeaderCell>Notatka klienta</Table.HeaderCell>
-            <Table.HeaderCell>Najczęstsza przyczyna</Table.HeaderCell>
-            <Table.HeaderCell>Status</Table.HeaderCell>
+            <Table.HeaderCell>{t('requests.returns.table.date')}</Table.HeaderCell>
+            <Table.HeaderCell>{t('requests.returns.table.customer')}</Table.HeaderCell>
+            <Table.HeaderCell>{t('requests.returns.table.customerNote')}</Table.HeaderCell>
+            <Table.HeaderCell>{t('requests.returns.table.reason')}</Table.HeaderCell>
+            <Table.HeaderCell>{t('requests.returns.table.status')}</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -201,16 +203,16 @@ export const ReturnsList = () => {
                     })
                     
                     return mostCommonReasonId ? returnReasons[mostCommonReasonId] || 
-                      `Przyczyna #${mostCommonReasonId.substring(0, 8)}` : "-"
+                      `${t('requests.returns.table.reasonId')} #${mostCommonReasonId.substring(0, 8)}` : "-"
                   })()}
                 </Table.Cell>
-                <Table.Cell>{getStatusBadge(request.status)}</Table.Cell>
+                <Table.Cell>{getStatusBadge(request.status, t)}</Table.Cell>
               </Table.Row>
             ))
           ) : (
             <Table.Row>
               <Table.Cell className="text-center" style={{ gridColumn: 'span 6 / span 6' }}>
-                Brak próśb o zwrot
+                {t('requests.returns.noRequests')}
               </Table.Cell>
             </Table.Row>
           )}

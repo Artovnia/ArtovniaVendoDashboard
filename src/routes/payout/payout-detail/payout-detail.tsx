@@ -8,6 +8,7 @@ import {
   Tooltip,
   Label,
 } from '@medusajs/ui';
+import { useTranslation } from 'react-i18next';
 import { usePayuAccount } from '../../../hooks/api/payu';
 import { PencilSquare } from '@medusajs/icons';
 
@@ -17,6 +18,7 @@ import { PencilSquare } from '@medusajs/icons';
  * with options to edit specific sections
  */
 const PayoutDetail: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   
   // Fetch the payout account data with explicit refetch capability
@@ -34,7 +36,7 @@ const PayoutDetail: React.FC = () => {
   if (isLoading) {
     return (
       <Container className="p-8 max-w-4xl mx-auto">
-        <Text>Pobieranie informacji o koncie wypłat...</Text>
+        <Text>{t('payout.detail.loading')}</Text>
       </Container>
     );
   }
@@ -43,18 +45,18 @@ const PayoutDetail: React.FC = () => {
   if (error || !payoutAccount) {
     return (
       <Container className="p-8 max-w-4xl mx-auto">
-        <Heading className="mb-6">Dane konta wypłat</Heading>
+        <Heading className="mb-6">{t('payout.detail.title')}</Heading>
         <div className="bg-ui-bg-subtle p-4 rounded-lg mb-6">
           <Text className="text-ui-fg-error">
-            Nie można wyświetlić informacji o koncie wypłat. 
-            {error?.message && ` Powód: ${error.message}`}
+            {t('payout.errors.loadFailed')}
+            {error?.message && ` ${t('fields.reason')}: ${error.message}`}
           </Text>
           <Button 
             variant="secondary" 
             className="mt-4"
             onClick={() => navigate('/payout/create')}
           >
-            Skonfiguruj konto wypłat
+            {t('payout.detail.setupAccount')}
           </Button>
         </div>
       </Container>
@@ -121,39 +123,38 @@ const PayoutDetail: React.FC = () => {
 
   return (
     <Container className="p-8 max-w-4xl mx-auto">
-      <Heading className="mb-6">Dane konta wypłat</Heading>
+      <Heading className="mb-6">{t('payout.detail.title')}</Heading>
       
       <div className="bg-ui-bg-subtle p-4 rounded-lg mb-6">
         <Text>
-          Poniżej znajdują się informacje dotyczące Twojego konta wypłat.
-          Możesz edytować poszczególne sekcje klikając przycisk edycji.
+          {t('payout.detail.description')}
         </Text>
       </div>
 
       {/* Company Information */}
       <div className="bg-ui-bg-base p-6 rounded-lg border border-ui-border-base mb-6">
         <div className="flex justify-between items-center mb-4">
-          <Heading level="h3">Informacje o Firmie</Heading>
-          <Tooltip content="Edytuj informacje o firmie">
+          <Heading level="h3">{t('payout.detail.companyInfo')}</Heading>
+          <Tooltip content={t('payout.detail.editCompanyInfo')}>
             <Button 
               variant="secondary" 
               size="small"
               onClick={handleEditCompanyInfo}
             >
               <PencilSquare />
-              <span className="ml-2">Edytuj</span>
+              <span className="ml-2">{t('payout.detail.edit')}</span>
             </Button>
           </Tooltip>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <Label>Nazwa Prawna</Label>
+            <Label>{t('payout.legalName')}</Label>
             <Text className="mt-1">{legalName}</Text>
           </div>
           
           <div>
-            <Label>Numer NIP</Label>
+            <Label>{t('payout.taxId')}</Label>
             <Text className="mt-1">{taxId}</Text>
           </div>
         </div>
@@ -162,27 +163,27 @@ const PayoutDetail: React.FC = () => {
       {/* Contact Information */}
       <div className="bg-ui-bg-base p-6 rounded-lg border border-ui-border-base mb-6">
         <div className="flex justify-between items-center mb-4">
-          <Heading level="h3">Informacje Kontaktowe</Heading>
-          <Tooltip content="Edytuj informacje kontaktowe">
+          <Heading level="h3">{t('payout.detail.contactInfo')}</Heading>
+          <Tooltip content={t('payout.detail.editContactInfo')}>
             <Button 
               variant="secondary" 
               size="small"
               onClick={handleEditContactInfo}
             >
               <PencilSquare />
-              <span className="ml-2">Edytuj</span>
+              <span className="ml-2">{t('payout.detail.edit')}</span>
             </Button>
           </Tooltip>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <Label>Email</Label>
+            <Label>{t('payout.email')}</Label>
             <Text className="mt-1">{email}</Text>
           </div>
           
           <div>
-            <Label>Telefon</Label>
+            <Label>{t('payout.phone')}</Label>
             <Text className="mt-1">{phone}</Text>
           </div>
         </div>
@@ -191,33 +192,33 @@ const PayoutDetail: React.FC = () => {
       {/* Address Information */}
       <div className="bg-ui-bg-base p-6 rounded-lg border border-ui-border-base mb-6">
         <div className="flex justify-between items-center mb-4">
-          <Heading level="h3">Adres</Heading>
-          <Tooltip content="Edytuj adres">
+          <Heading level="h3">{t('payout.detail.address')}</Heading>
+          <Tooltip content={t('payout.detail.editAddress')}>
             <Button 
               variant="secondary" 
               size="small"
               onClick={handleEditAddress}
             >
               <PencilSquare />
-              <span className="ml-2">Edytuj</span>
+              <span className="ml-2">{t('payout.detail.edit')}</span>
             </Button>
           </Tooltip>
         </div>
         
         <div className="space-y-2">
           <div>
-            <Label>Ulica</Label>
+            <Label>{t('payout.street')}</Label>
             <Text className="mt-1">{address?.street}</Text>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label>Kod Pocztowy</Label>
+              <Label>{t('payout.postalCode')}</Label>
               <Text className="mt-1">{address?.postalCode}</Text>
             </div>
             
             <div>
-              <Label>Miasto</Label>
+              <Label>{t('payout.city')}</Label>
               <Text className="mt-1">{address?.city}</Text>
             </div>
           </div>

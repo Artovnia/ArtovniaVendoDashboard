@@ -13,21 +13,21 @@ export const useRequestsTableColumns = () => {
   return useMemo(
     () => [
       columnHelper.accessor('data.name', {
-        header: 'Title',
+        header: t('requests.table.title'),
         cell: ({ getValue }) => getValue(),
       }),
       columnHelper.accessor('data.handle', {
-        header: 'Handle',
+        header: t('requests.table.handle'),
         cell: ({ getValue }) => getValue(),
       }),
       columnHelper.accessor('created_at', {
-        header: 'Date',
+        header: t('requests.table.date'),
         cell: ({ getValue }) => (
           <DateCell date={getValue()} />
         ),
       }),
       columnHelper.accessor('status', {
-        header: 'Status',
+        header: t('requests.table.status'),
         cell: ({ getValue }) => (
           <StatusCell status={getValue()} />
         ),
