@@ -29,22 +29,31 @@
 
   /* Light mode theme variables */
   :root {
-    --ui-bg-base: #f8f8f8;         /* Main background color */
-    --ui-bg-subtle: #F4F0EB;       /* Subtle background color - secondary */
-    --ui-bg-component: #F4F0EB;    /* Component background color */
+    --ui-bg-base: #F4F0EB;         /* Main background color */
+    --ui-bg-subtle: #fcfcfc;       /* Subtle background color - secondary */
+    --ui-bg-component: #cfcfcf;    /* Component background color */
     --ui-bg-field: #FFFFFF;        /* Form field background color */
-    --ui-bg-highlight: #BFB7AD;    /* Highlighted background color */
+    --ui-bg-highlight: #3B3634;    /* Highlighted background color */
     --ui-bg-interactive: #BFB7AD;  /* Interactive element background color */
     --ui-bg-overlay: rgba(59, 54, 52, 0.2); /* Overlay background color */
+    
+    /* Hover state backgrounds - Missing variables that components expect */
+    --ui-bg-base-hover: #161514;   /* Base hover background - lighter for visibility */
+    --ui-bg-subtle-hover: #161514; /* Subtle hover background - lighter for visibility */
+    --ui-bg-field-hover: #161514;  /* Field hover background - lighter for visibility */
+    --ui-bg-subtle-pressed: #D4CFC7; /* Subtle pressed background - even lighter */
+    
     --ui-fg-base: #3B3634;         /* Base text color */
-    --ui-fg-subtle: #3B3634;       /* Subtle text color */
+    --ui-fg-subtle: #6B6B6B;       /* Subtle text color - lighter for better hierarchy */
     --ui-fg-interactive: #3B3634;  /* Interactive text color */
-    --ui-fg-muted: #BFB7AD;        /* Muted text color */
-    --ui-fg-disabled: #BFB7AD;     /* Disabled text color */
+    --ui-fg-muted: #9CA3AF;        /* Muted text color - more muted */
+    --ui-fg-disabled: #D1D5DB;     /* Disabled text color - lighter */
     --ui-fg-on-color: #FFFFFF;     /* Text color on colored backgrounds */
-    --ui-border-base: #BFB7AD;     /* Base border color */
-    --ui-border-strong: #BFB7AD;   /* Strong border color */
-    --ui-border-interactive: #BFB7AD; /* Interactive border color */
+    --ui-fg-on-inverted: #FFFFFF;  /* Text color on dark backgrounds */
+    
+    --ui-border-base: #E5E7EB;     /* Base border color - lighter */
+    --ui-border-strong: #D1D5DB;   /* Strong border color */
+    --ui-border-interactive: #3B3634; /* Interactive border color */
     --ui-border-highlight: #3B3634; /* Highlight border color */
     --ui-color-component-bg: #F4F0EB; /* Component background color */
     --ui-color-component-text: #3B3634; /* Component text color */
@@ -52,56 +61,65 @@
     /* Button colors */
     --ui-button-default-bg: #3B3634; /* Default button background */
     --ui-button-default-text: #FFFFFF; /* Default button text */
-    --ui-button-hover-bg: #3B3634; /* Button hover background - slightly darker */
-    --ui-button-hover-text: #3B3634; /* Button hover text */
-    --ui-button-pressed-bg: #3B3634; /* Button pressed background */
-    --ui-button-disabled-bg: #BFB7AD; /* Disabled button background */
-    --ui-button-disabled-text: #F4F0EB; /* Disabled button text */
+    --ui-button-hover-bg: #2a2725; /* Button hover background - darker */
+    --ui-button-hover-text: #FFFFFF; /* Button hover text */
+    --ui-button-pressed-bg: #1f1e1c; /* Button pressed background */
+    --ui-button-disabled-bg: #E5E7EB; /* Disabled button background */
+    --ui-button-disabled-text: #9CA3AF; /* Disabled button text */
     
-    /* Hover states */
-    --ui-hover-base: rgba(59, 54, 52, 0.05); /* Base hover background */
-    --ui-hover-highlight: #BFB7AD; /* Highlight hover background */
-    --ui-hover-interactive: #BFB7AD; /* Interactive hover background */
+    /* Legacy hover states for backward compatibility */
+    --ui-hover-base: rgba(59, 54, 52, 0.08); /* Base hover background */
+    --ui-hover-highlight: #3B3634; /* Highlight hover background */
+    --ui-hover-interactive: #3B3634; /* Interactive hover background */
     
     @apply bg-ui-bg-subtle text-ui-fg-base antialiased;
     text-rendering: optimizeLegibility;
   }
 
-  /* Dark mode theme variables */
+  /* Dark mode theme variables - Railway inspired */
   .dark {
-    --ui-bg-base: #1A1917;       /* Main background color */
-    --ui-bg-subtle: #3B3634;      /* Subtle background color */
-    --ui-bg-component: #2D2B28;   /* Component background color */
-    --ui-bg-field: #242220;       /* Form field background color */
-    --ui-bg-highlight: #2D2B28;   /* Highlighted background color */
-    --ui-bg-interactive: #2D2B28; /* Interactive element background color */
-    --ui-bg-overlay: rgba(26, 25, 23, 0.7); /* Overlay background color */
-    --ui-fg-base: #E8E4DF;        /* Base text color */
-    --ui-fg-subtle: #E8E4DF;      /* Subtle text color */
-    --ui-fg-interactive: #E8E4DF; /* Interactive text color */
-    --ui-fg-muted: #3A3834;       /* Muted text color */
-    --ui-fg-disabled: #3A3834;    /* Disabled text color */
-    --ui-fg-on-color: #1A1917;    /* Text color on colored backgrounds */
-    --ui-border-base: #3A3834;    /* Base border color */
-    --ui-border-strong: #3A3834;  /* Strong border color */
-    --ui-border-interactive: #3A3834; /* Interactive border color */
-    --ui-border-highlight: #E8E4DF; /* Highlight border color */
-    --ui-color-component-bg: #2D2B28; /* Component background color */
-    --ui-color-component-text: #E8E4DF; /* Component text color */
+    --ui-bg-base: #0B0D0F;       /* Main background color - Railway dark */
+    --ui-bg-subtle: #13151A;      /* Subtle background color - Railway card */
+    --ui-bg-component: #1A1D23;   /* Component background color */
+    --ui-bg-field: #13151A;       /* Form field background color */
+    --ui-bg-highlight: #8B5CF6;   /* Highlighted background color - Railway purple */
+    --ui-bg-interactive: #1A1D23; /* Interactive element background color */
+    --ui-bg-overlay: #8B5CF6; /* Overlay background color */
     
-    /* Button colors */
-    --ui-button-default-bg: #E8E4DF;  /* Default button background */
-    --ui-button-default-text: #1A1917; /* Default button text */
-    --ui-button-hover-bg: #E8E4DF;     /* Button hover background */
-    --ui-button-hover-text: #1A1917;   /* Button hover text */
-    --ui-button-pressed-bg: #E8E4DF;   /* Button pressed background */
-    --ui-button-disabled-bg: #3A3834;  /* Disabled button background */
-    --ui-button-disabled-text: #2D2B28; /* Disabled button text */
+    /* Hover state backgrounds - Railway style */
+    --ui-bg-base-hover: #1A1D23;   /* Base hover background */
+    --ui-bg-subtle-hover: #22252B; /* Subtle hover background */
+    --ui-bg-field-hover: #1A1D23;  /* Field hover background */
+    --ui-bg-subtle-pressed: #2A2D35; /* Subtle pressed background */
     
-    /* Hover states */
-    --ui-hover-base: rgba(232, 228, 223, 0.1); /* Base hover background */
-    --ui-hover-highlight: #3A3834;     /* Highlight hover background */
-    --ui-hover-interactive: #3A3834;   /* Interactive hover background */
+    --ui-fg-base: #F8FAFC;        /* Base text color - Railway white */
+    --ui-fg-subtle: #94A3B8;      /* Subtle text color - Railway gray */
+    --ui-fg-interactive: #C4B5FD; /* Interactive text color - Railway light purple */
+    --ui-fg-muted: #64748B;       /* Muted text color */
+    --ui-fg-disabled: #475569;    /* Disabled text color */
+    --ui-fg-on-color: #F8FAFC;    /* Text color on colored backgrounds */
+    --ui-fg-on-inverted: #0B0D0F; /* Text color on light backgrounds */
+    
+    --ui-border-base: #1E293B;    /* Base border color - Railway border */
+    --ui-border-strong: #334155;  /* Strong border color */
+    --ui-border-interactive: #8B5CF6; /* Interactive border color - Railway purple */
+    --ui-border-highlight: #C4B5FD; /* Highlight border color */
+    --ui-color-component-bg: #1A1D23; /* Component background color */
+    --ui-color-component-text: #F8FAFC; /* Component text color */
+    
+    /* Button colors - Railway style */
+    --ui-button-default-bg: #8B5CF6;  /* Default button background - Railway purple */
+    --ui-button-default-text: #F8FAFC; /* Default button text */
+    --ui-button-hover-bg: #7C3AED;     /* Button hover background - darker purple */
+    --ui-button-hover-text: #F8FAFC;   /* Button hover text */
+    --ui-button-pressed-bg: #6D28D9;   /* Button pressed background */
+    --ui-button-disabled-bg: #374151;  /* Disabled button background */
+    --ui-button-disabled-text: #6B7280; /* Disabled button text */
+    
+    /* Legacy hover states for backward compatibility */
+    --ui-hover-base: rgba(139, 92, 246, 0.1); /* Base hover background - purple tint */
+    --ui-hover-highlight: #8B5CF6;     /* Highlight hover background */
+    --ui-hover-interactive: #7C3AED;   /* Interactive hover background */
   }
 }
 
@@ -133,15 +151,17 @@
   --medusa-button-primary-text: #FFFFFF;
   --medusa-button-secondary-border: #3B3634;
   --medusa-button-secondary-text: #3B3634;
+  --medusa-button-secondary-hover: rgba(59, 54, 52, 0.05);
 }
 
-/* Dark mode button colors */
+/* Dark mode button colors - Railway style */
 .dark {
-  --medusa-button-primary-bg: #E8E4DF;
-  --medusa-button-primary-hover: #d6d1ca;
-  --medusa-button-primary-text: #1A1917;
-  --medusa-button-secondary-border: #E8E4DF;
-  --medusa-button-secondary-text: #E8E4DF;
+  --medusa-button-primary-bg: #8B5CF6;
+  --medusa-button-primary-hover: #7C3AED;
+  --medusa-button-primary-text: #F8FAFC;
+  --medusa-button-secondary-border: #8B5CF6;
+  --medusa-button-secondary-text: #C4B5FD;
+  --medusa-button-secondary-hover: rgba(139, 92, 246, 0.1);
 }
 
 /* Very specific selector for primary buttons */
@@ -173,14 +193,14 @@ button.ui-button[data-variant="secondary"],
 button[class*="ui-button"][data-variant="secondary"]:hover,
 button.ui-button[data-variant="secondary"]:hover,
 .ui-button[data-variant="secondary"]:hover {
-  background-color: rgba(59, 54, 52, 0.05) !important;
+  background-color: var(--medusa-button-secondary-hover) !important;
 }
 
 /* Dark mode secondary button hover */
 .dark button[class*="ui-button"][data-variant="secondary"]:hover,
 .dark button.ui-button[data-variant="secondary"]:hover,
 .dark .ui-button[data-variant="secondary"]:hover {
-  background-color: rgba(232, 228, 223, 0.05) !important;
+  background-color: var(--medusa-button-secondary-hover) !important;
 }
 
 /* Target Radix Select viewport and content */

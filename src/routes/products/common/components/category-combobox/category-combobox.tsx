@@ -62,21 +62,34 @@ export const CategoryCombobox = forwardRef<
   const { searchValue, onSearchValueChange, query } =
     useDebouncedSearch();
 
-  const { product_categories, isPending, isError, error } =
+  const { product_categories: allCategories, isPending, isError, error } =
     useProductCategories(
-      {
-        q: query,
-        parent_category_id: !searchValue
-          ? getParentId(level)
-          : undefined,
-        include_descendants_tree: !searchValue
-          ? true
-          : false,
-      },
+      undefined, // No query params since backend doesn't support hierarchical filtering
       {
         enabled: open,
       }
     );
+
+  // Client-side hierarchical filtering
+  const product_categories = useMemo(() => {
+    if (!allCategories) return [];
+    
+    // If searching, return all categories that match the search
+    if (searchValue) {
+      return allCategories.filter(cat => 
+        cat.name.toLowerCase().includes(searchValue.toLowerCase())
+      );
+    }
+    
+    // If at root level, return only top-level categories (no parent)
+    if (level.length === 0) {
+      return allCategories.filter(cat => !cat.parent_category_id);
+    }
+    
+    // If in a subcategory, return children of the current level
+    const currentParentId = getParentId(level);
+    return allCategories.filter(cat => cat.parent_category_id === currentParentId);
+  }, [allCategories, searchValue, level]);
 
   const [showLoading, setShowLoading] = useState(false);
 
@@ -275,6 +288,11 @@ export const CategoryCombobox = forwardRef<
           }
         }}
       >
+        {/* 
+         * ANCHOR: This is the main trigger element for the popover, styled to look like an input field.
+         * It displays the number of selected categories or a placeholder.
+         * Clicking this div opens the popover.
+         */}
         <div
           data-anchor
           className={clx(
@@ -306,7 +324,7 @@ export const CategoryCombobox = forwardRef<
                 e.preventDefault();
                 onChange([]);
               }}
-              className='bg-ui-bg-base hover:bg-ui-bg-base-hover txt-compact-small-plus text-ui-fg-subtle focus-within:border-ui-fg-interactive transition-fg absolute left-0.5 top-0.5 flex h-[28px] items-center rounded-[4px] border py-[3px] pl-1.5 pr-1 outline-none'
+              className='bg-ui-bg-subtle hover:bg-ui-bg-base-hover txt-compact-small-plus text-ui-fg-subtle focus-within:border-ui-fg-interactive transition-fg absolute left-0.5 top-0.5 flex h-[28px] items-center rounded-[4px] border py-[4px] pl-1.5 pr-1 outline-none'
             >
               <span className='tabular-nums'>
                 {value.length}
@@ -348,11 +366,15 @@ export const CategoryCombobox = forwardRef<
           </button>
         </div>
       </RadixPopover.Anchor>
+      {/* 
+       * POPOVER CONTENT: This is the floating part of the component that appears when the popover is open.
+       * It contains the search bar, breadcrumbs, and the list of categories.
+       */}
       <RadixPopover.Content
         sideOffset={4}
         role='listbox'
         className={clx(
-          'shadow-elevation-flyout bg-ui-bg-base -left-2 z-50 w-[var(--radix-popper-anchor-width)] rounded-[8px]',
+          'shadow-elevation-flyout bg-ui-bg-base -left-2 z-50 w-[var(--radix-popper-anchor-width)] rounded-[8px] ',
           'max-h-[200px] overflow-y-auto',
           'data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
           'data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
@@ -372,7 +394,11 @@ export const CategoryCombobox = forwardRef<
       >
         {showLevelUp && (
           <Fragment>
-            <div className='p-1'>
+            {/* 
+             * LEVEL UP BUTTON: This button allows the user to navigate up one level in the category hierarchy.
+             * It is displayed when the user has navigated down into a subcategory.
+             */}
+            <div className='p-3'>
               <button
                 data-active={focusedIndex === 0}
                 role='button'
@@ -395,20 +421,36 @@ export const CategoryCombobox = forwardRef<
             <Divider />
           </Fragment>
         )}
-        <div className='p-1'>
+        {/* 
+         * OPTIONS LIST: This is the scrollable area where the category options are displayed.
+         * It handles rendering the list of categories, the loading state, and the 'no results' message.
+         */}
+        <div className='p-2'>
           {options.length > 0 &&
             !showLoading &&
             options.map((option, index) => (
+              /*
+               * CATEGORY ITEM WRAPPER: Represents a single category row in the list.
+               * It contains the main button for selection and an optional arrow button for navigation.
+               */
               <div
                 key={option.value}
                 className={clx(
-                  'transition-fg bg-ui-bg-base grid cursor-pointer grid-cols-1 items-center gap-2 overflow-hidden',
+                  'transition-fg bg-ui-bg-base hover:bg-ui-bg-field-hover grid cursor-pointer grid-cols-1 items-center mb-1 gap-2 overflow-hidden',
                   {
                     'grid-cols-[1fr_32px]':
                       option.has_children && !searchValue,
                   }
                 )}
               >
+                {/* 
+                 * OPTION ITEM: This is a single category option in the list.
+                 * It displays the category name and an icon indicating whether it has children.
+                 */}
+                {/* 
+                 * CATEGORY SELECTION BUTTON: The main clickable area for a category.
+                 * It handles selection and displays the category name and a checkmark if selected.
+                 */}
                 <button
                   data-active={
                     showLevelUp
@@ -418,7 +460,7 @@ export const CategoryCombobox = forwardRef<
                   type='button'
                   role='option'
                   className={clx(
-                    'grid h-full w-full appearance-none grid-cols-[20px_1fr] items-center gap-2 overflow-hidden rounded-md px-2 py-1.5 text-left outline-none',
+                    'grid h-full w-full appearance-none grid-cols-[20px_1fr] items-center gap-2 overflow-hidden rounded-md px-2 py-2 text-left outline-none',
                     'data-[active=true]:bg-ui-bg-field-hover'
                   )}
                   onClick={handleSelect(option)}
@@ -447,8 +489,8 @@ export const CategoryCombobox = forwardRef<
                 {option.has_children && !searchValue && (
                   <button
                     className={clx(
-                      'text-ui-fg-muted flex size-8 appearance-none items-center justify-center rounded-md outline-none',
-                      'hover:bg-ui-bg-base-hover active:bg-ui-bg-base-pressed'
+                      'text-ui-fg-muted flex size-8 bg-ui-bg-base appearance-none items-center justify-center rounded-md outline-none',
+                      'hover:bg-ui-bg-subtle-hover active:bg-ui-bg-subtle-pressed'
                     )}
                     type='button'
                     onClick={handleLevelDown(option)}
@@ -474,7 +516,7 @@ export const CategoryCombobox = forwardRef<
               </div>
             ))}
           {options.length === 0 && !showLoading && (
-            <div className='px-2 py-1.5'>
+            <div className='px-2 py-2'>
               <Text size='small' leading='compact'>
                 {query ? (
                   <Trans
@@ -510,9 +552,9 @@ type ProductCategoryOption = {
   has_children: boolean;
 };
 
-function getParentId(level: Level[]): string {
+function getParentId(level: Level[]): string | null {
   if (!level.length) {
-    return 'null';
+    return null;
   }
 
   return level[level.length - 1].id;

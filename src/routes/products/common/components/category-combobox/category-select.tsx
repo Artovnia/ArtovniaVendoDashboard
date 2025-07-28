@@ -1,4 +1,4 @@
-import { Check, TrianglesMini } from '@medusajs/icons';
+import { Check, TrianglesMini, TriangleRightMini, ArrowUturnLeft } from '@medusajs/icons';
 import { AdminProductCategoryResponse } from '@medusajs/types';
 import { Text, clx } from '@medusajs/ui';
 import { Select } from 'radix-ui';
@@ -50,8 +50,34 @@ export const CategorySelect = forwardRef<
   const [level, setLevel] = useState<Level[]>([]);
   const { searchValue } = useDebouncedSearch();
 
-  const { product_categories, isPending, isError, error } =
-    useProductCategories();
+  const { product_categories: allCategories, isPending, isError, error } =
+    useProductCategories(
+      undefined, // No query params since backend doesn't support hierarchical filtering
+      {
+        enabled: open,
+      }
+    );
+
+  // Client-side hierarchical filtering
+  const product_categories = useMemo(() => {
+    if (!allCategories) return [];
+    
+    // If searching, return all categories that match the search
+    if (searchValue) {
+      return allCategories.filter(cat => 
+        cat.name.toLowerCase().includes(searchValue.toLowerCase())
+      );
+    }
+    
+    // If at root level, return only top-level categories (no parent)
+    if (level.length === 0) {
+      return allCategories.filter(cat => !cat.parent_category_id);
+    }
+    
+    // If in a subcategory, return children of the current level
+    const currentParentId = getParentId(level);
+    return allCategories.filter(cat => cat.parent_category_id === currentParentId);
+  }, [allCategories, searchValue, level]);
 
   const [showLoading, setShowLoading] = useState(false);
 
@@ -83,6 +109,28 @@ export const CategorySelect = forwardRef<
       setLevel([]);
     }
   }, [searchValue]);
+
+  function handleLevelUp(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    setLevel(level.slice(0, level.length - 1));
+    innerRef.current?.focus();
+  }
+
+  function handleLevelDown(option: ProductCategoryOption) {
+    return (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      setLevel([
+        ...level,
+        { id: option.value, label: option.label },
+      ]);
+
+      innerRef.current?.focus();
+    };
+  }
 
   const handleSelect = (option: string) => {
     if (value.includes(option)) {
@@ -231,47 +279,92 @@ export const CategorySelect = forwardRef<
           avoidCollisions
         >
           <Select.Viewport className='p-2'>
+            {showLevelUp && (
+              <button
+                data-active={focusedIndex === 0}
+                type='button'
+                className={clx(
+                  'grid h-full w-full appearance-none grid-cols-[20px_1fr] items-center gap-2 overflow-hidden rounded-md px-2 py-1.5 text-left outline-none mb-2',
+                  'data-[active=true]:bg-ui-bg-field-hover'
+                )}
+                onClick={handleLevelUp}
+                onMouseEnter={() => setFocusedIndex(0)}
+                onMouseLeave={() => setFocusedIndex(-1)}
+                tabIndex={-1}
+              >
+                <div className='flex size-5 items-center justify-center'>
+                  <ArrowUturnLeft />
+                </div>
+                <Text
+                  as='span'
+                  size='small'
+                  leading='compact'
+                  className='w-full truncate'
+                >
+                  {getParentLabel(level)}
+                </Text>
+              </button>
+            )}
             {options.length > 0 &&
               !showLoading &&
               options.map((option, index) => (
-                <SelectItem
-                  value={option.value}
+                <div
                   key={option.value}
+                  className='grid grid-cols-[1fr_auto] items-center gap-2'
                 >
-                  <button
-                    data-active={
-                      showLevelUp
-                        ? focusedIndex === index + 1
-                        : focusedIndex === index
-                    }
-                    type='button'
-                    role='option'
-                    className={clx(
-                      'flex h-full w-full appearance-none items-center gap-2 overflow-hidden rounded-lg px-2 py-1.2 text-left outline-none',
-                      {
-                        'bg-ui-bg-base-hover': showLevelUp
-                          ? focusedIndex === index + 1
-                          : focusedIndex === index,
-                      }
-                    )}
-                    onMouseEnter={() =>
-                      setFocusedIndex(
-                        showLevelUp ? index + 1 : index
-                      )
-                    }
-                    onMouseLeave={() => setFocusedIndex(-1)}
-                    tabIndex={-1}
+                  <SelectItem
+                    value={option.value}
                   >
-                    <Text
-                      as='span'
-                      size='small'
-                      leading='compact'
-                      className='flex w-full truncate'
+                    <button
+                      data-active={
+                        showLevelUp
+                          ? focusedIndex === index + 1
+                          : focusedIndex === index
+                      }
+                      type='button'
+                      role='option'
+                      className={clx(
+                        'grid h-full w-full appearance-none grid-cols-[20px_1fr] items-center gap-2 overflow-hidden rounded-md px-2 py-1.5 text-left outline-none',
+                        'data-[active=true]:bg-ui-bg-field-hover'
+                      )}
+                      onClick={() => handleSelect(option.value)}
+                      onMouseEnter={() =>
+                        setFocusedIndex(
+                          showLevelUp ? index + 1 : index
+                        )
+                      }
+                      onMouseLeave={() => setFocusedIndex(-1)}
+                      tabIndex={-1}
                     >
-                      {option.label}
-                    </Text>
-                  </button>
-                </SelectItem>
+                      <div className='flex size-5 items-center justify-center'>
+                        {value.includes(option.value) && (
+                          <Check className='size-4' />
+                        )}
+                      </div>
+                      <Text
+                        as='span'
+                        size='small'
+                        leading='compact'
+                        className='w-full truncate'
+                      >
+                        {option.label}
+                      </Text>
+                    </button>
+                  </SelectItem>
+                  {option.has_children && !searchValue && (
+                    <button
+                      className={clx(
+                        'text-ui-fg-muted flex size-8 appearance-none items-center justify-center rounded-md outline-none',
+                        'hover:bg-ui-bg-base-hover active:bg-ui-bg-base-pressed'
+                      )}
+                      type='button'
+                      onClick={handleLevelDown(option)}
+                      tabIndex={-1}
+                    >
+                      <TriangleRightMini />
+                    </button>
+                  )}
+                </div>
               ))}
           </Select.Viewport>
         </Select.Content>
@@ -309,6 +402,22 @@ const SelectItem = ({
     </Select.Item>
   );
 };
+
+function getParentId(level: Level[]): string | null {
+  if (!level.length) {
+    return null;
+  }
+
+  return level[level.length - 1].id;
+}
+
+function getParentLabel(level: Level[]): string | null {
+  if (!level.length) {
+    return null;
+  }
+
+  return level[level.length - 1].label;
+}
 
 function getOptions(
   categories: AdminProductCategoryResponse['product_category'][]

@@ -376,7 +376,7 @@ export function MessagesPage() {
   };
   
   return (
-    <Container className="p-6 rounded-lg shadow-md max-w-4xl mx-auto">
+    <Container className="p-6 rounded-lg shadow-md max-w-4xl mx-auto border border-ui-border-base">
       <Heading className="text-xl font-bold mb-4">{t('messages.title', 'Messages')}</Heading>
       
       <Tabs 

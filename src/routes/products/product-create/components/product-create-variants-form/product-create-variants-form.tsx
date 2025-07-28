@@ -111,7 +111,6 @@ const useColumns = ({
     sku: 'SKU',
     ean: 'EAN',
     barcode: 'Kod kreskowy',
-    inventory_quantity: 'Ilość w magazynie',
     manage_inventory: 'Zarządzaj zapasami',
     allow_backorder: 'Zezwalaj na zamówienia oczekujące',
     price: 'Cena (PLN)',
@@ -186,17 +185,7 @@ const useColumns = ({
           return <DataGrid.TextCell context={context} />;
         },
       }),
-      columnHelper.column({
-        id: 'inventory_quantity',
-        name: polishHeaders.inventory_quantity,
-        header: polishHeaders.inventory_quantity,
-        field: (context) =>
-          `variants.${context.row.original.originalIndex}.inventory_quantity`,
-        type: 'number',
-        cell: (context) => {
-          return <DataGrid.NumberCell context={context} />;
-        },
-      }),
+
       columnHelper.column({
         id: 'manage_inventory',
         name: polishHeaders.manage_inventory,

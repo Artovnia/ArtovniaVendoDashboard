@@ -8,7 +8,6 @@ import menuItemModule from "virtual:medusa/menu-items"
 import widgetModule from "virtual:medusa/widgets"
 
 import "./index.css"
-import "./medusa-ui-overrides.css" // Custom overrides for Medusa UI components
 
 function App() {
   const manager = new DashboardExtensionManager({
