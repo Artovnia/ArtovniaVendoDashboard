@@ -59,14 +59,14 @@ export const ProductGPSRSection = ({ product }: ProductGPSRSectionProps) => {
   return (
     <Container className="p-0">
       <div className="flex items-center justify-between px-6 py-4">
-        <Heading level="h2">{t('products.gpsr.title', 'Informacje GPSR')}</Heading>
+        <Heading level="h2">{t('products.gpsr.title')}</Heading>
         <Button
           size="small"
           variant="secondary"
           onClick={handleEditClick}
         >
           <PencilSquare className="text-ui-fg-subtle" />
-          <span className="ml-1">{t('actions.edit', 'Edytuj')}</span>
+          <span className="ml-1">{t('actions.edit')}</span>
         </Button>
       </div>
 
@@ -75,22 +75,22 @@ export const ProductGPSRSection = ({ product }: ProductGPSRSectionProps) => {
           {/* Producer Information */}
           {(gpsrData.producerName || gpsrData.producerAddress || gpsrData.producerContact) && (
             <div className="px-6 py-4">
-              <Heading level="h3" className="mb-2">{t('products.gpsr.producer.section', 'Dane Producenta')}</Heading>
+              <Heading level="h3" className="mb-2">{t('products.gpsr.producer.section')}</Heading>
               {gpsrData.producerName && (
                 <SectionRow 
-                  title={t('products.gpsr.producer.name.label', 'Nazwa Producenta')} 
+                  title={t('products.gpsr.producer.name.label')} 
                   value={gpsrData.producerName} 
                 />
               )}
               {gpsrData.producerAddress && (
                 <SectionRow 
-                  title={t('products.gpsr.producer.address.label', 'Adres Producenta')} 
+                  title={t('products.gpsr.producer.address.label')} 
                   value={gpsrData.producerAddress} 
                 />
               )}
               {gpsrData.producerContact && (
                 <SectionRow 
-                  title={t('products.gpsr.producer.contact.label', 'Kontakt do Producenta')} 
+                  title={t('products.gpsr.producer.contact.label')} 
                   value={gpsrData.producerContact} 
                 />
               )}
@@ -100,22 +100,22 @@ export const ProductGPSRSection = ({ product }: ProductGPSRSectionProps) => {
           {/* Importer Information */}
           {(gpsrData.importerName || gpsrData.importerAddress || gpsrData.importerContact) && (
             <div className="px-6 py-4">
-              <Heading level="h3" className="mb-2">{t('products.gpsr.importer.section', 'Dane Importera')}</Heading>
+              <Heading level="h3" className="mb-2">{t('products.gpsr.importer.section')}</Heading>
               {gpsrData.importerName && (
                 <SectionRow 
-                  title={t('products.gpsr.importer.name.label', 'Nazwa Importera')} 
+                  title={t('products.gpsr.importer.name.label')} 
                   value={gpsrData.importerName} 
                 />
               )}
               {gpsrData.importerAddress && (
                 <SectionRow 
-                  title={t('products.gpsr.importer.address.label', 'Adres Importera')} 
+                  title={t('products.gpsr.importer.address.label')} 
                   value={gpsrData.importerAddress} 
                 />
               )}
               {gpsrData.importerContact && (
                 <SectionRow 
-                  title={t('products.gpsr.importer.contact.label', 'Kontakt do Importera')} 
+                  title={t('products.gpsr.importer.contact.label')} 
                   value={gpsrData.importerContact} 
                 />
               )}
@@ -126,7 +126,7 @@ export const ProductGPSRSection = ({ product }: ProductGPSRSectionProps) => {
           {gpsrData.instructions && (
             <div className="px-6 py-4">
               <SectionRow 
-                title={t('products.gpsr.instructions.label', 'Instrukcje / Ostrzeżenia')} 
+                title={t('products.gpsr.instructions.label')} 
                 value={gpsrData.instructions} 
               />
             </div>
@@ -136,7 +136,7 @@ export const ProductGPSRSection = ({ product }: ProductGPSRSectionProps) => {
           {gpsrData.certificates && (
             <div className="px-6 py-4">
               <SectionRow 
-                title={t('products.gpsr.certificates.label', 'Certyfikaty')} 
+                title={t('products.gpsr.certificates.label')} 
                 value={gpsrData.certificates} 
               />
             </div>
@@ -145,10 +145,7 @@ export const ProductGPSRSection = ({ product }: ProductGPSRSectionProps) => {
       ) : (
         <div className="px-6 py-4">
           <Text className="text-ui-fg-subtle">
-            {t(
-              'products.gpsr.no_data',
-              'Nie dodano jeszcze informacji GPSR dla tego produktu. Informacje GPSR obejmują dane producenta, importera, instrukcje oraz certyfikaty zgodności.'
-            )}
+            {t('products.gpsr.no_data')}
           </Text>
         </div>
       )}

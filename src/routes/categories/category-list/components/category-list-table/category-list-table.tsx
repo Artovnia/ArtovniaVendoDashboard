@@ -24,35 +24,45 @@ export const CategoryListTable = () => {
     pageSize: PAGE_SIZE,
   });
 
-  const query = raw.q
-    ? {
-        include_ancestors_tree: true,
-        fields:
-          'id,name,handle,is_active,is_internal,parent_category',
-        ...searchParams,
-      }
-    : {
-        include_descendants_tree: true,
-        parent_category_id: 'null',
-        fields:
-          'id,name,category_children,handle,is_internal,is_active',
-        ...searchParams,
-      };
+  // Fetch all categories and filter client-side for hierarchical display
+  // Backend API only supports basic fields, offset, limit parameters
+  const query = {
+    fields: 'id,name,handle,is_active,is_internal,parent_category_id,category_children',
+    // Remove pagination for client-side filtering - we need all categories to build hierarchy
+    limit: 1000, // Set high limit to get all categories
+    offset: 0,
+    q: searchParams.q, // Keep search functionality
+  };
 
   const {
-    product_categories,
-    count,
+    product_categories: allCategories,
     isLoading,
     isError,
     error,
   } = useProductCategories(
-    {
-      ...query,
-    },
+    query,
     {
       placeholderData: keepPreviousData,
     }
   );
+
+  // Client-side hierarchical filtering - show only main categories (no parent)
+  const product_categories = useMemo(() => {
+    if (!allCategories) return [];
+    
+    // If searching, return all categories that match the search
+    if (raw.q && typeof raw.q === 'string') {
+      return allCategories.filter(cat => 
+        cat.name.toLowerCase().includes(raw.q!.toLowerCase())
+      );
+    }
+    
+    // Show only top-level categories (no parent_category_id)
+    return allCategories.filter(cat => !cat.parent_category_id);
+  }, [allCategories, raw.q]);
+
+  // Count of filtered categories for pagination
+  const count = product_categories.length;
 
   const columns = useColumns();
 
@@ -61,7 +71,15 @@ export const CategoryListTable = () => {
     columns,
     count,
     getRowId: (original) => original.id,
-    getSubRows: (original) => original.category_children,
+    getSubRows: (original) => {
+      // Return subcategories for expandable rows
+      // Use category_children if available, otherwise filter by parent_category_id
+      if (original.category_children && original.category_children.length > 0) {
+        return original.category_children;
+      }
+      // Fallback: find children by parent_category_id
+      return allCategories?.filter(cat => cat.parent_category_id === original.id) || [];
+    },
     enableExpandableRows: true,
     pageSize: PAGE_SIZE,
   });
@@ -76,12 +94,12 @@ export const CategoryListTable = () => {
         <div>
           <Heading>{t('categories.domain')}</Heading>
           <Text className='text-ui-fg-subtle' size='small'>
-            Organize products into categories.
+            {t('categories.description')}
           </Text>
         </div>
         <div className='flex items-center gap-x-2'>
           <Button size='small' variant='secondary' asChild>
-            <Link to='create'>Request Category</Link>
+            <Link to='create'>{t('categories.requestCategory')}</Link>
           </Button>
         </div>
       </div>

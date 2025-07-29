@@ -653,7 +653,7 @@ export const ProductCreateForm = ({
                   value={Tab.COLOR_SCHEME}
                   className='max-w-[200px] truncate'
                 >
-                  {t('products.create.tabs.color_scheme', 'Schemat kolorów')}
+                  {t('products.create.tabs.color_scheme')}
                 </ProgressTabs.Trigger>
                 <ProgressTabs.Trigger
                   status={tabState[Tab.VARIANTS]}

@@ -108,9 +108,7 @@ export const VariantColorsEditForm = () => {
       console.log(`[Variant Colors Edit] Successfully updated variant ${variant_id} colors`)
       
       toast.success(
-        t('variants.colors.successToast', {
-          defaultValue: 'Pomyślnie zaktualizowano kolory wariantu',
-        })
+        t('products.variant.colors.successToast')
       )
       
       // Small delay to allow backend processing
@@ -121,7 +119,9 @@ export const VariantColorsEditForm = () => {
       
     } catch (error: any) {
       console.error(`[Variant Colors Edit] Error updating variant ${variant_id} colors:`, error)
-      toast.error(error.message || 'An error occurred while updating colors')
+      toast.error(
+        t('products.variant.colors.errorToast')
+      )
     }
   })
 
@@ -243,7 +243,7 @@ export const VariantColorsEditForm = () => {
                         ) : (
                           <div key={colorId} className="flex items-center gap-1 bg-ui-bg-base rounded px-2 py-1 border border-ui-border-error group">
                             <div className="w-3 h-3 rounded-full bg-ui-bg-disabled border border-ui-border-base shadow-sm flex-shrink-0" />
-                            <Text size="xsmall" className="text-ui-fg-muted whitespace-nowrap">Nieznany kolor</Text>
+                            <Text size="xsmall" className="text-ui-fg-muted whitespace-nowrap">{t('products.variant.colors.unknownColor')}</Text>
                             <Button
                               variant="transparent"
                               size="small"
@@ -261,7 +261,7 @@ export const VariantColorsEditForm = () => {
                   ) : (
                     <div className="flex items-center justify-center h-12">
                       <Text size="small" className="text-ui-fg-muted">
-                        Nie wybrano żadnych kolorów
+                        {t('products.variant.colors.noColorsSelected')}
                       </Text>
                     </div>
                   )}
@@ -271,7 +271,7 @@ export const VariantColorsEditForm = () => {
               {/* Help text */}
               <div className="bg-ui-bg-base border border-ui-border-base rounded-lg p-2">
                 <Text size="xsmall" className="text-ui-fg-subtle">
-                  💡 Wybierz kolory do przypisania do tego wariantu. Zmiany zostaną automatycznie odzwierciedlone na poziomie produktu.
+                  {t('products.variant.colors.helpText')}
                 </Text>
               </div>
             </div>
@@ -282,7 +282,7 @@ export const VariantColorsEditForm = () => {
         <div className='flex items-center justify-end gap-x-2 border-t bg-ui-bg-base p-3 mt-auto'>
           <RouteDrawer.Close asChild>
             <Button size='small' variant="secondary">
-              {t('actions.cancel', 'Anuluj')}
+              {t('actions.cancel')}
             </Button>
           </RouteDrawer.Close>
           <Button
@@ -292,7 +292,7 @@ export const VariantColorsEditForm = () => {
             isLoading={isAssigning}
             disabled={!isInitialized}
           >
-            {isAssigning ? 'Zapisywanie...' : t('actions.save', 'Zapisz')}
+            {isAssigning ? t('actions.saving') : t('actions.save')}
           </Button>
         </div>
       </KeyboundForm>

@@ -58,7 +58,7 @@ export const CategorySelect = forwardRef<
       }
     );
 
-  // Client-side hierarchical filtering
+  // Client-side hierarchical filtering with improved data consistency handling
   const product_categories = useMemo(() => {
     if (!allCategories) return [];
     
@@ -74,8 +74,17 @@ export const CategorySelect = forwardRef<
       return allCategories.filter(cat => !cat.parent_category_id);
     }
     
-    // If in a subcategory, return children of the current level
+    // If in a subcategory, use a more robust approach to find children
     const currentParentId = getParentId(level);
+    const currentParent = allCategories.find(cat => cat.id === currentParentId);
+    
+    // First try to use the parent's category_children array if available
+    if (currentParent?.category_children && currentParent.category_children.length > 0) {
+      const childrenIds = currentParent.category_children.map(child => child.id);
+      return allCategories.filter(cat => childrenIds.includes(cat.id));
+    }
+    
+    // Fallback to parent_category_id filtering
     return allCategories.filter(cat => cat.parent_category_id === currentParentId);
   }, [allCategories, searchValue, level]);
 

@@ -200,8 +200,8 @@ export const ProductCreateColorSchemeForm = ({
                   <div className="flex items-center justify-between">
                     <Text weight="plus">
                       {index === 0 && !hasVariants 
-                        ? t('products.create.color_scheme.default_variant', 'Domyślny wariant') 
-                        : t('products.create.color_scheme.variant_name', 'Wariant: {{name}}', { name: variantTitle })}
+                        ? t('products.create.color_scheme.default_variant') 
+                        : t('products.create.color_scheme.variant_name', { name: variantTitle })}
                     </Text>
                   </div>
                   
@@ -211,7 +211,7 @@ export const ProductCreateColorSchemeForm = ({
                     {hasAssignedColors && (
                       <div className="mb-4">
                         <Text className="text-ui-fg-subtle font-medium mb-3">
-                          {t('products.create.color_scheme.assigned_colors', 'Przypisane kolory')}
+                          {t('products.create.color_scheme.assigned_colors')}
                         </Text>
                         <div className="flex flex-wrap gap-3">
                           {variantColorIds.map(colorId => {
@@ -257,14 +257,14 @@ export const ProductCreateColorSchemeForm = ({
                     <div>
                       <Text className="font-medium mb-2">
                         {hasAssignedColors 
-                          ? t('products.create.color_scheme.add_more_colors', 'Dodaj więcej kolorów') 
-                          : t('products.create.color_scheme.add_color', 'Dodaj kolor')}
+                          ? t('products.create.color_scheme.add_more_colors') 
+                          : t('products.create.color_scheme.add_color')}
                       </Text>
                       <ColorSelector 
                         value={null}
                         onChange={(colorId) => colorId && handleAddColor(variantId, colorId)}
-                        placeholder={t('products.create.color_scheme.select_color', 'Wybierz kolor dla tego wariantu')}
-                        label={t('products.create.color_scheme.color', 'Kolor')}
+                        placeholder={t('products.create.color_scheme.select_color')}
+                        label={t('products.create.color_scheme.color')}
                         showColorPreview={true}
                       />
                     </div>

@@ -410,8 +410,18 @@
       "tabs": {
         "details": "Details",
         "organize": "Organize",
+        "color_scheme": "Color Scheme",
         "variants": "Variants",
         "inventory": "Inventory kits"
+      },
+      "color_scheme": {
+        "default_variant": "Default Variant",
+        "variant_name": "Variant: {{name}}",
+        "assigned_colors": "Assigned Colors",
+        "add_more_colors": "Add More Colors",
+        "add_color": "Add Color",
+        "select_color": "Select color for this variant",
+        "color": "Color"
       },
       "errors": {
         "variants": "Please select at least one variant.",
@@ -496,6 +506,50 @@
         "description": "No variants match the current filter criteria."
       }
     },
+    "organization": {
+      "header": "Organization"
+    },
+    "gpsr": {
+      "title": "GPSR Information",
+      "producer": {
+        "section": "Producer Information",
+        "name": {
+          "label": "Producer Name",
+          "placeholder": "e.g. Company XYZ Ltd."
+        },
+        "address": {
+          "label": "Producer Address",
+          "placeholder": "e.g. 123 Example St, 00-001 Warsaw, Poland"
+        },
+        "contact": {
+          "label": "Producer Contact",
+          "placeholder": "e.g. contact@company.com or +48 123 456 789"
+        }
+      },
+      "importer": {
+        "section": "Importer Information (if producer outside EU)",
+        "name": {
+          "label": "Importer Name",
+          "placeholder": "e.g. Import EU Ltd."
+        },
+        "address": {
+          "label": "Importer Address",
+          "placeholder": "e.g. 456 Import St, 00-002 Krakow, Poland"
+        },
+        "contact": {
+          "label": "Importer Contact",
+          "placeholder": "e.g. import@company.eu or +48 987 654 321"
+        }
+      },
+      "instructions": {
+        "label": "Instructions / Warnings",
+        "placeholder": "e.g. Keep away from children under 3 years. Product contains small parts."
+      },
+      "certificates": {
+        "label": "Certificates",
+        "placeholder": "e.g. CE-12345-2023, ISO-9001"
+      }
+    },
     "attributes": "Attributes",
     "editAttributes": "Edit Attributes",
     "editOptions": "Edit Options",
@@ -548,15 +602,16 @@
       },
       "description": {
         "label": "Description",
-        "hint": "Give your product a short and clear description.<0/>120-160 characters is the recommended length for search engines."
+        "hint": "Give your product a short and clear description.<0/>120-160 characters is the recommended length for search engines.",
+        "placeholder": "Product description..."
       },
       "discountable": {
         "label": "Discountable",
         "hint": "When unchecked, discounts will not be applied to this product"
       },
       "shipping_profile": {
-        "label": "Shipping profile",
-        "hint": "Connect the product to a shipping profile"
+        "label": "Shipping Profile",
+        "placeholder": "Select shipping profile"
       },
       "type": {
         "label": "Type"
@@ -2785,6 +2840,7 @@
     }
   },
   "errors": {
+    "productCreateFailed": "Failed to create product",
     "serverError": "Server error - Try again later.",
     "invalidCredentials": "Wrong email or password"
   },
@@ -2842,6 +2898,7 @@
     "by": "By",
     "item": "Item",
     "qty": "qty.",
+    "values": "Values",
     "limit": "Limit",
     "tags": "Tags",
     "type": "Type",
@@ -3482,6 +3539,297 @@
       "loading": "Loading request details...",
       "error": "Error loading request details",
       "empty": "No request found"
+    }
+  },
+  "general": {
+    "tip": "Tip"
+  },
+  "categories": {
+    "domain": "Categories",
+    "description": "Organize products into categories.",
+    "requestCategory": "Request Category"
+  },
+  "products": {
+    "domain": "Products",
+    "attributes": "Attributes",
+    "create": {
+      "header": "Create Product",
+      "tabs": {
+        "details": "Details",
+        "detail": "Details",
+        "organize": "Organize",
+        "color_scheme": "Color Scheme",
+        "variants": "Variants",
+        "inventory": "Inventory"
+      },
+      "variants": {
+        "header": "Variants",
+        "subHeadingTitle": "Product Options",
+        "subHeadingDescription": "Configure product variants and options",
+        "productOptions": {
+          "label": "Product Options"
+        },
+        "productVariants": {
+          "label": "Product Variants",
+          "hint": "Configure and manage product variants based on the options above",
+          "alert": "Variant configuration alert"
+        }
+      },
+      "color_scheme": {
+        "default_variant": "Default Variant",
+        "variant_name": "Variant Name",
+        "assigned_colors": "Assigned Colors",
+        "add_more_colors": "Add More Colors",
+        "add_color": "Add Color",
+        "select_color": "Select Color",
+        "color": "Color"
+      },
+      "table": {
+        "organization": "Organization",
+        "color": "Color"
+      },
+      "errors": {
+        "options": "Options configuration error",
+        "variants": "Variants configuration error"
+      }
+    },
+    "fields": {
+      "title": {
+        "label": "Title",
+        "placeholder": "Enter product title"
+      },
+      "subtitle": {
+        "label": "Subtitle",
+        "placeholder": "Enter product subtitle"
+      },
+      "handle": {
+        "label": "Handle",
+        "placeholder": "Enter product handle",
+        "tooltip": "URL-friendly identifier for the product"
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Enter product description"
+      },
+      "material": {
+        "label": "Material",
+        "placeholder": "Enter material"
+      },
+      "discountable": {
+        "label": "Discountable",
+        "hint": "Allow discounts to be applied to this product"
+      },
+      "type": {
+        "label": "Product Type"
+      },
+      "collection": {
+        "label": "Collection"
+      },
+      "categories": {
+        "label": "Categories"
+      },
+      "tags": {
+        "label": "Tags"
+      },
+      "shipping_profile": {
+        "label": "Shipping Profile",
+        "placeholder": "Select shipping profile"
+      },
+      "countryOrigin": {
+        "label": "Country of Origin"
+      },
+      "width": {
+        "label": "Width"
+      },
+      "length": {
+        "label": "Length"
+      },
+      "height": {
+        "label": "Height"
+      },
+      "weight": {
+        "label": "Weight"
+      },
+      "mid_code": {
+        "label": "MID Code"
+      },
+      "hs_code": {
+        "label": "HS Code"
+      },
+      "origin": {
+        "label": "Country of Origin",
+        "description": "Select the country where this product originates",
+        "placeholder": "Select country"
+      },
+      "safety_warning": {
+        "label": "Safety Warning",
+        "description": "Important safety information for this product",
+        "placeholder": "Enter safety warnings"
+      },
+      "compliance_cert": {
+        "label": "Compliance Certificate",
+        "description": "Compliance and certification information",
+        "placeholder": "Enter compliance details"
+      },
+      "options": {
+        "optionTitlePlaceholder": "Option title",
+        "variantionsPlaceholder": "Variation values"
+      }
+    },
+    "shippingProfile": {
+      "header": "Shipping Profile"
+    },
+    "organization": {
+      "header": "Organization"
+    },
+    "media": {
+      "label": "Media",
+      "header": "Media",
+      "edit": "Edit Media",
+      "editHint": "Click on an image to edit it",
+      "makeThumbnail": "Make thumbnail",
+      "uploadImagesLabel": "Upload images",
+      "uploadImagesHint": "Drag and drop images here or click to browse",
+      "invalidFileType": "Invalid file type",
+      "failedToUpload": "Failed to upload image",
+      "deleteWarning_one": "Are you sure you want to delete this image?",
+      "deleteWarning_other": "Are you sure you want to delete these images?",
+      "deleteWarningWithThumbnail_one": "This image is used as thumbnail. Are you sure you want to delete it?",
+      "deleteWarningWithThumbnail_other": "One of these images is used as thumbnail. Are you sure you want to delete them?",
+      "thumbnailTooltip": "This image is used as thumbnail",
+      "galleryLabel": "Gallery",
+      "downloadImageLabel": "Download image",
+      "deleteImageLabel": "Delete image",
+      "emptyState": "No images uploaded yet",
+      "successToast": "Images uploaded successfully"
+    },
+    "options": {
+      "header": "Options"
+    },
+    "productStatus": {
+      "published": "Published",
+      "draft": "Draft"
+    },
+    "variant": {
+      "edit": {
+        "header": "Edit Variant",
+        "success": "Variant updated successfully"
+      },
+      "inventory": {
+        "header": "Inventory",
+        "navigateToItem": "Navigate to Inventory Item",
+        "manageInventoryLabel": "Manage Inventory",
+        "manageInventoryHint": "When checked, Medusa will track the inventory for this variant",
+        "allowBackordersLabel": "Allow Backorders",
+        "allowBackordersHint": "When checked, customers can purchase this variant even when it's out of stock"
+      },
+      "colors": {
+        "successToast": "Variant colors updated successfully",
+        "errorToast": "Failed to update variant colors",
+        "removeColor": "Remove color",
+        "unknownColor": "Unknown color",
+        "noColorsSelected": "No colors selected",
+        "helpText": "Select colors to assign to this variant. Changes will be automatically reflected at the product level."
+      },
+      "deleteWarning": "Are you sure you want to delete this variant?",
+      "pricesPagination": "Showing {{current}} of {{total}} prices",
+      "tableItemAvailable": "{{availableCount}} available",
+      "tableItem": "{{availableCount}} available in {{count}} location"
+    },
+    "variants": {
+      "header": "Variants",
+      "empty": {
+        "heading": "No variants found",
+        "description": "This product has no variants yet"
+      },
+      "filtered": {
+        "heading": "No variants match your search",
+        "description": "Try adjusting your search or filter criteria"
+      }
+    },
+    "additionalAttributes": {
+      "title": "Additional Attributes",
+      "loading": "Loading attributes...",
+      "description": "Product attributes allow you to define additional characteristics that are unique to products.",
+      "save": "Save",
+      "saving": "Saving...",
+      "back": "Back",
+      "success": "Product attributes updated successfully",
+      "errorUpdate": "Failed to update product attributes. Please try again.",
+      "error": {
+        "title": "An error occurred while loading attributes",
+        "description": "Backend API returned an error. Please try again later or contact support."
+      },
+      "noAttributes": {
+        "title": "No available attributes",
+        "description": "Currently no additional attributes are configured for this product category. Backend API may be experiencing issues."
+      },
+      "selectOption": "Select option",
+      "enterValue": "Enter value"
+    },
+    "gpsr": {
+      "title": "GPSR Information",
+      "producer": {
+        "section": "Producer Information",
+        "name": {
+          "label": "Producer Name",
+          "description": "Full name of the producer company.",
+          "placeholder": "e.g. XYZ Company Ltd.",
+          "required": "Producer name is required"
+        },
+        "address": {
+          "label": "Producer Address",
+          "description": "Complete address of the producer's headquarters.",
+          "required": "Producer address is required",
+          "placeholder": "e.g. Producer Street 123, 00-001 Warsaw, Poland"
+        },
+        "contact": {
+          "label": "Producer Contact",
+          "description": "Email or phone number to contact the producer.",
+          "required": "Producer contact is required",
+          "placeholder": "e.g. +48 123 456 789 or contact@example.com"
+        }
+      },
+      "importer": {
+        "section": "Importer Information (if producer is outside EU)",
+        "name": {
+          "label": "Importer Name",
+          "description": "Full name of the importer company (required only if producer is outside EU).",
+          "placeholder": "e.g. EU Import Company Ltd."
+        },
+        "address": {
+          "label": "Importer Address",
+          "description": "Complete address of the importer's headquarters (required only if producer is outside EU).",
+          "placeholder": "e.g. Importer Street 456, 00-002 Krakow, Poland"
+        },
+        "contact": {
+          "label": "Importer Contact",
+          "description": "Email or phone number to contact the importer (required only if producer is outside EU).",
+          "placeholder": "e.g. +48 987 654 321 or contact@example.com"
+        }
+      },
+      "additional": {
+        "section": "Additional Information"
+      },
+      "instructions": {
+        "label": "Instructions/Warnings",
+        "description": "Any instructions, warnings, or precautions that should be taken when using this product.",
+        "required": "Instructions/warnings are required",
+        "placeholder": "Usage instructions, warnings, safety information..."
+      },
+      "certificates": {
+        "label": "Certificates/Compliance",
+        "description": "Certificate reference numbers for this product, if applicable.",
+        "placeholder": "Information about certificates, compliance with standards..."
+      },
+      "no_data": "No GPSR information has been added for this product yet. GPSR information includes producer data, importer data, instructions, and compliance certificates.",
+      "success": "GPSR data has been updated successfully",
+      "error": "Failed to update GPSR data"
+    },
+    "colors": {
+      "header": "Colors",
+      "loading": "Loading colors...",
+      "noColors": "No colors assigned to this product"
     }
   }
 }

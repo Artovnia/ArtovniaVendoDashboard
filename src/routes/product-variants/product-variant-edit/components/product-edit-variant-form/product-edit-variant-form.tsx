@@ -482,7 +482,7 @@ export const ProductEditVariantForm = ({
           <Divider />
           {/* Custom Variant Attributes Section */}
           <div className="flex flex-col gap-y-4">
-            <Heading level="h2">Dodatkowe atrybuty</Heading>
+            <Heading level="h2">{t('products.additionalAttributes.title')}</Heading>
             {!isAttributesLoading && variantAttributesData?.attributes?.length > 0 && (
               <div className="flex flex-col gap-y-4">
                 {variantAttributesData.attributes.map((attribute) => (
@@ -500,7 +500,7 @@ export const ProductEditVariantForm = ({
                               onChange={(value) => {
                                 field.onChange(value || "")
                               }}
-                              placeholder="Wybierz opcję"
+                              placeholder={t('products.additionalAttributes.selectOption')}
                               options={attribute.possible_values.map((val) => ({
                                 label: val,
                                 value: val,
@@ -510,7 +510,7 @@ export const ProductEditVariantForm = ({
                             <Input 
                               {...field}
                               value={field.value || ""} 
-                              placeholder="Wpisz wartość" 
+                              placeholder={t('products.additionalAttributes.enterValue')} 
                             />
                           )}
                         </Form.Control>
@@ -528,7 +528,7 @@ export const ProductEditVariantForm = ({
               </div>
             )}
             {!isAttributesLoading && (!variantAttributesData?.attributes?.length) && (
-              <p className="text-ui-fg-subtle">Brak dostępnych atrybutów</p>
+              <p className="text-ui-fg-subtle">{t('products.additionalAttributes.noAttributes.title')}</p>
             )}
           </div>
         </RouteDrawer.Body>
@@ -536,11 +536,11 @@ export const ProductEditVariantForm = ({
           <div className="flex items-center justify-end gap-x-2">
             <RouteDrawer.Close asChild>
               <Button variant="secondary" size="small">
-                Anuluj  
+                {t('actions.cancel')}
               </Button>
             </RouteDrawer.Close>
             <Button type="submit" size="small" isLoading={isPending || updateVariantAttributes.isPending}>
-              Zapisz
+              {t('actions.save')}
             </Button>
           </div>
         </RouteDrawer.Footer>

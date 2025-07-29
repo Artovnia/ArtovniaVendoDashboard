@@ -410,8 +410,18 @@
       "tabs": {
         "details": "Szczegóły",
         "organize": "Organizacja",
+        "color_scheme": "Schemat kolorów",
         "variants": "Warianty",
         "inventory": "Zestawy magazynowe"
+      },
+      "color_scheme": {
+        "default_variant": "Domyślny wariant",
+        "variant_name": "Wariant: {{name}}",
+        "assigned_colors": "Przypisane kolory",
+        "add_more_colors": "Dodaj więcej kolorów",
+        "add_color": "Dodaj kolor",
+        "select_color": "Wybierz kolor dla tego wariantu",
+        "color": "Kolor"
       },
       "errors": {
         "variants": "Wybierz co najmniej jeden wariant.",
@@ -494,6 +504,50 @@
       "filtered": {
         "heading": "Brak wariantów",
         "description": "Nie ma wariantów, które pasują do aktualnych kryteriów filtrów."
+      }
+    },
+    "organization": {
+      "header": "Organizacja"
+    },
+    "gpsr": {
+      "title": "Informacje GPSR",
+      "producer": {
+        "section": "Dane Producenta",
+        "name": {
+          "label": "Nazwa Producenta",
+          "placeholder": "np. Firma XYZ Sp. z o.o."
+        },
+        "address": {
+          "label": "Adres Producenta",
+          "placeholder": "np. ul. Przykładowa 123, 00-001 Warszawa, Polska"
+        },
+        "contact": {
+          "label": "Kontakt do Producenta",
+          "placeholder": "np. kontakt@firma.pl lub +48 123 456 789"
+        }
+      },
+      "importer": {
+        "section": "Dane Importera (jeśli producent spoza UE)",
+        "name": {
+          "label": "Nazwa Importera",
+          "placeholder": "np. Import EU Sp. z o.o."
+        },
+        "address": {
+          "label": "Adres Importera",
+          "placeholder": "np. ul. Importowa 456, 00-002 Kraków, Polska"
+        },
+        "contact": {
+          "label": "Kontakt do Importera",
+          "placeholder": "np. import@firma.eu lub +48 987 654 321"
+        }
+      },
+      "instructions": {
+        "label": "Instrukcje / Ostrzeżenia",
+        "placeholder": "np. Przechowywać z dala od dzieci poniżej 3 lat. Produkt zawiera małe elementy."
+      },
+      "certificates": {
+        "label": "Certyfikaty",
+        "placeholder": "np. CE-12345-2023, ISO-9001"
       }
     },
     "attributes": "Atrybuty",
@@ -2656,6 +2710,7 @@
     }
   },
   "errors": {
+    "productCreateFailed": "Nie udało się utworzyć produktu",
     "serverError": "Błąd serwera — spróbuj ponownie później.",
     "invalidCredentials": "Zły adres e-mail lub hasło"
   },
@@ -2706,6 +2761,7 @@
     "subtitle": "Podtytuł",
     "item": "Przedmiot",
     "qty": "ilość",
+    "values": "Wartości",
     "limit": "Limit",
     "tags": "Tagi",
     "type": "Typ",
@@ -3160,6 +3216,281 @@
       "loading": "Ładowanie szczegółów prośby...",
       "error": "Błąd podczas ładowania szczegółów prośby",
       "empty": "Nie znaleziono prośby"
+    }
+  },
+  "general": {
+    "tip": "Wskazówka"
+  },
+  "categories": {
+    "domain": "Kategorie",
+    "description": "Organizuj produkty w kategorie.",
+    "requestCategory": "Poproś o kategorię"
+  },
+  "products": {
+    "domain": "Produkty",
+    "attributes": "Atrybuty",
+    "create": {
+      "header": "Utwórz Produkt",
+      "tabs": {
+        "details": "Szczegóły",
+        "detail": "Szczegóły",
+        "organize": "Organizacja",
+        "color_scheme": "Schemat Kolorów",
+        "variants": "Warianty",
+        "inventory": "Inwentarz"
+      },
+      "variants": {
+        "header": "Warianty",
+        "subHeadingTitle": "Opcje Produktu",
+        "subHeadingDescription": "Skonfiguruj warianty i opcje produktu",
+        "productOptions": {
+          "label": "Opcje Produktu"
+        },
+        "productVariants": {
+          "label": "Warianty Produktu",
+          "hint": "Skonfiguruj i zarządzaj wariantami produktu na podstawie opcji powyżej",
+          "alert": "Alert konfiguracji wariantów"
+        }
+      },
+      "color_scheme": {
+        "default_variant": "Domyślny Wariant",
+        "variant_name": "Nazwa Wariantu",
+        "assigned_colors": "Przypisane Kolory",
+        "add_more_colors": "Dodaj Więcej Kolorów",
+        "add_color": "Dodaj Kolor",
+        "select_color": "Wybierz Kolor",
+        "color": "Kolor"
+      },
+      "table": {
+        "organization": "Organizacja",
+        "color": "Kolor"
+      },
+      "errors": {
+        "options": "Błąd konfiguracji opcji",
+        "variants": "Błąd konfiguracji wariantów"
+      }
+    },
+    "fields": {
+      "title": {
+        "label": "Tytuł",
+        "placeholder": "Wprowadź tytuł produktu"
+      },
+      "subtitle": {
+        "label": "Podtytuł",
+        "placeholder": "Wprowadź podtytuł produktu"
+      },
+      "handle": {
+        "label": "Uchwyt",
+        "placeholder": "Wprowadź uchwyt produktu",
+        "tooltip": "Identyfikator przyjazny dla URL produktu"
+      },
+      "description": {
+        "label": "Opis",
+        "placeholder": "Wprowadź opis produktu"
+      },
+      "material": {
+        "label": "Materiał",
+        "placeholder": "Wprowadź materiał"
+      },
+      "discountable": {
+        "label": "Możliwość Rabatu",
+        "hint": "Pozwól na stosowanie rabatów do tego produktu"
+      },
+      "type": {
+        "label": "Typ Produktu"
+      },
+      "collection": {
+        "label": "Kolekcja"
+      },
+      "categories": {
+        "label": "Kategorie"
+      },
+      "tags": {
+        "label": "Tagi"
+      },
+      "shipping_profile": {
+        "label": "Profil Wysyłki",
+        "placeholder": "Wybierz profil wysyłki"
+      },
+      "countryOrigin": {
+        "label": "Kraj Pochodzenia"
+      },
+      "width": {
+        "label": "Szerokość"
+      },
+      "length": {
+        "label": "Długość"
+      },
+      "height": {
+        "label": "Wysokość"
+      },
+      "weight": {
+        "label": "Waga"
+      },
+      "mid_code": {
+        "label": "Kod MID"
+      },
+      "hs_code": {
+        "label": "Kod HS"
+      },
+      "origin": {
+        "label": "Kraj Pochodzenia",
+        "description": "Wybierz kraj, z którego pochodzi ten produkt",
+        "placeholder": "Wybierz kraj"
+      },
+      "safety_warning": {
+        "label": "Ostrzeżenie Bezpieczeństwa",
+        "description": "Ważne informacje o bezpieczeństwie dla tego produktu",
+        "placeholder": "Wprowadź ostrzeżenia bezpieczeństwa"
+      },
+      "compliance_cert": {
+        "label": "Certyfikat Zgodności",
+        "description": "Informacje o zgodności i certyfikacji",
+        "placeholder": "Wprowadź szczegóły zgodności"
+      },
+      "options": {
+        "optionTitlePlaceholder": "Tytuł opcji",
+        "variantionsPlaceholder": "Wartości wariantów"
+      }
+    },
+    "media": {
+      "label": "Media",
+      "header": "Media",
+      "edit": "Edytuj Media",
+      "editHint": "Kliknij na obraz, aby go edytować",
+      "makeThumbnail": "Ustaw jako miniaturę",
+      "uploadImagesLabel": "Prześlij obrazy",
+      "uploadImagesHint": "Przeciągnij i upuść obrazy tutaj lub kliknij, aby przeglądać",
+      "invalidFileType": "Nieprawidłowy typ pliku",
+      "failedToUpload": "Nie udało się przesłać obrazu",
+      "deleteWarning_one": "Czy na pewno chcesz usunąć ten obraz?",
+      "deleteWarning_other": "Czy na pewno chcesz usunąć te obrazy?",
+      "deleteWarningWithThumbnail_one": "Ten obraz jest używany jako miniatura. Czy na pewno chcesz go usunąć?",
+      "deleteWarningWithThumbnail_other": "Jeden z tych obrazów jest używany jako miniatura. Czy na pewno chcesz je usunąć?",
+      "thumbnailTooltip": "Ten obraz jest używany jako miniatura",
+      "galleryLabel": "Galeria",
+      "downloadImageLabel": "Pobierz obraz",
+      "deleteImageLabel": "Usuń obraz",
+      "emptyState": "Nie przesłano jeszcze żadnych obrazów",
+      "successToast": "Obrazy zostały pomyślnie przesłane"
+    },
+    "shippingProfile": {
+      "header": "Profil wysyłki",
+      "label": "Profil wysyłki",
+      "placeholder": "Wybierz profil wysyłki"
+    },
+    "fields": {
+      "title": {
+        "label": "Tytuł",
+        "placeholder": "Kurtka zimowa"
+      },
+      "subtitle": {
+        "label": "Podtytuł",
+        "placeholder": "Ciepła i wygodna kurtka zimowa"
+      },
+      "handle": {
+        "label": "Uchwyt",
+        "placeholder": "kurtka-zimowa"
+      },
+      "material": {
+        "label": "Materiał",
+        "placeholder": "Bawełna, Poliester"
+      },
+      "description": {
+        "label": "Opis",
+        "placeholder": "Opis produktu..."
+      },
+      "shipping_profile": {
+        "label": "Profil Wysyłki",
+        "placeholder": "Wybierz profil wysyłki"
+      }
+    },
+    "organization": {
+      "header": "Organizacja"
+    },
+    "media": {
+      "label": "Media"
+    },
+    "options": {
+      "header": "Opcje"
+    },
+    "productStatus": {
+      "published": "Opublikowany",
+      "draft": "Szkic"
+    },
+    "additionalAttributes": {
+      "title": "Dodatkowe atrybuty",
+      "loading": "Ładowanie atrybutów...",
+      "description": "Atrybuty produktów pozwalają na określenie dodatkowych cech, które są unikalne dla produktów.",
+      "save": "Zapisz",
+      "saving": "Zapisywanie...",
+      "back": "Powrót",
+      "success": "Atrybuty produktu zostały pomyślnie zaktualizowane",
+      "errorUpdate": "Nie udało się zaktualizować atrybutów produktu. Spróbuj ponownie.",
+      "error": {
+        "title": "Wystąpił błąd podczas ładowania atrybutów",
+        "description": "Backend API zwrócił błąd. Spróbuj ponownie później lub skontaktuj się z wsparciem."
+      },
+      "noAttributes": {
+        "title": "Brak dostępnych atrybutów",
+        "description": "Obecnie nie są konfigurowane żadne dodatkowe atrybuty dla tej kategorii produktów. Backend API może doświadczać problemów."
+      },
+      "selectOption": "Wybierz opcję",
+      "enterValue": "Wpisz wartość"
+    },
+    "gpsr": {
+      "title": "Informacje GPSR",
+      "producer": {
+        "section": "Dane Producenta",
+        "name": {
+          "label": "Nazwa Producenta",
+          "required": "Nazwa producenta jest wymagana"
+        },
+        "address": {
+          "label": "Adres Producenta",
+          "required": "Adres producenta jest wymagany",
+          "placeholder": "np. ul. Producenta 123, 00-001 Warszawa, Polska"
+        },
+        "contact": {
+          "label": "Kontakt do Producenta",
+          "required": "Kontakt do producenta jest wymagany",
+          "placeholder": "np. +48 123 456 789 lub kontakt@example.com"
+        }
+      },
+      "importer": {
+        "section": "Dane Importera",
+        "name": {
+          "label": "Nazwa Importera"
+        },
+        "address": {
+          "label": "Adres Importera",
+          "placeholder": "np. ul. Importowa 456, 00-002 Kraków, Polska"
+        },
+        "contact": {
+          "label": "Kontakt do Importera",
+          "placeholder": "np. +48 987 654 321 lub kontakt@example.com"
+        }
+      },
+      "additional": {
+        "section": "Dodatkowe Informacje"
+      },
+      "instructions": {
+        "label": "Instrukcje/Ostrzeżenia",
+        "required": "Instrukcje/ostrzeżenia są wymagane",
+        "placeholder": "Instrukcje użytkowania, ostrzeżenia, informacje o bezpieczeństwie..."
+      },
+      "certificates": {
+        "label": "Certyfikaty/Zgodność",
+        "placeholder": "Informacje o certyfikatach, zgodności z normami..."
+      },
+      "no_data": "Nie dodano jeszcze informacji GPSR dla tego produktu. Informacje GPSR obejmują dane producenta, importera, instrukcje oraz certyfikaty zgodności.",
+      "success": "Dane GPSR zostały zaktualizowane pomyślnie",
+      "error": "Nie udało się zaktualizować danych GPSR"
+    },
+    "colors": {
+      "header": "Kolory",
+      "loading": "Ładowanie kolorów...",
+      "noColors": "Brak kolorów przypisanych do tego produktu"
     }
   }
 }

@@ -99,7 +99,7 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
                   rows={2}
                   placeholder={t(
                     "products.fields.compliance_cert.placeholder",
-                    "e.g. CE certification number, ISO standard"
+                    "e.g. CE certification number, ISO standardz hehe"
                   )}
                 />
               </Form.Control>
