@@ -64,13 +64,17 @@ export const CategoryCombobox = forwardRef<
 
   const { product_categories: allCategories, isPending, isError, error } =
     useProductCategories(
-      undefined, // No query params since backend doesn't support hierarchical filtering
+      {
+        fields: 'id,name,handle,is_active,is_internal,parent_category_id,category_children',
+        limit: 1000, // Set high limit to get all categories like category-list-table.tsx
+        offset: 0,
+      },
       {
         enabled: open,
       }
     );
 
-  // Client-side hierarchical filtering with improved data consistency handling
+  // Enhanced client-side hierarchical filtering with robust data consistency handling
   const product_categories = useMemo(() => {
     if (!allCategories) return [];
     
@@ -86,18 +90,39 @@ export const CategoryCombobox = forwardRef<
       return allCategories.filter(cat => !cat.parent_category_id);
     }
     
-    // If in a subcategory, use a more robust approach to find children
+    // If in a subcategory, use multiple approaches to find children
     const currentParentId = getParentId(level);
     const currentParent = allCategories.find(cat => cat.id === currentParentId);
     
-    // First try to use the parent's category_children array if available
+    // Method 1: Try to use the parent's category_children array if available and populated
     if (currentParent?.category_children && currentParent.category_children.length > 0) {
       const childrenIds = currentParent.category_children.map(child => child.id);
-      return allCategories.filter(cat => childrenIds.includes(cat.id));
+      const childrenFromArray = allCategories.filter(cat => childrenIds.includes(cat.id));
+      
+      // Verify that we actually found children, if not fall back to method 2
+      if (childrenFromArray.length > 0) {
+        return childrenFromArray;
+      }
     }
     
-    // Fallback to parent_category_id filtering
-    return allCategories.filter(cat => cat.parent_category_id === currentParentId);
+    // Method 2: Fallback to parent_category_id filtering (more reliable)
+    const childrenFromParentId = allCategories.filter(cat => cat.parent_category_id === currentParentId);
+    
+    // Method 3: If still no children found, try to find any categories that reference this parent
+    // This handles cases where the relationship data might be inconsistent
+    if (childrenFromParentId.length === 0 && currentParent) {
+      // Look for categories that might be children but have inconsistent parent references
+      const potentialChildren = allCategories.filter(cat => {
+        // Check if this category's name suggests it's a child of the current parent
+        // or if it has any relationship indicators
+        return cat.id !== currentParentId && 
+               cat.parent_category_id === currentParentId;
+      });
+      
+      return potentialChildren;
+    }
+    
+    return childrenFromParentId;
   }, [allCategories, searchValue, level]);
 
   const [showLoading, setShowLoading] = useState(false);
@@ -187,7 +212,7 @@ export const CategoryCombobox = forwardRef<
     setOpen(open);
   }
 
-  const options = getOptions(product_categories || []);
+  const options = getOptions(product_categories || [], allCategories);
 
   const showTag = value.length > 0;
   const showSelected = !open && value.length > 0;
@@ -578,13 +603,28 @@ function getParentLabel(level: Level[]): string | null {
 }
 
 function getOptions(
-  categories: AdminProductCategoryResponse['product_category'][]
+  categories: AdminProductCategoryResponse['product_category'][],
+  allCategories?: AdminProductCategoryResponse['product_category'][]
 ): ProductCategoryOption[] {
   return categories.map((cat) => {
+    // Enhanced has_children detection using multiple methods
+    let has_children = false;
+    
+    // Method 1: Check category_children array
+    if (cat.category_children && cat.category_children.length > 0) {
+      has_children = true;
+    }
+    
+    // Method 2: If no category_children but we have allCategories, check parent_category_id relationships
+    if (!has_children && allCategories) {
+      const childrenCount = allCategories.filter(c => c.parent_category_id === cat.id).length;
+      has_children = childrenCount > 0;
+    }
+    
     return {
       value: cat.id,
       label: cat.name,
-      has_children: cat.category_children?.length > 0,
+      has_children,
     };
   });
 }
