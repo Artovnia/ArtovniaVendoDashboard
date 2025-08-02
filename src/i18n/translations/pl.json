@@ -506,9 +506,7 @@
         "description": "Nie ma wariantów, które pasują do aktualnych kryteriów filtrów."
       }
     },
-    "organization": {
-      "header": "Organizacja"
-    },
+    
     "gpsr": {
       "title": "Informacje GPSR",
       "producer": {
@@ -3218,9 +3216,6 @@
       "empty": "Nie znaleziono prośby"
     }
   },
-  "general": {
-    "tip": "Wskazówka"
-  },
   "categories": {
     "domain": "Kategorie",
     "description": "Organizuj produkty w kategorie.",
@@ -3374,43 +3369,30 @@
       "emptyState": "Nie przesłano jeszcze żadnych obrazów",
       "successToast": "Obrazy zostały pomyślnie przesłane"
     },
+    "organization": {
+      "header": "Organizacja",
+      "edit": {
+        "header": "Edytuj Organizację",
+        "toasts": {
+          "success": "Organizacja produktu {{title}} została pomyślnie zaktualizowana"
+        }
+      }
+    },
+    "organization": {
+      "header": "Organizacja",
+      "edit": {
+        "header": "Edytuj Organizację",
+        "toasts": {
+          "success": "Organizacja produktu {{title}} została pomyślnie zaktualizowana"
+        }
+      }
+    },
     "shippingProfile": {
       "header": "Profil wysyłki",
       "label": "Profil wysyłki",
       "placeholder": "Wybierz profil wysyłki"
     },
-    "fields": {
-      "title": {
-        "label": "Tytuł",
-        "placeholder": "Kurtka zimowa"
-      },
-      "subtitle": {
-        "label": "Podtytuł",
-        "placeholder": "Ciepła i wygodna kurtka zimowa"
-      },
-      "handle": {
-        "label": "Uchwyt",
-        "placeholder": "kurtka-zimowa"
-      },
-      "material": {
-        "label": "Materiał",
-        "placeholder": "Bawełna, Poliester"
-      },
-      "description": {
-        "label": "Opis",
-        "placeholder": "Opis produktu..."
-      },
-      "shipping_profile": {
-        "label": "Profil Wysyłki",
-        "placeholder": "Wybierz profil wysyłki"
-      }
-    },
-    "organization": {
-      "header": "Organizacja"
-    },
-    "media": {
-      "label": "Media"
-    },
+   
     "options": {
       "header": "Opcje"
     },
@@ -3436,7 +3418,13 @@
         "description": "Obecnie nie są konfigurowane żadne dodatkowe atrybuty dla tej kategorii produktów. Backend API może doświadczać problemów."
       },
       "selectOption": "Wybierz opcję",
-      "enterValue": "Wpisz wartość"
+      "enterValue": "Wpisz wartość",
+      "section": {
+        "heading": "Dodatkowe atrybuty",
+        "edit": "Edytuj",
+        "noAttributesAssigned": "Brak dodatkowych atrybutów przypisanych. Kliknij Edytuj, aby dodać atrybuty.",
+        "attributeFallback": "Atrybut {{index}}"
+      }
     },
     "gpsr": {
       "title": "Informacje GPSR",
@@ -3492,5 +3480,17 @@
       "loading": "Ładowanie kolorów...",
       "noColors": "Brak kolorów przypisanych do tego produktu"
     }
+  },
+  "dashboard": {
+    "actions": "Akcje",
+    "actionsDescription": "Sprawdź nowe wydarzenia i zarządzaj sklepem",
+    "unfulfilledOrders": "Zamówienia nierealizowane",
+    "fulfilledOrders": "Zamówienia zrealizowane",
+    "reviewsToReply": "Recenzje do odpowiedzi",
+    "statistics": "Statystyki",
+    "selectDateRange": "Wybierz zakres dat",
+    "orders": "Zamówienia",
+    "customers": "Klienci",
+    "messages": "Wiadomości"
   }
 }

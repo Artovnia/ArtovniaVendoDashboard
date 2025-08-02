@@ -23,6 +23,7 @@ import { ChartSkeleton } from "./chart-skeleton"
 import { useState } from "react"
 import { addDays, differenceInDays, format, subDays } from "date-fns"
 import { Calendar } from "../../../components/common/calendar/calendar"
+import { useTranslation } from "react-i18next"
 
 const colorPicker = (line: string) => {
   switch (line) {
@@ -90,6 +91,7 @@ export const DashboardCharts = ({
   fulfilledOrders: number
   reviewsToReply: any[]
 }) => {
+  const { t } = useTranslation()
   const [searchParams, setSearchParams] = useSearchParams()
 
   const [filters, setFilters] = useState(["customers", "orders"])
@@ -141,9 +143,9 @@ export const DashboardCharts = ({
       <Container className="divide-y p-0">
         <div className="flex items-center justify-between px-6 py-4">
           <div>
-            <Heading>Akcje</Heading>
+            <Heading>{t("dashboard.actions")}</Heading>
             <Text className="text-ui-fg-subtle" size="small">
-              Sprawdź nowe wydarzenia i zarządzaj sklepem
+              {t("dashboard.actionsDescription")}
             </Text>
           </div>
         </div>
@@ -155,7 +157,7 @@ export const DashboardCharts = ({
             >
               <div className="flex gap-4 items-center">
                 <Badge>{notFulfilledOrders}</Badge>
-                Zamówienia do wysyłki
+                {t("dashboard.unfulfilledOrders")}
               </div>
               <TriangleRightMini color="grey" />
             </Button>
@@ -167,7 +169,7 @@ export const DashboardCharts = ({
             >
               <div className="flex gap-4 items-center">
                 <Badge>{fulfilledOrders}</Badge>
-                Zamówienia do wysyłki
+                {t("dashboard.fulfilledOrders")}
               </div>
               <TriangleRightMini color="grey" />
             </Button>
@@ -179,7 +181,7 @@ export const DashboardCharts = ({
             >
               <div className="flex gap-4 items-center">
                 <Badge>{reviewsToReply}</Badge>
-                Recenzje do odpowiedzi
+                {t("dashboard.reviewsToReply")}
               </div>
               <TriangleRightMini color="grey" />
             </Button>
@@ -189,7 +191,7 @@ export const DashboardCharts = ({
               variant="secondary"
               className="w-full justify-between py-4 h-full h-full"
             >
-              <div className="flex gap-4 items-center">Wiadomości</div>
+              <div className="flex gap-4 items-center">{t("dashboard.messages")}</div>
               <TriangleRightMini color="grey" />
             </Button>
           </Link>
@@ -198,9 +200,9 @@ export const DashboardCharts = ({
       <Container className="divide-y p-0 mt-2">
         <div className="flex items-center justify-between px-6 py-4">
           <div>
-            <Heading>Analiza</Heading>
+            <Heading>{t("dashboard.statistics")}</Heading>
             <Text className="text-ui-fg-subtle" size="small">
-              Zobacz postępy Twojego sklepu
+              {t("dashboard.actionsDescription")}
             </Text>
           </div>
           <div>
@@ -217,7 +219,7 @@ export const DashboardCharts = ({
                       format(from, "LLL dd, y")
                     )
                   ) : (
-                    <span>Wybierz datę</span>
+                    <span>{t("dashboard.selectDateRange")}</span>
                   )}
                 </Button>
               </Popover.Trigger>
@@ -268,7 +270,7 @@ export const DashboardCharts = ({
                   className="p-4 border rounded-lg w-full flex-col items-start my-2"
                   onClick={() => handleFilter("orders")}
                 >
-                  <Heading level="h3">Zamówienia</Heading>
+                  <Heading level="h3">{t("dashboard.orders")}</Heading>
                   <div className="flex gap-2 items-center mt-2">
                     <div
                       className="h-8 w-1"
@@ -288,7 +290,7 @@ export const DashboardCharts = ({
                   className="p-4 border rounded-lg w-full flex-col items-start my-2"
                   onClick={() => handleFilter("customers")}
                 >
-                  <Heading level="h3">Klienci</Heading>
+                  <Heading level="h3">{t("dashboard.customers")}</Heading>
                   <div className="flex gap-2 items-center mt-2">
                     <div
                       className="h-8 w-1"

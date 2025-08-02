@@ -11083,6 +11083,54 @@
       ],
       "additionalProperties": false
     },
+    "dashboard": {
+      "type": "object",
+      "properties": {
+        "actions": {
+          "type": "string"
+        },
+        "actionsDescription": {
+          "type": "string"
+        },
+        "unfulfilledOrders": {
+          "type": "string"
+        },
+        "fulfilledOrders": {
+          "type": "string"
+        },
+        "reviewsToReply": {
+          "type": "string"
+        },
+        "statistics": {
+          "type": "string"
+        },
+        "selectDateRange": {
+          "type": "string"
+        },
+        "orders": {
+          "type": "string"
+        },
+        "customers": {
+          "type": "string"
+        },
+        "messages": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "actions",
+        "actionsDescription",
+        "unfulfilledOrders",
+        "fulfilledOrders",
+        "reviewsToReply",
+        "statistics",
+        "selectDateRange",
+        "orders",
+        "customers",
+        "messages"
+      ],
+      "additionalProperties": false
+    },
     "dateTime": {
       "type": "object",
       "properties": {
@@ -11146,6 +11194,102 @@
         "seconds_other"
       ],
       "additionalProperties": false
+    },
+    "additionalAttributes": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "loading": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "save": {
+          "type": "string"
+        },
+        "saving": {
+          "type": "string"
+        },
+        "back": {
+          "type": "string"
+        },
+        "success": {
+          "type": "string"
+        },
+        "errorUpdate": {
+          "type": "string"
+        },
+        "error": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": ["title", "description"],
+          "additionalProperties": false
+        },
+        "noAttributes": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": ["title", "description"],
+          "additionalProperties": false
+        },
+        "selectOption": {
+          "type": "string"
+        },
+        "enterValue": {
+          "type": "string"
+        },
+        "section": {
+          "type": "object",
+          "properties": {
+            "heading": {
+              "type": "string"
+            },
+            "edit": {
+              "type": "string"
+            },
+            "noAttributesAssigned": {
+              "type": "string"
+            },
+            "attributeFallback": {
+              "type": "string"
+            }
+          },
+          "required": ["heading", "edit", "noAttributesAssigned", "attributeFallback"],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "title",
+        "loading",
+        "description",
+        "save",
+        "saving",
+        "back",
+        "success",
+        "errorUpdate",
+        "error",
+        "noAttributes",
+        "selectOption",
+        "enterValue",
+        "section"
+      ],
+      "additionalProperties": false
     }
   },
   "required": [
@@ -11200,7 +11344,9 @@
     "statuses",
     "labels",
     "fields",
-    "dateTime"
+    "dashboard",
+    "dateTime",
+    "additionalAttributes"
   ],
   "additionalProperties": false
 }

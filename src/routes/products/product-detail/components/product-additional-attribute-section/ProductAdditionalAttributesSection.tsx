@@ -5,6 +5,7 @@ import { PencilSquare } from "@medusajs/icons"
 import { ActionMenu } from "../../../../../components/common/action-menu"
 import { useQuery } from "@tanstack/react-query"
 import { fetchQuery } from "../../../../../lib/client"
+import { useTranslation } from "react-i18next"
 
 type AttributeValue = {
   id?: string
@@ -27,10 +28,10 @@ type ProductAttributeSectionProps = {
 export const ProductAdditionalAttributesSection = ({
   product,
 }: ProductAttributeSectionProps) => {
+  const { t } = useTranslation()
   const { attribute_values = [] } = product
   const productId = product?.id
   
-  console.log('[DEBUG] Product attribute values in section:', attribute_values)
   
   // Fetch attribute data from our custom endpoint to ensure we have proper names
   const { data: attributeData } = useQuery({
@@ -42,10 +43,9 @@ export const ProductAdditionalAttributesSection = ({
         const response = await fetchQuery(`/vendor/products/${productId}/attributes`, {
           method: "GET"
         })
-        console.log('[DEBUG] Enhanced attributes response:', response)
         return response
       } catch (error) {
-        console.error('[DEBUG] Error fetching enhanced attributes:', error)
+       
         return { attribute_values: [] }
       }
     },
@@ -68,18 +68,17 @@ export const ProductAdditionalAttributesSection = ({
     })
   }
   
-  console.log('[DEBUG] Attribute ID to name mapping:', Object.fromEntries(attributeMap))
   
   return (
     <Container className="divide-y p-0">
       <div className="flex items-center justify-between px-6 py-4">
-        <Heading level="h2">Dodatkowe atrybuty</Heading>
+        <Heading level="h2">{t("products.additionalAttributes.section.heading")}</Heading>
         <ActionMenu
           groups={[
             {
               actions: [
                 {
-                  label: "Edytuj",
+                  label: t("products.additionalAttributes.section.edit"),
                   to: "additional-attributes",
                   icon: <PencilSquare />,
                 },
@@ -92,8 +91,7 @@ export const ProductAdditionalAttributesSection = ({
         {enhancedAttributeValues.length > 0 ? (
           <div className="flex flex-col gap-2">
             {enhancedAttributeValues.map((attr: AttributeValue, index: number) => {
-              // Log the attribute structure to debug
-              console.log(`[DEBUG] Attribute ${index}:`, attr)
+     
               
               // Handle various possible attribute structures, prioritizing name over ID
               // Handle all possible attribute name structures, with proper TypeScript safety
@@ -101,7 +99,7 @@ export const ProductAdditionalAttributesSection = ({
                                    attr.attribute?.name || // Nested attribute name 
                                    (attr.attribute_id ? attributeMap.get(attr.attribute_id) || null : null) || // Look up name from our attribute map with null safety
                                    (typeof attr.name === 'string' ? attr.name : null) || // Alternative structure with null safety
-                                   `Atrybut ${index + 1}` // Last resort fallback
+                                   `${t("products.additionalAttributes.section.attributeFallback")} ${index + 1}` // Last resort fallback
               
               return (
                 <div key={attr.id || index} className="flex justify-between">
@@ -115,7 +113,7 @@ export const ProductAdditionalAttributesSection = ({
           </div>
         ) : (
           <Text size="small" className="text-ui-fg-subtle">
-            Brak dodatkowych atrybutów przypisanych. Kliknij Edytuj, aby dodać atrybuty.
+            {t("products.additionalAttributes.section.noAttributesAssigned")}
           </Text>
         )}
       </div>

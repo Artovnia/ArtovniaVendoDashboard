@@ -9,7 +9,6 @@ export const AttributeSelect = ({
 }) => {
   // Make sure values is always an array even if it's undefined
   const optionValues = values || []
-  console.log("[DEBUG] AttributeSelect values:", values)
   
   return (
     <Select onValueChange={field.onChange} value={field.value}>

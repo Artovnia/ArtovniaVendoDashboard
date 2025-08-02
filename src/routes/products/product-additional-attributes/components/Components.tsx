@@ -40,13 +40,7 @@ export const Components = ({
   const ui_component = attribute?.ui_component || "input"
   const possible_values = attribute?.possible_values || []
 
-  // Debug the attribute and values
-  console.log(`[DEBUG] Rendering component for attribute:`, {
-    id: attribute?.id,
-    name: attribute?.name,
-    ui_component,
-    possible_values
-  })
+
 
   // Use the getComponent helper to determine which component to render
   const Component = getComponent(ui_component, possible_values)

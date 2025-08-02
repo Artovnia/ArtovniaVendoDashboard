@@ -506,9 +506,7 @@
         "description": "No variants match the current filter criteria."
       }
     },
-    "organization": {
-      "header": "Organization"
-    },
+   
     "gpsr": {
       "title": "GPSR Information",
       "producer": {
@@ -3541,9 +3539,7 @@
       "empty": "No request found"
     }
   },
-  "general": {
-    "tip": "Tip"
-  },
+
   "categories": {
     "domain": "Categories",
     "description": "Organize products into categories.",
@@ -3680,7 +3676,13 @@
       "header": "Shipping Profile"
     },
     "organization": {
-      "header": "Organization"
+      "header": "Organization",
+      "edit": {
+        "header": "Edit Organization",
+        "toasts": {
+          "success": "Product {{title}} organization updated successfully"
+        }
+      }
     },
     "media": {
       "label": "Media",
@@ -3765,7 +3767,13 @@
         "description": "Currently no additional attributes are configured for this product category. Backend API may be experiencing issues."
       },
       "selectOption": "Select option",
-      "enterValue": "Enter value"
+      "enterValue": "Enter value",
+      "section": {
+        "heading": "Additional Attributes",
+        "edit": "Edit",
+        "noAttributesAssigned": "No additional attributes assigned. Click Edit to add attributes.",
+        "attributeFallback": "Attribute"
+      }
     },
     "gpsr": {
       "title": "GPSR Information",
@@ -3831,5 +3839,17 @@
       "loading": "Loading colors...",
       "noColors": "No colors assigned to this product"
     }
+  },
+  "dashboard": {
+    "actions": "Actions",
+    "actionsDescription": "Check new events and manage your store",
+    "unfulfilledOrders": "Unfulfilled orders",
+    "fulfilledOrders": "Fulfilled orders",
+    "reviewsToReply": "Reviews to reply",
+    "statistics": "Statistics",
+    "selectDateRange": "Select date range",
+    "orders": "Orders",
+    "customers": "Customers",
+    "messages": "Messages"
   }
 }
