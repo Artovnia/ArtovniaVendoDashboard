@@ -11,11 +11,9 @@ import { Form } from "../../../components/common/form"
 import { useTranslation } from 'react-i18next'
 
 export const ProductAdditionalAttributesForm = () => {
-  console.log('[DEBUG] ProductAdditionalAttributesForm rendering')
   const { id } = useParams()
   const navigate = useNavigate()
   const { t } = useTranslation()
-  console.log('[DEBUG] Product ID from params:', id)
   
   // Get product attributes data
   const { attributes = [], attribute_values = [], product, isLoading, error } = useProductAttributes(id!)
@@ -40,25 +38,15 @@ export const ProductAdditionalAttributesForm = () => {
       })
     }
     
-    console.log('[DEBUG] Form default values:', values)
     // Reset the form with new values when they're loaded
     if (Object.keys(values).length > 0) {
       form.reset(values)
     }
   }, [attribute_values, form])
   
-  // Log form and attribute data for debugging
-  console.log('[DEBUG] Form data:', {
-    attributes: attributes,
-    attribute_values: attribute_values,
-    isLoading,
-    error,
-    product,
-    formValues: form.getValues()
-  })
+
 
   if (isLoading) {
-    console.log('[DEBUG] Still loading attributes')
     return (
       <RouteDrawer>
         <RouteDrawer.Header>
@@ -73,10 +61,8 @@ export const ProductAdditionalAttributesForm = () => {
     )
   }
 
-  console.log('[DEBUG] Rendering form with attributes:', attributes)
 
   const onSubmit = async (data: any) => {
-    console.log('[DEBUG] Form submitted with data:', data);
     
     try {
       // Transform form data into the format expected by the API
@@ -93,8 +79,6 @@ export const ProductAdditionalAttributesForm = () => {
           value: data[attr.handle] || '' // Use empty string if no value is provided
         } as AttributeValue;
       }).filter((item: AttributeValue) => item.value !== ''); // Remove empty values
-      
-      console.log('[DEBUG] Transformed attribute values:', attributeValues);
       
       // Call the mutation to update product attributes
       await updateProductAttributes.mutateAsync({
