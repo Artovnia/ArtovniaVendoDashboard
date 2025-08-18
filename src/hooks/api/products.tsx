@@ -1,16 +1,11 @@
 import { FetchError } from '@medusajs/js-sdk';
-import { HttpTypes } from '@medusajs/types';
-import {
-  QueryKey,
-  useMutation,
-  UseMutationOptions,
-  useQuery,
-  UseQueryOptions,
-} from '@tanstack/react-query';
-import { fetchQuery, sdk } from '../../lib/client';
-import { queryClient } from '../../lib/query-client';
-import { queryKeysFactory } from '../../lib/query-key-factory';
-import { inventoryItemsQueryKeys } from './inventory.tsx';
+import { HttpTypes } from '@medusajs/types'
+import { QueryKey, useMutation, useQuery, UseMutationOptions, UseQueryOptions } from '@tanstack/react-query'
+import { useMemo } from 'react'
+
+import { queryClient } from '../../lib/query-client'
+import { queryKeysFactory } from '../../lib/query-key-factory'
+import { fetchQuery } from '../../lib/client'
 import { useAddColorOption } from './products/add-color-option';
 
 const PRODUCTS_QUERY_KEY = 'products' as const;
@@ -392,24 +387,45 @@ export const useProduct = (
     'queryFn' | 'queryKey'
   >
 ) => {
+  // Create a stable query key by sorting and stringifying the query object
+  const stableQueryKey = useMemo(() => {
+    if (!query) return ['products', 'detail', id];
+    
+    // Sort the query object keys to ensure consistent cache keys
+    const sortedQuery = Object.keys(query)
+      .sort()
+      .reduce((acc, key) => {
+        acc[key] = query[key];
+        return acc;
+      }, {} as Record<string, any>);
+    
+    return ['products', 'detail', id, sortedQuery];
+  }, [id, query]);
+
   const { data, ...rest } = useQuery({
-    queryFn: () =>
-      fetchQuery(`/vendor/products/${id}`, {
+    queryFn: async () => {
+      const response = await fetchQuery(`/vendor/products/${id}`, {
         method: 'GET',
         query: query as { [key: string]: string | number },
-      }),
-    queryKey: productsQueryKeys.detail(id, query),
-    // Enable automatic refetching when window regains focus
-    // This will refresh data when returning from edit form
+      });
+      console.log(`Raw fetchQuery response for ${id}:`, response);
+      console.log(`Response product title:`, response?.product?.title);
+      return response;
+    },
+    queryKey: stableQueryKey,
     refetchOnWindowFocus: true,
-    staleTime: 30 * 1000, // Consider data stale after 30 seconds
+    staleTime: 30 * 1000,
     ...options,
   });
 
-  // Log when data is refetched to help with debugging
+  console.log(`Final data object for ID: ${id}:`, data);
   console.log(`Product data fetched for ID: ${id}`, data?.product?.title);
+  console.log(`Product categories:`, data?.product?.categories);
+  console.log(`Product tags:`, data?.product?.tags);
+  console.log(`Product type_id:`, data?.product?.type_id);
+  console.log(`Product collection_id:`, data?.product?.collection_id);
 
-  return { ...data, ...rest };
+  return { ...rest, ...data };
 };
 
 export const useProducts = (

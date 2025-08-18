@@ -3397,8 +3397,10 @@
       "header": "Opcje"
     },
     "productStatus": {
+      "draft": "Szkic",
       "published": "Opublikowany",
-      "draft": "Szkic"
+      "proposed": "Proponowany",
+      "rejected": "Odrzucony"
     },
     "additionalAttributes": {
       "title": "Dodatkowe atrybuty",

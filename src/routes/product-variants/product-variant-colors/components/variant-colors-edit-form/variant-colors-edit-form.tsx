@@ -4,10 +4,13 @@ import {
   Text,
   toast,
   Container,
+  DropdownMenu,
 } from '@medusajs/ui'
+import { SquareTwoStack } from '@medusajs/icons'
 import { useTranslation } from 'react-i18next'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useVariantColors, useAssignVariantColors, useColorTaxonomy } from '../../../../../hooks/api/colors'
+import { useProductVariants } from '../../../../../hooks/api/products'
 import { ColorSelector } from '../../../../../components/color-selector'
 import { RouteDrawer } from '../../../../../components/modals'
 import { useForm, FormProvider } from 'react-hook-form'
@@ -50,6 +53,11 @@ export const VariantColorsEditForm = () => {
     mutateAsync: assignColors,
     isPending: isAssigning
   } = useAssignVariantColors()
+
+  // Fetch all variants for this product to enable copying colors
+  const { data: productVariantsData } = useProductVariants(product_id!, {
+    fields: "id,title,options"
+  })
   
   // Get all assigned colors
   const assignedColors = variantColorsData?.colors || []
@@ -81,6 +89,24 @@ export const VariantColorsEditForm = () => {
       form.setValue('selectedColors', newSelection)
       return newSelection
     })
+  }
+
+  // Copy colors from another variant using direct API call
+  const handleCopyFromVariant = async (sourceVariantId: string) => {
+    try {
+      const response = await fetch(`/vendor/products/${product_id}/variants/${sourceVariantId}/colors`)
+      const sourceVariantColors = await response.json()
+      
+      if (sourceVariantColors?.colors) {
+        const colorIds = sourceVariantColors.colors.map((color: ColorType) => color.id)
+        setSelectedColorIds(colorIds)
+        form.setValue('selectedColors', colorIds)
+        toast.success('Kolory zostały skopiowane z innego wariantu')
+      }
+    } catch (error) {
+      console.error('Error copying colors:', error)
+      toast.error('Błąd podczas kopiowania kolorów')
+    }
   }
   
   const getColorById = (colorId: string) => {
@@ -151,30 +177,62 @@ export const VariantColorsEditForm = () => {
 
   return (
     <FormProvider {...form}>
-      <KeyboundForm onSubmit={onSubmit} className="flex flex-1 flex-col h-full">
-        <div className="flex-1 overflow-y-auto">
-          <div className='flex flex-col gap-y-4 p-4'>
-            <div className='flex flex-col gap-y-4'>
+      <KeyboundForm onSubmit={onSubmit} className="flex flex-1 flex-col h-full min-h-0">
+        {/* Scrollable content area with proper mobile spacing */}
+        <div className="flex-1 overflow-y-auto min-h-0">
+          <div className='flex flex-col gap-y-3 sm:gap-y-4 p-3 sm:p-4 pb-safe'>
+            <div className='flex flex-col gap-y-3 sm:gap-y-4'>
+              {/* Copy colors section */}
+              {productVariantsData?.variants && productVariantsData.variants.length > 1 && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Text weight="plus" size="small">Kopiuj kolory z innego wariantu</Text>
+                    <DropdownMenu>
+                      <DropdownMenu.Trigger asChild>
+                        <Button variant="secondary" size="small">
+                          <SquareTwoStack className="h-4 w-4" />
+                          Kopiuj kolory
+                        </Button>
+                      </DropdownMenu.Trigger>
+                      <DropdownMenu.Content align="end">
+                        {productVariantsData.variants
+                          .filter(v => v.id !== variant_id)
+                          .map(variant => (
+                            <DropdownMenu.Item
+                              key={variant.id}
+                              onClick={() => handleCopyFromVariant(variant.id)}
+                            >
+                              <SquareTwoStack className="h-4 w-4" />
+                              Kopiuj z: {variant.title || `Wariant ${variant.id}`}
+                            </DropdownMenu.Item>
+                          ))
+                        }
+                      </DropdownMenu.Content>
+                    </DropdownMenu>
+                  </div>
+                </div>
+              )}
+
               {/* Current colors display */}
               <div className="space-y-2">
                 <Text weight="plus" size="small">Aktualne kolory</Text>
                 
                 {assignedColors.length > 0 ? (
-                  <div className="bg-ui-bg-subtle rounded-lg p-2">
-                    <div className="flex flex-wrap gap-1">
+                  <div className="bg-ui-bg-subtle rounded-lg p-2 sm:p-3">
+                    <div className="flex flex-wrap gap-1 sm:gap-2">
                       {assignedColors.map((color: ColorType) => (
-                        <div key={color.id} className="flex items-center gap-1 bg-ui-bg-base rounded px-2 py-1 border">
+                        <div key={color.id} className="flex items-center gap-1 bg-ui-bg-base rounded px-2 py-1 border text-xs sm:text-sm">
                           <div 
-                            className="w-3 h-3 rounded-full border border-ui-border-base shadow-sm flex-shrink-0" 
+                            className="w-3 h-3 sm:w-4 sm:h-4 rounded-full border border-ui-border-base shadow-sm flex-shrink-0" 
                             style={{ backgroundColor: color.hex_code }}
                           />
-                          <Text size="xsmall" className="whitespace-nowrap">{color.display_name}</Text>
+                          <Text size="xsmall" className="whitespace-nowrap truncate max-w-[120px] sm:max-w-none">{color.display_name}</Text>
                         </div>
                       ))}
                     </div>
                   </div>
                 ) : (
-                  <div className="bg-ui-bg-subtle rounded-lg p-2">
+                  <div className="bg-ui-bg-subtle rounded-lg p-2 sm:p-3">
                     <Text size="small" className="text-ui-fg-subtle">
                       Do tego wariantu nie przypisano żadnych kolorów.
                     </Text>
@@ -182,7 +240,7 @@ export const VariantColorsEditForm = () => {
                 )}
               </div>
               
-              {/* Color selector */}
+              {/* Color selector with responsive height */}
               <Form.Field
                 control={form.control}
                 name="selectedColors"
@@ -192,7 +250,13 @@ export const VariantColorsEditForm = () => {
                       <Form.Label>Dodaj kolory</Form.Label>
                       <Form.Control>
                         <Container className="p-0 border rounded-lg">
-                          <div className="p-2" style={{ maxHeight: '27rem', overflowY: 'auto' }}>
+                          <div 
+                            className="p-2 sm:p-3 overflow-y-auto"
+                            style={{ 
+                              maxHeight: 'min(50vh, 27rem)',
+                              minHeight: '200px'
+                            }}
+                          >
                             <ColorSelector 
                               value={null} // Always null for multi-select behavior
                               onChange={(colorId) => {
@@ -213,26 +277,26 @@ export const VariantColorsEditForm = () => {
                 }}
               />
               
-              {/* Selected colors - Fixed container */}
+              {/* Selected colors - Responsive container */}
               <div className="space-y-2">
                 <Text weight="plus" size="small">Wybrane kolory ({selectedColorIds.length})</Text>
                 
-                <div className="min-h-[60px] bg-ui-bg-subtle rounded-lg p-2">
+                <div className="min-h-[60px] bg-ui-bg-subtle rounded-lg p-2 sm:p-3">
                   {selectedColorIds.length > 0 ? (
-                    <div className="flex flex-wrap gap-1">
+                    <div className="flex flex-wrap gap-1 sm:gap-2">
                       {selectedColorIds.map((colorId: string) => {
                         const color = getColorById(colorId)
                         return color ? (
-                          <div key={colorId} className="flex items-center gap-1 bg-ui-bg-base rounded px-2 py-1 border group">
+                          <div key={colorId} className="flex items-center gap-1 bg-ui-bg-base rounded px-2 py-1 border group text-xs sm:text-sm">
                             <div 
-                              className="w-3 h-3 rounded-full border border-ui-border-base shadow-sm flex-shrink-0" 
+                              className="w-3 h-3 sm:w-4 sm:h-4 rounded-full border border-ui-border-base shadow-sm flex-shrink-0" 
                               style={{ backgroundColor: color.hex_code }}
                             />
-                            <Text size="xsmall" className="whitespace-nowrap">{color.display_name}</Text>
+                            <Text size="xsmall" className="whitespace-nowrap truncate max-w-[100px] sm:max-w-none">{color.display_name}</Text>
                             <Button
                               variant="transparent"
                               size="small"
-                              className="p-0 ml-1 w-3 h-3 text-ui-fg-muted hover:text-ui-fg-subtle opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                              className="p-0 ml-1 w-4 h-4 sm:w-3 sm:h-3 text-ui-fg-muted hover:text-ui-fg-subtle opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex items-center justify-center"
                               onClick={() => handleToggleColor(colorId)}
                               type="button"
                               title="Usuń kolor"
@@ -241,13 +305,13 @@ export const VariantColorsEditForm = () => {
                             </Button>
                           </div>
                         ) : (
-                          <div key={colorId} className="flex items-center gap-1 bg-ui-bg-base rounded px-2 py-1 border border-ui-border-error group">
-                            <div className="w-3 h-3 rounded-full bg-ui-bg-disabled border border-ui-border-base shadow-sm flex-shrink-0" />
-                            <Text size="xsmall" className="text-ui-fg-muted whitespace-nowrap">{t('products.variant.colors.unknownColor')}</Text>
+                          <div key={colorId} className="flex items-center gap-1 bg-ui-bg-base rounded px-2 py-1 border border-ui-border-error group text-xs sm:text-sm">
+                            <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-ui-bg-disabled border border-ui-border-base shadow-sm flex-shrink-0" />
+                            <Text size="xsmall" className="text-ui-fg-muted whitespace-nowrap truncate max-w-[100px] sm:max-w-none">{t('products.variant.colors.unknownColor')}</Text>
                             <Button
                               variant="transparent"
                               size="small"
-                              className="p-0 ml-1 w-3 h-3 text-ui-fg-muted hover:text-ui-fg-subtle opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                              className="p-0 ml-1 w-4 h-4 sm:w-3 sm:h-3 text-ui-fg-muted hover:text-ui-fg-subtle opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex items-center justify-center"
                               onClick={() => handleToggleColor(colorId)}
                               type="button"
                               title="Usuń kolor"
@@ -260,7 +324,7 @@ export const VariantColorsEditForm = () => {
                     </div>
                   ) : (
                     <div className="flex items-center justify-center h-12">
-                      <Text size="small" className="text-ui-fg-muted">
+                      <Text size="small" className="text-ui-fg-muted text-center">
                         {t('products.variant.colors.noColorsSelected')}
                       </Text>
                     </div>
@@ -269,7 +333,7 @@ export const VariantColorsEditForm = () => {
               </div>
 
               {/* Help text */}
-              <div className="bg-ui-bg-base border border-ui-border-base rounded-lg p-2">
+              <div className="bg-ui-bg-base border border-ui-border-base rounded-lg p-2 sm:p-3">
                 <Text size="xsmall" className="text-ui-fg-subtle">
                   {t('products.variant.colors.helpText')}
                 </Text>
@@ -278,10 +342,10 @@ export const VariantColorsEditForm = () => {
           </div>
         </div>
         
-        {/* Fixed footer inside form */}
-        <div className='flex items-center justify-end gap-x-2 border-t bg-ui-bg-base p-3 mt-auto'>
+        {/* Sticky footer with mobile-optimized layout */}
+        <div className='sticky bottom-0 flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-x-2 border-t bg-ui-bg-base p-3 sm:p-4 mt-auto safe-area-inset-bottom'>
           <RouteDrawer.Close asChild>
-            <Button size='small' variant="secondary">
+            <Button size='small' variant="secondary" className="w-full sm:w-auto order-2 sm:order-1">
               {t('actions.cancel')}
             </Button>
           </RouteDrawer.Close>
@@ -291,6 +355,7 @@ export const VariantColorsEditForm = () => {
             variant='primary'
             isLoading={isAssigning}
             disabled={!isInitialized}
+            className="w-full sm:w-auto order-1 sm:order-2"
           >
             {isAssigning ? t('actions.saving') : t('actions.save')}
           </Button>

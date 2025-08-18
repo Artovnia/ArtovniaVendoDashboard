@@ -13,8 +13,28 @@ const variantFields = [
   'variants.inventory_items.inventory_item_id',
 ].join(',');
 
+// Define organization fields explicitly
+const organizationFields = [
+  'categories',
+  'categories.id',
+  'categories.name',
+  'categories.handle',
+  'tags',
+  'tags.id',
+  'tags.value',
+  'type_id',
+  'collection_id',
+  'collection',
+  'collection.id',
+  'collection.title',
+].join(',');
+
 // Get basic product fields from extensions and add our specific field requirements
 export const PRODUCT_DETAIL_FIELDS = [
   getLinkedFields('product', ''),
-  variantFields
+  variantFields,
+  organizationFields,
+  'shipping_profile',
+  'shipping_profile.id',
+  'shipping_profile.name'
 ].join(',');

@@ -306,7 +306,7 @@ export const CategorySelect = forwardRef<
 
       <Select.Portal>
         <Select.Content 
-          className='relative mt-2 border shadow-lg rounded-lg  z-50 w-[var(--radix-select-trigger-width)]'
+          className='relative mt-2 border shadow-lg rounded-lg bg-ui-bg-base z-50 w-[var(--radix-select-trigger-width)]'
           position="popper"
           sideOffset={4}
           side="bottom"

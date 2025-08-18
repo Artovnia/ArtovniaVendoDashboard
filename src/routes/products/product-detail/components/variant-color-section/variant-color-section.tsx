@@ -30,6 +30,7 @@ export const VariantColorSection = ({
     mutateAsync: assignColors,
     isPending: isAssigning
   } = useAssignVariantColors()
+
   
   // Get all assigned colors
   const assignedColors = variantColorsData?.colors || []

@@ -63,7 +63,7 @@ export const ProductShippingProfileForm = ({
 
   const form = useForm({
     defaultValues: {
-      shipping_profile_id: product.shipping_profile?.id ?? "",
+      shipping_profile_id: "",
     },
     resolver: zodResolver(ProductShippingProfileSchema),
   })
@@ -96,9 +96,7 @@ export const ProductShippingProfileForm = ({
       
       // Show success message
       toast.success(
-        t("products.shippingProfile.edit.toasts.success", {
-          title: product.title,
-        })
+        t("products.shippingProfile.edit.toasts.success") || "Shipping profile updated successfully"
       );
       handleSuccess();
     } catch (error: any) {
@@ -109,12 +107,21 @@ export const ProductShippingProfileForm = ({
     }
   })
 
+  // Reset form when product data changes
   useEffect(() => {
+    if (!product) return;
+    
+    console.log('Product data in shipping profile form:', product);
+    console.log('Product metadata shipping_profile_id:', product.metadata?.shipping_profile_id);
+    console.log('Product shipping_profile:', product.shipping_profile);
+    
+    // Use metadata shipping_profile_id as primary source since that's where it's stored
     const profileId = product.metadata?.shipping_profile_id || "";
+    
     form.reset({
       shipping_profile_id: profileId as string
     });
-  }, [form, product.metadata?.shipping_profile_id])
+  }, [form, product, product.metadata?.shipping_profile_id])
 
   return (
     <RouteDrawer.Form form={form}>

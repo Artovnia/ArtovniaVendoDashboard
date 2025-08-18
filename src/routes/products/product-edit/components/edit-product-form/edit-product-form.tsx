@@ -1,16 +1,10 @@
-import { useState, useMemo } from 'react';
-import {
-  Button,
-  Input,
-  Select,
-  Text,
-  Textarea,
-  toast,
-} from '@medusajs/ui';
-import { useTranslation } from 'react-i18next';
-import * as zod from 'zod';
+import React, { useState, useMemo, useEffect } from "react"
+import { HttpTypes } from "@medusajs/types"
+import { Button, Heading, Input, Label, Switch, Text, Textarea, toast } from "@medusajs/ui"
+import { useTranslation } from "react-i18next"
+import { useNavigate } from "react-router-dom"
+import * as zod from "zod"
 
-import { HttpTypes } from '@medusajs/types';
 import { Form } from '../../../../../components/common/form';
 import { SwitchBox } from '../../../../../components/common/switch-box';
 import {
@@ -19,6 +13,7 @@ import {
 } from '../../../../../components/modals';
 import { useExtendableForm } from '../../../../../extensions/forms/hooks';
 import { useUpdateProduct } from '../../../../../hooks/api/products';
+import { fetchQuery } from '../../../../../lib/client';
 import { transformNullableFormData } from '../../../../../lib/form-helpers';
 
 import { KeyboundForm } from '../../../../../components/utilities/keybound-form';
@@ -34,9 +29,7 @@ type EditProductFormProps = {
 const EditProductSchema = zod.object({
   status: zod.enum([
     'draft',
-    'published',
     'proposed',
-    'rejected',
   ]),
   title: zod.string().min(1),
   subtitle: zod.string().optional(),
@@ -60,39 +53,49 @@ export const EditProductForm = ({
   const fields = getFormFields('product', 'edit');
   const configs = getFormConfigs('product', 'edit');
 
-  // Ensure we have a valid product object with required fields
-  const validProduct = useMemo(() => {
-    if (!product) {
-      console.error('Product data is missing in EditProductForm');
-      return null;
-    }
-    
-    // Log product data to verify it's loaded correctly
-    console.log('Current product data in EditProductForm:', product);
-    
-    if (!product.id || !product.title) {
-      console.error('Product is missing required fields:', product);
-      return null;
-    }
-    
-    return product;
-  }, [product, lastUpdatedAt]); // Re-evaluate when product or lastUpdatedAt changes
+  // Show loading state if product is not available
+  if (!product) {
+    return (
+      <RouteDrawer.Body>
+        <div className="flex h-full items-center justify-center">
+          <Text>Loading product data...</Text>
+        </div>
+      </RouteDrawer.Body>
+    );
+  }
 
   // Setup form with product data
   const form = useExtendableForm({
     defaultValues: {
-      status: validProduct?.status || 'draft',
-      title: validProduct?.title || '',
-      material: validProduct?.material || '',
-      subtitle: validProduct?.subtitle || '',
-      handle: validProduct?.handle || '',
-      description: validProduct?.description || '',
-      discountable: validProduct?.discountable ?? true,
+      status: product?.status === 'draft' || product?.status === 'proposed' ? product.status : 'draft',
+      title: product?.title || '',
+      material: product?.material || '',
+      subtitle: product?.subtitle || '',
+      handle: product?.handle || '',
+      description: product?.description || '',
+      discountable: product?.discountable ?? true,
     },
     schema: EditProductSchema,
     configs: configs,
-    data: validProduct,
+    data: product,
   });
+
+  // Reset form when product data changes
+  useEffect(() => {
+    if (!product) return;
+    
+    console.log('Product data changed in edit form, resetting form:', product);
+    
+    form.reset({
+      status: product.status === 'draft' || product.status === 'proposed' ? product.status : 'draft',
+      title: product.title || '',
+      material: product.material || '',
+      subtitle: product.subtitle || '',
+      handle: product.handle || '',
+      description: product.description || '',
+      discountable: product.discountable ?? true,
+    });
+  }, [product, form]);
 
   // Use the hook without product ID parameter since it expects options only
   const { mutateAsync, isPending } = useUpdateProduct({
@@ -101,6 +104,31 @@ export const EditProductForm = ({
       setLastUpdatedAt(new Date().toISOString());
     },
   });
+
+  // Handler for submitting product for review
+  const handleSubmitForReview = async () => {
+    const loadingToast = toast.loading("Przekazywanie do weryfikacji...");
+    
+    try {
+      await fetchQuery(`/vendor/products/${product.id}/status`, {
+        method: 'POST',
+        body: { status: 'proposed' }
+      });
+      
+      toast.dismiss(loadingToast);
+      toast.success(`Produkt "${product.title}" został przekazany do weryfikacji`);
+      
+      // Update the lastUpdatedAt timestamp to track successful updates
+      setLastUpdatedAt(new Date().toISOString());
+      
+      // Force refresh product data to show updated status immediately
+      window.location.reload();
+    } catch (e: any) {
+      console.error('Error submitting product for review:', e);
+      toast.dismiss(loadingToast);
+      toast.error(`Nie udało się przekazać produktu do weryfikacji: ${e.message}`);
+    }
+  };
 
   const handleSubmit = form.handleSubmit(async (data) => {
     // Show processing toast to give user feedback
@@ -156,7 +184,7 @@ export const EditProductForm = ({
           );
           
           // If response has a _synthetic flag, it means our fallback mechanism created it
-          if (productData?._synthetic) {
+          if ((productData as any)?._synthetic) {
             console.log('Using synthetic response - API update may have failed but UI will continue');
             toast.warning("Niektóre zmiany mogły nie zostać zapisane");
           }
@@ -188,6 +216,7 @@ export const EditProductForm = ({
     }
   });
 
+
   return (
     <RouteDrawer.Form form={form}>
       <KeyboundForm
@@ -197,53 +226,24 @@ export const EditProductForm = ({
         <RouteDrawer.Body className='flex flex-1 flex-col gap-y-8 overflow-y-auto'>
           <div className='flex flex-col gap-y-8'>
             <div className='flex flex-col gap-y-4'>
-              <Form.Field
-                control={form.control}
-                name='status'
-                render={({
-                  field: { onChange, ref, ...field },
-                }) => {
-                  return (
-                    <Form.Item>
-                      <Form.Label>
-                        {t('fields.status')}
-                      </Form.Label>
-                      <Form.Control>
-                        <Select
-                          {...field}
-                          onValueChange={onChange}
-                        >
-                          <Select.Trigger ref={ref}>
-                            <Select.Value />
-                          </Select.Trigger>
-                          <Select.Content>
-                            {(
-                              [
-                                'draft',
-                                'published',
-                                'proposed',
-                                'rejected',
-                              ] as const
-                            ).map((status) => {
-                              return (
-                                <Select.Item
-                                  key={status}
-                                  value={status}
-                                >
-                                  {t(
-                                    `products.productStatus.${status}`
-                                  )}
-                                </Select.Item>
-                              );
-                            })}
-                          </Select.Content>
-                        </Select>
-                      </Form.Control>
-                      <Form.ErrorMessage />
-                    </Form.Item>
-                  );
-                }}
-              />
+              {/* Read-only status display */}
+              <div className="flex flex-col gap-y-2">
+                <label className="text-sm font-medium text-ui-fg-base">
+                  {t('fields.status')}
+                </label>
+                <div className="flex items-center gap-x-2 p-3 border border-ui-border-base rounded-md bg-ui-bg-field">
+                  <div className={`w-2 h-2 rounded-full ${
+                    product.status === 'draft' ? 'bg-yellow-500' :
+                    product.status === 'proposed' ? 'bg-blue-500' :
+                    product.status === 'published' ? 'bg-green-500' :
+                    product.status === 'rejected' ? 'bg-red-500' :
+                    'bg-gray-500'
+                  }`} />
+                  <span className="text-sm text-ui-fg-base">
+                    {t(`products.productStatus.${product.status}`, product.status)}
+                  </span>
+                </div>
+              </div>
               <Form.Field
                 control={form.control}
                 name='title'
@@ -349,7 +349,7 @@ export const EditProductForm = ({
               control={form.control}
               name='discountable'
               label={t('fields.discountable')}
-              description={t('products.discountableHint')}
+              description="Określa czy produkt może być objęty promocjami"
             />
             <FormExtensionZone
               fields={fields}
@@ -358,19 +358,31 @@ export const EditProductForm = ({
           </div>
         </RouteDrawer.Body>
         <RouteDrawer.Footer>
-          <div className='flex items-center justify-end gap-x-2'>
-            <RouteDrawer.Close asChild>
-              <Button size='small' variant='secondary'>
-                {t('actions.cancel')}
+          <div className='flex items-center justify-between gap-x-2'>
+            {product?.status === 'draft' && (
+              <Button
+                size='small'
+                variant='secondary'
+                onClick={handleSubmitForReview}
+                type='button'
+              >
+                Przekaż do weryfikacji
               </Button>
-            </RouteDrawer.Close>
-            <Button
-              size='small'
-              type='submit'
-              isLoading={isPending}
-            >
-              {t('actions.save')}
-            </Button>
+            )}
+            <div className='flex items-center justify-end gap-x-2 ml-auto'>
+              <RouteDrawer.Close asChild>
+                <Button size='small' variant='secondary'>
+                  {t('actions.cancel')}
+                </Button>
+              </RouteDrawer.Close>
+              <Button
+                size='small'
+                type='submit'
+                isLoading={isPending}
+              >
+                {t('actions.save')}
+              </Button>
+            </div>
           </div>
         </RouteDrawer.Footer>
       </KeyboundForm>

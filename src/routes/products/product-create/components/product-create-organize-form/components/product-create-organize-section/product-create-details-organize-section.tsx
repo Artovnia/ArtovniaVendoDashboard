@@ -24,15 +24,6 @@ export const ProductCreateOrganizationSection = ({
 }: ProductCreateOrganizationSectionProps) => {
   const { t } = useTranslation();
 
-  const collections = useComboboxData({
-    queryKey: ['product_collections'],
-    queryFn: (params) => sdk.store.collection.list(params),
-    getOptions: (data) =>
-      data.collections.map((collection) => ({
-        label: collection.title!,
-        value: collection.id!,
-      })),
-  });
   
   // Fetch shipping profiles from vendor API using useQuery instead of useComboboxData to avoid pagination issues
   const { data: shippingProfilesData } = useQuery({
@@ -65,21 +56,6 @@ export const ProductCreateOrganizationSection = ({
     isPending: false,
   };
 
-  const types = useComboboxData({
-    queryKey: ['product_types', 'creating'],
-    queryFn: (params) =>
-      fetchQuery('/store/product-types', {
-        method: 'GET',
-        query: params,
-      }),
-    getOptions: (data) => {
-      if (!data || !data.product_types) return [];
-      return data.product_types.map((type: any) => ({
-        label: type.value,
-        value: type.id,
-      }));
-    },
-  });
 
   const tags = useComboboxData({
     queryKey: ['product_tags', 'creating'],
@@ -105,60 +81,6 @@ export const ProductCreateOrganizationSection = ({
         description={t('products.fields.discountable.hint')}
         optional
       />
-      <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
-        <Form.Field
-          control={form.control}
-          name='type_id'
-          render={({ field }) => {
-            return (
-              <Form.Item>
-                <Form.Label optional>
-                  {t('products.fields.type.label')}
-                </Form.Label>
-                <Form.Control>
-                  <Combobox
-                    {...field}
-                    options={types.options}
-                    searchValue={types.searchValue}
-                    onSearchValueChange={
-                      types.onSearchValueChange
-                    }
-                    fetchNextPage={types.fetchNextPage}
-                  />
-                </Form.Control>
-                <Form.ErrorMessage />
-              </Form.Item>
-            );
-          }}
-        />
-        <Form.Field
-          control={form.control}
-          name='collection_id'
-          render={({ field }) => {
-            return (
-              <Form.Item>
-                <Form.Label>
-                  {t('products.fields.collection.label')}
-                </Form.Label>
-                <Form.Control>
-                  <Combobox
-                    {...field}
-                    options={collections.options}
-                    searchValue={collections.searchValue}
-                    onSearchValueChange={
-                      collections.onSearchValueChange
-                    }
-                    fetchNextPage={
-                      collections.fetchNextPage
-                    }
-                  />
-                </Form.Control>
-                <Form.ErrorMessage />
-              </Form.Item>
-            );
-          }}
-        />
-      </div>
       <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
         <Form.Field
           control={form.control}
@@ -202,13 +124,15 @@ export const ProductCreateOrganizationSection = ({
             );
           }}
         />
+      </div>
+      <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
         <Form.Field
           control={form.control}
           name='tags'
           render={({ field }) => {
             return (
               <Form.Item>
-                <Form.Label>
+                <Form.Label optional>
                   {t('products.fields.tags.label')}
                 </Form.Label>
                 <Form.Control>

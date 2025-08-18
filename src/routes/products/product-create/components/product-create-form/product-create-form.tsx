@@ -136,8 +136,7 @@ export const ProductCreateForm = ({
           };
         }
         
-        console.log('Processing color assignments for metadata...');
-        console.log('Original color assignments:', JSON.stringify(values.color_assignments));
+      
         
         // Transform temp variant IDs to be backend-compatible
         const transformedColorAssignments: Record<string, string[]> = {};
@@ -154,7 +153,6 @@ export const ProductCreateForm = ({
             // New format: temp_option_VARIANT_TITLE
             const variantTitle = tempId.replace('temp_option_', '');
             transformedColorAssignments[tempId] = colorIds as string[];
-            console.log(`Using new format: ${tempId} for variant "${variantTitle}" with colors: ${JSON.stringify(colorIds)}`);
           } else if (tempId.startsWith('temp_default_')) {
             // Legacy format: temp_default_0, temp_default_1, etc.
             const parts = tempId.split('_');
@@ -164,24 +162,18 @@ export const ProductCreateForm = ({
             if (variant && variant.title) {
               const newTempId = `temp_option_${variant.title}`;
               transformedColorAssignments[newTempId] = colorIds as string[];
-              console.log(`Transforming legacy ID: ${tempId} → ${newTempId} for variant "${variant.title}" with colors: ${JSON.stringify(colorIds)}`);
             } else {
               transformedColorAssignments[tempId] = colorIds as string[];
-              console.log(`Keeping legacy ID: ${tempId} (no matching variant found) with colors: ${JSON.stringify(colorIds)}`);
             }
           } else {
             // Keep original format
             transformedColorAssignments[tempId] = colorIds as string[];
-            console.log(`Keeping original ID: ${tempId} with colors: ${JSON.stringify(colorIds)}`);
           }
         });
-        
-        console.log('Final transformed color assignments:', JSON.stringify(transformedColorAssignments));
         
         if (Object.keys(transformedColorAssignments).length > 0) {
           values.metadata.raw_color_assignments = transformedColorAssignments;
           values.metadata.handle_colors_via_api = true;
-          console.log('Added color assignments to metadata:', JSON.stringify(values.metadata.raw_color_assignments));
         }
       }
 
@@ -194,9 +186,6 @@ export const ProductCreateForm = ({
         delete payload.color_assignments;
       }
       
-      console.log('Prepared payload for API with color assignments in metadata:', 
-                JSON.stringify(payload.metadata?.raw_color_assignments, null, 2));
-
       let uploadedMedia: (HttpTypes.AdminFile & {
         isThumbnail: boolean;
       })[] = [];
@@ -243,12 +232,7 @@ export const ProductCreateForm = ({
         }
       }
 
-      // Fix variant options structure
-      console.log('PRODUCT OPTIONS BEFORE FIX:', JSON.stringify(payload.options, null, 2));
-      console.log('VARIANTS BEFORE FIX:', JSON.stringify(payload.variants?.map(v => ({ 
-        title: v.title, 
-        options: v.options 
-      })), null, 2));
+      
       
       const productOptions = payload.options?.map(option => ({
         ...option,
@@ -284,11 +268,7 @@ export const ProductCreateForm = ({
         return processedVariant;
       }) || [];
       
-      console.log('FIXED PRODUCT OPTIONS:', JSON.stringify(productOptions, null, 2));
-      console.log('FIXED VARIANTS:', JSON.stringify(variants?.map(v => ({ 
-        title: v.title, 
-        options: v.options 
-      })), null, 2));
+      
       
       const apiPayload = {
         ...payload,
@@ -339,7 +319,6 @@ export const ProductCreateForm = ({
             inventory: undefined,
             sku: variant.sku || `${payload.title.substring(0, 3).toUpperCase()}-${Date.now().toString().substring(9)}-${index}`,
             prices: (() => {
-              console.log('Debug - Processing variant prices:', variant.prices);
               
               const createPriceObject = (amount: number, currency: string) => ({
                 amount: amount,
@@ -349,12 +328,10 @@ export const ProductCreateForm = ({
               try {
                 if (Array.isArray(variant.prices) && variant.prices.length > 0 && 
                     variant.prices[0] && typeof variant.prices[0].amount !== 'undefined') {
-                  console.log('Using existing array of price objects');
                   return variant.prices;
                 }
                 
                 if (variant.prices && typeof variant.prices === 'object') {
-                  console.log('Converting price object to array');
                   const priceArray = [];
                   
                   if (variant.prices.default) {
@@ -363,7 +340,6 @@ export const ProductCreateForm = ({
                     
                     if (!isNaN(amount)) {
                       priceArray.push(createPriceObject(amount, "pln"));
-                      console.log('Added default price in PLN:', amount);
                     }
                   }
                   
@@ -374,7 +350,6 @@ export const ProductCreateForm = ({
                       
                       if (!isNaN(amount)) {
                         priceArray.push(createPriceObject(amount, currency));
-                        console.log(`Added price in ${currency}:`, amount);
                       }
                     }
                   });
@@ -382,7 +357,7 @@ export const ProductCreateForm = ({
                   return priceArray;
                 }
                 
-                console.log('Fallback: Could not parse prices, returning empty array');
+            
                 return [];
               } catch (error) {
                 console.error('Error parsing prices:', error);
@@ -463,11 +438,7 @@ export const ProductCreateForm = ({
                   
                   if (gpsrData.gpsr.producerName || gpsrData.gpsr.producerAddress || 
                       gpsrData.gpsr.producerContact || gpsrData.gpsr.instructions) {
-                    console.log('Submitting GPSR data for product ID:', productId);
                     await mutateGPSR(gpsrData);
-                    console.log('GPSR data submitted successfully');
-                  } else {
-                    console.log('No GPSR data to submit');
                   }
                 } catch (gpsrError) {
                   console.error('Failed to submit GPSR data:', gpsrError);
@@ -482,12 +453,10 @@ export const ProductCreateForm = ({
               
               if (shippingProfileId) {
                 try {
-                  console.log(`Associating product with shipping profile: ${shippingProfileId}`);
                   await associateShippingProfile({
                     productId,
                     shippingProfileId
                   });
-                  console.log('Successfully associated product with shipping profile');
                 } catch (profileError) {
                   console.error('Failed to associate product with shipping profile:', profileError);
                 }
@@ -511,7 +480,29 @@ export const ProductCreateForm = ({
   );
 
   const onNext = async (currentTab: Tab) => {
-    const valid = await form.trigger();
+    // Only validate fields relevant to the current tab
+    let valid = true;
+    
+    switch (currentTab) {
+      case Tab.DETAILS:
+        valid = await form.trigger(['title'] as any);
+        break;
+      case Tab.ORGANIZE:
+        valid = await form.trigger(['shipping_profile_id', 'categories'] as any);
+        break;
+      case Tab.COLOR_SCHEME:
+        // Color scheme is optional, always allow progression
+        valid = true;
+        break;
+      case Tab.VARIANTS:
+        valid = await form.trigger(['variants', 'options'] as any);
+        break;
+      case Tab.INVENTORY:
+        valid = await form.trigger(['variants'] as any);
+        break;
+      default:
+        valid = true;
+    }
 
     if (!valid) {
       return;
@@ -620,14 +611,36 @@ export const ProductCreateForm = ({
       >
         <ProgressTabs
           value={tab}
-          onValueChange={async (tab) => {
-            const valid = await form.trigger();
+          onValueChange={async (newTab) => {
+            // Only validate current tab fields when switching tabs
+            let valid = true;
+            
+            switch (tab) {
+              case Tab.DETAILS:
+                valid = await form.trigger(['title'] as any);
+                break;
+              case Tab.ORGANIZE:
+                valid = await form.trigger(['shipping_profile_id', 'categories'] as any);
+                break;
+              case Tab.COLOR_SCHEME:
+                // Color scheme is optional, always allow progression
+                valid = true;
+                break;
+              case Tab.VARIANTS:
+                valid = await form.trigger(['variants', 'options'] as any);
+                break;
+              case Tab.INVENTORY:
+                valid = await form.trigger(['variants'] as any);
+                break;
+              default:
+                valid = true;
+            }
 
             if (!valid) {
               return;
             }
 
-            setTab(tab as Tab);
+            setTab(newTab as Tab);
           }}
           className='flex h-full flex-col overflow-hidden'
         >

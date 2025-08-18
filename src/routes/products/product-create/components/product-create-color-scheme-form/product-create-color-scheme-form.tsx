@@ -1,7 +1,7 @@
 import { FormProvider, UseFormReturn, useFieldArray, useFormContext, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Heading, Text, Button, Container, Badge } from '@medusajs/ui';
-import { Swatch, Trash } from '@medusajs/icons';
+import { Heading, Text, Button, Container, Badge, DropdownMenu } from '@medusajs/ui';
+import { Swatch, Trash, EllipsisHorizontal, SquareTwoStack } from '@medusajs/icons';
 import { useColorsByFamily, useColorTaxonomy, Color, ColorTaxonomyResponse } from '../../../../../hooks/api/colors';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { ColorSelector } from '../../../../../components/color-selector';
@@ -84,7 +84,7 @@ export const ProductCreateColorSchemeForm = ({
       // Create initial color map preserving existing assignments
       const initialColorMap: Record<string, string[]> = {};
       
-      currentVariantIds.forEach((variantId) => {
+      currentVariantIds.forEach((variantId: string) => {
         // Preserve existing colors or initialize with empty array
         initialColorMap[variantId] = existingColorAssignments[variantId] || [];
       });
@@ -150,6 +150,64 @@ export const ProductCreateColorSchemeForm = ({
       return newColors;
     });
   }, [setValue]);
+
+  // Copy colors from previous variant that has colors assigned
+  const handleCopyFromPrevious = useCallback((targetVariantId: string) => {
+    const currentVariantIds = watchedVariants.map((variant: any, index: number) => 
+      generateVariantId(variant, index)
+    );
+    
+    const targetIndex = currentVariantIds.indexOf(targetVariantId);
+    
+    // Find the previous variant that has colors assigned
+    let sourceVariantId: string | null = null;
+    for (let i = targetIndex - 1; i >= 0; i--) {
+      const variantId = currentVariantIds[i];
+      if (variantColors[variantId] && variantColors[variantId].length > 0) {
+        sourceVariantId = variantId;
+        break;
+      }
+    }
+    
+    if (sourceVariantId) {
+      const colorsToCopu = [...variantColors[sourceVariantId]];
+      
+      setVariantColors(prev => {
+        const newColors = {
+          ...prev,
+          [targetVariantId]: colorsToCopu
+        };
+        
+        // Update form values for submission
+        setValue('color_assignments', newColors);
+        setValue('metadata.raw_color_assignments', newColors);
+        setValue('metadata.handle_colors_via_api', true);
+        
+        return newColors;
+      });
+    }
+  }, [watchedVariants, generateVariantId, variantColors, setValue]);
+
+  // Copy colors from any variant that has colors assigned
+  const handleCopyFromVariant = useCallback((targetVariantId: string, sourceVariantId: string) => {
+    if (variantColors[sourceVariantId] && variantColors[sourceVariantId].length > 0) {
+      const colorsToCopu = [...variantColors[sourceVariantId]];
+      
+      setVariantColors(prev => {
+        const newColors = {
+          ...prev,
+          [targetVariantId]: colorsToCopu
+        };
+        
+        // Update form values for submission
+        setValue('color_assignments', newColors);
+        setValue('metadata.raw_color_assignments', newColors);
+        setValue('metadata.handle_colors_via_api', true);
+        
+        return newColors;
+      });
+    }
+  }, [variantColors, setValue]);
   
   // Show loading state while fetching color data
   if (isLoadingTaxonomy) {
@@ -194,6 +252,22 @@ export const ProductCreateColorSchemeForm = ({
             const variantColorIds = variantColors[variantId] || [];
             const hasAssignedColors = variantColorIds.length > 0;
             
+            // Get available variants to copy from (variants that have colors assigned)
+            const currentVariantIds = watchedVariants.map((v: any, i: number) => 
+              generateVariantId(v, i)
+            );
+            
+            const availableSourceVariants = currentVariantIds
+              .map((id: string, i: number) => ({ id, index: i, variant: watchedVariants[i] }))
+              .filter(({ id, index: i }: { id: string; index: number }) => 
+                id !== variantId && 
+                variantColors[id] && 
+                variantColors[id].length > 0
+              );
+            
+            // Check if there's a previous variant with colors
+            const hasPreviousWithColors = index > 0 && availableSourceVariants.some(({ index: i }: { index: number }) => i < index);
+            
             return (
               <div key={variantId} className="p-4">
                 <div className="space-y-4">
@@ -203,6 +277,49 @@ export const ProductCreateColorSchemeForm = ({
                         ? t('products.create.color_scheme.default_variant') 
                         : t('products.create.color_scheme.variant_name', { name: variantTitle })}
                     </Text>
+                    
+                    {/* Copy colors dropdown - only show if there are variants to copy from */}
+                    {availableSourceVariants.length > 0 && (
+                      <DropdownMenu>
+                        <DropdownMenu.Trigger asChild>
+                          <Button variant="secondary" size="small">
+                            <SquareTwoStack className="h-4 w-4" />
+                            Kopiuj kolory
+                          </Button>
+                        </DropdownMenu.Trigger>
+                        <DropdownMenu.Content align="end">
+                          {hasPreviousWithColors && (
+                            <DropdownMenu.Item
+                              onClick={() => handleCopyFromPrevious(variantId)}
+                            >
+                              <SquareTwoStack className="h-4 w-4" />
+                              Kopiuj z poprzedniego wariantu
+                            </DropdownMenu.Item>
+                          )}
+                          
+                          {availableSourceVariants.length > 0 && hasPreviousWithColors && (
+                            <DropdownMenu.Separator />
+                          )}
+                          
+                          {availableSourceVariants.map(({ id: sourceId, variant: sourceVariant, index: sourceIndex }: { id: string; variant: any; index: number }) => {
+                            const sourceTitle = sourceVariant.title || 
+                              (Array.isArray(sourceVariant.options) && sourceVariant.options.length ? 
+                                sourceVariant.options.map((o: any) => o.value).join(' / ') : 
+                                `Wariant ${sourceIndex + 1}`);
+                            
+                            return (
+                              <DropdownMenu.Item
+                                key={sourceId}
+                                onClick={() => handleCopyFromVariant(variantId, sourceId)}
+                              >
+                                <SquareTwoStack className="h-4 w-4" />
+                                Kopiuj z: {sourceTitle}
+                              </DropdownMenu.Item>
+                            );
+                          })}
+                        </DropdownMenu.Content>
+                      </DropdownMenu>
+                    )}
                   </div>
                   
                   {/* Color selection section */}

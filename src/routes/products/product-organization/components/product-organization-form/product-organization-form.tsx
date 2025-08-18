@@ -1,7 +1,9 @@
-import { HttpTypes } from '@medusajs/types';
-import { Button, toast } from '@medusajs/ui';
-import { useTranslation } from 'react-i18next';
-import * as zod from 'zod';
+import { HttpTypes } from "@medusajs/types"
+import { Button, Input } from "@medusajs/ui"
+import { useTranslation } from "react-i18next"
+import * as zod from "zod"
+import React from "react"
+import { toast } from "sonner"
 
 import { Form } from '../../../../../components/common/form';
 import { Combobox } from '../../../../../components/inputs/combobox';
@@ -96,6 +98,23 @@ export const ProductOrganizationForm = ({
     configs: configs,
     data: product,
   });
+
+  // Reset form when product data changes to ensure categories are loaded
+  React.useEffect(() => {
+    console.log('Product data changed, updating form:', {
+      categories: product?.categories,
+      tags: product?.tags,
+      type_id: product?.type_id,
+      collection_id: product?.collection_id
+    });
+    
+    form.reset({
+      type_id: product.type_id ?? '',
+      collection_id: product.collection_id ?? '',
+      category_ids: product.categories?.map((c) => c.id) || [],
+      tag_ids: product.tags?.map((t) => t.id) || [],
+    });
+  }, [product, form]);
 
   const { mutateAsync, isPending } = useUpdateProduct();
 
