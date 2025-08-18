@@ -114,14 +114,12 @@ export const useVendorThreads = (type: 'admin' | 'user' = 'admin', page = 1, lim
       const skip = (page - 1) * limit;
       
       try {
-        console.log(`Fetching ${type} messages - Page: ${page}, Limit: ${limit}`);
         
         // Use the appropriate endpoint based on the message type
         const endpoint = type === 'user' 
           ? `/vendor/messages/user` // User/customer messages endpoint
           : `/vendor/messages`;    // Admin messages endpoint
-        
-        console.log(`Using API endpoint: ${endpoint}`);
+
         
         // Make the API request
         const data = await fetchQuery(endpoint, {
@@ -138,7 +136,6 @@ export const useVendorThreads = (type: 'admin' | 'user' = 'admin', page = 1, lim
         }
         
         const threads = data.threads as MessageThread[];
-        console.log(`Got ${threads.length} threads from ${endpoint}`);
         
         // Additional filtering in the frontend to ensure we only have the right message type
         // This is a safety measure in case the API doesn't filter correctly
@@ -156,7 +153,7 @@ export const useVendorThreads = (type: 'admin' | 'user' = 'admin', page = 1, lim
                      thread.metadata?.customer_email;
             })
           
-        console.log(`Filtered to ${filteredThreads.length} ${type} threads after client-side validation`);
+        
         
         // Process threads to ensure customer information is accessible
         const processedThreads = filteredThreads.map(thread => ({
@@ -165,16 +162,7 @@ export const useVendorThreads = (type: 'admin' | 'user' = 'admin', page = 1, lim
           customer_email: thread.metadata?.customer_email || ''
         }));
         
-        // Log customer information for debugging
-        if (type === 'user' && processedThreads.length > 0) {
-          processedThreads.forEach(thread => {
-            if (thread.customer_email) {
-              console.log(`Thread ${thread.id}: Customer email found: ${thread.customer_email}`);
-            } else if (thread.customer_id) {
-              console.log(`Thread ${thread.id}: Only customer ID available: ${thread.customer_id}`);
-            }
-          });
-        }
+        
         
         return { 
           threads: processedThreads,
@@ -196,14 +184,14 @@ export const useVendorThread = (threadId: string) => {
     queryKey: ['vendor', 'messages', 'thread', threadId],
     queryFn: async () => {
       try {
-        console.log(`Fetching thread details for ID: ${threadId}`);
+        
         
         // Use fetchQuery which handles auth token automatically
         const data = await fetchQuery(`/vendor/messages/${threadId}`, {
           method: 'GET'
         });
         
-        console.log(`Received thread data:`, data);
+        
         
         return data.thread as MessageThread;
       } catch (error) {
@@ -252,7 +240,6 @@ export const useSendVendorMessage = () => {
       try {
         // If we're replying to an existing thread
         if (thread_id) {
-          console.log(`Sending reply to thread ${thread_id}`);
           
           const payload = {
             content,
@@ -263,12 +250,7 @@ export const useSendVendorMessage = () => {
             attachment_type
           };
           
-          // Log attachment details for debugging
-          if (attachment_url) {
-            console.log(`Adding attachment to reply: ${attachment_url}`);
-          }
-          
-          console.log(`Reply payload:`, payload);
+    
           
           // Use fetchQuery which handles auth token automatically
           // Make sure to use the correct endpoint with /reply suffix
@@ -277,15 +259,13 @@ export const useSendVendorMessage = () => {
             body: payload
           });
           
-          console.log(`Reply success:`, data);
+          
           return data;
         } else {
           // Creating a new thread requires a subject
           if (!subject) {
             throw new Error('Subject is required when creating a new thread');
           }
-          
-          console.log(`Creating new thread`);
           
           const payload = {
             subject,
@@ -301,12 +281,7 @@ export const useSendVendorMessage = () => {
             }
           };
           
-          // Log attachment details for debugging
-          if (attachment_url || initial_message?.attachment_url) {
-            console.log(`Adding attachment to new thread: ${attachment_url || initial_message?.attachment_url}`);
-          }
           
-          console.log(`New thread payload:`, payload);
           
           // Use fetchQuery which handles auth token automatically
           const data = await fetchQuery('/vendor/messages', {
@@ -314,7 +289,7 @@ export const useSendVendorMessage = () => {
             body: payload
           });
           
-          console.log(`New thread success:`, data);
+          
           return data;
         }
       } catch (error) {
@@ -336,14 +311,13 @@ export const useMarkThreadAsRead = () => {
   return useMutation({
     mutationFn: async (threadId: string) => {
       try {
-        console.log(`Marking thread ${threadId} as read`);
         
-        // Use fetchQuery which handles auth token automatically
+        
         const data = await fetchQuery(`/vendor/messages/${threadId}/read`, {
           method: 'POST'
         });
         
-        console.log(`Mark as read success:`, data);
+        
         return data;
       } catch (error) {
         console.error(`Error marking thread as read:`, error);

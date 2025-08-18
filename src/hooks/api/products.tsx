@@ -134,7 +134,7 @@ export const useProductVariant = (
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: async () => {
-      console.log(`Fetching variant data for product ${productId}, variant ${variantId}`);
+    
       // Use fetchQuery with vendor endpoint instead of sdk.admin
       return await fetchQuery(`/vendor/products/${productId}/variants/${variantId}`, {
         method: 'GET',
@@ -163,7 +163,10 @@ export const useProductVariants = (
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: () =>
-      sdk.admin.product.listVariants(productId, query),
+      fetchQuery(`/vendor/products/${productId}/variants`, {
+        method: 'GET',
+        query: query as Record<string, string>,
+      }),
     queryKey: variantsQueryKeys.list({
       productId,
       ...query,
@@ -246,7 +249,6 @@ export const useUpdateProductVariantsBatch = (
       payload: { update: HttpTypes.AdminBatchProductVariantRequest['update'] }
     ) => {
       // The Medusa API expects the payload to be wrapped in an 'update' field
-      console.log('Updating product variants batch:', productId, payload);
       
       return fetchQuery(`/vendor/products/${productId}/variants/batch`, {
         method: 'POST',
@@ -284,10 +286,10 @@ export const useProductVariantsInventoryItemsBatch = (
 ) => {
   return useMutation({
     mutationFn: (payload) =>
-      sdk.admin.product.batchVariantInventoryItems(
-        productId,
-        payload
-      ),
+      fetchQuery(`/vendor/products/${productId}/variants/inventory/batch`, {
+        method: 'POST',
+        body: payload,
+      }),
     onSuccess: (
       data: any,
       variables: any,
@@ -408,22 +410,15 @@ export const useProduct = (
         method: 'GET',
         query: query as { [key: string]: string | number },
       });
-      console.log(`Raw fetchQuery response for ${id}:`, response);
-      console.log(`Response product title:`, response?.product?.title);
       return response;
     },
     queryKey: stableQueryKey,
-    refetchOnWindowFocus: true,
-    staleTime: 30 * 1000,
+    // CRITICAL FIX: Use global cache settings to prevent data loss
+    refetchOnWindowFocus: false, // Prevent refetch on app switch
+    staleTime: 5 * 60 * 1000, // 5 minutes - longer than global to prevent premature invalidation
+    gcTime: 10 * 60 * 1000, // 10 minutes garbage collection
     ...options,
   });
-
-  console.log(`Final data object for ID: ${id}:`, data);
-  console.log(`Product data fetched for ID: ${id}`, data?.product?.title);
-  console.log(`Product categories:`, data?.product?.categories);
-  console.log(`Product tags:`, data?.product?.tags);
-  console.log(`Product type_id:`, data?.product?.type_id);
-  console.log(`Product collection_id:`, data?.product?.collection_id);
 
   return { ...rest, ...data };
 };
@@ -443,7 +438,6 @@ export const useProducts = (
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: async () => {
-      console.log('Products query params:', query);
       
       // Use only simple supported parameters
       const formattedQuery = { 
@@ -468,12 +462,12 @@ export const useProducts = (
         query: queryParams,
       });
       
-      console.log(`Received ${result?.products?.length || 0} products from API`);
+      
       
       // Make sure we have products with variants properly initialized
       if (result?.products && Array.isArray(result.products)) {
         for (const product of result.products) {
-          console.log(`Processing product ${product.id}: ${product.title}`);
+          
           
           // Ensure the variants array exists
           if (!product.variants) {
@@ -482,7 +476,7 @@ export const useProducts = (
           
           // If product has no variants, try to fetch them individually (if we have a product id)
           if (product.id && product.variants.length === 0) {
-            console.log(`Product ${product.id} has no variants in initial load, fetching directly`);
+            
             
             try {
               // Use individual product fetch to get details
@@ -492,13 +486,13 @@ export const useProducts = (
               
               if (productData?.product?.variants) {
                 product.variants = productData.product.variants;
-                console.log(`Fetched ${product.variants.length} variants for product ${product.id}`);
+                
               }
             } catch (err) {
               console.error(`Failed to fetch variants for product ${product.id}:`, err);
             }
           } else {
-            console.log(`Product ${product.id} already has ${product.variants.length} variants`);
+            
           }
           
           // Ensure each variant has a prices array
@@ -508,9 +502,7 @@ export const useProducts = (
             }
           });
           
-          // Note: We no longer fetch price list prices here
-          // Price list prices are now handled in the component that needs them
-          // This avoids issues with unsupported parameters in the vendor API
+          
         }
       }
       
@@ -552,12 +544,11 @@ export const useCreateProduct = (
     mutationFn: (payload) => {
       // Ensure product has at least one option
       const processedPayload = { ...payload };
-      console.log('Original payload:', JSON.stringify(processedPayload));
-      
+  
       // Extract shipping_profile_id to add to metadata since it's not directly supported by the API
       const shippingProfileId = processedPayload.shipping_profile_id;
       if (shippingProfileId) {
-        console.log('Extracting shipping_profile_id:', shippingProfileId);
+        
         // Store shipping_profile_id in metadata for later processing by a backend hook
         if (!processedPayload.metadata) {
           processedPayload.metadata = {};
@@ -569,7 +560,7 @@ export const useCreateProduct = (
       
       // Process variant prices to ensure they're properly formatted
       if (processedPayload.variants && Array.isArray(processedPayload.variants)) {
-        console.log('Processing variant prices');
+        
         processedPayload.variants = processedPayload.variants.map((variant: any) => {
           // Make a copy of the variant to avoid modifying the original
           const processedVariant = { ...variant };
@@ -581,7 +572,7 @@ export const useCreateProduct = (
             if (typeof processedVariant.inventory_quantity === 'string') {
               processedVariant.inventory_quantity = parseInt(processedVariant.inventory_quantity, 10) || 0;
             }
-            console.log(`Processing inventory quantity for variant: ${processedVariant.title || 'untitled'}, quantity: ${processedVariant.inventory_quantity}`);
+            
             
             // Store inventory_quantity in metadata for backend processing
             if (!processedVariant.metadata) {
@@ -597,13 +588,12 @@ export const useCreateProduct = (
               processedVariant.metadata = {};
             }
             processedVariant.metadata.inventory_quantity = 0;
-            console.log(`Setting default inventory quantity (0) for variant: ${processedVariant.title || 'untitled'}`);
+            
           }
           
           // Check if prices exist and process them
           if (processedVariant.prices) {
-            console.log(`Processing prices for variant:`, processedVariant.title || 'untitled');
-            console.log('Original prices:', processedVariant.prices);
+            
             
             // Convert prices to array format expected by the API
             if (Array.isArray(processedVariant.prices)) {
@@ -632,7 +622,7 @@ export const useCreateProduct = (
                   
                   
                   if (!isNaN(numericAmount) && numericAmount > 0) {
-                    console.log(`Processing price: ${value} -> ${numericAmount}`);
+                    
                     priceArray.push({
                       amount: numericAmount,
                       currency_code: key === 'default' ? 'pln' : key.toLowerCase()
@@ -643,13 +633,13 @@ export const useCreateProduct = (
               
               // Use the processed array
               processedVariant.prices = priceArray;
-              console.log('Processed prices array:', processedVariant.prices);
+              
             }
             
             // Ensure at least one price exists
             if (!processedVariant.prices || 
                 (Array.isArray(processedVariant.prices) && processedVariant.prices.length === 0)) {
-              console.log('Adding default PLN price');
+              
               processedVariant.prices = [{
                 amount: 1000, 
                 currency_code: 'pln'
@@ -657,7 +647,7 @@ export const useCreateProduct = (
             }
           } else {
             // If no prices defined, add a default PLN price
-            console.log('No prices found, adding default PLN price');
+            
             processedVariant.prices = [{
               amount: 1000, 
               currency_code: 'pln'
@@ -670,7 +660,7 @@ export const useCreateProduct = (
       
       // If options is missing or empty, add a default option
       if (!processedPayload.options || !processedPayload.options.length) {
-        console.log('Adding default product option');
+        
         processedPayload.options = [{
           title: "Default Option",
           values: ["Default Value"]
@@ -679,18 +669,18 @@ export const useCreateProduct = (
       
       // Handle collection_id - important to keep as string even if empty
       if (processedPayload.collection_id === null) {
-        console.log('Converting null collection_id to empty string');
+        
         processedPayload.collection_id = ""; // Keep as empty string instead of undefined
       } else {
-        console.log('Collection ID:', processedPayload.collection_id);
+        
       }
       
       // Handle type_id
       if (processedPayload.type_id === null || processedPayload.type_id === "") {
-        console.log('Converting empty type_id to undefined');
+        
         processedPayload.type_id = undefined;
       } else if (processedPayload.type_id) {
-        console.log('Type ID found:', processedPayload.type_id);
+        
       }
       
       // Format categories
@@ -702,7 +692,7 @@ export const useCreateProduct = (
         
         // Only process non-empty arrays
         if (processedPayload.categories.length > 0) {
-          console.log('Processing categories:', processedPayload.categories);
+          
           processedPayload.categories = processedPayload.categories
             .filter((cat: any) => cat) // Remove null/undefined/empty values
             .map((cat: any) => {
@@ -711,7 +701,7 @@ export const useCreateProduct = (
               // Otherwise convert to { id: string }
               return { id: String(cat) };
             });
-          console.log('Processed categories:', processedPayload.categories);
+          
         }
       } else {
         // Set categories to empty array if undefined
@@ -727,7 +717,7 @@ export const useCreateProduct = (
         
         // Only process non-empty arrays
         if (processedPayload.tags.length > 0) {
-          console.log('Processing tags:', processedPayload.tags);
+          
           processedPayload.tags = processedPayload.tags
             .filter((tag: any) => tag) // Remove null/undefined/empty values
             .map((tag: any) => {
@@ -736,14 +726,13 @@ export const useCreateProduct = (
               // Otherwise convert to { id: string }
               return { id: String(tag) };
             });
-          console.log('Processed tags:', processedPayload.tags);
+          
         }
       } else {
         // Set tags to empty array if undefined
         processedPayload.tags = [];
       }
       
-      console.log('Final processed payload:', JSON.stringify(processedPayload));
       return fetchQuery('/vendor/products', {
         method: 'POST',
         body: processedPayload,
@@ -754,7 +743,7 @@ export const useCreateProduct = (
       const shippingProfileId = variables.shipping_profile_id;
       if (shippingProfileId && data.product?.id) {
         try {
-          console.log(`Associating product ${data.product.id} with shipping profile ${shippingProfileId}`);
+          
           // Make direct API call to associate shipping profile
           await fetchQuery(`/vendor/products/${data.product.id}/shipping-profile`, {
             method: 'POST',
@@ -762,7 +751,7 @@ export const useCreateProduct = (
               shipping_profile_id: shippingProfileId
             },
           });
-          console.log('Successfully associated product with shipping profile');
+     
         } catch (error) {
           console.error('Failed to associate product with shipping profile:', error);
           // Continue even if shipping profile association fails
@@ -773,9 +762,10 @@ export const useCreateProduct = (
         queryKey: productsQueryKeys.lists(),
       });
       // if `manage_inventory` is true on created variants that will create inventory items automatically
-      queryClient.invalidateQueries({
-        queryKey: inventoryItemsQueryKeys.lists(),
-      });
+      // Commented out to prevent excessive cache invalidation
+      // queryClient.invalidateQueries({
+      //   queryKey: inventoryItemsQueryKeys.lists(),
+      // });
       options?.onSuccess?.(data, variables, context);
     },
     ...options,
@@ -797,19 +787,19 @@ export const useUpdateProduct = (
         throw new Error("Product ID is required for update");
       }
       
-      console.log(`Updating product ${id} with data:`, JSON.stringify(updateData, null, 2));
+      
       
       try {
         // Send the complete payload at once instead of splitting into multiple requests
         // This ensures all fields including title are updated in a single request
-        console.log('Sending complete payload for product update');
+        
         
         // Clean up the payload to ensure it's properly formatted for vendor API
         const cleanPayload = { ...updateData };
         
         // IMPORTANT: Remove status field - vendor API doesn't accept it
         if ('status' in cleanPayload) {
-          console.log('Removing status field from payload as it is rejected by vendor API');
+          
           delete cleanPayload.status;
         }
         
@@ -824,7 +814,7 @@ export const useUpdateProduct = (
             cleanPayload.description.trim() : cleanPayload.description;
         }
         
-        console.log('Clean payload for update:', cleanPayload);
+        
         
         // Make a single request with all fields
         const response = await fetchQuery(`/vendor/products/${id}`, {
@@ -832,7 +822,7 @@ export const useUpdateProduct = (
           body: cleanPayload,
         });
         
-        console.log('Product update response:', response);
+       
         return response;
       } catch (error: any) {
         console.error('Product update failed:', error);
@@ -841,7 +831,7 @@ export const useUpdateProduct = (
         let detailedError = error?.message || 'Unknown error';
         
         if (error.response && error.data) {
-          console.log('Error response data:', error.data);
+      
           detailedError = JSON.stringify(error.data);
         }
         
@@ -888,7 +878,11 @@ export const useExportProducts = (
 ) => {
   return useMutation({
     mutationFn: (payload) =>
-      sdk.admin.product.export(payload, query),
+      fetchQuery('/vendor/products/export', {
+        method: 'POST',
+        body: payload,
+        query: query as Record<string, string>,
+      }),
     onSuccess: (data, variables, context) => {
       options?.onSuccess?.(data, variables, context);
     },
@@ -905,7 +899,10 @@ export const useImportProducts = (
 ) => {
   return useMutation({
     mutationFn: (payload) =>
-      sdk.admin.product.import(payload),
+      fetchQuery('/vendor/products/import', {
+        method: 'POST',
+        body: payload,
+      }),
     onSuccess: (data, variables, context) => {
       options?.onSuccess?.(data, variables, context);
     },
@@ -918,7 +915,9 @@ export const useConfirmImportProducts = (
 ) => {
   return useMutation({
     mutationFn: (payload) =>
-      sdk.admin.product.confirmImport(payload),
+      fetchQuery(`/vendor/products/import/${payload}/confirm`, {
+        method: 'POST',
+      }),
     onSuccess: (data, variables, context) => {
       options?.onSuccess?.(data, variables, context);
     },
@@ -934,12 +933,12 @@ export { useAddColorOption };
  * @returns Query result containing product attributes
  */
 export const useProductAttributes = (id: string) => {
-  console.log(`[DEBUG] useProductAttributes called with id: ${id}`);
+  
 
   // Fetch product data directly using fetchQuery to have more control over error handling
   const { data: productData, isLoading: isProductLoading, error: productError } = useQuery({
     queryFn: async () => {
-      console.log(`[DEBUG] Directly fetching product ${id}`);
+      
       try {
         // Fetch product attributes directly from our custom endpoint with complete attribute data
         let attributeValues = [];
@@ -947,14 +946,14 @@ export const useProductAttributes = (id: string) => {
           const attributeResponse = await fetchQuery(`/vendor/products/${id}/attributes`, {
             method: "GET"
           });
-          console.log('[DEBUG] Custom attributes endpoint response:', attributeResponse);
+          
           
           // Get properly formatted attribute values with full attribute data
           if (attributeResponse && Array.isArray(attributeResponse.attribute_values)) {
             attributeValues = attributeResponse.attribute_values;
           }
         } catch (attributeError) {
-          console.log('[DEBUG] Custom attributes endpoint failed:', attributeError);
+          
           // We'll fall back to regular product data if this fails
         }
         
@@ -963,7 +962,7 @@ export const useProductAttributes = (id: string) => {
           method: "GET",
           query: { fields: "id,title,description,handle,thumbnail" } 
         });
-        console.log(`[DEBUG] Product data received:`, response);
+        
         
         // Ensure we always have a consistent structure even if the backend is missing data
         return {
@@ -985,7 +984,7 @@ export const useProductAttributes = (id: string) => {
   // Fetch available attributes, but handle backend errors gracefully
   const { data: attributesData, isLoading: isAttributesLoading, error: attributesError } = useQuery({
     queryFn: async () => {
-      console.log(`[DEBUG] Fetching attributes from /vendor/attributes`);
+      
       try {
         // Add fields parameter to prevent backend error (TypeError: Cannot read properties of undefined (reading 'fields'))
         const attributesResponse = await fetchQuery('/vendor/attributes', {
@@ -995,7 +994,7 @@ export const useProductAttributes = (id: string) => {
             limit: 100
           }
         });
-        console.log(`[DEBUG] Attributes response:`, attributesResponse);
+        
         
         // Check if the response has the expected structure
         if (attributesResponse && Array.isArray(attributesResponse.attributes)) {
@@ -1021,8 +1020,7 @@ export const useProductAttributes = (id: string) => {
               possible_values = [];
             }
             
-            // Debug the values for this attribute
-            console.log(`[DEBUG] Attribute ${attr.name} (${attr.id}) possible values:`, possible_values);
+            
             
             return {
               ...attr,
@@ -1032,12 +1030,12 @@ export const useProductAttributes = (id: string) => {
           
           return processedAttributes;
         } else {
-          console.log('[DEBUG] Backend returned invalid attributes structure');
-          return []; // Return empty array if structure is wrong
+          
+          return []; 
         }
       } catch (attrError) {
-        console.error("[DEBUG] Error fetching attributes:", attrError);
-        // Return empty array instead of mock data
+        
+        
         return [];
       }
     },
@@ -1048,9 +1046,7 @@ export const useProductAttributes = (id: string) => {
   const isLoading = isProductLoading || isAttributesLoading;
   const error = productError || attributesError;
   
-  console.log(`[DEBUG] Final product data:`, productData);
-  console.log(`[DEBUG] Available attributes:`, attributesData || []);
-  console.log(`[DEBUG] Product attribute values:`, productData?.attribute_values || []);
+  
   
   return { 
     // Return empty arrays instead of mock data if the backend calls fail
@@ -1074,7 +1070,7 @@ export const useUpdateProductAttributes = (
 ) => {
   return useMutation({
     mutationFn: async (payload: { attribute_values: Array<{ attribute_id: string, value: string }> }) => {
-      console.log(`[DEBUG] Updating product attributes for product ID: ${productId}`, payload);
+      
       
       if (!productId) {
         console.error('Product ID is undefined in useUpdateProductAttributes');
@@ -1088,7 +1084,7 @@ export const useUpdateProductAttributes = (
         value: av.value
       }));
       
-      console.log(`[DEBUG] Sending attribute values to product attributes endpoint:`, attributeValues);
+      
       
       // Send the attribute values to the dedicated attributes endpoint
       // We've now created a proper backend route for this in:
@@ -1103,17 +1099,19 @@ export const useUpdateProductAttributes = (
       return response;
     },
     onSuccess: (data, variables, context) => {
-      console.log(`[DEBUG] Successfully updated product attributes for product ID: ${productId}`);
       
-      // Invalidate product attributes queries to refresh data
+    
+      // Only invalidate specific queries to prevent form data loss
       queryClient.invalidateQueries({
-        queryKey: ["product-attributes-direct", productId],
+        queryKey: variantsQueryKeys.lists(),
       });
-      
-      // Invalidate general product query
       queryClient.invalidateQueries({
-        queryKey: productsQueryKeys.detail(productId),
+        queryKey: variantsQueryKeys.details(),
       });
+      // Don't invalidate product detail to prevent form data loss
+      // queryClient.invalidateQueries({
+      //   queryKey: productsQueryKeys.detail(productId),
+      // });
       
       options?.onSuccess?.(data, variables, context);
     },
@@ -1142,14 +1140,14 @@ export const useDeleteProduct = (
         throw new Error('Cannot delete product: Product ID is undefined');
       }
       
-      console.log(`Deleting product with ID: ${id}`);
+      
       const response = await fetchQuery(`/vendor/products/${id}`, {
         method: 'DELETE',
       });
       return response;
     },
     onSuccess: (data) => {
-      console.log(`Successfully deleted product with ID: ${id}`);
+      
       queryClient.invalidateQueries({
         queryKey: productsQueryKeys.lists(),
       });
