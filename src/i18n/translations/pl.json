@@ -3394,6 +3394,15 @@
     },
    
     "options": {
+      "edit": {
+        "header": "Edytuj Opcję",
+        "successToast": "Opcja {{title}} została pomyślnie zaktualizowana."
+      },
+      "create": {
+        "header": "Utwórz Opcję",
+        "successToast": "Opcja {{title}} została pomyślnie utworzona."
+      },
+      "deleteWarning": "Masz zamiar usunąć opcję: {{title}}. Ta akcja nie może być cofnięta.",
       "header": "Opcje"
     },
     "productStatus": {

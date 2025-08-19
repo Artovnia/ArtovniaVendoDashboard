@@ -11,7 +11,7 @@ export const ProductShippingProfile = () => {
   const { id } = useParams()
   const { t } = useTranslation()
 
-  const { product, isLoading, isError, error } = useProduct(id!, {
+  const { product, isLoading, isFetching, isError, error } = useProduct(id!, {
     fields: PRODUCT_DETAIL_FIELDS,
   })
 
@@ -27,7 +27,11 @@ export const ProductShippingProfile = () => {
         </RouteDrawer.Title>
       </RouteDrawer.Header>
       {!isLoading && product && (
-        <ProductShippingProfileForm product={product as any} />
+        <ProductShippingProfileForm 
+          product={product as any} 
+          isLoading={isLoading}
+          isFetching={isFetching}
+        />
       )}
     </RouteDrawer>
   )

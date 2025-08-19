@@ -13,6 +13,8 @@ import { useUpdateProductOption } from "../../../../../hooks/api/products"
 
 type EditProductOptionFormProps = {
   option: HttpTypes.AdminProductOption
+  isLoading?: boolean
+  isFetching?: boolean
 }
 
 const CreateProductOptionSchema = z.object({
@@ -22,6 +24,8 @@ const CreateProductOptionSchema = z.object({
 
 export const CreateProductOptionForm = ({
   option,
+  isLoading = false,
+  isFetching = false,
 }: EditProductOptionFormProps) => {
   const { t } = useTranslation()
   const { handleSuccess } = useRouteModal()

@@ -18,6 +18,8 @@ type ProductShippingProfileFormProps = {
   product: HttpTypes.AdminProduct & {
     shipping_profile?: HttpTypes.AdminShippingProfile
   }
+  isLoading?: boolean
+  isFetching?: boolean
 }
 
 const ProductShippingProfileSchema = z.object({
@@ -26,6 +28,8 @@ const ProductShippingProfileSchema = z.object({
 
 export const ProductShippingProfileForm = ({
   product,
+  isLoading = false,
+  isFetching = false,
 }: ProductShippingProfileFormProps) => {
   const { t } = useTranslation()
   const { handleSuccess } = useRouteModal()
@@ -109,19 +113,23 @@ export const ProductShippingProfileForm = ({
 
   // Reset form when product data changes
   useEffect(() => {
-    if (!product) return;
+    // CRITICAL FIX: Only reset form when product data is stable (not loading/fetching)
+    if (!product || isLoading || isFetching) return;
     
     console.log('Product data in shipping profile form:', product);
     console.log('Product metadata shipping_profile_id:', product.metadata?.shipping_profile_id);
     console.log('Product shipping_profile:', product.shipping_profile);
     
-    // Use metadata shipping_profile_id as primary source since that's where it's stored
     const profileId = product.metadata?.shipping_profile_id || "";
+    const currentFormValue = form.getValues('shipping_profile_id');
     
-    form.reset({
-      shipping_profile_id: profileId as string
-    });
-  }, [form, product, product.metadata?.shipping_profile_id])
+    // Only reset if the value actually changed to prevent unnecessary resets
+    if (currentFormValue !== profileId) {
+      form.reset({
+        shipping_profile_id: profileId as string
+      });
+    }
+  }, [form, product, product?.metadata?.shipping_profile_id, isLoading, isFetching]);
 
   return (
     <RouteDrawer.Form form={form}>
