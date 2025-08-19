@@ -18,8 +18,12 @@ export const Dashboard = () => {
     orders?.filter((order) => order.fulfillment_status === "not_fulfilled")
       .length || 0
   const fulfilledOrders =
-    orders?.filter((order) => order.fulfillment_status === "fulfilled")
-      .length || 0
+    orders?.filter((order) => 
+      order.fulfillment_status === "fulfilled" ||
+      order.fulfillment_status === "shipped" ||
+      order.fulfillment_status === "partially_shipped" ||
+      order.fulfillment_status === "partially_fulfilled"
+    ).length || 0
   const reviewsToReply =
     reviews?.filter((review: any) => !review.seller_note).length || 0
 

@@ -11,11 +11,9 @@ export const Component = () => {
     <RouteDrawer prev={`/products/${product_id}`}>
       <RouteDrawer.Header>
         <RouteDrawer.Title>
-          {t('products.variant.colors.title', 'Edycja kolorów wariantu')}
+          {t('products.variant.colorSection.title')}
         </RouteDrawer.Title>
-        <RouteDrawer.Description>
-          {t('products.variant.colors.description', 'Wybierz kolory dla tego wariantu')}
-        </RouteDrawer.Description>
+       
       </RouteDrawer.Header>
       <RouteDrawer.Body>
         <VariantColorsEditForm />
@@ -26,5 +24,5 @@ export const Component = () => {
 
 export const Breadcrumb = () => {
   const { t } = useTranslation()
-  return <>{t('products.variant.colors.breadcrumb', 'Edit Colors')}</>
+  return <>{t('products.variant.colorSection.breadcrumb')}</>
 }

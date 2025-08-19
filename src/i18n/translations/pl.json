@@ -499,12 +499,16 @@
       "header": "Warianty",
       "empty": {
         "heading": "Brak wariantów",
-        "description": "Nie ma wariantów do wyświetlenia."
+        "description": "Nie masz jeszcze żadnych wariantów. Dodaj pierwszy wariant, aby rozpocząć."
       },
       "filtered": {
         "heading": "Brak wariantów",
         "description": "Nie ma wariantów, które pasują do aktualnych kryteriów filtrów."
-      }
+      },
+      "variantColumn": "Wariant",
+      "priceColumn": "Cena",
+      "stockColumn": "Stan",
+      "actionsColumn": "Akcje"
     },
     
     "gpsr": {
@@ -658,6 +662,9 @@
       },
       "hs_code": {
         "label": "Kod HS"
+      },
+      "shipping_profile": {
+        "label": "Profil wysyłki"
       }
     },
     "variant": {
@@ -670,9 +677,47 @@
       },
       "deleteWarning": "Czy na pewno chcesz usunąć ten wariant?",
       "pricesPagination": "1 - {{current}} z {{total}} cen",
-      "tableItemAvailable": "{{availableCount}} dostępnych",
-      "tableItem_one": "{{availableCount}} dostępny w {{locationCount}} lokalizacji",
-      "tableItem_other": "{{availableCount}} dostępnych w {{locationCount}} lokalizacjach",
+      "tableItemAvailable": "{{availableCount}} dostępne",
+      "tableItem_one": "{{availableCount}} dostępne w {{locationCount}} lokalizacji",
+      "tableItem_other": "{{availableCount}} dostępne w {{locationCount}} lokalizacjach",
+      "goToInventory": "Przejdź do magazynu",
+      "colors": {
+        "successToast": "Kolory wariantu zostały pomyślnie zaktualizowane",
+        "errorToast": "Nie udało się zaktualizować kolorów wariantu",
+        "noColorsSelected": "Nie wybrano kolorów",
+        "helpText": "Wybierz kolory dla tego wariantu",
+        "unknownColor": "Nieznany kolor"
+      },
+      "colorSection": {
+        "title": "Schemat kolorów wariantu",
+        "editColors": "Edytuj kolory",
+        "removeAllColors": "Usuń wszystkie kolory",
+        "loading": "Ładowanie...",
+        "colors": "Kolory",
+        "noColors": "Brak przypisanych kolorów dla tego wariantu.",
+        "removeColors": {
+          "title": "Usuń kolory",
+          "description": "Czy na pewno chcesz usunąć wszystkie kolory z wariantu {{variantTitle}}?",
+          "confirm": "Usuń",
+          "cancel": "Anuluj"
+        }
+      },
+      "colorsEditForm": {
+        "loading": "Ładowanie kolorów wariantu...",
+        "error": "Błąd podczas ładowania kolorów wariantu: {{message}}",
+        "copyFromVariant": "Kopiuj kolory z innego wariantu",
+        "copyColors": "Kopiuj kolory",
+        "copyFrom": "Kopiuj z: {{variantTitle}}",
+        "currentColors": "Aktualne kolory",
+        "noCurrentColors": "Do tego wariantu nie przypisano żadnych kolorów.",
+        "addColors": "Dodaj kolory",
+        "searchPlaceholder": "Wyszukaj i wybierz kolory...",
+        "searchLabel": "Wyszukaj kolory",
+        "selectedColors": "Wybrane kolory ({{count}})",
+        "removeColor": "Usuń kolor",
+        "copySuccess": "Kolory zostały skopiowane z innego wariantu",
+        "copyError": "Błąd podczas kopiowania kolorów"
+      },
       "inventory": {
         "notManaged": "Nie zarządzane",
         "manageItems": "Zarządzaj elementami magazynowymi",
@@ -733,6 +778,43 @@
         "error": {
           "header": "Nie udało się usunąć produktu"
         }
+      }
+    },
+    "shippingProfile": {
+      "header": "Profil wysyłki",
+      "edit": {
+        "header": "Konfiguracja wysyłki"
+      }
+    },
+    "colors": {
+      "header": "Kolory",
+      "loading": "Ładowanie kolorów...",
+      "noColors": "Brak kolorów przypisanych do tego produktu"
+    },
+    "additionalAttributes": {
+      "title": "Dodatkowe atrybuty",
+      "loading": "Ładowanie atrybutów...",
+      "description": "Atrybuty produktów pozwalają na określenie dodatkowych cech, które są unikalne dla produktów.",
+      "save": "Zapisz",
+      "saving": "Zapisywanie...",
+      "back": "Powrót",
+      "success": "Atrybuty produktu zostały pomyślnie zaktualizowane",
+      "errorUpdate": "Nie udało się zaktualizować atrybutów produktu. Spróbuj ponownie.",
+      "error": {
+        "title": "Wystąpił błąd podczas ładowania atrybutów",
+        "description": "Backend API zwrócił błąd. Spróbuj ponownie później lub skontaktuj się z wsparciem."
+      },
+      "noAttributes": {
+        "title": "Brak dostępnych atrybutów",
+        "description": "Obecnie nie są konfigurowane żadne dodatkowe atrybuty dla tej kategorii produktów. Backend API może doświadczać problemów."
+      },
+      "selectOption": "Wybierz opcję",
+      "enterValue": "Wpisz wartość",
+      "section": {
+        "heading": "Dodatkowe atrybuty",
+        "edit": "Edytuj",
+        "noAttributesAssigned": "Brak dodatkowych atrybutów przypisanych. Kliknij Edytuj, aby dodać atrybuty.",
+        "attributeFallback": "Atrybut {{index}}"
       }
     }
   },
@@ -1971,8 +2053,20 @@
           "description": "Kontynuuj bez kojarzenia promocji z kampanią"
         }
       },
-      "status": {
-        "title": "Status"
+     "status": {
+        "label": "Status",
+        "draft": {
+          "title": "Draft",
+          "description": "Klienci nie będą mogli użyć kodu jeszcze"
+        },
+        "active": {
+          "title": "Active",
+          "description": "Klienci będą mogli użyć kodu"
+        },
+        "inactive": {
+          "title": "Inactive",
+          "description": "Klienci nie będą już mogli użyć kodu"
+        }
       },
       "method": {
         "label": "Metoda",
@@ -2902,6 +2996,10 @@
     "seconds_other": "Towary drugiej jakości"
   },
   "messages": {
+    "title": "Wiadomości",
+    "admin": "Admin",
+    "user": "Klienci",
+        
     "newMessage": "Nowa wiadomość",
     "subject": "Temat",
     "subjectPlaceholder": "Wprowadź temat wiadomości",
@@ -3220,277 +3318,6 @@
     "domain": "Kategorie",
     "description": "Organizuj produkty w kategorie.",
     "requestCategory": "Poproś o kategorię"
-  },
-  "products": {
-    "domain": "Produkty",
-    "attributes": "Atrybuty",
-    "create": {
-      "header": "Utwórz Produkt",
-      "tabs": {
-        "details": "Szczegóły",
-        "detail": "Szczegóły",
-        "organize": "Organizacja",
-        "color_scheme": "Schemat Kolorów",
-        "variants": "Warianty",
-        "inventory": "Inwentarz"
-      },
-      "variants": {
-        "header": "Warianty",
-        "subHeadingTitle": "Opcje Produktu",
-        "subHeadingDescription": "Skonfiguruj warianty i opcje produktu",
-        "productOptions": {
-          "label": "Opcje Produktu"
-        },
-        "productVariants": {
-          "label": "Warianty Produktu",
-          "hint": "Skonfiguruj i zarządzaj wariantami produktu na podstawie opcji powyżej",
-          "alert": "Alert konfiguracji wariantów"
-        }
-      },
-      "color_scheme": {
-        "default_variant": "Domyślny Wariant",
-        "variant_name": "Nazwa Wariantu",
-        "assigned_colors": "Przypisane Kolory",
-        "add_more_colors": "Dodaj Więcej Kolorów",
-        "add_color": "Dodaj Kolor",
-        "select_color": "Wybierz Kolor",
-        "color": "Kolor"
-      },
-      "table": {
-        "organization": "Organizacja",
-        "color": "Kolor"
-      },
-      "errors": {
-        "options": "Błąd konfiguracji opcji",
-        "variants": "Błąd konfiguracji wariantów"
-      }
-    },
-    "fields": {
-      "title": {
-        "label": "Tytuł",
-        "placeholder": "Wprowadź tytuł produktu"
-      },
-      "subtitle": {
-        "label": "Podtytuł",
-        "placeholder": "Wprowadź podtytuł produktu"
-      },
-      "handle": {
-        "label": "Uchwyt",
-        "placeholder": "Wprowadź uchwyt produktu",
-        "tooltip": "Identyfikator przyjazny dla URL produktu"
-      },
-      "description": {
-        "label": "Opis",
-        "placeholder": "Wprowadź opis produktu"
-      },
-      "material": {
-        "label": "Materiał",
-        "placeholder": "Wprowadź materiał"
-      },
-      "discountable": {
-        "label": "Możliwość Rabatu",
-        "hint": "Pozwól na stosowanie rabatów do tego produktu"
-      },
-      "type": {
-        "label": "Typ Produktu"
-      },
-      "collection": {
-        "label": "Kolekcja"
-      },
-      "categories": {
-        "label": "Kategorie"
-      },
-      "tags": {
-        "label": "Tagi"
-      },
-      "shipping_profile": {
-        "label": "Profil Wysyłki",
-        "placeholder": "Wybierz profil wysyłki"
-      },
-      "countryOrigin": {
-        "label": "Kraj Pochodzenia"
-      },
-      "width": {
-        "label": "Szerokość"
-      },
-      "length": {
-        "label": "Długość"
-      },
-      "height": {
-        "label": "Wysokość"
-      },
-      "weight": {
-        "label": "Waga"
-      },
-      "mid_code": {
-        "label": "Kod MID"
-      },
-      "hs_code": {
-        "label": "Kod HS"
-      },
-      "origin": {
-        "label": "Kraj Pochodzenia",
-        "description": "Wybierz kraj, z którego pochodzi ten produkt",
-        "placeholder": "Wybierz kraj"
-      },
-      "safety_warning": {
-        "label": "Ostrzeżenie Bezpieczeństwa",
-        "description": "Ważne informacje o bezpieczeństwie dla tego produktu",
-        "placeholder": "Wprowadź ostrzeżenia bezpieczeństwa"
-      },
-      "compliance_cert": {
-        "label": "Certyfikat Zgodności",
-        "description": "Informacje o zgodności i certyfikacji",
-        "placeholder": "Wprowadź szczegóły zgodności"
-      },
-      "options": {
-        "optionTitlePlaceholder": "Tytuł opcji",
-        "variantionsPlaceholder": "Wartości wariantów"
-      }
-    },
-    "media": {
-      "label": "Media",
-      "header": "Media",
-      "edit": "Edytuj Media",
-      "editHint": "Kliknij na obraz, aby go edytować",
-      "makeThumbnail": "Ustaw jako miniaturę",
-      "uploadImagesLabel": "Prześlij obrazy",
-      "uploadImagesHint": "Przeciągnij i upuść obrazy tutaj lub kliknij, aby przeglądać",
-      "invalidFileType": "Nieprawidłowy typ pliku",
-      "failedToUpload": "Nie udało się przesłać obrazu",
-      "deleteWarning_one": "Czy na pewno chcesz usunąć ten obraz?",
-      "deleteWarning_other": "Czy na pewno chcesz usunąć te obrazy?",
-      "deleteWarningWithThumbnail_one": "Ten obraz jest używany jako miniatura. Czy na pewno chcesz go usunąć?",
-      "deleteWarningWithThumbnail_other": "Jeden z tych obrazów jest używany jako miniatura. Czy na pewno chcesz je usunąć?",
-      "thumbnailTooltip": "Ten obraz jest używany jako miniatura",
-      "galleryLabel": "Galeria",
-      "downloadImageLabel": "Pobierz obraz",
-      "deleteImageLabel": "Usuń obraz",
-      "emptyState": "Nie przesłano jeszcze żadnych obrazów",
-      "successToast": "Obrazy zostały pomyślnie przesłane"
-    },
-    "organization": {
-      "header": "Organizacja",
-      "edit": {
-        "header": "Edytuj Organizację",
-        "toasts": {
-          "success": "Organizacja produktu {{title}} została pomyślnie zaktualizowana"
-        }
-      }
-    },
-    "organization": {
-      "header": "Organizacja",
-      "edit": {
-        "header": "Edytuj Organizację",
-        "toasts": {
-          "success": "Organizacja produktu {{title}} została pomyślnie zaktualizowana"
-        }
-      }
-    },
-    "shippingProfile": {
-      "header": "Profil wysyłki",
-      "label": "Profil wysyłki",
-      "placeholder": "Wybierz profil wysyłki"
-    },
-   
-    "options": {
-      "edit": {
-        "header": "Edytuj Opcję",
-        "successToast": "Opcja {{title}} została pomyślnie zaktualizowana."
-      },
-      "create": {
-        "header": "Utwórz Opcję",
-        "successToast": "Opcja {{title}} została pomyślnie utworzona."
-      },
-      "deleteWarning": "Masz zamiar usunąć opcję: {{title}}. Ta akcja nie może być cofnięta.",
-      "header": "Opcje"
-    },
-    "productStatus": {
-      "draft": "Szkic",
-      "published": "Opublikowany",
-      "proposed": "Proponowany",
-      "rejected": "Odrzucony"
-    },
-    "additionalAttributes": {
-      "title": "Dodatkowe atrybuty",
-      "loading": "Ładowanie atrybutów...",
-      "description": "Atrybuty produktów pozwalają na określenie dodatkowych cech, które są unikalne dla produktów.",
-      "save": "Zapisz",
-      "saving": "Zapisywanie...",
-      "back": "Powrót",
-      "success": "Atrybuty produktu zostały pomyślnie zaktualizowane",
-      "errorUpdate": "Nie udało się zaktualizować atrybutów produktu. Spróbuj ponownie.",
-      "error": {
-        "title": "Wystąpił błąd podczas ładowania atrybutów",
-        "description": "Backend API zwrócił błąd. Spróbuj ponownie później lub skontaktuj się z wsparciem."
-      },
-      "noAttributes": {
-        "title": "Brak dostępnych atrybutów",
-        "description": "Obecnie nie są konfigurowane żadne dodatkowe atrybuty dla tej kategorii produktów. Backend API może doświadczać problemów."
-      },
-      "selectOption": "Wybierz opcję",
-      "enterValue": "Wpisz wartość",
-      "section": {
-        "heading": "Dodatkowe atrybuty",
-        "edit": "Edytuj",
-        "noAttributesAssigned": "Brak dodatkowych atrybutów przypisanych. Kliknij Edytuj, aby dodać atrybuty.",
-        "attributeFallback": "Atrybut {{index}}"
-      }
-    },
-    "gpsr": {
-      "title": "Informacje GPSR",
-      "producer": {
-        "section": "Dane Producenta",
-        "name": {
-          "label": "Nazwa Producenta",
-          "required": "Nazwa producenta jest wymagana"
-        },
-        "address": {
-          "label": "Adres Producenta",
-          "required": "Adres producenta jest wymagany",
-          "placeholder": "np. ul. Producenta 123, 00-001 Warszawa, Polska"
-        },
-        "contact": {
-          "label": "Kontakt do Producenta",
-          "required": "Kontakt do producenta jest wymagany",
-          "placeholder": "np. +48 123 456 789 lub kontakt@example.com"
-        }
-      },
-      "importer": {
-        "section": "Dane Importera",
-        "name": {
-          "label": "Nazwa Importera"
-        },
-        "address": {
-          "label": "Adres Importera",
-          "placeholder": "np. ul. Importowa 456, 00-002 Kraków, Polska"
-        },
-        "contact": {
-          "label": "Kontakt do Importera",
-          "placeholder": "np. +48 987 654 321 lub kontakt@example.com"
-        }
-      },
-      "additional": {
-        "section": "Dodatkowe Informacje"
-      },
-      "instructions": {
-        "label": "Instrukcje/Ostrzeżenia",
-        "required": "Instrukcje/ostrzeżenia są wymagane",
-        "placeholder": "Instrukcje użytkowania, ostrzeżenia, informacje o bezpieczeństwie..."
-      },
-      "certificates": {
-        "label": "Certyfikaty/Zgodność",
-        "placeholder": "Informacje o certyfikatach, zgodności z normami..."
-      },
-      "no_data": "Nie dodano jeszcze informacji GPSR dla tego produktu. Informacje GPSR obejmują dane producenta, importera, instrukcje oraz certyfikaty zgodności.",
-      "success": "Dane GPSR zostały zaktualizowane pomyślnie",
-      "error": "Nie udało się zaktualizować danych GPSR"
-    },
-    "colors": {
-      "header": "Kolory",
-      "loading": "Ładowanie kolorów...",
-      "noColors": "Brak kolorów przypisanych do tego produktu"
-    }
   },
   "dashboard": {
     "actions": "Akcje",

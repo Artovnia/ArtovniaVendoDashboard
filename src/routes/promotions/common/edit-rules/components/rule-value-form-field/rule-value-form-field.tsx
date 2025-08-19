@@ -5,6 +5,7 @@ import { Form } from "../../../../../../components/common/form"
 import { Combobox } from "../../../../../../components/inputs/combobox"
 import { usePromotionRuleValues } from "../../../../../../hooks/api/promotions"
 import { useStore } from "../../../../../../hooks/api/store"
+import { CategoryRuleSelector } from "./category-rule-selector"
 
 type RuleValueFormFieldType = {
   form: any
@@ -45,18 +46,18 @@ export const RuleValueFormField = ({
   ruleType,
 }: RuleValueFormFieldType) => {
   const attribute = attributes?.find(
-    (attr) => attr.value === fieldRule.attribute
+    (attr) => (attr as any).value === fieldRule.attribute
   )
 
   const { store, isLoading: isStoreLoading } = useStore()
   const { values: options = [] } = usePromotionRuleValues(
     ruleType,
-    attribute?.id!,
-    buildFilters(attribute?.id, store),
+    (attribute as any)?.id!,
+    buildFilters((attribute as any)?.id, store as any),
     {
       enabled:
-        !!attribute?.id &&
-        ["select", "multiselect"].includes(attribute.field_type) &&
+        !!(attribute as any)?.id &&
+        ["select", "multiselect"].includes((attribute as any)?.field_type) &&
         !isStoreLoading,
     }
   )
@@ -71,7 +72,23 @@ export const RuleValueFormField = ({
       key={`${identifier}.${scope}.${name}-${fieldRule.attribute}`}
       name={name}
       render={({ field: { onChange, ref, ...field } }) => {
-        if (attribute?.field_type === "number") {
+        // Special handling for category attribute
+        if (fieldRule.attribute === 'category') {
+          return (
+            <Form.Item className="basis-1/2">
+              <Form.Control>
+                <CategoryRuleSelector
+                  value={Array.isArray(field.value) ? field.value : field.value ? [field.value] : []}
+                  onChange={(values) => onChange(values)}
+                  disabled={!fieldRule.attribute}
+                />
+              </Form.Control>
+              <Form.ErrorMessage />
+            </Form.Item>
+          )
+        }
+
+        if ((attribute as any)?.field_type === "number") {
           return (
             <Form.Item className="basis-1/2">
               <Form.Control>
@@ -88,7 +105,7 @@ export const RuleValueFormField = ({
               <Form.ErrorMessage />
             </Form.Item>
           )
-        } else if (attribute?.field_type === "text") {
+        } else if ((attribute as any)?.field_type === "text") {
           return (
             <Form.Item className="basis-1/2">
               <Form.Control>

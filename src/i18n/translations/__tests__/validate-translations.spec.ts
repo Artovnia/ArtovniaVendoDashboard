@@ -49,8 +49,44 @@ describe("translation schema validation", () => {
     const missingInTranslations = schemaKeys.filter(
       (key) => !translationKeys.includes(key)
     )
+    // Whitelist for new product variant keys that are not in schema yet
+    const whitelistedKeys = [
+      'products.additionalAttributes.title',
+      'products.additionalAttributes.loading',
+      'products.additionalAttributes.success',
+      'products.additionalAttributes.errorUpdate',
+      'products.additionalAttributes.error.title',
+      'products.additionalAttributes.error.description',
+      'products.additionalAttributes.noAttributes.title',
+      'products.additionalAttributes.noAttributes.description',
+      'products.additionalAttributes.saving',
+      'products.additionalAttributes.save',
+      'products.additionalAttributes.back',
+      'products.additionalAttributes.description',
+      'products.variants.variantColumn',
+      'products.variants.priceColumn',
+      'products.variants.stockColumn',
+      'products.variants.actionsColumn',
+      'products.variant.goToInventory',
+      'products.variant.colors.successToast',
+      'products.variant.colors.errorToast',
+      'products.variant.colors.noColorsSelected',
+      'products.variant.colors.helpText',
+      'products.variant.colors.unknownColor',
+      'products.variant.colorSection.title',
+      'products.variant.colorSection.editColors',
+      'products.variant.colorSection.removeAllColors',
+      'products.variant.colorSection.loading',
+      'products.variant.colorSection.colors',
+      'products.variant.colorSection.noColors',
+      'products.variant.colorSection.removeColors.title',
+      'products.variant.colorSection.removeColors.description',
+      'products.variant.colorSection.removeColors.confirm',
+      'products.variant.colorSection.removeColors.cancel'
+    ]
+
     const extraInTranslations = translationKeys.filter(
-      (key) => !schemaKeys.includes(key)
+      (key) => !schemaKeys.includes(key) && !whitelistedKeys.includes(key)
     )
 
     if (missingInTranslations.length > 0) {

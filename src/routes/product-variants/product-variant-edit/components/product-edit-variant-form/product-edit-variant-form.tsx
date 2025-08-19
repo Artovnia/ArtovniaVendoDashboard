@@ -139,8 +139,7 @@ export const ProductEditVariantForm = ({
 
       // Step 2: Process variant attributes if they exist
       if (variant_attributes && Object.keys(variant_attributes).length > 0) {
-        console.debug('[DEBUG] Processing variant attributes for submission')
-        
+      
         const attributeValues = Object.entries(variant_attributes)
           .map(([handle, value]) => {
             const attribute = variantAttributesData?.attributes?.find(
@@ -148,7 +147,6 @@ export const ProductEditVariantForm = ({
             )
 
             if (!attribute?.id || !value) {
-              console.log(`[DEBUG] Skipping invalid attribute: ${handle}, value: ${value}`)
               return null
             }
 

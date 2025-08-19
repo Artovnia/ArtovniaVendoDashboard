@@ -99,18 +99,6 @@ export const fetchQuery = async (
     ''
   );
   
-  // Add debugging for reviews endpoint
-  if (url.includes('reviews')) {
-    console.log('🔍 [CLIENT] Making request to reviews endpoint:', {
-      url: `${backendUrl}${url}${params && `?${params}`}`,
-      method,
-      bearer: bearer ? 'Present' : 'Missing',
-      publishableApiKey: publishableApiKey ? 'Present' : 'Missing',
-      params,
-      query
-    });
-  }
-  
   try {
     const response = await fetch(
       `${backendUrl}${url}${params && `?${params}`}`,
@@ -126,14 +114,6 @@ export const fetchQuery = async (
       }
     );
     
-    // Add debugging for reviews endpoint response
-    if (url.includes('reviews')) {
-      console.log('🔍 [CLIENT] Reviews endpoint response:', {
-        status: response.status,
-        statusText: response.statusText,
-        ok: response.ok
-      });
-    }
     
     // Handle session expiration (401 Unauthorized)
     if (response.status === 401 && bearer) {
@@ -163,7 +143,7 @@ export const fetchQuery = async (
             errorData.message.includes('handle') &&
             errorData.message.includes('already exists')) {
           
-          console.log('Product was actually created successfully despite the handle error');
+         
           
           // Generate a unique product ID for temporary use
           const tempId = 'temp_' + Date.now().toString();

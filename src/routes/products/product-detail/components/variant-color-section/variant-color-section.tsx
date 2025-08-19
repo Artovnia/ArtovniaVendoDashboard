@@ -8,6 +8,7 @@ import {
 import { Swatch, PencilSquare, Trash, EllipsisHorizontal } from '@medusajs/icons'
 import { useVariantColors, useAssignVariantColors } from '../../../../../hooks/api/colors'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 interface VariantColorSectionProps {
   productId: string
@@ -20,6 +21,7 @@ export const VariantColorSection = ({
   variantId,
   variantTitle,
 }: VariantColorSectionProps) => {
+  const { t } = useTranslation()
   const prompt = usePrompt()
   const { 
     data: variantColorsData, 
@@ -40,10 +42,10 @@ export const VariantColorSection = ({
     
     try {
       const confirmed = await prompt({
-        title: 'Usuń kolory',
-        description: `Czy na pewno chcesz usunąć wszystkie kolory z wariantu ${variantTitle}?`,
-        confirmText: 'Usuń',
-        cancelText: 'Anuluj',
+        title: t('products.variant.colorSection.removeColors.title'),
+        description: t('products.variant.colorSection.removeColors.description', { variantTitle }),
+        confirmText: t('products.variant.colorSection.removeColors.confirm'),
+        cancelText: t('products.variant.colorSection.removeColors.cancel'),
       })
       
       if (confirmed) {
@@ -62,7 +64,7 @@ export const VariantColorSection = ({
       <div className="flex items-center justify-between px-6 py-4">
         <div className="flex items-center gap-2">
           <Swatch className="h-5 w-5" />
-          <Heading level="h2">Schemat kolorów wariantu</Heading>
+          <Heading level="h2">{t('products.variant.colorSection.title' as any)}</Heading>
         </div>
         
         <div className="flex items-center gap-2">
@@ -80,7 +82,7 @@ export const VariantColorSection = ({
                 <Link to={`/product-variants/${productId}/variants/${variantId}/colors`}>
                   <div className="flex items-center">
                     <PencilSquare />
-                    <span className="ml-2">Edytuj kolory</span>
+                    <span className="ml-2">{t('products.variant.colorSection.editColors')}</span>
                   </div>
                 </Link>
               </DropdownMenu.Item>
@@ -92,7 +94,7 @@ export const VariantColorSection = ({
                   disabled={isAssigning}
                 >
                   <Trash className="text-rose-500" />
-                  <span className="ml-2">Usuń wszystkie kolory</span>
+                  <span className="ml-2">{t('products.variant.colorSection.removeAllColors')}</span>
                 </DropdownMenu.Item>
               )}
             </DropdownMenu.Content>
@@ -106,11 +108,11 @@ export const VariantColorSection = ({
           {isLoading ? (
             <div className="flex items-center gap-2 mt-2">
               <div className="w-4 h-4 bg-ui-bg-base rounded-full animate-pulse" />
-              <Text className="text-ui-fg-subtle">Ładowanie...</Text>
+              <Text className="text-ui-fg-subtle">{t('products.variant.colorSection.loading')}</Text>
             </div>
           ) : assignedColors.length > 0 ? (
             <div>
-              <Text className="text-ui-fg-subtle font-medium mb-3">Kolory</Text>
+              <Text className="text-ui-fg-subtle font-medium mb-3">{t('products.variant.colorSection.colors')}</Text>
               <div className="flex flex-wrap gap-3">
                 {assignedColors.map(color => (
                   <div 
@@ -128,7 +130,7 @@ export const VariantColorSection = ({
             </div>
           ) : (
             <Text className="text-ui-fg-subtle ml-2 mt-2">
-              Brak przypisanych kolorów dla tego wariantu.
+              {t('products.variant.colorSection.noColors')}
             </Text>
           )}
         </div>

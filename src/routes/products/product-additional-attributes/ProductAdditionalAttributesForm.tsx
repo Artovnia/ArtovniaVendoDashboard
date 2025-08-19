@@ -90,7 +90,7 @@ export const ProductAdditionalAttributesForm = () => {
       // Navigate back to the product detail page after successful save
       navigate(`/products/${id}`);
     } catch (error) {
-      console.error('[DEBUG] Error updating product attributes:', error);
+
       toast.error(t('products.additionalAttributes.errorUpdate'));
     }
   }
