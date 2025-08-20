@@ -3240,6 +3240,40 @@
       "cancel": "Cancel",
       "saveChanges": "Save changes",
       "selectSection": "Select section to edit"
+    },
+    "earnings": {
+      "title": "Payout Earnings",
+      "subtitle": "Track your earnings and commission deductions",
+      "totalEarnings": "Gross Earnings",
+      "grossEarnings": "Gross Earnings",
+      "commissionDeductions": "Commission Deductions",
+      "availableForPayout": "Available for Payout",
+      "totalPaidOut": "Total Paid Out",
+      "accountStatus": "Account Status",
+      "payoutHistory": "Payout History",
+      "payoutHistorySubtitle": "View all your past payouts and transactions",
+      "manageAccount": "Manage Account",
+      "fromOrders": "From {{count}} completed orders",
+      "beforeCommission": "Before commission",
+      "platformFees": "Platform fees",
+      "readyToPayout": "Ready to withdraw",
+      "historicalPayouts": "All time payouts",
+      "noAccountSetup": "No account setup",
+      "loading": "Loading payout data...",
+      "error": "Error loading payout data",
+      "errorLoading": "Error loading payout data",
+      "setupAccount": "Setup Account",
+      "noPayouts": "No payouts yet",
+      "noPayoutsDescription": "You haven't received any payouts yet",
+      "noPayoutAccount": "No payout account",
+      "noPayoutAccountDescription": "Setup your payout account to receive payments"
+    },
+    "status": {
+      "completed": "Completed",
+      "pending": "Pending",
+      "processing": "Processing",
+      "failed": "Failed",
+      "notSetup": "Not Setup"
     }
   },
   "stockLocations": {
@@ -3438,7 +3472,8 @@
     "messages": "Messages",
     "requests": "Requests",
     "holidayMode": "Holiday Mode",
-    "payoutAccount": "Payout Account"
+    "payoutAccount": "Payout Account",
+    "earnings": "Earnings & Payouts"
   },
   "reviews": {
     "list": {

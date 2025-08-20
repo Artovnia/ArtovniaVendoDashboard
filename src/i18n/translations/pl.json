@@ -3155,6 +3155,40 @@
       "cancel": "Anuluj",
       "saveChanges": "Zapisz zmiany",
       "selectSection": "Wybierz sekcję do edycji"
+    },
+    "earnings": {
+      "title": "Zarobki z wypłat",
+      "subtitle": "Śledź swoje zarobki i potrącenia prowizyjne",
+      "totalEarnings": "Zarobki brutto",
+      "grossEarnings": "Zarobki brutto",
+      "commissionDeductions": "Potrącenia prowizyjne",
+      "availableForPayout": "Dostępne do wypłaty",
+      "totalPaidOut": "Całkowita wypłata",
+      "accountStatus": "Status konta",
+      "payoutHistory": "Historia wypłat",
+      "payoutHistorySubtitle": "Zobacz wszystkie swoje poprzednie wypłaty i transakcje",
+      "manageAccount": "Zarządzaj kontem",
+      "fromOrders": "Z {{count}} zrealizowanych zamówień",
+      "beforeCommission": "Przed prowizją",
+      "platformFees": "Opłaty platformy",
+      "readyToPayout": "Gotowe do wypłaty",
+      "historicalPayouts": "Wszystkie wypłaty",
+      "noAccountSetup": "Brak konfiguracji konta",
+      "loading": "Ładowanie danych wypłat...",
+      "error": "Błąd ładowania danych wypłat",
+      "errorLoading": "Błąd ładowania danych wypłat",
+      "setupAccount": "Skonfiguruj konto",
+      "noPayouts": "Brak wypłat",
+      "noPayoutsDescription": "Nie otrzymałeś jeszcze żadnych wypłat",
+      "noPayoutAccount": "Brak konta wypłat",
+      "noPayoutAccountDescription": "Skonfiguruj konto wypłat, aby otrzymywać płatności"
+    },
+    "status": {
+      "completed": "Ukończone",
+      "pending": "Oczekujące",
+      "processing": "Przetwarzane",
+      "failed": "Nieudane",
+      "notSetup": "Nie Skonfigurowane"
     }
   },
   "common": {
@@ -3167,7 +3201,8 @@
     "messages": "Wiadomości",
     "requests": "Zapytania",
     "holidayMode": "Wakacje i zawieszenia",
-    "payoutAccount": "Konto wypłat"
+    "payoutAccount": "Konto wypłat",
+    "earnings": "Zarobki i Wypłaty"
   },
   "reviews": {
     "list": {

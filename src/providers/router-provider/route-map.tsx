@@ -110,6 +110,17 @@ export const RouteMap: RouteObject[] = [
                   return { Component: mod.default };
                 },
               },
+              {
+                path: 'earnings',
+                handle: {
+                  breadcrumb: () => 'Zarobki i Wypłaty',
+                },
+                errorElement: <ErrorBoundary />,
+                lazy: async () => {
+                  const mod = await import('../../routes/payout/payout-earnings');
+                  return { Component: mod.default };
+                },
+              },
               // Removed legacy payu-onboarding route - now handled by the modular structure
               {                
                 path: 'simplified-payout',

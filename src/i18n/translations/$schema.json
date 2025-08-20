@@ -11550,6 +11550,122 @@
             "selectSection"
           ],
           "additionalProperties": false
+        },
+        "earnings": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "subtitle": {
+              "type": "string"
+            },
+            "loading": {
+              "type": "string"
+            },
+            "errorLoading": {
+              "type": "string"
+            },
+            "totalEarnings": {
+              "type": "string"
+            },
+            "availableForPayout": {
+              "type": "string"
+            },
+            "totalPaidOut": {
+              "type": "string"
+            },
+            "accountStatus": {
+              "type": "string"
+            },
+            "fromOrders": {
+              "type": "string"
+            },
+            "readyToPayout": {
+              "type": "string"
+            },
+            "historicalPayouts": {
+              "type": "string"
+            },
+            "noAccountSetup": {
+              "type": "string"
+            },
+            "setupAccount": {
+              "type": "string"
+            },
+            "manageAccount": {
+              "type": "string"
+            },
+            "payoutHistory": {
+              "type": "string"
+            },
+            "payoutHistorySubtitle": {
+              "type": "string"
+            },
+            "noPayouts": {
+              "type": "string"
+            },
+            "noPayoutsDescription": {
+              "type": "string"
+            },
+            "noPayoutAccount": {
+              "type": "string"
+            },
+            "noPayoutAccountDescription": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "title",
+            "subtitle",
+            "loading",
+            "errorLoading",
+            "totalEarnings",
+            "availableForPayout",
+            "totalPaidOut",
+            "accountStatus",
+            "fromOrders",
+            "readyToPayout",
+            "historicalPayouts",
+            "noAccountSetup",
+            "setupAccount",
+            "manageAccount",
+            "payoutHistory",
+            "payoutHistorySubtitle",
+            "noPayouts",
+            "noPayoutsDescription",
+            "noPayoutAccount",
+            "noPayoutAccountDescription"
+          ],
+          "additionalProperties": false
+        },
+        "status": {
+          "type": "object",
+          "properties": {
+            "completed": {
+              "type": "string"
+            },
+            "pending": {
+              "type": "string"
+            },
+            "processing": {
+              "type": "string"
+            },
+            "failed": {
+              "type": "string"
+            },
+            "notSetup": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "completed",
+            "pending",
+            "processing",
+            "failed",
+            "notSetup"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
@@ -11582,7 +11698,9 @@
         "success",
         "errors",
         "detail",
-        "edit"
+        "edit",
+        "earnings",
+        "status"
       ],
       "additionalProperties": false
     },

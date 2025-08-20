@@ -30,7 +30,7 @@ const PayoutDetail: React.FC = () => {
     refetch();
   }, [refetch]);
   
-  console.log('Payout account data:', payoutAccount); // Debug log to see what data we're getting
+
 
   // Display loading state
   if (isLoading) {
@@ -68,9 +68,7 @@ const PayoutDetail: React.FC = () => {
   const context = payoutAccount?.context || {};
   const bankAccountData = payoutAccount?.bank_account_data || {};
   
-  console.log('Context data:', context);
-  console.log('Bank account data:', bankAccountData);
-  
+
   // Map the properties to our component
   const legalName = context.company_name;
   const taxId = context.tax_id;
@@ -96,14 +94,7 @@ const PayoutDetail: React.FC = () => {
                        `${context.first_name || ''} ${context.last_name || ''}`.trim() || ''
   };
   
-  console.log('Extracted data:', {
-    legalName,
-    taxId,
-    email,
-    phone,
-    address,
-    bankAccount
-  });
+ 
   
   const handleEditBankAccount = () => {
     navigate('/payout/edit/bank-account');

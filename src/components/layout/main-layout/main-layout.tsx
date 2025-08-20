@@ -214,6 +214,11 @@ const useExtensionRoutes = (): Omit<
       label: t('navigation.payoutAccount', 'Payout Account'),
       to: '/payout-provider-select',
     },
+    {
+      icon: <ReceiptPercent />,
+      label: t('navigation.earnings', 'Zarobki i Wypłaty'),
+      to: '/payout/earnings',
+    },
   ];
 };
 
