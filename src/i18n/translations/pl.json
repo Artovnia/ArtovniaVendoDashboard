@@ -572,6 +572,12 @@
       "galleryLabel": "Galeria",
       "downloadImageLabel": "Pobierz aktualny obraz",
       "deleteImageLabel": "Usuń aktualny obraz",
+      "recommendations": {
+        "title": "Rekomendacje",
+        "format": "Zalecany format: WebP (obsługuje JPEG, PNG, GIF, BMP, TIFF, SVG)",
+        "maxSize": "Maksymalny rozmiar pliku: 50MB na plik",
+        "totalSize": "Maksymalny całkowity rozmiar: 200MB"
+      },
       "emptyState": {
         "header": "Brak mediów",
         "description": "Dodaj media do produktu, aby zaprezentować go w swoim sklepie.",
@@ -1669,10 +1675,7 @@
           "label": "Włącz w sklepie",
           "hint": "Czy klienci mogą używać tej opcji podczas płatności."
         },
-        "fulfillmentOption": {
-          "label": "Opcja realizacji",
-          "description": "Wybierz opcję realizacji dla tej metody wysyłki"
-        },
+        "fulfillmentOption": "Opcja realizacji",
         "provider": "Dostawca realizacji",
         "profile": "Profil wysyłki"
       }

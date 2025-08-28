@@ -117,9 +117,27 @@ export const ProductCreateMediaSection = ({
     }
   }
 
+  const { t } = useTranslation()
+
   return (
     <div id="media" className="flex flex-col gap-y-2">
       <UploadMediaFormItem form={form} append={append} showHint={false} />
+      <div className="bg-ui-bg-subtle rounded-lg p-3 mt-2">
+        <Text size="small" className="text-ui-fg-subtle mb-1 font-medium">
+          {t('products.media.recommendations.title')}
+        </Text>
+        <div className="space-y-1">
+          <Text size="xsmall" className="text-ui-fg-muted">
+            • {t('products.media.recommendations.format')}
+          </Text>
+          <Text size="xsmall" className="text-ui-fg-muted">
+            • {t('products.media.recommendations.maxSize')}
+          </Text>
+          <Text size="xsmall" className="text-ui-fg-muted">
+            • {t('products.media.recommendations.totalSize')}
+          </Text>
+        </div>
+      </div>
       <DndContext
         sensors={sensors}
         onDragEnd={handleDragEnd}

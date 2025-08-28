@@ -26,6 +26,7 @@ export const ProductDetail = () => {
     }
   );
 
+
   const { getWidgets } = useDashboardExtension();
 
   const after = getWidgets('product.details.after');
@@ -74,8 +75,8 @@ export const ProductDetail = () => {
         <ProductColorSection productId={product.id} productTitle={product.title} />
         <ProductGPSRSection product={product} />
         <ProductOrganizationSection product={product} />
-        <ProductAttributeSection product={product} />
-        <ProductAdditionalAttributesSection product={product as any} />
+       {/* <ProductAttributeSection product={product} /> */}
+       {/* <ProductAdditionalAttributesSection product={product as any} /> */}
       </TwoColumnPage.Sidebar>
     </TwoColumnPage>
   );

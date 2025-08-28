@@ -58,7 +58,10 @@ export const CategorySelect = forwardRef<
         offset: 0,
       },
       {
-        enabled: open,
+        // CRITICAL FIX: Always keep categories loaded to prevent data loss
+        enabled: true, // Changed from 'open' to prevent conditional loading
+        staleTime: 5 * 60 * 1000, // 5 minutes cache
+        refetchOnWindowFocus: false, // Prevent refetch on app switch
       }
     );
 

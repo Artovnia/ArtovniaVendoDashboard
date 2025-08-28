@@ -178,6 +178,7 @@ export const ProductCreateForm = ({
       }
 
       const media = values.media || [];
+      console.log(`Form has ${media.length} media files attached`);
       
       // Create a clean payload without direct color_assignments property
       const payload = { ...values, media: undefined };
@@ -189,19 +190,21 @@ export const ProductCreateForm = ({
       let uploadedMedia: (HttpTypes.AdminFile & {
         isThumbnail: boolean;
       })[] = [];
-      try {
-        if (media.length) {
-          const thumbnailReq = media.find(
-            (m) => m.isThumbnail
-          );
-          const otherMediaReq = media.filter(
-            (m) => !m.isThumbnail
-          );
+      
+      // Validate and upload media files
+      if (media.length) {
+        console.log(`Starting upload of ${media.length} media files`);
+        
+        try {
+          const thumbnailReq = media.find((m) => m.isThumbnail);
+          const otherMediaReq = media.filter((m) => !m.isThumbnail);
 
           const fileReqs = [];
+          
           if (thumbnailReq) {
+            console.log('Uploading thumbnail image');
             fileReqs.push(
-              uploadFilesQuery(thumbnailReq.file).then(
+              uploadFilesQuery([thumbnailReq]).then(
                 (r: any) =>
                   r.files.map((f: any) => ({
                     ...f,
@@ -210,7 +213,9 @@ export const ProductCreateForm = ({
               )
             );
           }
+          
           if (otherMediaReq?.length) {
+            console.log(`Uploading ${otherMediaReq.length} additional images`);
             fileReqs.push(
               uploadFilesQuery(otherMediaReq).then(
                 (r: any) =>
@@ -222,13 +227,31 @@ export const ProductCreateForm = ({
             );
           }
 
-          uploadedMedia = (
-            await Promise.all(fileReqs)
-          ).flat();
-        }
-      } catch (error) {
-        if (error instanceof Error) {
-          toast.error(error.message);
+          uploadedMedia = (await Promise.all(fileReqs)).flat();
+          
+          console.log(`Successfully uploaded ${uploadedMedia.length} files`);
+          
+          // Validate that we got all expected files
+          if (uploadedMedia.length !== media.length) {
+            throw new Error(
+              `Upload validation failed: Expected ${media.length} files, but only ${uploadedMedia.length} were uploaded successfully. Please try again.`
+            );
+          }
+          
+        } catch (error) {
+          setIsSubmitting(false);
+          
+          if (error instanceof Error) {
+            // Show detailed error message to user
+            toast.error(`Image upload failed: ${error.message}`);
+            console.error('Image upload error:', error);
+          } else {
+            toast.error('Image upload failed. Please check your files and try again.');
+            console.error('Unknown upload error:', error);
+          }
+          
+          // Stop form submission if image upload fails
+          return;
         }
       }
 
@@ -729,7 +752,11 @@ export const ProductCreateForm = ({
         <RouteFocusModal.Footer>
           <div className='flex items-center justify-end gap-x-2'>
             <RouteFocusModal.Close asChild>
-              <Button variant='secondary' size='small'>
+              <Button 
+                variant='secondary' 
+                size='small'
+                type='button'
+              >
                 {t('actions.cancel')}
               </Button>
             </RouteFocusModal.Close>

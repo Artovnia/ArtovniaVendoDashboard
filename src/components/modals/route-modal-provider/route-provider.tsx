@@ -21,10 +21,8 @@ export const RouteModalProvider = ({
       // Reset any lingering pointer-events styles
       document.body.style.pointerEvents = ""
       
-      // Use setTimeout to ensure DOM updates before navigation
-      setTimeout(() => {
-        navigate(to, { replace: true, state: { isSubmitSuccessful: true } })
-      }, 10)
+      // Navigate immediately to prevent race conditions
+      navigate(to, { replace: true, state: { isSubmitSuccessful: true } })
     },
     [navigate, prev]
   )

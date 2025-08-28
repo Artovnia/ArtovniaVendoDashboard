@@ -572,6 +572,12 @@
       "galleryLabel": "Gallery",
       "downloadImageLabel": "Download current image",
       "deleteImageLabel": "Delete current image",
+      "recommendations": {
+        "title": "Recommendations",
+        "format": "Recommended format: WebP (supports JPEG, PNG, GIF, BMP, TIFF, SVG)",
+        "maxSize": "Maximum file size: 50MB per file",
+        "totalSize": "Maximum total size: 200MB"
+      },
       "emptyState": {
         "header": "No media yet",
         "description": "Add media to the product to showcase it in your storefront.",
@@ -3276,192 +3282,7 @@
       "notSetup": "Not Setup"
     }
   },
-  "stockLocations": {
-    "domain": "Locations & Shipping",
-    "list": {
-      "description": "Manage your store's stock locations and shipping options."
-    },
-    "create": {
-      "header": "Create Stock Location",
-      "hint": "A stock location is a physical place where products are stored and shipped from.",
-      "successToast": "Location {{name}} was successfully created."
-    },
-    "edit": {
-      "header": "Edit Stock Location",
-      "viewInventory": "View Inventory",
-      "successToast": "Location {{name}} was successfully updated."
-    },
-    "delete": {
-      "confirmation": "You are about to delete the stock location {{name}}. This action cannot be undone."
-    },
-    "fulfillmentProviders": {
-      "header": "Fulfillment Providers",
-      "shippingOptionsTooltip": "This dropdown will only contain providers enabled for this location. Add them to the location if the dropdown is disabled.",
-      "label": "Connected Fulfillment Providers",
-      "connectedTo": "Connected to {{count}} of {{total}} fulfillment providers",
-      "noProviders": "This stock location is not connected to any fulfillment providers.",
-      "action": "Connect Providers",
-      "successToast": "Fulfillment providers for the stock location were successfully updated."
-    },
-    "fulfillmentSets": {
-      "pickup": {
-        "header": "Pickup"
-      },
-      "shipping": {
-        "header": "Shipping"
-      },
-      "disable": {
-        "confirmation": "Are you sure you want to disable {{name}}? This will remove all associated service zones and shipping options and cannot be undone.",
-        "pickup": "Pickup was successfully disabled.",
-        "shipping": "Shipping was successfully disabled."
-      },
-      "enable": {
-        "pickup": "Pickup was successfully enabled.",
-        "shipping": "Shipping was successfully enabled."
-      }
-    },
-    "sidebar": {
-      "header": "Shipping Configuration",
-      "shippingProfiles": {
-        "label": "Shipping Profiles",
-        "description": "Group products by shipping requirements"
-      }
-    },
-    "salesChannels": {
-      "header": "Sales Channels",
-      "label": "Connected Sales Channels",
-      "connectedTo": "Connected to {{count}} of {{total}} sales channels",
-      "noChannels": "This location is not connected to any sales channels.",
-      "action": "Connect Sales Channels",
-      "successToast": "Sales channels were successfully updated."
-    },
-    "pickupOptions": {
-      "create": {
-        "pickup": {
-          "header": "Create pickup option for {{zone}}",
-          "hint": "Create a new pickup option to define how products are picked up from this location.",
-          "label": "Pickup Options",
-          "successToast": "Pickup option {{name}} was successfully created."
-        },
-        "tabs": {
-          "details": "Details",
-          "prices": "Prices"
-        },
-        "action": "Create Option"
-      },
-      "delete": {
-        "confirmation": "You are about to delete the pickup option {{name}}. This action cannot be undone.",
-        "successToast": "Pickup option {{name}} was successfully deleted."
-      },
-      "edit": {
-        "header": "Edit Pickup Option",
-        "action": "Edit Option",
-        "successToast": "Pickup option {{name}} was successfully updated."
-      },
-      "fields": {
-        "count": {
-          "pickup_one": "{{count}} pickup option",
-          "pickup_other": "{{count}} pickup options"
-        }
-      }
-    },
-    "shippingOptions": {
-      "create": {
-        "shipping": {
-          "header": "Create shipping option for {{zone}}",
-          "hint": "Create a new shipping option to define how products are shipped from this location.",
-          "label": "Shipping Options",
-          "successToast": "Shipping option {{name}} was successfully created."
-        },
-        "pickup": {
-          "header": "Create pickup option for {{zone}}",
-          "hint": "Create a new pickup option to define how products are picked up from this location.",
-          "label": "Pickup Options",
-          "successToast": "Pickup option {{name}} was successfully created."
-        },
-        "returns": {
-          "header": "Create return option for {{zone}}",
-          "hint": "Create a new return option to define how products are returned to this location.",
-          "label": "Return Options",
-          "successToast": "Return option {{name}} was successfully created."
-        },
-        "tabs": {
-          "details": "Details",
-          "prices": "Prices"
-        },
-        "action": "Create Option"
-      },
-      "delete": {
-        "confirmation": "You are about to delete the shipping option {{name}}. This action cannot be undone.",
-        "successToast": "Shipping option {{name}} was successfully deleted."
-      },
-      "edit": {
-        "header": "Edit Shipping Option",
-        "action": "Edit Option",
-        "successToast": "Shipping option {{name}} was successfully updated."
-      },
-      "pricing": {
-        "action": "Edit Prices",
-        "conditionalPrices": {
-          "label": "Conditional Prices",
-          "description": "Set different prices based on order conditions"
-        }
-      },
-      "fields": {
-        "count": {
-          "shipping_one": "{{count}} shipping option",
-          "shipping_other": "{{count}} shipping options",
-          "pickup_one": "{{count}} pickup option",
-          "pickup_other": "{{count}} pickup options",
-          "returns_one": "{{count}} return option",
-          "returns_other": "{{count}} return options"
-        },
-        "priceType": {
-          "label": "Price Type",
-          "options": {
-            "fixed": {
-              "label": "Fixed",
-              "hint": "The shipping option price is fixed and does not change based on the order contents."
-            },
-            "calculated": {
-              "label": "Calculated",
-              "hint": "The shipping option price is calculated by the fulfillment provider during the checkout process."
-            }
-          }
-        },
-        "enableInStore": {
-          "label": "Enable in store",
-          "hint": "Whether customers can use this option during checkout."
-        },
-        "fulfillmentOption": {
-          "label": "Fulfillment Option",
-          "description": "Select the fulfillment option for this shipping method"
-        },
-        "provider": "Fulfillment Provider",
-        "profile": "Shipping Profile"
-      }
-    },
-    "serviceZones": {
-      "create": {
-        "headerPickup": "Create service zone for pickup from {{location}}",
-        "headerShipping": "Create service zone for shipping from {{location}}",
-        "action": "Create Service Zone",
-        "successToast": "Service zone {{name}} was successfully created."
-      },
-      "edit": {
-        "header": "Edit Service Zone",
-        "action": "Edit Service Zone",
-        "successToast": "Service zone {{name}} was successfully updated."
-      },
-      "delete": {
-        "confirmation": "You are about to delete the service zone {{name}}. This action cannot be undone.",
-        "successToast": "Service zone {{name}} was successfully deleted."
-      },
-      "fields": {
-        "noRecords": "No service zones found"
-      }
-    }
-  },
+  
   "common": {
     "loading": "Loading...",
     "save": "Save",

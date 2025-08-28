@@ -102,14 +102,12 @@ export const useOrderTableColumns = (
         header: () => <TotalHeader />,
         cell: ({ getValue, row }) => {
           // Check the entire row object to see what data we have
-          console.log('Order row data:', row.original);
+          
           
           const total = getValue();
           const currencyCode = row.original.currency_code;
           
-          console.log('Total value:', total, typeof total);
-          console.log('Currency code:', currencyCode, typeof currencyCode);
-
+         
           return (
             <TotalCell
               currencyCode={currencyCode || 'PLN'} // Use PLN as a fallback currency

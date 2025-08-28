@@ -15,18 +15,11 @@ const variantFields = [
 
 // Define organization fields explicitly
 const organizationFields = [
-  'categories',
-  'categories.id',
-  'categories.name',
-  'categories.handle',
-  'tags',
-  'tags.id',
-  'tags.value',
+  '*categories', // CRITICAL FIX: Use asterisk format like detail view to get all category fields
+  '*tags', // Also fix tags to match detail view format
   'type_id',
   'collection_id',
-  'collection',
-  'collection.id',
-  'collection.title',
+  '*collection', // Also fix collection to get all fields
 ].join(',');
 
 // Get basic product fields from extensions and add our specific field requirements

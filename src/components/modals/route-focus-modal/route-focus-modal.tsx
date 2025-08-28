@@ -20,9 +20,12 @@ const Root = ({ prev = "..", children }: RouteFocusModalProps) => {
    * ensures that the entry animation is played.
    */
   useEffect(() => {
-    setOpen(true)
+    const timer = setTimeout(() => {
+      setOpen(true)
+    }, 50)
 
     return () => {
+      clearTimeout(timer)
       setOpen(false)
       onStackedModalOpen(false)
     }
@@ -30,19 +33,11 @@ const Root = ({ prev = "..", children }: RouteFocusModalProps) => {
 
   const handleOpenChange = (open: boolean) => {
     if (!open) {
-      // First set the state to trigger proper React lifecycle
-      setOpen(false)
+      // Reset pointer events immediately
+      document.body.style.pointerEvents = "auto"
       
-      // Use requestAnimationFrame to ensure DOM updates before navigation
-      requestAnimationFrame(() => {
-        // Reset pointer events
-        document.body.style.pointerEvents = "auto"
-        
-        // Then navigate with a small delay to allow cleanup
-        setTimeout(() => {
-          navigate(prev, { replace: true })
-        }, 0)
-      })
+      // Navigate immediately without state changes to prevent double-click requirement
+      navigate(prev, { replace: true })
       return
     }
 

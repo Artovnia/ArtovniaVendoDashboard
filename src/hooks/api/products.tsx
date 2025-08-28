@@ -406,21 +406,25 @@ export const useProduct = (
 
   const { data, ...rest } = useQuery({
     queryFn: async () => {
+      const { fields } = query || {};
+      
       const response = await fetchQuery(`/vendor/products/${id}`, {
         method: 'GET',
-        query: query as { [key: string]: string | number },
+        query: { fields },
       });
+      
       return response;
     },
     queryKey: stableQueryKey,
-    // CRITICAL FIX: Use global cache settings to prevent data loss
-    refetchOnWindowFocus: false, // Prevent refetch on app switch
-    staleTime: 5 * 60 * 1000, // 5 minutes - longer than global to prevent premature invalidation
-    gcTime: 10 * 60 * 1000, // 10 minutes garbage collection
+    refetchOnWindowFocus: false,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
     ...options,
   });
 
-  return { ...rest, ...data };
+  // CRITICAL FIX: The API returns { product: {...} } but we need to return the product data directly
+  // The destructuring was losing the categories data
+  return { ...rest, product: data?.product };
 };
 
 export const useProducts = (

@@ -22,9 +22,101 @@ if (typeof window !== 'undefined') {
   (window as any).__sdk = sdk;
 }
 
+// S3 supported image formats with WebP as recommended
+const SUPPORTED_IMAGE_FORMATS = {
+  'image/webp': { ext: '.webp', recommended: true },
+  'image/jpeg': { ext: '.jpg', recommended: false },
+  'image/jpg': { ext: '.jpg', recommended: false },
+  'image/png': { ext: '.png', recommended: false },
+  'image/gif': { ext: '.gif', recommended: false },
+  'image/bmp': { ext: '.bmp', recommended: false },
+  'image/tiff': { ext: '.tiff', recommended: false },
+  'image/svg+xml': { ext: '.svg', recommended: false }
+};
+
+// File size limits (in bytes)
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB per file (practical limit for web uploads)
+const MAX_TOTAL_SIZE = 200 * 1024 * 1024; // 200MB total for all files
+
+/**
+ * Validates file format and size before upload
+ */
+const validateFile = (file: File): { valid: boolean; error?: string; warning?: string } => {
+  // Check file format
+  if (!SUPPORTED_IMAGE_FORMATS[file.type as keyof typeof SUPPORTED_IMAGE_FORMATS]) {
+    const supportedFormats = Object.keys(SUPPORTED_IMAGE_FORMATS).join(', ');
+    return {
+      valid: false,
+      error: `Unsupported file format: ${file.type}. Supported formats: ${supportedFormats}`
+    };
+  }
+
+  // Check file size
+  if (file.size > MAX_FILE_SIZE) {
+    return {
+      valid: false,
+      error: `File too large: ${(file.size / (1024 * 1024)).toFixed(1)}MB. Maximum allowed: ${MAX_FILE_SIZE / (1024 * 1024)}MB`
+    };
+  }
+
+  // Check if WebP is recommended
+  const formatInfo = SUPPORTED_IMAGE_FORMATS[file.type as keyof typeof SUPPORTED_IMAGE_FORMATS];
+  const warning = !formatInfo.recommended ? 
+    'Consider using WebP format for better compression and faster loading' : undefined;
+
+  return { valid: true, warning };
+};
+
 export const uploadFilesQuery = async (files: any[]) => {
   // Get the current auth token at function call time
   const currentToken = window.localStorage.getItem('medusa_auth_token') || '';
+  
+  if (!currentToken) {
+    throw new Error('Authentication required. Please log in and try again.');
+  }
+
+  if (!files || files.length === 0) {
+    throw new Error('No files provided for upload.');
+  }
+
+  // Validate each file before upload
+  const validationErrors: string[] = [];
+  const validationWarnings: string[] = [];
+  let totalSize = 0;
+
+  for (let i = 0; i < files.length; i++) {
+    const { file } = files[i];
+    if (!file) {
+      validationErrors.push(`File ${i + 1}: No file data provided`);
+      continue;
+    }
+
+    const validation = validateFile(file);
+    if (!validation.valid) {
+      validationErrors.push(`File "${file.name}": ${validation.error}`);
+    }
+    if (validation.warning) {
+      validationWarnings.push(`File "${file.name}": ${validation.warning}`);
+    }
+    totalSize += file.size;
+  }
+
+  // Check total size limit
+  if (totalSize > MAX_TOTAL_SIZE) {
+    validationErrors.push(`Total file size too large: ${(totalSize / (1024 * 1024)).toFixed(1)}MB. Maximum allowed: ${MAX_TOTAL_SIZE / (1024 * 1024)}MB`);
+  }
+
+  // Throw error if validation failed
+  if (validationErrors.length > 0) {
+    throw new Error(`File validation failed:\n${validationErrors.join('\n')}`);
+  }
+
+  // Log warnings if any
+  if (validationWarnings.length > 0) {
+    console.warn('File upload warnings:', validationWarnings);
+  }
+
+  console.log(`Uploading ${files.length} files (${(totalSize / (1024 * 1024)).toFixed(1)}MB total)`);
   
   const formData = new FormData();
 
@@ -32,24 +124,53 @@ export const uploadFilesQuery = async (files: any[]) => {
     formData.append('files', file);
   }
 
-  return await fetch(`${backendUrl}/vendor/uploads`, {
-    method: 'POST',
-    body: formData,
-    headers: {
-      authorization: `Bearer ${currentToken}`,
-      'x-publishable-api-key': publishableApiKey,
-    },
-  })
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error(`Upload failed with status: ${res.status}`);
-      }
-      return res.json();
-    })
-    .catch((error) => {
-      console.error('Upload error:', error);
-      return { files: [] };
+  try {
+    const response = await fetch(`${backendUrl}/vendor/uploads`, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        authorization: `Bearer ${currentToken}`,
+        'x-publishable-api-key': publishableApiKey,
+      },
     });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      let errorMessage = `Upload failed with status: ${response.status}`;
+      
+      try {
+        const errorData = JSON.parse(errorText);
+        if (errorData.message) {
+          errorMessage += ` - ${errorData.message}`;
+        }
+      } catch {
+        if (errorText) {
+          errorMessage += ` - ${errorText}`;
+        }
+      }
+      
+      throw new Error(errorMessage);
+    }
+
+    const result = await response.json();
+    
+    // Validate that we got the expected number of files back
+    if (!result.files || !Array.isArray(result.files)) {
+      throw new Error('Invalid response from upload service: missing files array');
+    }
+
+    if (result.files.length !== files.length) {
+      throw new Error(`Upload incomplete: expected ${files.length} files, got ${result.files.length} files`);
+    }
+
+    console.log(`Successfully uploaded ${result.files.length} files`);
+    return result;
+    
+  } catch (error) {
+    console.error('Upload error:', error);
+    // Re-throw the error instead of returning empty files array
+    throw error instanceof Error ? error : new Error(`Upload failed: ${String(error)}`);
+  }
 };
 
 // Max retries for fetch operations when network errors occur
