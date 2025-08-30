@@ -25,7 +25,6 @@ export const useAssociateProductWithShippingProfile = (
 ) => {
   return useMutation({
     mutationFn: async ({ productId, shippingProfileId }) => {
-      console.log(`Associating product ${productId} with shipping profile ${shippingProfileId}`);
       
       try {
         // Use the dedicated endpoint to create the association
@@ -35,8 +34,7 @@ export const useAssociateProductWithShippingProfile = (
             shipping_profile_id: shippingProfileId
           },
         });
-        
-        console.log(`Successfully associated product ${productId} with shipping profile ${shippingProfileId}`);
+    
         return result;
       } catch (error) {
         console.error('Error associating product with shipping profile:', error);
@@ -47,6 +45,17 @@ export const useAssociateProductWithShippingProfile = (
       // Invalidate product queries to reflect the updated shipping profile
       queryClient.invalidateQueries({
         queryKey: productsQueryKeys.detail(variables.productId),
+      });
+      
+      // CRITICAL FIX: Also invalidate shipping profiles cache
+      // The ProductShippingProfileSection component uses ['shipping_profiles'] query key
+      queryClient.invalidateQueries({
+        queryKey: ['shipping_profiles'],
+      });
+      
+      // Invalidate all product lists to ensure consistency
+      queryClient.invalidateQueries({
+        queryKey: productsQueryKeys.lists(),
       });
       
       options?.onSuccess?.(data, variables, context);
@@ -67,15 +76,13 @@ export const useRemoveProductShippingProfile = (
 ) => {
   return useMutation({
     mutationFn: async ({ productId }) => {
-      console.log(`Removing shipping profile from product ${productId}`);
       
       try {
         // Use the dedicated endpoint to remove the association
         const result = await fetchQuery(`/vendor/products/${productId}/shipping-profile`, {
           method: 'DELETE'
         });
-        
-        console.log(`Successfully removed shipping profile from product ${productId}`);
+   
         return result;
       } catch (error) {
         console.error('Error removing shipping profile from product:', error);
@@ -86,6 +93,17 @@ export const useRemoveProductShippingProfile = (
       // Invalidate product queries to reflect the updated shipping profile
       queryClient.invalidateQueries({
         queryKey: productsQueryKeys.detail(variables.productId),
+      });
+      
+      // CRITICAL FIX: Also invalidate shipping profiles cache
+      // The ProductShippingProfileSection component uses ['shipping_profiles'] query key
+      queryClient.invalidateQueries({
+        queryKey: ['shipping_profiles'],
+      });
+      
+      // Invalidate all product lists to ensure consistency
+      queryClient.invalidateQueries({
+        queryKey: productsQueryKeys.lists(),
       });
       
       options?.onSuccess?.(data, variables, context);

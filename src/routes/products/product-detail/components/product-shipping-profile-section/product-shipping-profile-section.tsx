@@ -30,16 +30,16 @@ export const ProductShippingProfileSection = ({
     },
   });
 
-  // Find the currently assigned shipping profile - check both metadata and direct relationship
+  // Find the currently assigned shipping profile - only use relationship table
   const currentShippingProfile = useMemo(() => {
     if (!shippingProfilesData?.shipping_profiles) {
       return null;
     }
     
-    // Check metadata first (this is where the ID is actually stored)
-    const profileId = product.metadata?.shipping_profile_id || product.shipping_profile?.id;
+    // ONLY use the direct relationship - no metadata fallback
+    // This ensures single source of truth from the link table
+    const profileId = product.shipping_profile?.id;
     
-   
     
     if (!profileId) {
       return null;
@@ -48,10 +48,9 @@ export const ProductShippingProfileSection = ({
     const foundProfile = shippingProfilesData.shipping_profiles.find((profile: any) => 
       profile.id === profileId
     );
-    
 
     return foundProfile;
-  }, [shippingProfilesData, product.metadata?.shipping_profile_id, product.shipping_profile?.id]);
+  }, [shippingProfilesData, product.shipping_profile?.id]);
 
   const shippingProfile = currentShippingProfile
 

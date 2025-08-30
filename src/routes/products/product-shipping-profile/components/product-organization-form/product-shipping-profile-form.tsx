@@ -85,14 +85,12 @@ export const ProductShippingProfileForm = ({
     try {
       if (shippingProfileId) {
         // If a shipping profile is selected, associate the product with it
-        console.log(`Associating product ${product.id} with shipping profile ${shippingProfileId}`);
         await associateShippingProfile({
           productId: product.id,
           shippingProfileId: shippingProfileId
         });
       } else {
         // If no shipping profile is selected, remove any existing association
-        console.log(`Removing shipping profile from product ${product.id}`);
         await removeShippingProfile({
           productId: product.id
         });
@@ -116,11 +114,10 @@ export const ProductShippingProfileForm = ({
     // CRITICAL FIX: Only reset form when product data is stable (not loading/fetching)
     if (!product || isLoading || isFetching) return;
     
-    console.log('Product data in shipping profile form:', product);
-    console.log('Product metadata shipping_profile_id:', product.metadata?.shipping_profile_id);
-    console.log('Product shipping_profile:', product.shipping_profile);
     
-    const profileId = product.metadata?.shipping_profile_id || "";
+    // ONLY use the direct relationship - no metadata fallback
+    // This ensures single source of truth from the link table
+    const profileId = product.shipping_profile?.id || "";
     const currentFormValue = form.getValues('shipping_profile_id');
     
     // Only reset if the value actually changed to prevent unnecessary resets
@@ -129,7 +126,7 @@ export const ProductShippingProfileForm = ({
         shipping_profile_id: profileId as string
       });
     }
-  }, [form, product, product?.metadata?.shipping_profile_id, isLoading, isFetching]);
+  }, [form, product, product?.shipping_profile?.id, isLoading, isFetching]);
 
   return (
     <RouteDrawer.Form form={form}>

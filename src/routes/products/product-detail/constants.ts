@@ -27,7 +27,5 @@ export const PRODUCT_DETAIL_FIELDS = [
   getLinkedFields('product', ''),
   variantFields,
   organizationFields,
-  'shipping_profile',
-  'shipping_profile.id',
-  'shipping_profile.name'
+  '*shipping_profile'
 ].join(',');

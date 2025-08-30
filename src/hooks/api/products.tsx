@@ -549,18 +549,11 @@ export const useCreateProduct = (
       // Ensure product has at least one option
       const processedPayload = { ...payload };
   
-      // Extract shipping_profile_id to add to metadata since it's not directly supported by the API
-      const shippingProfileId = processedPayload.shipping_profile_id;
-      if (shippingProfileId) {
-        
-        // Store shipping_profile_id in metadata for later processing by a backend hook
-        if (!processedPayload.metadata) {
-          processedPayload.metadata = {};
-        }
-        processedPayload.metadata.shipping_profile_id = shippingProfileId;
-        // Remove the shipping_profile_id from the root level as it's not recognized by the API
-        delete processedPayload.shipping_profile_id;
-      }
+      // Keep shipping profile ID in payload - backend now supports it directly
+      
+      // Remove fields that should not be sent to the API
+      delete processedPayload.color_assignments;
+      delete processedPayload.__originalPayload;
       
       // Process variant prices to ensure they're properly formatted
       if (processedPayload.variants && Array.isArray(processedPayload.variants)) {
@@ -743,34 +736,24 @@ export const useCreateProduct = (
       });
     },
     onSuccess: async (data, variables, context) => {
-      // Handle shipping profile association if provided
-      const shippingProfileId = variables.shipping_profile_id;
-      if (shippingProfileId && data.product?.id) {
-        try {
-          
-          // Make direct API call to associate shipping profile
-          await fetchQuery(`/vendor/products/${data.product.id}/shipping-profile`, {
-            method: 'POST',
-            body: {
-              shipping_profile_id: shippingProfileId
-            },
-          });
-     
-        } catch (error) {
-          console.error('Failed to associate product with shipping profile:', error);
-          // Continue even if shipping profile association fails
-        }
-      }
+      const productId = data?.product?.id;
       
-      queryClient.invalidateQueries({
+      // Invalidate the products list query to refresh the data
+      await queryClient.invalidateQueries({
         queryKey: productsQueryKeys.lists(),
       });
-      // if `manage_inventory` is true on created variants that will create inventory items automatically
-      // Commented out to prevent excessive cache invalidation
-      // queryClient.invalidateQueries({
-      //   queryKey: inventoryItemsQueryKeys.lists(),
-      // });
-      options?.onSuccess?.(data, variables, context);
+
+      // If we have a product ID, also invalidate the detail query
+      if (productId) {
+        await queryClient.invalidateQueries({
+          queryKey: productsQueryKeys.detail(productId),
+        });
+      }
+
+      // Call the original onSuccess if provided
+      if (options?.onSuccess) {
+        await options.onSuccess(data, variables, context);
+      }
     },
     ...options,
   });
@@ -802,20 +785,8 @@ export const useUpdateProduct = (
         const cleanPayload = { ...updateData };
         
         // IMPORTANT: Remove status field - vendor API doesn't accept it
-        if ('status' in cleanPayload) {
-          
-          delete cleanPayload.status;
-        }
-        
-        // Ensure title is properly formatted
-        if (cleanPayload.title !== undefined) {
-          cleanPayload.title = String(cleanPayload.title).trim();
-        }
-        
-        // Format description if provided
-        if (cleanPayload.description !== undefined) {
-          cleanPayload.description = typeof cleanPayload.description === 'string' ?
-            cleanPayload.description.trim() : cleanPayload.description;
+        if (cleanPayload.description && typeof cleanPayload.description === 'string') {
+          cleanPayload.description = cleanPayload.description.trim();
         }
         
         
