@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Container, Input, Textarea, toast } from '@medusajs/ui';
+import { useTranslation } from 'react-i18next';
 
 import { Form } from '../../../../../components/common/form';
 import { useProduct, useUpdateProduct } from '../../../../../hooks/api/products';
@@ -9,20 +10,21 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
 // Define the schema for GPSR data
-const GPSRSchema = z.object({
-  producerName: z.string().min(1, 'Nazwa producenta jest wymagana'),
-  producerAddress: z.string().min(1, 'Adres producenta jest wymagany'),
-  producerContact: z.string().min(1, 'Kontakt do producenta jest wymagany'),
+const GPSRSchema = (t: any) => z.object({
+  producerName: z.string().min(1, { message: t('products.gpsr.validation.producerNameRequired') }),
+  producerAddress: z.string().min(1, { message: t('products.gpsr.validation.producerAddressRequired') }),
+  producerContact: z.string().min(1, { message: t('products.gpsr.validation.producerContactRequired') }),
   importerName: z.string().optional(),
   importerAddress: z.string().optional(),
   importerContact: z.string().optional(),
-  instructions: z.string().min(1, 'Instrukcje/ostrzeżenia są wymagane'),
+  instructions: z.string().min(1, { message: t('products.gpsr.validation.instructionsRequired') }),
   certificates: z.string().optional(),
 });
 
-type GPSRFormValues = z.infer<typeof GPSRSchema>;
+type GPSRFormValues = z.infer<ReturnType<typeof GPSRSchema>>;
 
 export const ProductGPSREdit = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [isSaving, setIsSaving] = useState(false);
@@ -61,7 +63,7 @@ export const ProductGPSREdit = () => {
 
   // Initialize form with existing GPSR data
   const form = useForm<GPSRFormValues>({
-    resolver: zodResolver(GPSRSchema),
+    resolver: zodResolver(GPSRSchema(t)),
     defaultValues: gpsrData,
   });
 
@@ -99,11 +101,11 @@ export const ProductGPSREdit = () => {
         metadata: updatedMetadata,
       });
 
-      toast.success('Dane GPSR zostały zaktualizowane pomyślnie');
+      toast.success(t('products.gpsr.messages.updateSuccess'));
       navigate(`/products/${id}`);
     } catch (error) {
       console.error('Error updating GPSR data:', error);
-      toast.error('Nie udało się zaktualizować danych GPSR');
+      toast.error(t('products.gpsr.messages.updateError'));
     } finally {
       setIsSaving(false);
     }
@@ -123,7 +125,7 @@ export const ProductGPSREdit = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-8">
           {/* Producer Information - Required */}
           <div className="border-b pb-4">
-            <h3 className="text-lg font-medium mb-4">Dane Producenta</h3>
+            <h3 className="text-lg font-medium mb-4">{t('products.gpsr.sections.producer')}</h3>
             
             <Form.Field
               control={control}
@@ -132,7 +134,7 @@ export const ProductGPSREdit = () => {
                 return (
                   <Form.Item>
                     <Form.Label required>
-                      Nazwa Producenta
+                      {t('products.gpsr.fields.producerName')}
                     </Form.Label>
                     <Form.Control>
                       <Input {...field} />
@@ -150,13 +152,13 @@ export const ProductGPSREdit = () => {
                 return (
                   <Form.Item>
                     <Form.Label required>
-                      Adres Producenta
+                      {t('products.gpsr.fields.producerAddress')}
                     </Form.Label>
                     <Form.Control>
                       <Textarea 
                         {...field} 
                         rows={2}
-                        placeholder="np. ul. Producenta 123, 00-001 Warszawa, Polska"
+                        placeholder={t('products.gpsr.placeholders.producerAddress')}
                       />
                     </Form.Control>
                     <Form.ErrorMessage />
@@ -172,12 +174,12 @@ export const ProductGPSREdit = () => {
                 return (
                   <Form.Item>
                     <Form.Label required>
-                      Kontakt do Producenta
+                      {t('products.gpsr.fields.producerContact')}
                     </Form.Label>
                     <Form.Control>
                       <Input 
                         {...field} 
-                        placeholder="np. +48 123 456 789 lub email@example.com"
+                        placeholder={t('products.gpsr.placeholders.producerContact')}
                       />
                     </Form.Control>
                     <Form.ErrorMessage />
@@ -189,7 +191,7 @@ export const ProductGPSREdit = () => {
           
           {/* Importer Information - Optional */}
           <div className="border-b pb-4">
-            <h3 className="text-lg font-medium mb-4">Dane Importera (opcjonalnie)</h3>
+            <h3 className="text-lg font-medium mb-4">{t('products.gpsr.sections.importer')}</h3>
             
             <Form.Field
               control={control}
@@ -198,7 +200,7 @@ export const ProductGPSREdit = () => {
                 return (
                   <Form.Item>
                     <Form.Label>
-                      Nazwa Importera
+                      {t('products.gpsr.fields.importerName')}
                     </Form.Label>
                     <Form.Control>
                       <Input {...field} />
@@ -216,13 +218,13 @@ export const ProductGPSREdit = () => {
                 return (
                   <Form.Item>
                     <Form.Label>
-                      Adres Importera
+                      {t('products.gpsr.fields.importerAddress')}
                     </Form.Label>
                     <Form.Control>
                       <Textarea 
                         {...field} 
                         rows={2}
-                        placeholder="np. ul. Importowa 456, 00-002 Kraków, Polska"
+                        placeholder={t('products.gpsr.placeholders.importerAddress')}
                       />
                     </Form.Control>
                     <Form.ErrorMessage />
@@ -238,12 +240,12 @@ export const ProductGPSREdit = () => {
                 return (
                   <Form.Item>
                     <Form.Label>
-                      Kontakt do Importera
+                      {t('products.gpsr.fields.importerContact')}
                     </Form.Label>
                     <Form.Control>
                       <Input 
                         {...field} 
-                        placeholder="np. +48 987 654 321 lub kontakt@example.com"
+                        placeholder={t('products.gpsr.placeholders.importerContact')}
                       />
                     </Form.Control>
                     <Form.ErrorMessage />
@@ -255,7 +257,7 @@ export const ProductGPSREdit = () => {
 
           {/* Additional Information */}
           <div className="border-b pb-4">
-            <h3 className="text-lg font-medium mb-4">Dodatkowe Informacje</h3>
+            <h3 className="text-lg font-medium mb-4">{t('products.gpsr.sections.additional')}</h3>
             
             <Form.Field
               control={control}
@@ -264,13 +266,13 @@ export const ProductGPSREdit = () => {
                 return (
                   <Form.Item>
                     <Form.Label required>
-                      Instrukcje/Ostrzeżenia
+                      {t('products.gpsr.fields.instructions')}
                     </Form.Label>
                     <Form.Control>
                       <Textarea 
                         {...field} 
                         rows={4}
-                        placeholder="Instrukcje użytkowania, ostrzeżenia, informacje o bezpieczeństwie..."
+                        placeholder={t('products.gpsr.placeholders.instructions')}
                       />
                     </Form.Control>
                     <Form.ErrorMessage />
@@ -286,13 +288,13 @@ export const ProductGPSREdit = () => {
                 return (
                   <Form.Item>
                     <Form.Label>
-                      Certyfikaty/Zgodność
+                      {t('products.gpsr.fields.certificates')}
                     </Form.Label>
                     <Form.Control>
                       <Textarea 
                         {...field} 
                         rows={2}
-                        placeholder="Informacje o certyfikatach, zgodności z normami..."
+                        placeholder={t('products.gpsr.placeholders.certificates')}
                       />
                     </Form.Control>
                     <Form.ErrorMessage />
@@ -308,14 +310,14 @@ export const ProductGPSREdit = () => {
               variant="secondary"
               onClick={handleCancel}
             >
-              Anuluj
+              {t('common.cancel')}
             </Button>
             <Button
               type="submit"
               disabled={isSaving || !isDirty}
               isLoading={isSaving}
             >
-              Zapisz
+              {t('common.save')}
             </Button>
           </div>
         </form>

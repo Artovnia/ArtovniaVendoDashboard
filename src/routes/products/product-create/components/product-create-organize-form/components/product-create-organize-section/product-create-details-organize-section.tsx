@@ -73,12 +73,12 @@ export const ProductCreateOrganizationSection = ({
 
   return (
     <div id='organize' className='flex flex-col gap-y-8'>
-      <Heading>{t('products.organization.header')}</Heading>
+      <Heading>{t('formFields.shipping_profile.label')}</Heading>
       <SwitchBox
         control={form.control}
         name='discountable'
-        label={t('products.fields.discountable.label')}
-        description={t('products.fields.discountable.hint')}
+        label={t('formFields.discountable.label')}
+        description={t('formFields.discountable.hint')}
         optional
       />
       <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
@@ -89,7 +89,7 @@ export const ProductCreateOrganizationSection = ({
             return (
               <Form.Item>
                 <Form.Label>
-                  {t('products.fields.shipping_profile.label', 'Profil wysyłki')}
+                  {t('formFields.shipping_profile.label')}
                 </Form.Label>
                 <Form.Control>
                   <Combobox
@@ -114,7 +114,7 @@ export const ProductCreateOrganizationSection = ({
             return (
               <Form.Item>
                 <Form.Label>
-                  {t('products.fields.categories.label')}
+                  {t('formFields.categories.label')}
                 </Form.Label>
                 <Form.Control>
                   <CategorySelect {...field} />
@@ -133,7 +133,7 @@ export const ProductCreateOrganizationSection = ({
             return (
               <Form.Item>
                 <Form.Label optional>
-                  {t('products.fields.tags.label')}
+                  {t('formFields.tags.label')}
                 </Form.Label>
                 <Form.Control>
                   <Combobox

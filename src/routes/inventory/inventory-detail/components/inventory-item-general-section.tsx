@@ -52,6 +52,7 @@ export const InventoryItemGeneralSection = ({
         title={t('fields.inStock')}
         value={getQuantityFormat(
           inventoryItem.stocked_quantity,
+          t,
           inventoryItem.location_levels?.length
         )}
       />
@@ -60,6 +61,7 @@ export const InventoryItemGeneralSection = ({
         title={t('inventory.reserved')}
         value={getQuantityFormat(
           inventoryItem.reserved_quantity,
+          t,
           inventoryItem.location_levels?.length
         )}
       />
@@ -70,6 +72,7 @@ export const InventoryItemGeneralSection = ({
             inventoryItem.stocked_quantity,
             inventoryItem.reserved_quantity
           ),
+          t,
           inventoryItem.location_levels?.length
         )}
       />
@@ -79,10 +82,16 @@ export const InventoryItemGeneralSection = ({
 
 const getQuantityFormat = (
   quantity: number | undefined,
+  t: any,
   locations?: number
 ): string => {
   if (quantity !== undefined && !isNaN(quantity)) {
-    return `${quantity} across ${locations ?? '-'} locations`;
+    const locationCount = locations ?? 0;
+    return t('products.variant.tableItem', {
+      count: locationCount,
+      availableCount: quantity,
+      locationCount: locationCount
+    });
   }
 
   return '-';

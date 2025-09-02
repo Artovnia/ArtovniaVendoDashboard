@@ -222,9 +222,9 @@ export const ProductCreateColorSchemeForm = ({
   return (
     <div className="p-6 space-y-8 flex flex-col items-center">
       <div className="space-y-2 w-full max-w-3xl text-center">
-        <Heading level="h2">{t('products.create.color_scheme.title', 'Schemat kolorów')}</Heading>
+        <Heading level="h2">{t('products.color_scheme.title')}</Heading>
         <Text className="text-ui-fg-subtle">
-          {t('products.create.color_scheme.description', 'Przypisz kolory do wariantów produktu. Każdy wariant może mieć kilka kolorów.')}
+          {t('products.color_scheme.description')}
         </Text>
       </div>
       
@@ -233,8 +233,7 @@ export const ProductCreateColorSchemeForm = ({
           <div className="flex items-center gap-2 text-ui-fg-subtle">
             <Swatch className="h-5 w-5 flex-shrink-0" />
             <Text>
-              {t('products.create.color_scheme.no_color_option_warning', 
-                'Ten produkt nie ma jeszcze opcji koloru. Zalecamy dodanie opcji koloru aby ułatwić wyszukiwanie produktu w sklepie.')}
+              {t('products.color_scheme.no_color_option_warning')}
             </Text>
           </div>
         </div>
@@ -247,7 +246,7 @@ export const ProductCreateColorSchemeForm = ({
             
             const variantTitle = variant.title || 
               (Array.isArray(variant.options) && variant.options.length ? variant.options.map((o: any) => o.value).join(' / ') : 
-                t('products.create.color_scheme.default_variant', 'Domyślny wariant'));
+                t('products.color_scheme.default_variant'));
             
             const variantColorIds = variantColors[variantId] || [];
             const hasAssignedColors = variantColorIds.length > 0;
@@ -274,8 +273,8 @@ export const ProductCreateColorSchemeForm = ({
                   <div className="flex items-center justify-between">
                     <Text weight="plus">
                       {index === 0 && !hasVariants 
-                        ? t('products.create.color_scheme.default_variant') 
-                        : t('products.create.color_scheme.variant_name', { name: variantTitle })}
+                        ? t('products.color_scheme.default_variant') 
+                        : t('products.color_scheme.variant_name', { name: variantTitle })}
                     </Text>
                     
                     {/* Copy colors dropdown - only show if there are variants to copy from */}
@@ -284,7 +283,7 @@ export const ProductCreateColorSchemeForm = ({
                         <DropdownMenu.Trigger asChild>
                           <Button variant="secondary" size="small">
                             <SquareTwoStack className="h-4 w-4" />
-                            Kopiuj kolory
+                            {t('products.color_scheme.copy_colors')}
                           </Button>
                         </DropdownMenu.Trigger>
                         <DropdownMenu.Content align="end">
@@ -293,7 +292,7 @@ export const ProductCreateColorSchemeForm = ({
                               onClick={() => handleCopyFromPrevious(variantId)}
                             >
                               <SquareTwoStack className="h-4 w-4" />
-                              Kopiuj z poprzedniego wariantu
+                              {t('products.color_scheme.copy_from_previous')}
                             </DropdownMenu.Item>
                           )}
                           
@@ -313,7 +312,7 @@ export const ProductCreateColorSchemeForm = ({
                                 onClick={() => handleCopyFromVariant(variantId, sourceId)}
                               >
                                 <SquareTwoStack className="h-4 w-4" />
-                                Kopiuj z: {sourceTitle}
+                                {t('products.color_scheme.copy_from_variant', { name: sourceTitle })}
                               </DropdownMenu.Item>
                             );
                           })}
@@ -328,7 +327,7 @@ export const ProductCreateColorSchemeForm = ({
                     {hasAssignedColors && (
                       <div className="mb-4">
                         <Text className="text-ui-fg-subtle font-medium mb-3">
-                          {t('products.create.color_scheme.assigned_colors')}
+                          {t('products.color_scheme.assigned_colors')}
                         </Text>
                         <div className="flex flex-wrap gap-3">
                           {variantColorIds.map(colorId => {
@@ -374,14 +373,14 @@ export const ProductCreateColorSchemeForm = ({
                     <div>
                       <Text className="font-medium mb-2">
                         {hasAssignedColors 
-                          ? t('products.create.color_scheme.add_more_colors') 
-                          : t('products.create.color_scheme.add_color')}
+                          ? t('products.color_scheme.add_more_colors') 
+                          : t('products.color_scheme.add_color')}
                       </Text>
                       <ColorSelector 
                         value={null}
                         onChange={(colorId) => colorId && handleAddColor(variantId, colorId)}
-                        placeholder={t('products.create.color_scheme.select_color')}
-                        label={t('products.create.color_scheme.color')}
+                        placeholder={t('products.color_scheme.select_color')}
+                        label={t('products.color_scheme.color')}
                         showColorPreview={true}
                       />
                     </div>

@@ -226,15 +226,6 @@
         "changelog": "Changelog",
         "shortcuts": "Shortcuts",
         "profileSettings": "Profile settings",
-        "theme": {
-          "label": "Theme",
-          "dark": "Dark",
-          "light": "Light",
-          "system": "System"
-        }
-      },
-      "store": {
-        "label": "Store",
         "storeSettings": "Store settings"
       },
       "actions": {
@@ -410,18 +401,168 @@
       "tabs": {
         "details": "Details",
         "organize": "Organize",
-        "color_scheme": "Color Scheme",
+        "color_scheme": "Colors",
         "variants": "Variants",
-        "inventory": "Inventory kits"
+        "inventory": "Inventory"
       },
-      "color_scheme": {
+      "validation": {
+        "titleRequired": "Product title is required",
+        "shippingProfileRequired": "Shipping profile is required",
+        "categoryRequired": "Product category is required",
+        "imageRequired": "At least one image is required",
+        "producerNameRequired": "Producer name is required",
+        "producerAddressRequired": "Producer address is required",
+        "producerContactRequired": "Producer contact is required",
+        "instructionsRequired": "Instructions/Warnings are required",
+        "fillAllRequiredFields": "Please fill all required fields before proceeding"
+      },
+      "variantHeaders": {
+        "options": "Options",
+        "title": "Title",
+        "sku": "SKU",
+        "ean": "EAN",
+        "barcode": "Barcode",
+        "manage_inventory": "Manage inventory",
+        "allow_backorder": "Allow backorder",
+        "price": "Price"
+      },
+      "errors": {
+        "productCreateFailed": "Failed to create product. Please try again.",
+        "options": "Please add at least one option with values",
+        "variants": "Please select at least one variant to create"
+      },
+      "variants": {
+        "header": "Variants",
+        "subHeadingTitle": "This product has variants",
+        "subHeadingDescription": "Create variants if this product comes in multiple options like size, color, material, etc.",
+        "productOptions": {
+          "label": "Product Options",
+          "hint": "Add options like size, color, material that will be used to create variants"
+        },
+        "productVariants": {
+          "label": "Product Variants",
+          "hint": "Select which variants you want to create for this product",
+          "alert": "Add product options to generate variants",
+          "tip": "You can reorder variants by dragging them. The first variant will be the default."
+        }
+      }
+    },
+    "fields": {
+      "title": {
+        "label": "Title"
+      },
+      "subtitle": {
+        "label": "Subtitle"
+      },
+      "description": {
+        "label": "Description"
+      },
+      "handle": {
+        "tooltip": "A unique identifier for the product. If left blank, it will be generated from the title."
+      },
+      "options": {
+        "optionTitlePlaceholder": "Size, Color, Material",
+        "variantionsPlaceholder": "S, M, L, XL"
+      }
+    },
+    "products": {
+      "gpsr": {
+        "title": "GPSR Information",
+        "description": "Enter information in accordance with the General Product Safety Regulation (GPSR) for this product.",
+        "sections": {
+          "producer": "Producer Information",
+          "importer": "Importer Information (Optional)",
+          "additional": "Additional Information"
+        },
+        "fields": {
+          "producerName": "Producer Name",
+          "producerAddress": "Producer Address",
+          "producerContact": "Producer Contact",
+          "importerName": "Importer Name",
+          "importerAddress": "Importer Address",
+          "importerContact": "Importer Contact",
+          "instructions": "Instructions/Warnings",
+          "certificates": "Certificates/Compliance"
+        },
+        "producer": {
+          "name": {
+            "description": "Full name of the producer company.",
+            "placeholder": "e.g. XYZ Company Ltd."
+          },
+          "address": {
+            "description": "Full address of the producer's headquarters.",
+            "placeholder": "e.g. 123 Example Street, 00-001 Warsaw, Poland"
+          },
+          "contact": {
+            "description": "Email or phone number to contact the producer.",
+            "placeholder": "e.g. contact@company.com or +48 123 456 789"
+          }
+        },
+        "importer": {
+          "name": {
+            "description": "Full name of the importer company (required only if producer is outside EU).",
+            "placeholder": "e.g. EU Import Ltd."
+          },
+          "address": {
+            "description": "Full address of the importer's headquarters (required only if producer is outside EU).",
+            "placeholder": "e.g. 456 Import Street, 00-002 Krakow, Poland"
+          },
+          "contact": {
+            "description": "Email or phone number to contact the importer (required only if producer is outside EU).",
+            "placeholder": "e.g. import@company.eu or +48 987 654 321"
+          }
+        },
+        "instructions": {
+          "description": "Any instructions, warnings, or precautions to be taken when using this product.",
+          "placeholder": "e.g. Keep away from children under 3 years. Product contains small parts."
+        },
+        "certificates": {
+          "description": "Reference numbers of compliance certificates for this product, if applicable.",
+          "placeholder": "e.g. CE-12345-2023, ISO-9001"
+        }
+      }
+    },
+    "shippingProfile": {
+      "header": "Shipping Configuration",
+      "currentlyAssigned": "Currently assigned shipping profile:",
+      "noProfileAssigned": "No shipping profile assigned",
+      "noProfileDescription": "This product does not have a shipping profile assigned. Products without shipping profiles cannot be purchased.",
+      "edit": {
+        "header": "Shipping Configuration",
+        "toasts": {
+          "success": "Successfully updated the shipping profile for {{title}}."
+        }
+      },
+      "create": {
+        "errors": {
+          "required": "Shipping profile is required"
+        }
+      }
+    },
+    "color_scheme": {
+        "title": "Color Scheme",
+        "description": "Assign colors to product variants. Each variant can have multiple colors.",
         "default_variant": "Default Variant",
         "variant_name": "Variant: {{name}}",
         "assigned_colors": "Assigned Colors",
         "add_more_colors": "Add More Colors",
         "add_color": "Add Color",
         "select_color": "Select color for this variant",
-        "color": "Color"
+        "color": "Color",
+        "no_color_option_warning": "This product doesn't have a color option yet. We recommend adding a color option to make the product easier to find in the store.",
+        "copy_colors": "Copy Colors",
+        "copy_from_previous": "Copy from previous variant",
+        "copy_from_variant": "Copy from: {{name}}"
+      },
+      "variantHeaders": {
+        "options": "Options",
+        "title": "Title",
+        "sku": "SKU",
+        "ean": "EAN",
+        "barcode": "Barcode",
+        "manage_inventory": "Manage Inventory",
+        "allow_backorder": "Allow Backorder",
+        "price": "Price"
       },
       "errors": {
         "variants": "Please select at least one variant.",
@@ -510,56 +651,22 @@
       "stockColumn": "Stock",
       "actionsColumn": "Actions"
     },
-   
-    "gpsr": {
-      "title": "GPSR Information",
-      "producer": {
-        "section": "Producer Information",
-        "name": {
-          "label": "Producer Name",
-          "placeholder": "e.g. Company XYZ Ltd."
-        },
-        "address": {
-          "label": "Producer Address",
-          "placeholder": "e.g. 123 Example St, 00-001 Warsaw, Poland"
-        },
-        "contact": {
-          "label": "Producer Contact",
-          "placeholder": "e.g. contact@company.com or +48 123 456 789"
-        }
-      },
-      "importer": {
-        "section": "Importer Information (if producer outside EU)",
-        "name": {
-          "label": "Importer Name",
-          "placeholder": "e.g. Import EU Ltd."
-        },
-        "address": {
-          "label": "Importer Address",
-          "placeholder": "e.g. 456 Import St, 00-002 Krakow, Poland"
-        },
-        "contact": {
-          "label": "Importer Contact",
-          "placeholder": "e.g. import@company.eu or +48 987 654 321"
-        }
-      },
-      "instructions": {
-        "label": "Instructions / Warnings",
-        "placeholder": "e.g. Keep away from children under 3 years. Product contains small parts."
-      },
-      "certificates": {
-        "label": "Certificates",
-        "placeholder": "e.g. CE-12345-2023, ISO-9001"
-      }
-    },
     "attributes": "Attributes",
     "editAttributes": "Edit Attributes",
     "editOptions": "Edit Options",
     "editPrices": "Edit prices",
     "media": {
       "label": "Media",
+      "header": "Media",
+      "edit": "Edit",
       "editHint": "Add media to the product to showcase it in your storefront.",
       "makeThumbnail": "Make thumbnail",
+      "recommendations": {
+        "title": "Recommendations",
+        "format": "Recommended format: WebP (supports JPEG, PNG, GIF, BMP, TIFF, SVG)",
+        "maxSize": "Maximum file size: 50MB per file",
+        "totalSize": "Maximum total size: 200MB"
+      },
       "uploadImagesLabel": "Upload images",
       "uploadImagesHint": "Drag and drop images here or click to upload.",
       "invalidFileType": "'{{name}}' is not a supported file type. Supported file types are: {{types}}.",
@@ -572,12 +679,6 @@
       "galleryLabel": "Gallery",
       "downloadImageLabel": "Download current image",
       "deleteImageLabel": "Delete current image",
-      "recommendations": {
-        "title": "Recommendations",
-        "format": "Recommended format: WebP (supports JPEG, PNG, GIF, BMP, TIFF, SVG)",
-        "maxSize": "Maximum file size: 50MB per file",
-        "totalSize": "Maximum total size: 200MB"
-      },
       "emptyState": {
         "header": "No media yet",
         "description": "Add media to the product to showcase it in your storefront.",
@@ -585,7 +686,6 @@
       },
       "successToast": "Media was successfully updated."
     },
-    "discountableHint": "When unchecked, discounts will not be applied to this product.",
     "noSalesChannels": "Not available in any sales channels",
     "variantCount_one": "{{count}} variant",
     "variantCount_other": "{{count}} variants",
@@ -596,7 +696,7 @@
       "proposed": "Proposed",
       "rejected": "Rejected"
     },
-    "fields": {
+    "formFields": {
       "title": {
         "label": "Title",
         "hint": "Give your product a short and clear title.<0/>50-60 characters is the recommended length for search engines."
@@ -664,10 +764,6 @@
         "variations": "Variations (comma-separated)",
         "variantionsPlaceholder": "Red, Blue, Green"
       },
-      "variants": {
-        "label": "Product variants",
-        "hint": "Variants left unchecked won't be created, This ranking will affect how the variants are ranked in your frontend."
-      },
       "mid_code": {
         "label": "Mid code"
       },
@@ -688,9 +784,10 @@
       "tableItemAvailable": "{{availableCount}} available",
       "tableItem_one": "{{availableCount}} available at {{locationCount}} location",
       "tableItem_other": "{{availableCount}} available at {{locationCount}} locations",
+      "tableItem": "{{availableCount}} available at {{locationCount}} location",
       "goToInventory": "Go to inventory",
       "colors": {
-        "successToast": "Variant colors updated successfully",
+        "successToast": "Product exported successfully",
         "errorToast": "Failed to update variant colors",
         "noColorsSelected": "No colors selected",
         "helpText": "Select colors for this variant",
@@ -787,7 +884,10 @@
       }
     },
     "shippingProfile": {
-      "header": "Shipping configuration",
+      "header": "Shipping Profile",
+      "currentlyAssigned": "Currently assigned",
+      "noProfileAssigned": "No shipping profile assigned",
+      "noProfileDescription": "This product has no shipping profile",
       "edit": {
         "header": "Shipping Configuration",
         "toasts": {
@@ -810,7 +910,6 @@
           "header": "Failed to delete product"
         }
       }
-    }
   },
   "collections": {
     "domain": "Collections",
@@ -1080,6 +1179,11 @@
         "noRecordsMessage": "This group doesn't have customers."
       }
     }
+  },
+  "media": {
+    "uploadImagesLabel": "Upload Images",
+    "uploadImagesHint": "Drag and drop images here or click to browse",
+    "invalidFileType": "File {{name}} has an invalid format. Please use one of: {{types}}"
   },
   "orders": {
     "domain": "Orders",
@@ -2436,6 +2540,46 @@
     "domain": "Store",
     "manageYourStoresDetails": "Manage your store's details",
     "editStore": "Edit store",
+    "fields": {
+      "photo": "Photo"
+    },
+    "company": {
+      "title": "Company Information",
+      "description": "Update company information",
+      "fields": {
+        "address": "Address",
+        "postalCode": "Postal Code",
+        "city": "City",
+        "country": "Country",
+        "taxId": "Tax ID"
+      },
+      "actions": {
+        "edit": "Edit"
+      }
+    },
+    "edit": {
+      "title": "Edit Store",
+      "header": "Edit Store",
+      "companyTitle": "Edit Company",
+      "fields": {
+        "logo": "Logo",
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone Number",
+        "description": "Description",
+        "address": "Address",
+        "postalCode": "Postal Code",
+        "city": "City",
+        "country": "Country",
+        "taxId": "Tax ID"
+      },
+      "messages": {
+        "storeUpdated": "Store updated"
+      }
+    },
+    "toast": {
+      "storeUpdated": "Store updated"
+    },
     "defaultCurrency": "Default currency",
     "defaultRegion": "Default region",
     "defaultSalesChannel": "Default sales channel",
@@ -2450,9 +2594,6 @@
     "removeCurrencyWarning_one": "You are about to remove {{count}} currency from your store. Ensure that you have removed all prices using the currency before proceeding.",
     "removeCurrencyWarning_other": "You are about to remove {{count}} currencies from your store. Ensure that you have removed all prices using the currencies before proceeding.",
     "currencyAlreadyAdded": "The currency has already been added to your store.",
-    "edit": {
-      "header": "Edit Store"
-    },
     "toast": {
       "update": "Store successfully updated",
       "currenciesUpdated": "Currencies updated successfully",
@@ -3286,6 +3427,7 @@
   "common": {
     "loading": "Loading...",
     "save": "Save",
+    "cancel": "Cancel",
     "debugInfo": "Debug Info"
   },
   "navigation": {
@@ -3452,5 +3594,49 @@
     "orders": "Orders",
     "customers": "Customers",
     "messages": "Messages"
+  },
+  "auth": {
+    "login": {
+      "title": "Login to Artovnia Panel",
+      "subtitle": "Sign in to the vendor panel",
+      "emailPlaceholder": "Email",
+      "passwordPlaceholder": "Password",
+      "submitButton": "Sign In",
+      "forgotPassword": "Forgot your password?",
+      "resetPassword": "Reset Password",
+      "noAccount": "Don't have a vendor account yet?",
+      "registerLink": "Register"
+    },
+    "register": {
+      "title": "Vendor Registration",
+      "subtitle": "Fill out the vendor registration form",
+      "companyNamePlaceholder": "Company Name",
+      "confirmPasswordPlaceholder": "Confirm Password",
+      "taxIdPlaceholder": "Tax ID / NIP (optional)",
+      "productDescriptionLabel": "Product Description *",
+      "productDescriptionPlaceholder": "Product Description",
+      "portfolioLinkPlaceholder": "Portfolio Link (optional)",
+      "submitButton": "Register",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Sign In",
+      "successTitle": "Thank you for registering!",
+      "successMessage": "You must wait for approval by an administrator. A confirmation email will be sent to you after acceptance.",
+      "backToLogin": "Back to Login"
+    },
+    "validation": {
+      "invalidEmail": "Invalid email address",
+      "passwordRequired": "Password is required",
+      "nameMinLength": "Name must be at least 2 characters",
+      "passwordMinLength": "Password must be at least 2 characters",
+      "confirmPasswordMinLength": "Confirm password must be at least 2 characters",
+      "passwordMismatch": "Passwords do not match",
+      "productDescriptionRequired": "Please describe what you want to sell",
+      "invalidUrl": "Must be a valid URL or empty"
+    }
+  },
+  "languageSwitcher": {
+    "label": "Language:",
+    "english": "English",
+    "polish": "Polski"
   }
 }

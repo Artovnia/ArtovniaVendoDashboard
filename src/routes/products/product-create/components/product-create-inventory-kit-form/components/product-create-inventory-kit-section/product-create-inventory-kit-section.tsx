@@ -58,7 +58,7 @@ function VariantSection({ form, variant, index }: VariantSectionProps) {
       <div className="flex items-start justify-between gap-x-4">
         <div className="flex flex-col">
           <Form.Label>{variant.title}</Form.Label>
-          <Form.Hint>{t("products.create.inventory.label")}</Form.Hint>
+          <Form.Hint>{t("products.inventory.label")}</Form.Hint>
         </div>
         <Button
           size="small"
@@ -109,7 +109,7 @@ function VariantSection({ form, variant, index }: VariantSectionProps) {
                         fetchNextPage={items.fetchNextPage}
                         className="bg-ui-bg-field-component hover:bg-ui-bg-field-component-hover"
                         placeholder={t(
-                          "products.create.inventory.itemPlaceholder"
+                          "products.inventory.itemPlaceholder"
                         )}
                       />
                     </Form.Control>
@@ -151,7 +151,7 @@ function VariantSection({ form, variant, index }: VariantSectionProps) {
                         }}
                         {...field}
                         placeholder={t(
-                          "products.create.inventory.quantityPlaceholder"
+                          "products.inventory.quantityPlaceholder"
                         )}
                       />
                     </Form.Control>
@@ -192,7 +192,7 @@ export const ProductCreateInventoryKitSection = ({
 
   return (
     <div id="organize" className="flex flex-col gap-y-8">
-      <Heading>{t("products.create.inventory.heading")}</Heading>
+      <Heading>{t("products.inventory.heading")}</Heading>
 
       {variants.fields
         .filter((v) => v.inventory_kit)

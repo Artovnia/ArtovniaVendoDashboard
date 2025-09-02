@@ -89,7 +89,7 @@ export const EditStoreForm = ({
       if (invalidFile) {
         form.setError('media', {
           type: 'invalid_file',
-          message: t('products.media.invalidFileType', {
+          message: t('media.invalidFileType', {
             name: invalidFile.file.name,
             types:
               SUPPORTED_FORMATS_FILE_EXTENSIONS.join(', '),
@@ -154,7 +154,7 @@ export const EditStoreForm = ({
       },
       {
         onSuccess: () => {
-          toast.success('Store updated');
+          toast.success(t('store.edit.messages.storeUpdated'));
 
           handleSuccess();
         },
@@ -182,7 +182,7 @@ export const EditStoreForm = ({
                     <div className='flex flex-col gap-y-2'>
                       <div className='flex flex-col gap-y-1'>
                         <Form.Label optional>
-                          Logo
+                          {t("store.edit.fields.logo")}
                         </Form.Label>
                       </div>
                       <Form.Control>
@@ -192,10 +192,10 @@ export const EditStoreForm = ({
                           }
                           multiple={false}
                           label={t(
-                            'products.media.uploadImagesLabel'
+                            'media.uploadImagesLabel'
                           )}
                           hint={t(
-                            'products.media.uploadImagesHint'
+                            'media.uploadImagesHint'
                           )}
                           hasError={
                             !!form.formState.errors.media
@@ -215,7 +215,7 @@ export const EditStoreForm = ({
               control={form.control}
               render={({ field }) => (
                 <Form.Item>
-                  <Form.Label>Name</Form.Label>
+                  <Form.Label>{t('store.edit.fields.name')}</Form.Label>
                   <Form.Control>
                     <Input {...field} />
                   </Form.Control>
@@ -228,7 +228,7 @@ export const EditStoreForm = ({
               control={form.control}
               render={({ field }) => (
                 <Form.Item>
-                  <Form.Label>Email</Form.Label>
+                  <Form.Label>{t('store.edit.fields.email')}</Form.Label>
                   <Form.Control>
                     <Input {...field} />
                   </Form.Control>
@@ -241,7 +241,7 @@ export const EditStoreForm = ({
               control={form.control}
               render={({ field }) => (
                 <Form.Item>
-                  <Form.Label>Phone Number</Form.Label>
+                  <Form.Label>{t('store.edit.fields.phone')}</Form.Label>
                   <Form.Control>
                     <Input {...field} />
                   </Form.Control>
@@ -254,7 +254,7 @@ export const EditStoreForm = ({
               control={form.control}
               render={({ field }) => (
                 <Form.Item>
-                  <Form.Label>Description</Form.Label>
+                  <Form.Label>{t('store.edit.fields.description')}</Form.Label>
                   <Form.Control>
                     <Textarea {...field} />
                   </Form.Control>

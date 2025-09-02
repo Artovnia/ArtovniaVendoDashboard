@@ -85,7 +85,7 @@ export const ProductShippingProfileSection = ({
                   {shippingProfile.name || `Profile ${shippingProfile.id}`}
                 </span>
                 <span className="text-ui-fg-subtle">
-                  Obecnie przypisany
+                  {t("products.shippingProfile.currentlyAssigned")}
                 </span>
               </div>
             </div>
@@ -98,10 +98,10 @@ export const ProductShippingProfileSection = ({
               </div>
               <div className="flex flex-1 flex-col">
                 <span className="text-ui-fg-muted font-medium">
-                  No shipping profile assigned
+                  {t("products.shippingProfile.noProfileAssigned")}
                 </span>
                 <span className="text-ui-fg-subtle">
-                  This product has no shipping profile
+                  {t("products.shippingProfile.noProfileDescription")}
                 </span>
               </div>
             </div>

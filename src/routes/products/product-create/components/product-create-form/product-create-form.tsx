@@ -82,7 +82,7 @@ export const ProductCreateForm = ({
           ]
         : [],
     },
-    schema: ProductCreateSchema,
+    schema: ProductCreateSchema(t),
     configs,
   });
 
@@ -510,7 +510,7 @@ export const ProductCreateForm = ({
     
     switch (currentTab) {
       case Tab.DETAILS:
-        valid = await form.trigger(['title'] as any);
+        valid = await form.trigger(['title', 'media', 'metadata.gpsr_producer_name', 'metadata.gpsr_producer_address', 'metadata.gpsr_producer_contact', 'metadata.gpsr_instructions'] as any);
         break;
       case Tab.ORGANIZE:
         valid = await form.trigger(['shipping_profile_id', 'categories'] as any);
@@ -642,7 +642,7 @@ export const ProductCreateForm = ({
             
             switch (tab) {
               case Tab.DETAILS:
-                valid = await form.trigger(['title'] as any);
+                valid = await form.trigger(['title', 'media', 'metadata.gpsr_producer_name', 'metadata.gpsr_producer_address', 'metadata.gpsr_producer_contact', 'metadata.gpsr_instructions'] as any);
                 break;
               case Tab.ORGANIZE:
                 valid = await form.trigger(['shipping_profile_id', 'categories'] as any);

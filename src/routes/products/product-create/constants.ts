@@ -56,17 +56,17 @@ export type ProductCreateOptionSchema = z.infer<
   typeof ProductCreateOptionSchema
 >
 
-export const ProductCreateSchema = z
+export const ProductCreateSchema = (t: any) => z
   .object({
-    title: z.string().min(1),
+    title: z.string().min(1, { message: t('products.create.validation.titleRequired') }),
     subtitle: z.string().optional(),
     handle: z.string().optional(),
     description: z.string().optional(),
     discountable: z.boolean(),
     type_id: z.string().optional(),
     collection_id: z.string().optional(),
-    shipping_profile_id: z.string().min(1, "Profil wysyłki jest wymagany"),
-    categories: z.array(z.string()).min(1, "Kategoria produktu jest wymagana"),
+    shipping_profile_id: z.string().min(1, { message: t('products.create.validation.shippingProfileRequired') }),
+    categories: z.array(z.string()).min(1, { message: t('products.create.validation.categoryRequired') }),
     tags: z.array(z.string()).optional(),
     sales_channels: z
       .array(
@@ -87,23 +87,23 @@ export const ProductCreateSchema = z
     options: z.array(ProductCreateOptionSchema).min(1),
     enable_variants: z.boolean(),
     variants: z.array(ProductCreateVariantSchema).min(1),
-    media: z.array(MediaSchema).optional(),
+    media: z.array(MediaSchema).min(1, { message: t('products.create.validation.imageRequired') }),
     // Record of variant IDs to color IDs for color assignments (array of colors per variant)
     color_assignments: z.record(z.string(), z.array(z.string())).optional(),
     metadata: z.object({
-      gpsr_producer_name: z.string().min(1, "Nazwa producenta jest wymagana"),
-      gpsr_producer_address: z.string().min(1, "Adres producenta jest wymagany"),
-      gpsr_producer_contact: z.string().min(1, "Kontakt do producenta jest wymagany"),
+      gpsr_producer_name: z.string().min(1, { message: t('products.create.validation.producerNameRequired') }),
+      gpsr_producer_address: z.string().min(1, { message: t('products.create.validation.producerAddressRequired') }),
+      gpsr_producer_contact: z.string().min(1, { message: t('products.create.validation.producerContactRequired') }),
       gpsr_importer_name: z.string().optional(),
       gpsr_importer_address: z.string().optional(),
       gpsr_importer_contact: z.string().optional(),
-      gpsr_instructions: z.string().min(1, "Instrukcje/ostrzeżenia są wymagane"),
+      gpsr_instructions: z.string().min(1, { message: t('products.create.validation.instructionsRequired') }),
       gpsr_certificates: z.string().optional(),
       shipping_profile_id: z.string().optional(),
       // Color assignment metadata fields
       raw_color_assignments: z.record(z.string(), z.array(z.string())).optional(),
       handle_colors_via_api: z.boolean().optional(),
-    }).optional(),
+    }),
   })
   .superRefine((data, ctx) => {
     if (data.variants.every((v) => !v.should_create)) {
@@ -136,7 +136,7 @@ export const EditProductMediaSchema = z.object({
 })
 
 export const PRODUCT_CREATE_FORM_DEFAULTS: Partial<
-  z.infer<typeof ProductCreateSchema>
+  z.infer<ReturnType<typeof ProductCreateSchema>>
 > = {
   discountable: true,
   tags: [],

@@ -410,50 +410,66 @@
       "tabs": {
         "details": "Szczegóły",
         "organize": "Organizacja",
-        "color_scheme": "Schemat kolorów",
+        "color_scheme": "Kolory",
         "variants": "Warianty",
-        "inventory": "Zestawy magazynowe"
+        "inventory": "Inwentarz"
+      },
+      "validation": {
+        "titleRequired": "Tytuł produktu jest wymagany",
+        "shippingProfileRequired": "Profil wysyłki jest wymagany",
+        "categoryRequired": "Kategoria produktu jest wymagana",
+        "imageRequired": "Co najmniej jedno zdjęcie jest wymagane",
+        "producerNameRequired": "Nazwa producenta jest wymagana",
+        "producerAddressRequired": "Adres producenta jest wymagany",
+        "producerContactRequired": "Kontakt do producenta jest wymagany",
+        "instructionsRequired": "Instrukcje/ostrzeżenia są wymagane",
+        "fillAllRequiredFields": "Proszę wypełnić wszystkie wymagane pola przed kontynuowaniem"
       },
       "color_scheme": {
+        "title": "Schemat kolorów",
+        "description": "Przypisz kolory do wariantów produktu. Każdy wariant może mieć kilka kolorów.",
         "default_variant": "Domyślny wariant",
         "variant_name": "Wariant: {{name}}",
         "assigned_colors": "Przypisane kolory",
         "add_more_colors": "Dodaj więcej kolorów",
         "add_color": "Dodaj kolor",
         "select_color": "Wybierz kolor dla tego wariantu",
-        "color": "Kolor"
+        "color": "Kolor",
+        "no_color_option_warning": "Ten produkt nie ma jeszcze opcji koloru. Zalecamy dodanie opcji koloru aby ułatwić wyszukiwanie produktu w sklepie.",
+        "copy_colors": "Kopiuj kolory",
+        "copy_from_previous": "Kopiuj z poprzedniego wariantu",
+        "copy_from_variant": "Kopiuj z: {{name}}"
       },
-      "errors": {
-        "variants": "Wybierz co najmniej jeden wariant.",
-        "options": "Utwórz co najmniej jedną opcję.",
-        "uniqueSku": "SKU musi być unikalny."
+      "variantHeaders": {
+        "options": "Opcje",
+        "title": "Tytuł",
+        "sku": "SKU",
+        "ean": "EAN",
+        "barcode": "Kod kreskowy",
+        "manage_inventory": "Zarządzaj zapasami",
+        "allow_backorder": "Pozwól na zamówienia wsteczne",
+        "price": "Cena"
+      },
+      "variants": {
+        "header": "Warianty",
+        "subHeadingTitle": "Ten produkt ma warianty",
+        "subHeadingDescription": "Utwórz warianty, jeśli ten produkt występuje w różnych opcjach, takich jak rozmiar, kolor, materiał itp.",
+        "productOptions": {
+          "label": "Opcje Produktu",
+          "hint": "Dodaj opcje takie jak rozmiar, kolor, materiał, które będą używane do tworzenia wariantów"
+        },
+        "productVariants": {
+          "label": "Warianty Produktu",
+          "hint": "Wybierz warianty, które chcesz utworzyć dla tego produktu",
+          "alert": "Dodaj opcje produktu, aby wygenerować warianty",
+          "tip": "Możesz zmienić kolejność wariantów, przeciągając je. Pierwszy wariant będzie domyślny."
+        }
       },
       "inventory": {
         "heading": "Zestawy magazynowe",
         "label": "Dodaj pozycje magazynowe do zestawu wariantu.",
         "itemPlaceholder": "Wybierz pozycję magazynową",
         "quantityPlaceholder": "Ile z tych elementów jest potrzebnych do zestawu?"
-      },
-      "variants": {
-        "header": "Warianty",
-        "subHeadingTitle": "Tak, to produkt z wariantami",
-        "subHeadingDescription": "Jeśli odznaczone, stworzymy dla Ciebie domyślny wariant",
-        "optionTitle": {
-          "placeholder": "Rozmiar"
-        },
-        "optionValues": {
-          "placeholder": "Mały, Średni, Duży"
-        },
-        "productVariants": {
-          "label": "Warianty produktu",
-          "hint": "Ta kolejność wpłynie na porządek wariantów w Twoim sklepie.",
-          "alert": "Dodaj opcje, aby utworzyć warianty.",
-          "tip": "Warianty, które nie zostały wybrane, nie zostaną utworzone. Możesz zawsze później dodać i edytować warianty."
-        },
-        "productOptions": {
-          "label": "Opcje produktu",
-          "hint": "Określ opcje dla produktu, np. kolor, rozmiar, itp."
-        }
       },
       "successToast": "Produkt {{title}} został pomyślnie utworzony."
     },
@@ -510,47 +526,83 @@
       "stockColumn": "Stan",
       "actionsColumn": "Akcje"
     },
-    
-    "gpsr": {
-      "title": "Informacje GPSR",
-      "producer": {
-        "section": "Dane Producenta",
-        "name": {
-          "label": "Nazwa Producenta",
-          "placeholder": "np. Firma XYZ Sp. z o.o."
-        },
-        "address": {
-          "label": "Adres Producenta",
-          "placeholder": "np. ul. Przykładowa 123, 00-001 Warszawa, Polska"
-        },
-        "contact": {
-          "label": "Kontakt do Producenta",
-          "placeholder": "np. kontakt@firma.pl lub +48 123 456 789"
-        }
+    "fields": {
+      "title": {
+        "label": "Tytuł"
       },
-      "importer": {
-        "section": "Dane Importera (jeśli producent spoza UE)",
-        "name": {
-          "label": "Nazwa Importera",
-          "placeholder": "np. Import EU Sp. z o.o."
-        },
-        "address": {
-          "label": "Adres Importera",
-          "placeholder": "np. ul. Importowa 456, 00-002 Kraków, Polska"
-        },
-        "contact": {
-          "label": "Kontakt do Importera",
-          "placeholder": "np. import@firma.eu lub +48 987 654 321"
-        }
+      "subtitle": {
+        "label": "Podtytuł"
       },
-      "instructions": {
-        "label": "Instrukcje / Ostrzeżenia",
-        "placeholder": "np. Przechowywać z dala od dzieci poniżej 3 lat. Produkt zawiera małe elementy."
+      "description": {
+        "label": "Opis"
       },
-      "certificates": {
-        "label": "Certyfikaty",
-        "placeholder": "np. CE-12345-2023, ISO-9001"
+      "handle": {
+        "tooltip": "Unikalny identyfikator produktu. Jeśli pozostanie pusty, zostanie wygenerowany z tytułu."
+      },
+      "options": {
+        "optionTitlePlaceholder": "Rozmiar, Kolor, Materiał",
+        "variantionsPlaceholder": "S, M, L, XL"
       }
+    },
+    "products": {
+      "gpsr": {
+        "title": "Informacje GPSR",
+        "description": "Wprowadź informacje zgodne z Ogólnym Rozporządzeniem o Bezpieczeństwie Produktów (GPSR) dla tego produktu.",
+        "sections": {
+          "producer": "Dane Producenta",
+          "importer": "Dane Importera (opcjonalne)",
+          "additional": "Informacje dodatkowe"
+        },
+        "fields": {
+          "producerName": "Nazwa Producenta",
+          "producerAddress": "Adres Producenta",
+          "producerContact": "Kontakt do Producenta",
+          "importerName": "Nazwa Importera",
+          "importerAddress": "Adres Importera",
+          "importerContact": "Kontakt do Importera",
+          "instructions": "Instrukcje/Ostrzeżenia",
+          "certificates": "Certyfikaty/Zgodność"
+        },
+        "producer": {
+          "name": {
+            "description": "Pełna nazwa firmy producenta.",
+            "placeholder": "np. Firma XYZ Sp. z o.o."
+          },
+          "address": {
+            "description": "Pełny adres siedziby producenta.",
+            "placeholder": "np. ul. Przykładowa 123, 00-001 Warszawa, Polska"
+          },
+          "contact": {
+            "description": "Email lub numer telefonu do kontaktu z producentem.",
+            "placeholder": "np. kontakt@firma.com lub +48 123 456 789"
+          }
+        },
+        "importer": {
+          "name": {
+            "description": "Pełna nazwa firmy importera (wymagane tylko jeśli producent jest spoza UE).",
+            "placeholder": "np. Import UE Sp. z o.o."
+          },
+          "address": {
+            "description": "Pełny adres siedziby importera (wymagane tylko jeśli producent jest spoza UE).",
+            "placeholder": "np. ul. Importowa 456, 00-002 Kraków, Polska"
+          },
+          "contact": {
+            "description": "Email lub numer telefonu do kontaktu z importerem (wymagane tylko jeśli producent jest spoza UE).",
+            "placeholder": "np. import@firma.eu lub +48 987 654 321"
+          }
+        },
+        "instructions": {
+          "description": "Wszelkie instrukcje, ostrzeżenia lub środki ostrożności, które należy podjąć podczas korzystania z tego produktu.",
+          "placeholder": "np. Trzymać z dala od dzieci poniżej 3 lat. Produkt zawiera małe części."
+        },
+        "certificates": {
+          "description": "Certyfikaty zgodności lub bezpieczeństwa produktu.",
+          "placeholder": "np. CE-12345-2023, ISO-9001"
+        }
+      }
+    },
+    "organization": {
+      "header": "Organizuj"
     },
     "attributes": "Atrybuty",
     "editAttributes": "Edytuj atrybuty",
@@ -558,8 +610,16 @@
     "editPrices": "Edytuj ceny",
     "media": {
       "label": "Media",
+      "header": "Media",
+      "edit": "Edytuj",
       "editHint": "Dodaj media do produktu, aby zaprezentować go w swoim sklepie.",
       "makeThumbnail": "Ustaw jako miniaturę",
+      "recommendations": {
+        "title": "Rekomendacje",
+        "format": "Zalecany format: WebP (obsługuje JPEG, PNG, GIF, BMP, TIFF, SVG)",
+        "maxSize": "Maksymalny rozmiar pliku: 50MB na plik",
+        "totalSize": "Maksymalny całkowity rozmiar: 200MB"
+      },
       "uploadImagesLabel": "Prześlij obrazy",
       "uploadImagesHint": "Przeciągnij i upuść obrazy tutaj lub kliknij, aby przesłać.",
       "invalidFileType": "'{{name}}' nie jest obsługiwanym typem pliku. Obsługiwane typy plików to: {{types}}.",
@@ -572,12 +632,6 @@
       "galleryLabel": "Galeria",
       "downloadImageLabel": "Pobierz aktualny obraz",
       "deleteImageLabel": "Usuń aktualny obraz",
-      "recommendations": {
-        "title": "Rekomendacje",
-        "format": "Zalecany format: WebP (obsługuje JPEG, PNG, GIF, BMP, TIFF, SVG)",
-        "maxSize": "Maksymalny rozmiar pliku: 50MB na plik",
-        "totalSize": "Maksymalny całkowity rozmiar: 200MB"
-      },
       "emptyState": {
         "header": "Brak mediów",
         "description": "Dodaj media do produktu, aby zaprezentować go w swoim sklepie.",
@@ -596,25 +650,31 @@
       "proposed": "Proponowany",
       "rejected": "Odrzucony"
     },
-    "fields": {
+    "formFields": {
       "title": {
         "label": "Tytuł",
-        "hint": "Podaj krótki i jasny tytuł dla swojego produktu.<0/>Zalecana długość to 50-60 znaków dla wyszukiwarek."
+        "placeholder": "np. Elegancka koszulka bawełniana"
       },
       "subtitle": {
-        "label": "Podtytuł"
+        "label": "Podtytuł",
+        "placeholder": "np. Wygodna i stylowa"
       },
       "handle": {
         "label": "Uchwyt",
+        "placeholder": "np. elegancka-koszulka-bawelniana",
         "tooltip": "Uchwyt jest używany do odniesienia do produktu w Twoim sklepie. Jeśli nie zostanie określony, uchwyt zostanie wygenerowany z tytułu produktu."
       },
       "description": {
         "label": "Opis",
-        "hint": "Podaj krótki i jasny opis dla swojego produktu.<0/>Zalecana długość to 120-160 znaków dla wyszukiwarek."
+        "placeholder": "np. Ta wygodna koszulka wykonana jest z wysokiej jakości bawełny..."
       },
       "discountable": {
         "label": "Rabaty",
         "hint": "Jeśli odznaczone, rabaty nie będą stosowane do tego produktu"
+      },
+      "shipping_profile": {
+        "label": "Profil wysyłki",
+        "placeholder": "Wybierz profil wysyłki"
       },
       "type": {
         "label": "Typ"
@@ -636,7 +696,8 @@
         "label": "Kraj pochodzenia"
       },
       "material": {
-        "label": "Materiał"
+        "label": "Materiał",
+        "placeholder": "np. 100% bawełna"
       },
       "width": {
         "label": "Szerokość"
@@ -659,18 +720,30 @@
         "variations": "Warianty (oddzielone przecinkami)",
         "variantionsPlaceholder": "Czerwony, Niebieski, Zielony"
       },
-      "variants": {
-        "label": "Warianty produktu",
-        "hint": "Niezaznaczone warianty nie zostaną utworzone. Ta kolejność wpłynie na to, jak warianty będą uszeregowane w Twoim interfejsie."
-      },
       "mid_code": {
         "label": "Kod MID"
       },
       "hs_code": {
         "label": "Kod HS"
       },
-      "shipping_profile": {
-        "label": "Profil wysyłki"
+      "origin": {
+        "label": "Pochodzenie",
+        "description": "Kraj lub region pochodzenia produktu zgodnie z wymogami GPSR.",
+        "placeholder": "np. Polska, UE"
+      },
+      "safety_warning": {
+        "label": "Ostrzeżenia bezpieczeństwa",
+        "description": "Wszelkie instrukcje, ostrzeżenia lub środki ostrożności, które należy podjąć podczas korzystania z tego produktu.",
+        "placeholder": "np. Trzymać z dala od dzieci poniżej 3 lat. Produkt zawiera małe części."
+      },
+      "compliance_cert": {
+        "label": "Certyfikaty zgodności",
+        "description": "Certyfikaty zgodności lub bezpieczeństwa produktu.",
+        "placeholder": "np. CE-12345-2023, ISO-9001"
+      },
+      "options": {
+        "optionTitlePlaceholder": "Kolor",
+        "variantionsPlaceholder": "Czerwony, Niebieski, Zielony"
       }
     },
     "variant": {
@@ -686,6 +759,7 @@
       "tableItemAvailable": "{{availableCount}} dostępne",
       "tableItem_one": "{{availableCount}} dostępne w {{locationCount}} lokalizacji",
       "tableItem_other": "{{availableCount}} dostępne w {{locationCount}} lokalizacjach",
+      "tableItem": "{{availableCount}} dostępne w {{locationCount}} lokalizacji",
       "goToInventory": "Przejdź do magazynu",
       "colors": {
         "successToast": "Kolory wariantu zostały pomyślnie zaktualizowane",
@@ -788,6 +862,9 @@
     },
     "shippingProfile": {
       "header": "Profil wysyłki",
+      "currentlyAssigned": "Obecnie przypisany",
+      "noProfileAssigned": "Nie przypisano profilu wysyłki",
+      "noProfileDescription": "Ten produkt nie ma profilu wysyłki",
       "edit": {
         "header": "Konfiguracja wysyłki"
       }
@@ -1067,6 +1144,73 @@
         "noRecordsMessage": "Ta grupa nie ma klientów."
       }
     }
+  },
+  "store": {
+    "domain": "Sklep",
+    "manageYourStoresDetails": "Zarządzaj szczegółami swojego sklepu",
+    "editStore": "Edytuj sklep",
+    "defaultCurrency": "Domyślna waluta",
+    "defaultRegion": "Domyślny region",
+    "defaultSalesChannel": "Domyślny kanał sprzedaży",
+    "defaultLocation": "Domyślna lokalizacja",
+    "swapLinkTemplate": "Zamień szablon łącza",
+    "paymentLinkTemplate": "Szablon łącza do płatności",
+    "inviteLinkTemplate": "Szablon linku zaproszenia",
+    "currencies": "Waluty",
+    "addCurrencies": "Dodaj waluty",
+    "enableTaxInclusivePricing": "Włącz ceny zawierające podatek",
+    "disableTaxInclusivePricing": "Wyłącz ceny zawierające podatek",
+    "removeCurrencyWarning_one": "Zamierzasz usunąć walutę {{count}} ze swojego sklepu. Przed kontynuowaniem upewnij się, że usunąłeś wszystkie ceny w danej walucie.",
+    "removeCurrencyWarning_other": "Zamierzasz usunąć walutę {{count}} ze swojego sklepu. Przed kontynuowaniem upewnij się, że usunąłeś wszystkie ceny w walutach.",
+    "currencyAlreadyAdded": "Waluta została już dodana do Twojego sklepu.",
+    "fields": {
+      "photo": "Zdjęcie"
+    },
+    "company": {
+      "title": "Informacje o firmie",
+      "description": "Zaktualizuj informacje o firmie",
+      "fields": {
+        "address": "Adres",
+        "postalCode": "Kod pocztowy",
+        "city": "Miejscowość",
+        "country": "Kraj",
+        "taxId": "NIP"
+      },
+      "actions": {
+        "edit": "Edytuj"
+      }
+    },
+    "edit": {
+      "title": "Edytuj sklep",
+      "header": "Edytuj sklep",
+      "companyTitle": "Edytuj firmę",
+      "fields": {
+        "logo": "Logo",
+        "name": "Nazwa",
+        "email": "Email",
+        "phone": "Numer telefonu",
+        "description": "Opis",
+        "address": "Adres",
+        "postalCode": "Kod pocztowy",
+        "city": "Miejscowość",
+        "country": "Kraj",
+        "taxId": "NIP"
+      },
+      "messages": {
+        "storeUpdated": "Sklep zaktualizowany"
+      }
+    },
+    "toast": {
+      "update": "Sklep pomyślnie zaktualizowany",
+      "currenciesUpdated": "Waluty zostały pomyślnie zaktualizowane",
+      "currenciesRemoved": "Pomyślnie usunięto waluty ze sklepu",
+      "updatedTaxInclusivitySuccessfully": "Ceny zawierające podatek zostały pomyślnie zaktualizowane"
+    }
+  },
+  "media": {
+    "uploadImagesLabel": "Prześlij obrazy",
+    "uploadImagesHint": "Przeciągnij i upuść obrazy tutaj lub kliknij, aby przeglądać",
+    "invalidFileType": "Plik {{name}} ma nieprawidłowy format. Użyj jednego z: {{types}}"
   },
   "orders": {
     "domain": "Zamówienia",
@@ -2369,32 +2513,6 @@
     "deleteUserWarning": "Zamierzasz usunąć użytkownika {{name}}. Tej akcji nie można cofnąć.",
     "invite": "Zapraszać"
   },
-  "store": {
-    "domain": "Sklep",
-    "manageYourStoresDetails": "Zarządzaj szczegółami swojego sklepu",
-    "editStore": "Edytuj sklep",
-    "defaultCurrency": "Domyślna waluta",
-    "defaultRegion": "Domyślny region",
-    "swapLinkTemplate": "Zamień szablon łącza",
-    "paymentLinkTemplate": "Szablon łącza do płatności",
-    "inviteLinkTemplate": "Szablon linku zaproszenia",
-    "currencies": "Waluty",
-    "addCurrencies": "Dodaj waluty",
-    "enableTaxInclusivePricing": "Włącz ceny zawierające podatek",
-    "disableTaxInclusivePricing": "Wyłącz ceny zawierające podatek",
-    "removeCurrencyWarning_one": "Zamierzasz usunąć walutę {{count}} ze swojego sklepu. Przed kontynuowaniem upewnij się, że usunąłeś wszystkie ceny w danej walucie.",
-    "removeCurrencyWarning_other": "Zamierzasz usunąć walutę {{count}} ze swojego sklepu. Przed kontynuowaniem upewnij się, że usunąłeś wszystkie ceny w walutach.",
-    "currencyAlreadyAdded": "Waluta została już dodana do Twojego sklepu.",
-    "edit": {
-      "header": "Edytuj sklep"
-    },
-    "toast": {
-      "update": "Sklep pomyślnie zaktualizowany",
-      "currenciesUpdated": "Waluty zostały pomyślnie zaktualizowane",
-      "currenciesRemoved": "Pomyślnie usunięto waluty ze sklepu",
-      "updatedTaxInclusivitySuccessfully": "Ceny zawierające podatek zostały pomyślnie zaktualizowane"
-    }
-  },
   "regions": {
     "domain": "Regiony",
     "subtitle": "Region to obszar, na którym sprzedajesz produkty. Może obejmować wiele krajów i ma różne stawki podatkowe, dostawców i walutę.",
@@ -3197,6 +3315,7 @@
   "common": {
     "loading": "Ładowanie...",
     "save": "Zapisz",
+    "cancel": "Anuluj",
     "debugInfo": "Informacje debugowania"
   },
   "navigation": {
@@ -3368,5 +3487,49 @@
     "orders": "Zamówienia",
     "customers": "Klienci",
     "messages": "Wiadomości"
+  },
+  "auth": {
+    "login": {
+      "title": "Logowanie w Artovnia Panel",
+      "subtitle": "Zaloguj się do panelu sprzedawcy",
+      "emailPlaceholder": "Email",
+      "passwordPlaceholder": "Hasło",
+      "submitButton": "Zaloguj się",
+      "forgotPassword": "Nie pamiętasz hasła?",
+      "resetPassword": "Zresetuj hasło",
+      "noAccount": "Nie masz jeszcze konta sprzedawcy?",
+      "registerLink": "Zarejestruj się"
+    },
+    "register": {
+      "title": "Rejestracja sprzedawcy",
+      "subtitle": "Wypełnij formularz rejestracji sprzedawcy",
+      "companyNamePlaceholder": "Nazwa firmy",
+      "confirmPasswordPlaceholder": "Potwierdź hasło",
+      "taxIdPlaceholder": "Tax ID / NIP (opcjonalne)",
+      "productDescriptionLabel": "Opis produktu *",
+      "productDescriptionPlaceholder": "Opis produktu",
+      "portfolioLinkPlaceholder": "Link do portfolio (opcjonalne)",
+      "submitButton": "Zarejestruj się",
+      "hasAccount": "Masz już konto?",
+      "loginLink": "Zaloguj się",
+      "successTitle": "Dziękujemy za rejestrację!",
+      "successMessage": "Musisz poczekać na zatwierdzenie przez administratora. Email z potwierdzeniem zostanie wysłany do Ciebie po akceptacji.",
+      "backToLogin": "Powrót do logowania"
+    },
+    "validation": {
+      "invalidEmail": "Nieprawidłowy adres email",
+      "passwordRequired": "Hasło jest wymagane",
+      "nameMinLength": "Nazwa musi mieć co najmniej 2 znaki",
+      "passwordMinLength": "Hasło musi mieć co najmniej 2 znaki",
+      "confirmPasswordMinLength": "Potwierdzenie hasła musi mieć co najmniej 2 znaki",
+      "passwordMismatch": "Hasła nie są zgodne",
+      "productDescriptionRequired": "Proszę opisać co chcesz sprzedawać",
+      "invalidUrl": "Musi być prawidłowym URL lub pustym"
+    }
+  },
+  "languageSwitcher": {
+    "label": "Język:",
+    "english": "English",
+    "polish": "Polski"
   }
 }

@@ -16,18 +16,15 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
   return (
     <div className="flex flex-col gap-y-6">
       <div>
-        <Heading level="h2">{t("products.gpsr.title", "Informacje GPSR")}</Heading>
+        <Heading level="h2">{t("products.products.gpsr.title")}</Heading>
         <Text className="text-ui-fg-subtle">
-          {t(
-            "products.gpsr.description",
-            "Wprowadź informacje zgodne z Ogólnym Rozporządzeniem o Bezpieczeństwie Produktów (GPSR) dla tego produktu."
-          )}
+          {t("products.products.gpsr.description")}
         </Text>
       </div>
 
       {/* Producer Information - Required */}
       <div className="border-b pb-4 ">
-        <Heading level="h3" className="mb-2">{t("products.gpsr.producer.section", "Dane Producenta")}</Heading>
+        <Heading level="h3" className="mb-2">{t("products.products.gpsr.sections.producer")}</Heading>
         
         <Form.Field
           control={control}
@@ -35,16 +32,13 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
           render={({ field }) => (
             <Form.Item>
               <Form.Label>
-                {t("products.gpsr.producer.name.label", "Nazwa Producenta")} *
+                {t("products.products.gpsr.fields.producerName")} *
               </Form.Label>
               <Form.Hint>
-                {t(
-                  "products.gpsr.producer.name.description",
-                  "Pełna nazwa firmy producenta."
-                )}
+                {t("products.products.gpsr.producer.name.description")}
               </Form.Hint>
               <Form.Control>
-                <Input {...field} placeholder={t("products.gpsr.producer.name.placeholder", "np. Firma XYZ Sp. z o.o.")} />
+                <Input {...field} placeholder={t("products.products.gpsr.producer.name.placeholder", "e.g. XYZ Company Ltd.")} />
               </Form.Control>
               <Form.ErrorMessage />
             </Form.Item>
@@ -57,18 +51,15 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
           render={({ field }) => (
             <Form.Item>
               <Form.Label>
-                {t("products.gpsr.producer.address.label", "Adres Producenta")} *
+                {t("products.products.gpsr.fields.producerAddress")} *
               </Form.Label>
               <Form.Hint>
-                {t(
-                  "products.gpsr.producer.address.description",
-                  "Pełny adres siedziby producenta."
-                )}
+                {t("products.products.gpsr.producer.address.description")}
               </Form.Hint>
               <Form.Control>
                 <Textarea 
                   {...field} 
-                  placeholder={t("products.gpsr.producer.address.placeholder", "np. ul. Przykładowa 123, 00-001 Warszawa, Polska")}
+                  placeholder={t("products.products.gpsr.producer.address.placeholder", "e.g. 123 Example Street, 00-001 Warsaw, Poland")}
                   rows={2}
                 />
               </Form.Control>
@@ -83,18 +74,15 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
           render={({ field }) => (
             <Form.Item>
               <Form.Label>
-                {t("products.gpsr.producer.contact.label", "Kontakt do Producenta")} *
+                {t("products.products.gpsr.fields.producerContact")} *
               </Form.Label>
               <Form.Hint>
-                {t(
-                  "products.gpsr.producer.contact.description",
-                  "Email lub numer telefonu do kontaktu z producentem."
-                )}
+                {t("products.products.gpsr.producer.contact.description")}
               </Form.Hint>
               <Form.Control>
                 <Input 
                   {...field} 
-                  placeholder={t("products.gpsr.producer.contact.placeholder", "np. kontakt@firma.pl lub +48 123 456 789")}
+                  placeholder={t("products.products.gpsr.producer.contact.placeholder", "e.g. contact@company.com or +48 123 456 789")}
                 />
               </Form.Control>
               <Form.ErrorMessage />
@@ -105,7 +93,7 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
 
       {/* Importer Information - Optional */}
       <div className="border-b pb-4">
-        <Heading level="h3" className="mb-2 ">{t("products.gpsr.importer.section", "Dane Importera (jeśli producent spoza UE)")}</Heading>
+        <Heading level="h3" className="mb-2 ">{t("products.products.gpsr.sections.importer")}</Heading>
         
         <Form.Field
           control={control}
@@ -113,16 +101,13 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
           render={({ field }) => (
             <Form.Item>
               <Form.Label>
-                {t("products.gpsr.importer.name.label", "Nazwa Importera")}
+                {t("products.products.gpsr.fields.importerName")}
               </Form.Label>
               <Form.Hint>
-                {t(
-                  "products.gpsr.importer.name.description",
-                  "Pełna nazwa firmy importera (wymagane tylko jeśli producent jest spoza UE)."
-                )}
+                {t("products.products.gpsr.importer.name.description")}
               </Form.Hint>
               <Form.Control>
-                <Input {...field} placeholder={t("products.gpsr.importer.name.placeholder", "np. Import EU Sp. z o.o.")} />
+                <Input {...field} placeholder={t("products.products.gpsr.importer.name.placeholder", "e.g. EU Import Ltd.")} />
               </Form.Control>
               <Form.ErrorMessage />
             </Form.Item>
@@ -135,18 +120,15 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
           render={({ field }) => (
             <Form.Item>
               <Form.Label>
-                {t("products.gpsr.importer.address.label", "Adres Importera")}
+                {t("products.products.gpsr.fields.importerAddress")}
               </Form.Label>
               <Form.Hint>
-                {t(
-                  "products.gpsr.importer.address.description",
-                  "Pełny adres siedziby importera (wymagane tylko jeśli producent jest spoza UE)."
-                )}
+                {t("products.products.gpsr.importer.address.description")}
               </Form.Hint>
               <Form.Control>
                 <Textarea 
                   {...field} 
-                  placeholder={t("products.gpsr.importer.address.placeholder", "np. ul. Importowa 456, 00-002 Kraków, Polska")}
+                  placeholder={t("products.products.gpsr.importer.address.placeholder", "e.g. 456 Import Street, 00-002 Krakow, Poland")}
                   rows={2}
                 />
               </Form.Control>
@@ -161,18 +143,15 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
           render={({ field }) => (
             <Form.Item>
               <Form.Label>
-                {t("products.gpsr.importer.contact.label", "Kontakt do Importera")}
+                {t("products.products.gpsr.fields.importerContact")}
               </Form.Label>
               <Form.Hint>
-                {t(
-                  "products.gpsr.importer.contact.description",
-                  "Email lub numer telefonu do kontaktu z importerem (wymagane tylko jeśli producent jest spoza UE)."
-                )}
+                {t("products.products.gpsr.importer.contact.description")}
               </Form.Hint>
               <Form.Control>
                 <Input 
                   {...field} 
-                  placeholder={t("products.gpsr.importer.contact.placeholder", "np. import@firma.eu lub +48 987 654 321")}
+                  placeholder={t("products.products.gpsr.importer.contact.placeholder", "e.g. import@company.eu or +48 987 654 321")}
                 />
               </Form.Control>
               <Form.ErrorMessage />
@@ -188,18 +167,15 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
         render={({ field }) => (
           <Form.Item>
             <Form.Label>
-              {t("products.gpsr.instructions.label", "Instrukcje / Ostrzeżenia")} *
+              {t("products.products.gpsr.fields.instructions")} *
             </Form.Label>
             <Form.Hint>
-              {t(
-                "products.gpsr.instructions.description",
-                "Wszelkie instrukcje, ostrzeżenia lub środki ostrożności, które należy podjąć podczas korzystania z tego produktu."
-              )}
+              {t("products.products.gpsr.instructions.description")}
             </Form.Hint>
             <Form.Control>
               <Textarea 
                 {...field} 
-                placeholder={t("products.gpsr.instructions.placeholder", "np. Przechowywać z dala od dzieci poniżej 3 lat. Produkt zawiera małe elementy.")}
+                placeholder={t("products.products.gpsr.instructions.placeholder", "e.g. Keep away from children under 3 years. Product contains small parts.")}
                 rows={4}
               />
             </Form.Control>
@@ -214,19 +190,14 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
         name="metadata.gpsr_certificates"
         render={({ field }) => (
           <Form.Item>
-            <Form.Label>
-              {t("products.gpsr.certificates.label", "Certyfikaty")}
-            </Form.Label>
+            <Form.Label>{t("products.products.gpsr.fields.certificates")}</Form.Label>
             <Form.Hint>
-              {t(
-                "products.gpsr.certificates.description",
-                "Numery referencyjne certyfikatów zgodności dla tego produktu, jeśli dotyczy."
-              )}
+              {t("products.products.gpsr.certificates.description")}
             </Form.Hint>
             <Form.Control>
               <Input 
                 {...field} 
-                placeholder={t("products.gpsr.certificates.placeholder", "np. CE-12345-2023, ISO-9001")}
+                placeholder={t("products.products.gpsr.certificates.placeholder", "e.g. CE-12345-2023, ISO-9001")}
               />
             </Form.Control>
             <Form.ErrorMessage />

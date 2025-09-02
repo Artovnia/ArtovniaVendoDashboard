@@ -104,16 +104,16 @@ const useColumns = ({
 }) => {
   const { t } = useTranslation();
 
-  // Polish translations for column headers
-  const polishHeaders = {
-    options: 'Opcje',
-    title: 'Nazwa',
-    sku: 'SKU',
-    ean: 'EAN',
-    barcode: 'Kod kreskowy',
-    manage_inventory: 'Zarządzaj zapasami',
-    allow_backorder: 'Zezwalaj na zamówienia oczekujące',
-    price: 'Cena (PLN)',
+  // Use translation keys for column headers
+  const headers = {
+    options: t('products.create.variantHeaders.options'),
+    title: t('products.create.variantHeaders.title'),
+    sku: t('products.create.variantHeaders.sku'),
+    ean: t('products.create.variantHeaders.ean'),
+    barcode: t('products.create.variantHeaders.barcode'),
+    manage_inventory: t('products.create.variantHeaders.manage_inventory'),
+    allow_backorder: t('products.create.variantHeaders.allow_backorder'),
+    price: t('products.create.variantHeaders.price'),
   };
 
   return useMemo(
@@ -143,8 +143,8 @@ const useColumns = ({
       }),
       columnHelper.column({
         id: 'title',
-        name: polishHeaders.title,
-        header: polishHeaders.title,
+        name: headers.title,
+        header: headers.title,
         field: (context) =>
           `variants.${context.row.original.originalIndex}.title`,
         type: 'text',
@@ -154,8 +154,8 @@ const useColumns = ({
       }),
       columnHelper.column({
         id: 'sku',
-        name: polishHeaders.sku,
-        header: polishHeaders.sku,
+        name: headers.sku,
+        header: headers.sku,
         field: (context) =>
           `variants.${context.row.original.originalIndex}.sku`,
         type: 'text',
@@ -165,8 +165,8 @@ const useColumns = ({
       }),
       columnHelper.column({
         id: 'ean',
-        name: polishHeaders.ean,
-        header: polishHeaders.ean,
+        name: headers.ean,
+        header: headers.ean,
         field: (context) =>
           `variants.${context.row.original.originalIndex}.ean`,
         type: 'text',
@@ -176,8 +176,8 @@ const useColumns = ({
       }),
       columnHelper.column({
         id: 'barcode',
-        name: polishHeaders.barcode,
-        header: polishHeaders.barcode,
+        name: headers.barcode,
+        header: headers.barcode,
         field: (context) =>
           `variants.${context.row.original.originalIndex}.barcode`,
         type: 'text',
@@ -188,8 +188,8 @@ const useColumns = ({
 
       columnHelper.column({
         id: 'manage_inventory',
-        name: polishHeaders.manage_inventory,
-        header: polishHeaders.manage_inventory,
+        name: headers.manage_inventory,
+        header: headers.manage_inventory,
         field: (context) =>
           `variants.${context.row.original.originalIndex}.manage_inventory`,
         type: 'boolean',
@@ -199,8 +199,8 @@ const useColumns = ({
       }),
       columnHelper.column({
         id: 'allow_backorder',
-        name: polishHeaders.allow_backorder,
-        header: polishHeaders.allow_backorder,
+        name: headers.allow_backorder,
+        header: headers.allow_backorder,
         field: (context) =>
           `variants.${context.row.original.originalIndex}.allow_backorder`,
         type: 'boolean',
@@ -211,8 +211,8 @@ const useColumns = ({
       // Add explicit price column before the auto-generated price columns
       columnHelper.column({
         id: 'price',
-        name: polishHeaders.price,
-        header: polishHeaders.price,
+        name: headers.price,
+        header: headers.price,
         field: (context) =>
           `variants.${context.row.original.originalIndex}.prices.default`,
         type: 'text',

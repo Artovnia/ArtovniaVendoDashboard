@@ -5,6 +5,7 @@ import {
 } from '../../../../components/modals';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslation } from 'react-i18next';
 import { StoreVendor } from '../../../../types/user';
 import { KeyboundForm } from '../../../../components/utilities/keybound-form';
 import { Form } from '../../../../components/common/form';
@@ -25,6 +26,7 @@ export const EditStoreCompanyForm = ({
   seller: StoreVendor;
 }) => {
   const { handleSuccess } = useRouteModal();
+  const { t } = useTranslation();
 
   const form = useForm<z.infer<typeof EditStoreSchema>>({
     defaultValues: {
@@ -46,7 +48,7 @@ export const EditStoreCompanyForm = ({
       },
       {
         onSuccess: () => {
-          toast.success('Store updated');
+          toast.success(t('store.toast.storeUpdated'));
           handleSuccess();
         },
         onError: (error) => {
@@ -69,7 +71,7 @@ export const EditStoreCompanyForm = ({
               control={form.control}
               render={({ field }) => (
                 <Form.Item>
-                  <Form.Label>Address</Form.Label>
+                  <Form.Label>{t('store.company.fields.address')}</Form.Label>
                   <Form.Control>
                     <Input {...field} />
                   </Form.Control>
@@ -82,7 +84,7 @@ export const EditStoreCompanyForm = ({
               control={form.control}
               render={({ field }) => (
                 <Form.Item>
-                  <Form.Label>Postal Code</Form.Label>
+                  <Form.Label>{t('store.company.fields.postalCode')}</Form.Label>
                   <Form.Control>
                     <Input {...field} />
                   </Form.Control>
@@ -95,7 +97,7 @@ export const EditStoreCompanyForm = ({
               control={form.control}
               render={({ field }) => (
                 <Form.Item>
-                  <Form.Label>City</Form.Label>
+                  <Form.Label>{t('store.company.fields.city')}</Form.Label>
                   <Form.Control>
                     <Input {...field} />
                   </Form.Control>
@@ -108,7 +110,7 @@ export const EditStoreCompanyForm = ({
               control={form.control}
               render={({ field }) => (
                 <Form.Item>
-                  <Form.Label>Country</Form.Label>
+                  <Form.Label>{t('store.company.fields.country')}</Form.Label>
                   <Form.Control>
                     <Input {...field} />
                   </Form.Control>
@@ -121,7 +123,7 @@ export const EditStoreCompanyForm = ({
               control={form.control}
               render={({ field }) => (
                 <Form.Item>
-                  <Form.Label>Tax ID</Form.Label>
+                  <Form.Label>{t('store.company.fields.taxId')}</Form.Label>
                   <Form.Control>
                     <Input {...field} />
                   </Form.Control>
@@ -132,18 +134,16 @@ export const EditStoreCompanyForm = ({
           </div>
         </RouteDrawer.Body>
         <RouteDrawer.Footer>
-          <RouteDrawer.Close asChild>
-            <Button size='small' variant='secondary'>
-              Cancel
+          <div className='flex items-center justify-end gap-x-2'>
+            <RouteDrawer.Close asChild>
+              <Button size='small' variant='secondary'>
+                {t('actions.cancel')}
+              </Button>
+            </RouteDrawer.Close>
+            <Button size='small' type='submit' isLoading={isPending}>
+              {t('actions.save')}
             </Button>
-          </RouteDrawer.Close>
-          <Button
-            type='submit'
-            size='small'
-            isLoading={isPending}
-          >
-            Save
-          </Button>
+          </div>
         </RouteDrawer.Footer>
       </KeyboundForm>
     </RouteDrawer.Form>

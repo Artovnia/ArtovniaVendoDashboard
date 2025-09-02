@@ -8,19 +8,20 @@ import {
   Text,
 } from '@medusajs/ui';
 import { useForm } from 'react-hook-form';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import * as z from 'zod';
 
 import { Form } from '../../components/common/form';
+import { LanguageSwitcher } from '../../components/common/language-switcher/language-switcher';
 import AvatarBox from '../../components/common/logo-box/avatar-box';
 import { useDashboardExtension } from '../../extensions';
 import { useSignInWithEmailPass } from '../../hooks/api';
 import { isFetchError } from '../../lib/is-fetch-error';
 
-const LoginSchema = z.object({
-  email: z.string().email(),
-  password: z.string(),
+const LoginSchema = (t: any) => z.object({
+  email: z.string().email({ message: t('auth.validation.invalidEmail') }),
+  password: z.string().min(1, { message: t('auth.validation.passwordRequired') }),
 });
 
 export const Login = () => {
@@ -30,8 +31,8 @@ export const Login = () => {
 
   const from = '/dashboard';
 
-  const form = useForm<z.infer<typeof LoginSchema>>({
-    resolver: zodResolver(LoginSchema),
+  const form = useForm<z.infer<ReturnType<typeof LoginSchema>>>({
+    resolver: zodResolver(LoginSchema(t)),
     defaultValues: {
       email: '',
       password: '',
@@ -83,16 +84,19 @@ export const Login = () => {
     form.formState.errors.password?.message;
 
   return (
-    <div className='bg-ui-bg-subtle flex min-h-dvh w-dvw items-center justify-center'>
+    <div className='bg-ui-bg-subtle flex min-h-dvh w-dvw items-center justify-center relative'>
+      <div className='absolute top-4 right-4 z-10'>
+        <LanguageSwitcher />
+      </div>
       <div className='m-4 flex w-full max-w-[280px] flex-col items-center'>
         <AvatarBox />
         <div className='mb-4 flex flex-col items-center'>
-          <Heading>Logowanie w Artovnia Panel</Heading>
+          <Heading>{t('auth.login.title')}</Heading>
           <Text
             size='small'
             className='text-ui-fg-subtle text-center'
           >
-            Zaloguj się do panelu sprzedawcy
+            {t('auth.login.subtitle')}
           </Text>
         </div>
         <div className='flex w-full flex-col gap-y-3'>
@@ -118,7 +122,7 @@ export const Login = () => {
                             autoComplete='email'
                             {...field}
                             className='bg-ui-bg-field-component'
-                            placeholder="Email"
+                            placeholder={t('auth.login.emailPlaceholder')}
                           />
                         </Form.Control>
                       </Form.Item>
@@ -138,7 +142,7 @@ export const Login = () => {
                             autoComplete='current-password'
                             {...field}
                             className='bg-ui-bg-field-component'
-                            placeholder="Hasło"
+                            placeholder={t('auth.login.passwordPlaceholder')}
                           />
                         </Form.Control>
                       </Form.Item>
@@ -170,7 +174,7 @@ export const Login = () => {
                 type='submit'
                 isLoading={isPending}
               >
-                Zaloguj się
+                {t('auth.login.submitButton')}
               </Button>
             </form>
           </Form>
@@ -179,23 +183,23 @@ export const Login = () => {
           })}
         </div>
         <span className='text-ui-fg-muted txt-small my-6'>
-          Nie pamiętasz hasła?{' '}
+          {t('auth.login.forgotPassword')}{' '}
           <Link
             key='reset-password-link'
             to='/reset-password'
             className='text-ui-fg-interactive transition-fg hover:text-ui-fg-interactive-hover focus-visible:text-ui-fg-interactive-hover font-medium outline-none'
           >
-            Zresetuj hasło
+            {t('auth.login.resetPassword')}
           </Link>
         </span>
         {__DISABLE_SELLERS_REGISTRATION__ === 'false' && (
           <span className='text-ui-fg-muted txt-small'>
-            Nie masz jeszcze konta sprzedawcy?{' '}
+            {t('auth.login.noAccount')}{' '}
             <Link
               to='/register'
               className='text-ui-fg-interactive transition-fg hover:text-ui-fg-interactive-hover focus-visible:text-ui-fg-interactive-hover font-medium outline-none'
             >
-              Zarejestruj się
+              {t('auth.login.registerLink')}
             </Link>
           </span>
         )}

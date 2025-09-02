@@ -57,7 +57,7 @@ export const UploadMediaFormItem = ({
       if (invalidFile) {
         form.setError('media', {
           type: 'invalid_file',
-          message: t('products.media.invalidFileType', {
+          message: t('media.invalidFileType', {
             name: invalidFile.file.name,
             types:
               SUPPORTED_FORMATS_FILE_EXTENSIONS.join(', '),
@@ -98,21 +98,21 @@ export const UploadMediaFormItem = ({
             <div className='flex flex-col gap-y-2'>
               <div className='flex flex-col gap-y-1'>
                 <Form.Label optional>
-                  {t('products.media.label')}
+                  {t('media.label')}
                 </Form.Label>
                 {showHint && (
                   <Form.Hint>
-                    {t('products.media.editHint')}
+                    {t('media.editHint')}
                   </Form.Hint>
                 )}
               </div>
               <Form.Control>
                 <FileUpload
                   label={t(
-                    'products.media.uploadImagesLabel'
+                    'media.uploadImagesLabel'
                   )}
                   hint={t(
-                    'products.media.uploadImagesHint'
+                    'media.uploadImagesHint'
                   )}
                   hasError={!!form.formState.errors.media}
                   formats={SUPPORTED_FORMATS}

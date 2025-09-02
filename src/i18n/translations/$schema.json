@@ -1650,6 +1650,37 @@
               "required": ["organization", "color"],
               "additionalProperties": false
             },
+            "variantHeaders": {
+              "type": "object",
+              "properties": {
+                "options": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "sku": {
+                  "type": "string"
+                },
+                "ean": {
+                  "type": "string"
+                },
+                "barcode": {
+                  "type": "string"
+                },
+                "manage_inventory": {
+                  "type": "string"
+                },
+                "allow_backorder": {
+                  "type": "string"
+                },
+                "price": {
+                  "type": "string"
+                }
+              },
+              "required": ["options", "title", "sku", "ean", "barcode", "manage_inventory", "allow_backorder", "price"],
+              "additionalProperties": false
+            },
             "errors": {
               "type": "object",
               "properties": {
@@ -1669,12 +1700,13 @@
             "tabs",
             "variants",
             "color_scheme",
+            "variantHeaders",
             "table",
             "errors"
           ],
           "additionalProperties": false
         },
-        "fields": {
+        "formFields": {
           "type": "object",
           "properties": {
             "title": {
@@ -1974,9 +2006,18 @@
           "properties": {
             "header": {
               "type": "string"
+            },
+            "currentlyAssigned": {
+              "type": "string"
+            },
+            "noProfileAssigned": {
+              "type": "string"
+            },
+            "noProfileDescription": {
+              "type": "string"
             }
           },
-          "required": ["header"],
+          "required": ["header", "currentlyAssigned", "noProfileAssigned", "noProfileDescription"],
           "additionalProperties": false
         },
         "organization": {
@@ -2063,8 +2104,40 @@
             "deleteImageLabel": {
               "type": "string"
             },
+            "recommendations": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "format": {
+                  "type": "string"
+                },
+                "maxSize": {
+                  "type": "string"
+                },
+                "totalSize": {
+                  "type": "string"
+                }
+              },
+              "required": ["title", "format", "maxSize", "totalSize"],
+              "additionalProperties": false
+            },
             "emptyState": {
-              "type": "string"
+              "type": "object",
+              "properties": {
+                "header": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "action": {
+                  "type": "string"
+                }
+              },
+              "required": ["header", "description", "action"],
+              "additionalProperties": false
             },
             "successToast": {
               "type": "string"
@@ -2088,6 +2161,7 @@
             "galleryLabel",
             "downloadImageLabel",
             "deleteImageLabel",
+            "recommendations",
             "emptyState",
             "successToast"
           ],
@@ -2205,7 +2279,16 @@
             "tableItemAvailable": {
               "type": "string"
             },
+            "tableItem_one": {
+              "type": "string"
+            },
+            "tableItem_other": {
+              "type": "string"
+            },
             "tableItem": {
+              "type": "string"
+            },
+            "goToInventory": {
               "type": "string"
             },
             "colorSection": {
@@ -2337,7 +2420,10 @@
             "deleteWarning",
             "pricesPagination",
             "tableItemAvailable",
+            "tableItem_one",
+            "tableItem_other",
             "tableItem",
+            "goToInventory",
             "colorSection",
             "colorsEditForm"
           ],
@@ -2480,217 +2566,145 @@
           ],
           "additionalProperties": false
         },
+        "shippingProfile": {
+          "type": "object",
+          "properties": {
+            "header": {
+              "type": "string"
+            },
+            "currentlyAssigned": {
+              "type": "string"
+            },
+            "noProfileAssigned": {
+              "type": "string"
+            },
+            "noProfileDescription": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "header",
+            "currentlyAssigned",
+            "noProfileAssigned",
+            "noProfileDescription"
+          ],
+          "additionalProperties": false
+        },
         "gpsr": {
           "type": "object",
           "properties": {
             "title": {
               "type": "string"
             },
-            "producer": {
+            "sections": {
               "type": "object",
               "properties": {
-                "section": {
+                "producer": {
                   "type": "string"
                 },
-                "name": {
-                  "type": "object",
-                  "properties": {
-                    "label": {
-                      "type": "string"
-                    },
-                    "description": {
-                      "type": "string"
-                    },
-                    "placeholder": {
-                      "type": "string"
-                    },
-                    "required": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "label",
-                    "description",
-                    "placeholder",
-                    "required"
-                  ],
-                  "additionalProperties": false
-                },
-                "address": {
-                  "type": "object",
-                  "properties": {
-                    "label": {
-                      "type": "string"
-                    },
-                    "description": {
-                      "type": "string"
-                    },
-                    "required": {
-                      "type": "string"
-                    },
-                    "placeholder": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "label",
-                    "description",
-                    "required",
-                    "placeholder"
-                  ],
-                  "additionalProperties": false
-                },
-                "contact": {
-                  "type": "object",
-                  "properties": {
-                    "label": {
-                      "type": "string"
-                    },
-                    "description": {
-                      "type": "string"
-                    },
-                    "required": {
-                      "type": "string"
-                    },
-                    "placeholder": {
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "label",
-                    "description",
-                    "required",
-                    "placeholder"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "required": ["section", "name", "address", "contact"],
-              "additionalProperties": false
-            },
-            "importer": {
-              "type": "object",
-              "properties": {
-                "section": {
+                "importer": {
                   "type": "string"
                 },
-                "name": {
-                  "type": "object",
-                  "properties": {
-                    "label": {
-                      "type": "string"
-                    },
-                    "description": {
-                      "type": "string"
-                    },
-                    "placeholder": {
-                      "type": "string"
-                    }
-                  },
-                  "required": ["label", "description", "placeholder"],
-                  "additionalProperties": false
-                },
-                "address": {
-                  "type": "object",
-                  "properties": {
-                    "label": {
-                      "type": "string"
-                    },
-                    "description": {
-                      "type": "string"
-                    },
-                    "placeholder": {
-                      "type": "string"
-                    }
-                  },
-                  "required": ["label", "description", "placeholder"],
-                  "additionalProperties": false
-                },
-                "contact": {
-                  "type": "object",
-                  "properties": {
-                    "label": {
-                      "type": "string"
-                    },
-                    "description": {
-                      "type": "string"
-                    },
-                    "placeholder": {
-                      "type": "string"
-                    }
-                  },
-                  "required": ["label", "description", "placeholder"],
-                  "additionalProperties": false
-                }
-              },
-              "required": ["section", "name", "address", "contact"],
-              "additionalProperties": false
-            },
-            "additional": {
-              "type": "object",
-              "properties": {
-                "section": {
+                "additional": {
                   "type": "string"
                 }
               },
-              "required": ["section"],
+              "required": ["producer", "importer", "additional"],
               "additionalProperties": false
             },
-            "instructions": {
+            "fields": {
               "type": "object",
               "properties": {
-                "label": {
+                "producerName": {
                   "type": "string"
                 },
-                "description": {
+                "producerAddress": {
                   "type": "string"
                 },
+                "producerContact": {
+                  "type": "string"
+                },
+                "importerName": {
+                  "type": "string"
+                },
+                "importerAddress": {
+                  "type": "string"
+                },
+                "importerContact": {
+                  "type": "string"
+                },
+                "instructions": {
+                  "type": "string"
+                },
+                "certificates": {
+                  "type": "string"
+                }
+              },
+              "required": ["producerName", "producerAddress", "producerContact", "importerName", "importerAddress", "importerContact", "instructions", "certificates"],
+              "additionalProperties": false
+            },
+            "placeholders": {
+              "type": "object",
+              "properties": {
+                "producerName": {
+                  "type": "string"
+                },
+                "producerAddress": {
+                  "type": "string"
+                },
+                "producerContact": {
+                  "type": "string"
+                },
+                "importerName": {
+                  "type": "string"
+                },
+                "importerAddress": {
+                  "type": "string"
+                },
+                "importerContact": {
+                  "type": "string"
+                },
+                "instructions": {
+                  "type": "string"
+                },
+                "certificates": {
+                  "type": "string"
+                }
+              },
+              "required": ["producerName", "producerAddress", "producerContact", "importerName", "importerAddress", "importerContact", "instructions", "certificates"],
+              "additionalProperties": false
+            },
+            "validation": {
+              "type": "object",
+              "properties": {
                 "required": {
                   "type": "string"
-                },
-                "placeholder": {
-                  "type": "string"
                 }
               },
-              "required": ["label", "description", "required", "placeholder"],
+              "required": ["required"],
               "additionalProperties": false
             },
-            "certificates": {
+            "messages": {
               "type": "object",
               "properties": {
-                "label": {
+                "success": {
                   "type": "string"
                 },
-                "description": {
-                  "type": "string"
-                },
-                "placeholder": {
+                "error": {
                   "type": "string"
                 }
               },
-              "required": ["label", "description", "placeholder"],
+              "required": ["success", "error"],
               "additionalProperties": false
-            },
-            "no_data": {
-              "type": "string"
-            },
-            "success": {
-              "type": "string"
-            },
-            "error": {
-              "type": "string"
             }
           },
           "required": [
             "title",
-            "producer",
-            "importer",
-            "additional",
-            "instructions",
-            "certificates",
-            "no_data",
-            "success",
-            "error"
+            "sections",
+            "fields",
+            "placeholders",
+            "validation",
+            "messages"
           ],
           "additionalProperties": false
         },
@@ -2715,7 +2729,7 @@
         "domain",
         "attributes",
         "create",
-        "fields",
+        "formFields",
         "shippingProfile",
         "organization",
         "media",
@@ -3032,6 +3046,153 @@
             }
           },
           "required": ["updateLocations", "updateLevel", "updateItem"],
+          "additionalProperties": false
+        },
+        "store": {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "type": "string"
+            },
+            "manageYourStoresDetails": {
+              "type": "string"
+            },
+            "editStore": {
+              "type": "string"
+            },
+            "company": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "fields": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string"
+                    },
+                    "postalCode": {
+                      "type": "string"
+                    },
+                    "city": {
+                      "type": "string"
+                    },
+                    "country": {
+                      "type": "string"
+                    },
+                    "taxId": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["address", "postalCode", "city", "country", "taxId"],
+                  "additionalProperties": false
+                },
+                "actions": {
+                  "type": "object",
+                  "properties": {
+                    "edit": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["edit"],
+                  "additionalProperties": false
+                }
+              },
+              "required": ["title", "description", "fields", "actions"],
+              "additionalProperties": false
+            },
+            "edit": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "companyTitle": {
+                  "type": "string"
+                },
+                "fields": {
+                  "type": "object",
+                  "properties": {
+                    "logo": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "phone": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "address": {
+                      "type": "string"
+                    },
+                    "postalCode": {
+                      "type": "string"
+                    },
+                    "city": {
+                      "type": "string"
+                    },
+                    "country": {
+                      "type": "string"
+                    },
+                    "taxId": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["logo", "name", "email", "phone", "description", "address", "postalCode", "city", "country", "taxId"],
+                  "additionalProperties": false
+                },
+                "messages": {
+                  "type": "object",
+                  "properties": {
+                    "storeUpdated": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["storeUpdated"],
+                  "additionalProperties": false
+                }
+              },
+              "required": ["title", "companyTitle", "fields", "messages"],
+              "additionalProperties": false
+            },
+            "placeholder": {
+              "type": "string"
+            },
+            "disablePrompt_one": {
+              "type": "string"
+            },
+            "disablePrompt_other": {
+              "type": "string"
+            },
+            "disabledToggleTooltip": {
+              "type": "string"
+            },
+            "successToast": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "domain",
+            "manageYourStoresDetails",
+            "editStore",
+            "company",
+            "edit",
+            "placeholder",
+            "disablePrompt_one",
+            "disablePrompt_other",
+            "disabledToggleTooltip",
+            "successToast"
+          ],
           "additionalProperties": false
         },
         "stock": {
@@ -8505,14 +8666,122 @@
         "currencyAlreadyAdded": {
           "type": "string"
         },
-        "edit": {
+        "fields": {
           "type": "object",
           "properties": {
-            "header": {
+            "photo": {
               "type": "string"
             }
           },
-          "required": ["header"],
+          "required": ["photo"],
+          "additionalProperties": false
+        },
+        "company": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "fields": {
+              "type": "object",
+              "properties": {
+                "address": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "taxId": {
+                  "type": "string"
+                }
+              },
+              "required": ["address", "postalCode", "city", "country", "taxId"],
+              "additionalProperties": false
+            },
+            "actions": {
+              "type": "object",
+              "properties": {
+                "edit": {
+                  "type": "string"
+                }
+              },
+              "required": ["edit"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["title", "description", "fields", "actions"],
+          "additionalProperties": false
+        },
+        "edit": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "header": {
+              "type": "string"
+            },
+            "companyTitle": {
+              "type": "string"
+            },
+            "fields": {
+              "type": "object",
+              "properties": {
+                "logo": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "phone": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "address": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "taxId": {
+                  "type": "string"
+                }
+              },
+              "required": ["logo", "name", "email", "phone", "description", "address", "postalCode", "city", "country", "taxId"],
+              "additionalProperties": false
+            },
+            "messages": {
+              "type": "object",
+              "properties": {
+                "storeUpdated": {
+                  "type": "string"
+                }
+              },
+              "required": ["storeUpdated"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["title", "header", "companyTitle", "fields", "messages"],
           "additionalProperties": false
         },
         "toast": {
@@ -8558,9 +8827,27 @@
         "removeCurrencyWarning_one",
         "removeCurrencyWarning_other",
         "currencyAlreadyAdded",
+        "fields",
+        "company",
         "edit",
         "toast"
       ],
+      "additionalProperties": false
+    },
+    "media": {
+      "type": "object",
+      "properties": {
+        "uploadImagesLabel": {
+          "type": "string"
+        },
+        "uploadImagesHint": {
+          "type": "string"
+        },
+        "invalidFileType": {
+          "type": "string"
+        }
+      },
+      "required": ["uploadImagesLabel", "uploadImagesHint", "invalidFileType"],
       "additionalProperties": false
     },
     "regions": {

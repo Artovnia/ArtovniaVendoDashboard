@@ -124,17 +124,17 @@ export const ProductCreateMediaSection = ({
       <UploadMediaFormItem form={form} append={append} showHint={false} />
       <div className="bg-ui-bg-subtle rounded-lg p-3 mt-2">
         <Text size="small" className="text-ui-fg-subtle mb-1 font-medium">
-          {t('products.media.recommendations.title')}
+          {t('media.recommendations.title')}
         </Text>
         <div className="space-y-1">
           <Text size="xsmall" className="text-ui-fg-muted">
-            • {t('products.media.recommendations.format')}
+            • {t('media.recommendations.format')}
           </Text>
           <Text size="xsmall" className="text-ui-fg-muted">
-            • {t('products.media.recommendations.maxSize')}
+            • {t('media.recommendations.maxSize')}
           </Text>
           <Text size="xsmall" className="text-ui-fg-muted">
-            • {t('products.media.recommendations.totalSize')}
+            • {t('media.recommendations.totalSize')}
           </Text>
         </div>
       </div>
@@ -254,7 +254,7 @@ const MediaItem = ({ field, onDelete, onMakeThumbnail }: MediaItemProps) => {
             {
               actions: [
                 {
-                  label: t("products.media.makeThumbnail"),
+                  label: t("media.makeThumbnail"),
                   icon: <StackPerspective />,
                   onClick: onMakeThumbnail,
                 },
