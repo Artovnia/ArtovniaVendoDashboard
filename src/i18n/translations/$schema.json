@@ -11242,6 +11242,12 @@
         "user": {
           "type": "string"
         },
+        "adminDescription": {
+          "type": "string"
+        },
+        "userDescription": {
+          "type": "string"
+        },
         "newMessage": {
           "type": "string"
         },

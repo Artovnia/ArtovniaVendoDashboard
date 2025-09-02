@@ -3120,7 +3120,8 @@
     "title": "Wiadomości",
     "admin": "Admin",
     "user": "Klienci",
-        
+    "adminDescription": "Komunikuj się z administratorami sklepu. Wszystkie wiadomości są zapisywane do referencji.",
+    "userDescription": "Komunikuj się z klientami o zamówieniach, produktach i zapytaniach.",
     "newMessage": "Nowa wiadomość",
     "subject": "Temat",
     "subjectPlaceholder": "Wprowadź temat wiadomości",

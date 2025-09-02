@@ -393,8 +393,8 @@ export function MessagesPage() {
       <div className="mb-6">
         <Text className="text-gray-600 mb-4">
           {activeTab === 'admin' 
-            ? t('messages.adminDescription', 'Communicate with marketplace administrators. All messages are recorded for reference.')
-            : t('messages.userDescription', 'Communicate with your customers about orders, products, and inquiries.')
+            ? t('messages.adminDescription')
+            : t('messages.userDescription')
           }
         </Text>
         

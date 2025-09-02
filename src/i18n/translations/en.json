@@ -3231,7 +3231,8 @@
     "title": "Messages",
     "admin": "Admin",
     "user": "Users",
-    
+    "adminDescription": "Communicate with marketplace administrators. All messages are recorded for reference.",
+    "userDescription": "Communicate with your customers about orders, products, and inquiries.",
     "newMessage": "New message",
     "subject": "Subject",
     "subjectPlaceholder": "Enter message subject",
