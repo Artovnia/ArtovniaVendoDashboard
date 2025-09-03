@@ -112,7 +112,7 @@ export function CreateShippingOptionsForm({
     if (isOptionsError || fulfillment_options.length === 0 || true) {
       // Provide default options for both regular and return fulfillment
       if (selectedProviderId?.includes('manual')) {
-        console.log('Creating default fulfillment options for provider:', selectedProviderId, 'isReturn:', isReturn);
+       
         // Create both a regular and return option
         return [{
           id: isReturn ? 'manual-return' : 'manual',
@@ -139,14 +139,14 @@ export function CreateShippingOptionsForm({
       // Look for manual provider first, otherwise use the first available provider
       const manualProvider = fulfillment_providers.find(p => p.id.includes('manual'));
       form.setValue('provider_id', manualProvider?.id || fulfillment_providers[0].id);
-      console.log('Setting provider ID to:', manualProvider?.id || fulfillment_providers[0].id);
+      
     }
   }, [fulfillment_providers, form, selectedProviderId]);
   
   // Log the selected provider ID when it changes
   useEffect(() => {
     if (selectedProviderId) {
-      console.log('Selected provider ID:', selectedProviderId);
+      
     }
   }, [selectedProviderId]);
 
@@ -314,9 +314,7 @@ export function CreateShippingOptionsForm({
           <RouteFocusModal.Header>
             {/* Add Title component to fix accessibility warnings */}
             <RouteFocusModal.Title className="sr-only">
-              {t('stockLocations.shippingOptions.create.title', {
-                defaultValue: 'Create Shipping Option'
-              })}
+              {t('stockLocations.shippingOptions.title')}
             </RouteFocusModal.Title>
             <RouteFocusModal.Description className="sr-only">
               {t('stockLocations.shippingOptions.create.description', {

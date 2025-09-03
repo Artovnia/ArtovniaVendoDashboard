@@ -47,12 +47,58 @@ import {
   isOptionEnabledInStore,
   isReturnOption,
 } from '../../../../../lib/shipping-options';
-import {
-  FulfillmentSetType,
-  ShippingOptionPriceType,
-} from '../../../common/constants';
+import { FulfillmentSetType } from '../../../common/constants';
 
-// Using the improved isReturnOption function from shipping-options.ts
+const STALE_TIME = 15 * 1000;
+
+/**
+ * Extracts the user-friendly name from a service zone name with seller ID suffix
+ * Format: "ServiceZoneName_sellerID" -> "ServiceZoneName" (e.g., "Polska_K7AAQ537" -> "Polska")
+ * Also handles legacy format: "VendorName - ServiceZoneName" -> "ServiceZoneName"
+ * @param serviceName - The service zone name (potentially with suffix)
+ * @returns The user-friendly service zone name
+ */
+const extractUserFriendlyName = (serviceName: string): string => {
+  // Handle new format: "ServiceZoneName_sellerID"
+  const underscoreIndex = serviceName.lastIndexOf('_')
+  if (underscoreIndex !== -1) {
+    const potentialSellerId = serviceName.substring(underscoreIndex + 1)
+    // Check if it looks like a seller ID (8 characters, alphanumeric)
+    if (potentialSellerId.length === 8 && /^[a-zA-Z0-9]+$/.test(potentialSellerId)) {
+      return serviceName.substring(0, underscoreIndex)
+    }
+  }
+  
+  // Handle legacy format: "VendorName - ServiceZoneName"
+  const separatorIndex = serviceName.indexOf(' - ')
+  if (separatorIndex !== -1) {
+    return serviceName.substring(separatorIndex + 3) // +3 to skip " - "
+  }
+  
+  // Return original name if no pattern matches
+  return serviceName
+}
+
+/**
+ * Extracts the user-friendly name from a fulfillment set name with seller ID suffix
+ * Format: "FulfillmentSetName_sellerID" -> "FulfillmentSetName"
+ * @param fulfillmentSetName - The fulfillment set name (potentially with suffix)
+ * @returns The user-friendly fulfillment set name
+ */
+const extractUserFriendlyFulfillmentSetName = (fulfillmentSetName: string): string => {
+  // Handle format: "FulfillmentSetName_sellerID"
+  const underscoreIndex = fulfillmentSetName.lastIndexOf('_')
+  if (underscoreIndex !== -1) {
+    const potentialSellerId = fulfillmentSetName.substring(underscoreIndex + 1)
+    // Check if it looks like a seller ID (8 characters, alphanumeric)
+    if (potentialSellerId.length === 8 && /^[a-zA-Z0-9]+$/.test(potentialSellerId)) {
+      return fulfillmentSetName.substring(0, underscoreIndex)
+    }
+  }
+  
+  // Return original name if no pattern matches
+  return fulfillmentSetName
+}
 
 type LocationGeneralSectionProps = {
   location: HttpTypes.AdminStockLocation;
@@ -425,7 +471,7 @@ function ServiceZone({
             leading='compact'
             weight='plus'
           >
-            {zone.name}
+            {extractUserFriendlyName(zone.name)}
           </Text>
           <div className='flex items-center gap-2'>
             <ListSummary
@@ -575,7 +621,7 @@ function FulfillmentSet(props: FulfillmentSetProps) {
       description: t(
         `stockLocations.fulfillmentSets.disable.confirmation`,
         {
-          name: fulfillmentSet?.name,
+          name: extractUserFriendlyFulfillmentSetName(fulfillmentSet?.name || ''),
         }
       ),
       confirmText: t('actions.disable'),

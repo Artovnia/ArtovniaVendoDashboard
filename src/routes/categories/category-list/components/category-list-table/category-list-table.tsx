@@ -94,12 +94,12 @@ export const CategoryListTable = () => {
         <div>
           <Heading>{t('categories.domain')}</Heading>
           <Text className='text-ui-fg-subtle' size='small'>
-            {t('categories.description')}
+            {t('requests.categories.description')}
           </Text>
         </div>
         <div className='flex items-center gap-x-2'>
           <Button size='small' variant='secondary' asChild>
-            <Link to='create'>{t('categories.requestCategory')}</Link>
+            <Link to='create'>{t('requests.categories.requestCategory')}</Link>
           </Button>
         </div>
       </div>

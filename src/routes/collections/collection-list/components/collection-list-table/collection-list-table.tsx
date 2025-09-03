@@ -16,6 +16,7 @@ import { useCollectionTableFilters } from '../../../../../hooks/table/filters';
 import { useCollectionTableQuery } from '../../../../../hooks/table/query';
 import { useDataTable } from '../../../../../hooks/use-data-table';
 
+
 const PAGE_SIZE = 20;
 
 export const CollectionListTable = () => {
@@ -61,7 +62,7 @@ export const CollectionListTable = () => {
         </div>
         <Link to='/collections/create'>
           <Button size='small' variant='secondary'>
-            Request Collection
+            {t('requests.collections.requestCollection')}
           </Button>
         </Link>
       </div>

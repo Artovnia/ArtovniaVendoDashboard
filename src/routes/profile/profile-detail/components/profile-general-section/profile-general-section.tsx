@@ -41,7 +41,7 @@ export const ProfileGeneralSection = ({
       </div>
       <div className='text-ui-fg-subtle grid grid-cols-2 items-center px-6 py-4'>
         <Text size='small' leading='compact' weight='plus'>
-          Photo
+          {t('profile.fields.photo')}
         </Text>
         <Text size='small' leading='compact'>
           <div
@@ -70,7 +70,7 @@ export const ProfileGeneralSection = ({
       </div>
       <div className='grid grid-cols-2 items-center px-6 py-4'>
         <Text size='small' leading='compact' weight='plus'>
-          Phone
+          {t('fields.phone')}
         </Text>
         <Text size='small' leading='compact'>
           {phone}
@@ -78,7 +78,7 @@ export const ProfileGeneralSection = ({
       </div>
       <div className='grid grid-cols-2 items-center px-6 py-4'>
         <Text size='small' leading='compact' weight='plus'>
-          Bio
+          {t('profile.fields.bio')}
         </Text>
         <Text size='small' leading='compact'>
           {bio}

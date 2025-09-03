@@ -1,9 +1,11 @@
 import { Heading } from '@medusajs/ui';
+import { useTranslation } from 'react-i18next';
 import { RouteDrawer } from '../../../components/modals';
 import { useMe } from '../../../hooks/api';
 import { EditStoreCompanyForm } from './components/edit-store-company-form';
 
 export const StoreEditCompany = () => {
+  const { t } = useTranslation();
   const {
     seller,
     isPending: isLoading,
@@ -19,7 +21,7 @@ export const StoreEditCompany = () => {
   return (
     <RouteDrawer>
       <RouteDrawer.Header>
-        <Heading>Edit Comapny</Heading>
+        <Heading>{t('store.company.edit.header')}</Heading>
       </RouteDrawer.Header>
       {ready && <EditStoreCompanyForm seller={seller} />}
     </RouteDrawer>

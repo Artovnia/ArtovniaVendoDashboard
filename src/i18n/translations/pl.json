@@ -1162,23 +1162,29 @@
     "disableTaxInclusivePricing": "Wyłącz ceny zawierające podatek",
     "removeCurrencyWarning_one": "Zamierzasz usunąć walutę {{count}} ze swojego sklepu. Przed kontynuowaniem upewnij się, że usunąłeś wszystkie ceny w danej walucie.",
     "removeCurrencyWarning_other": "Zamierzasz usunąć walutę {{count}} ze swojego sklepu. Przed kontynuowaniem upewnij się, że usunąłeś wszystkie ceny w walutach.",
+    "company": {
+      "title": "Informacje o firmie",
+      "description": "Zaktualizuj informacje o firmie",
+      "actions": {
+        "edit": "Edytuj"
+      },
+      "edit": {
+        "header": "Edytuj firmę"
+      },
+      "fields": {
+        "address": "Adres",
+        "postalCode": "Kod pocztowy",
+        "city": "Miasto",
+        "country": "Kraj",
+        "taxId": "NIP"
+      }
+    },
     "currencyAlreadyAdded": "Waluta została już dodana do Twojego sklepu.",
     "fields": {
       "photo": "Zdjęcie"
     },
-    "company": {
-      "title": "Informacje o firmie",
-      "description": "Zaktualizuj informacje o firmie",
-      "fields": {
-        "address": "Adres",
-        "postalCode": "Kod pocztowy",
-        "city": "Miejscowość",
-        "country": "Kraj",
-        "taxId": "NIP"
-      },
-      "actions": {
-        "edit": "Edytuj"
-      }
+    "toast": {
+      "storeUpdated": "Sklep zaktualizowany pomyślnie"
     },
     "edit": {
       "title": "Edytuj sklep",
@@ -1748,6 +1754,7 @@
       }
     },
     "shippingOptions": {
+      "title": "Utwórz opcję wysyłki",
       "create": {
         "shipping": {
           "header": "Utwórz opcję wysyłki dla {{zone}}",
@@ -2472,10 +2479,13 @@
   },
   "profile": {
     "domain": "Profil",
-    "manageYourProfileDetails": "Zarządzaj danymi swojego profilu.",
+    "manageYourProfileDetails": "Zarządzaj szczegółami swojego profilu",
     "fields": {
       "languageLabel": "Język",
-      "usageInsightsLabel": "Informacje o użytkowaniu"
+      "usageInsightsLabel": "Informacje o użytkowaniu",
+      "photo": "Zdjęcie",
+      "bio": "Bio",
+      "profilePicture": "Zdjęcie profilowe"
     },
     "edit": {
       "header": "Edytuj profil",
@@ -2484,7 +2494,7 @@
       "usageInsightsHint": "Podziel się spostrzeżeniami dotyczącymi użytkowania i pomóż nam ulepszyć Meduzę. Więcej informacji o tym, co zbieramy i jak z tego wykorzystujemy, możesz przeczytać w naszej <0>dokumentacji</0>."
     },
     "toast": {
-      "edit": "Zmiany w profilach zostały zapisane"
+      "edit": "Profil zaktualizowany pomyślnie"
     }
   },
   "users": {
@@ -2511,7 +2521,7 @@
       "member": "Członek"
     },
     "deleteUserWarning": "Zamierzasz usunąć użytkownika {{name}}. Tej akcji nie można cofnąć.",
-    "invite": "Zapraszać"
+    "invite": "Zaproś"
   },
   "regions": {
     "domain": "Regiony",
@@ -2894,6 +2904,7 @@
   },
   "productTags": {
     "domain": "Tagi produktów",
+    "requestProductTag": "Poproś o tag produktu",
     "create": {
       "header": "Utwórz tag produktu",
       "subtitle": "Utwórz nowy tag produktu, aby kategoryzować swoje produkty.",
@@ -3429,7 +3440,8 @@
     },
     "collections": {
       "title": "Prośby o kolekcje",
-      "description": "Twoje prośby o dodanie nowej kolekcji"
+      "description": "Twoje prośby o dodanie nowej kolekcji",
+      "requestCollection": "Poproś o kolekcję"
     },
     "orders": {
       "title": "Prośby o anulowanie zamówień",
@@ -3499,11 +3511,7 @@
       "empty": "Nie znaleziono prośby"
     }
   },
-  "categories": {
-    "domain": "Kategorie",
-    "description": "Organizuj produkty w kategorie.",
-    "requestCategory": "Poproś o kategorię"
-  },
+  
   "auth": {
     "login": {
       "title": "Logowanie w Artovnia Panel",

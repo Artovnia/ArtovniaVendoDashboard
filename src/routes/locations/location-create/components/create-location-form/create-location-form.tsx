@@ -56,10 +56,10 @@ export const CreateLocationForm = () => {
         address: values.address,
       },
       {
-        onSuccess: ({ stock_location }) => {
+        onSuccess: () => {
           toast.success(t("locations.toast.create"))
 
-          handleSuccess(`/settings/locations/${stock_location.id}`)
+          handleSuccess(`/settings/locations`)
         },
         onError: (e) => {
           toast.error(e.message)

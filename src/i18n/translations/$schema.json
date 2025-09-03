@@ -5938,6 +5938,96 @@
               },
               "required": ["shipping", "pickup", "returns", "tabs", "action"],
               "additionalProperties": false
+            }
+          },
+          "required": ["create"],
+          "additionalProperties": false
+        },
+        "shippingOptions": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "create": {
+              "type": "object",
+              "properties": {
+                "shipping": {
+                  "type": "object",
+                  "properties": {
+                    "header": {
+                      "type": "string"
+                    },
+                    "hint": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "successToast": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["header", "hint", "label", "successToast"],
+                  "additionalProperties": false
+                },
+                "pickup": {
+                  "type": "object",
+                  "properties": {
+                    "header": {
+                      "type": "string"
+                    },
+                    "hint": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "successToast": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["header", "hint", "label", "successToast"],
+                  "additionalProperties": false
+                },
+                "returns": {
+                  "type": "object",
+                  "properties": {
+                    "header": {
+                      "type": "string"
+                    },
+                    "hint": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "successToast": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["header", "hint", "label", "successToast"],
+                  "additionalProperties": false
+                },
+                "tabs": {
+                  "type": "object",
+                  "properties": {
+                    "details": {
+                      "type": "string"
+                    },
+                    "prices": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["details", "prices"],
+                  "additionalProperties": false
+                },
+                "action": {
+                  "type": "string"
+                }
+              },
+              "required": ["shipping", "pickup", "returns", "tabs", "action"],
+              "additionalProperties": false
             },
             "delete": {
               "type": "object",
@@ -6113,7 +6203,7 @@
               "additionalProperties": false
             }
           },
-          "required": ["create", "delete", "edit", "pricing", "fields"],
+          "required": ["title", "create", "delete", "edit", "pricing", "fields"],
           "additionalProperties": false
         },
         "serviceZones": {
@@ -12319,9 +12409,12 @@
             },
             "description": {
               "type": "string"
+            },
+            "requestCollection": {
+              "type": "string"
             }
           },
-          "required": ["title", "description"],
+          "required": ["title", "description", "requestCollection"],
           "additionalProperties": false
         },
         "orders": {

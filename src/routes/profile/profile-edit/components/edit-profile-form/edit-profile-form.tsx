@@ -183,7 +183,7 @@ export const EditProfileForm = ({
                     <div className='flex flex-col gap-y-2'>
                       <div className='flex flex-col gap-y-1'>
                         <Form.Label>
-                          Profile picture
+                          {t('profile.fields.profilePicture')}
                         </Form.Label>
                       </div>
                       <Form.Control>
@@ -218,7 +218,7 @@ export const EditProfileForm = ({
               name='name'
               render={({ field }) => (
                 <Form.Item>
-                  <Form.Label>Name</Form.Label>
+                  <Form.Label>{t('fields.name')}</Form.Label>
                   <Form.Control>
                     <Input {...field} />
                   </Form.Control>
@@ -231,7 +231,7 @@ export const EditProfileForm = ({
               name='phone'
               render={({ field }) => (
                 <Form.Item>
-                  <Form.Label>Phone</Form.Label>
+                  <Form.Label>{t('fields.phone')}</Form.Label>
                   <Form.Control>
                     <Input {...field} />
                   </Form.Control>
@@ -244,7 +244,7 @@ export const EditProfileForm = ({
               name='bio'
               render={({ field }) => (
                 <Form.Item>
-                  <Form.Label>Bio</Form.Label>
+                  <Form.Label>{t('profile.fields.bio')}</Form.Label>
                   <Form.Control>
                     <Textarea {...field} />
                   </Form.Control>

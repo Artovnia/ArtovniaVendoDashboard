@@ -11,6 +11,12 @@ import { useEffect, useMemo } from 'react';
 
 import { HttpTypes } from '@medusajs/types';
 
+// Utility function to clean service zone name by removing suffix pattern
+const cleanServiceZoneName = (name: string): string => {
+  // Remove pattern like "_K7AAQ537" from the end of the name
+  return name.replace(/_[A-Z0-9]{8}$/, '');
+};
+
 import { Form } from '../../../../../components/common/form';
 import { SwitchBox } from '../../../../../components/common/switch-box';
 import { Combobox } from '../../../../../components/inputs/combobox';
@@ -103,7 +109,7 @@ export const CreateShippingOptionDetailsForm = ({
                     : 'shipping'
               }.header`,
               {
-                zone: zone.name,
+                zone: cleanServiceZoneName(zone.name),
               }
             )}
           </Heading>
