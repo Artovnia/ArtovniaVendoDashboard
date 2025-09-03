@@ -2,6 +2,7 @@ import { Container, Heading, Text } from '@medusajs/ui';
 import { OnboardingRow } from './onboarding-row';
 import { useUpdateOnboarding } from '../../../hooks/api';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type DashboardProps = {
   products: boolean;
@@ -17,6 +18,7 @@ export const DashboardOnboarding = ({
   // stripe_connect,
 }: DashboardProps) => {
   const { mutateAsync } = useUpdateOnboarding();
+  const { t } = useTranslation();
 
   useEffect(() => {
     mutateAsync();
@@ -26,18 +28,18 @@ export const DashboardOnboarding = ({
     <Container className='divide-y p-0'>
       <div className='flex items-center justify-between px-6 py-4'>
         <div>
-          <Heading>Witamy w Artovnia, Twoim bazarze sztuki i rękodzieła</Heading>
+          <Heading>{t('dashboard.onboarding.welcome')}</Heading>
           <Text className='text-ui-fg-subtle' size='small'>
-            Proszę uzupełnić te kroki, aby rozpocząć sprzedaż w 
+            {t('dashboard.onboarding.description')}
           </Text>
         </div>
       </div>
       <div className='px-6 py-4'>
         <OnboardingRow
-          label='Complete the store information'
+          label={t('dashboard.onboarding.steps.storeInfo')}
           state={store_information}
           link='/settings/store'
-          buttonLabel='Manage'
+          buttonLabel={t('dashboard.onboarding.buttons.manage')}
         />
         {/* <OnboardingRow
           label='Setup Stripe Connect account'
@@ -46,16 +48,16 @@ export const DashboardOnboarding = ({
           buttonLabel='Setup'
         /> */}
         <OnboardingRow
-          label='Setup Locations & Shipping'
+          label={t('dashboard.onboarding.steps.locationsShipping')}
           state={locations_shipping}
           link='/settings/locations'
-          buttonLabel='Setup'
+          buttonLabel={t('dashboard.onboarding.buttons.setup')}
         />
         <OnboardingRow
-          label='Add products and start selling'
+          label={t('dashboard.onboarding.steps.addProducts')}
           state={products}
           link='/products/create'
-          buttonLabel='Add'
+          buttonLabel={t('dashboard.onboarding.buttons.add')}
         />
       </div>
     </Container>

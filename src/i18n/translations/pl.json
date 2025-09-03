@@ -3319,7 +3319,34 @@
     "cancel": "Anuluj",
     "debugInfo": "Informacje debugowania"
   },
+  "dashboard": {
+    "onboarding": {
+      "welcome": "Witamy w Artovnia, Twojej platformie sztuki i rękodzieła",
+      "description": "Proszę uzupełnić te kroki, aby rozpocząć sprzedaż w",
+      "steps": {
+        "storeInfo": "Uzupełnij informacje o sklepie",
+        "locationsShipping": "Skonfiguruj lokalizacje i wysyłkę",
+        "addProducts": "Dodaj produkty i rozpocznij sprzedaż"
+      },
+      "buttons": {
+        "manage": "Zarządzaj",
+        "setup": "Ustaw",
+        "add": "Dodaj"
+      }
+    },
+    "actions": "Akcje",
+    "actionsDescription": "Sprawdź nowe wydarzenia i zarządzaj sklepem",
+    "unfulfilledOrders": "Zamówienia nierealizowane",
+    "fulfilledOrders": "Zamówienia zrealizowane",
+    "reviewsToReply": "Recenzje do odpowiedzi",
+    "statistics": "Statystyki",
+    "selectDateRange": "Wybierz zakres dat",
+    "orders": "Zamówienia",
+    "customers": "Klienci",
+    "messages": "Wiadomości"
+  },
   "navigation": {
+    "dashboard": "Pulpit",
     "reviews": "Recenzje",
     "messages": "Wiadomości",
     "requests": "Zapytania",
@@ -3476,18 +3503,6 @@
     "domain": "Kategorie",
     "description": "Organizuj produkty w kategorie.",
     "requestCategory": "Poproś o kategorię"
-  },
-  "dashboard": {
-    "actions": "Akcje",
-    "actionsDescription": "Sprawdź nowe wydarzenia i zarządzaj sklepem",
-    "unfulfilledOrders": "Zamówienia nierealizowane",
-    "fulfilledOrders": "Zamówienia zrealizowane",
-    "reviewsToReply": "Recenzje do odpowiedzi",
-    "statistics": "Statystyki",
-    "selectDateRange": "Wybierz zakres dat",
-    "orders": "Zamówienia",
-    "customers": "Klienci",
-    "messages": "Wiadomości"
   },
   "auth": {
     "login": {

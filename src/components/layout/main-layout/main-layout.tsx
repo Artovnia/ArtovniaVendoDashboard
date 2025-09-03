@@ -106,7 +106,7 @@ const useCoreRoutes = (): Omit<INavItem, 'pathname'>[] => {
   return [
     {
       icon: <Component />,
-      label: 'Dashboard',
+      label: t('navigation.dashboard'),
       to: '/dashboard',
     },
     {

@@ -3431,7 +3431,34 @@
     "cancel": "Cancel",
     "debugInfo": "Debug Info"
   },
+  "dashboard": {
+    "onboarding": {
+      "welcome": "Welcome to Artovnia, Your Art and Crafts Marketplace",
+      "description": "Please complete these steps to start selling in",
+      "steps": {
+        "storeInfo": "Complete the store information",
+        "locationsShipping": "Setup Locations & Shipping",
+        "addProducts": "Add products and start selling"
+      },
+      "buttons": {
+        "manage": "Manage",
+        "setup": "Setup",
+        "add": "Add"
+      }
+    },
+    "actions": "Actions",
+    "actionsDescription": "Check new events and manage your store",
+    "unfulfilledOrders": "Unfulfilled orders",
+    "fulfilledOrders": "Fulfilled orders",
+    "reviewsToReply": "Reviews to reply",
+    "statistics": "Statistics",
+    "selectDateRange": "Select date range",
+    "orders": "Orders",
+    "customers": "Customers",
+    "messages": "Messages"
+  },
   "navigation": {
+    "dashboard": "Dashboard",
     "reviews": "Reviews",
     "messages": "Messages",
     "requests": "Requests",
@@ -3583,18 +3610,6 @@
       "error": "Error loading request details",
       "empty": "No request found"
     }
-  },
-  "dashboard": {
-    "actions": "Actions",
-    "actionsDescription": "Check new events and manage your store",
-    "unfulfilledOrders": "Unfulfilled orders",
-    "fulfilledOrders": "Fulfilled orders",
-    "reviewsToReply": "Reviews to reply",
-    "statistics": "Statistics",
-    "selectDateRange": "Select date range",
-    "orders": "Orders",
-    "customers": "Customers",
-    "messages": "Messages"
   },
   "auth": {
     "login": {
