@@ -47,7 +47,7 @@ import {
   isOptionEnabledInStore,
   isReturnOption,
 } from '../../../../../lib/shipping-options';
-import { FulfillmentSetType } from '../../../common/constants';
+import { FulfillmentSetType, ShippingOptionPriceType } from '../../../common/constants';
 
 const STALE_TIME = 15 * 1000;
 
