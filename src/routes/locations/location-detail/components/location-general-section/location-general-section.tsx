@@ -100,6 +100,23 @@ const extractUserFriendlyFulfillmentSetName = (fulfillmentSetName: string): stri
   return fulfillmentSetName
 }
 
+/**
+ * Extracts the user-friendly name from a shipping option name with seller ID suffix
+ * Format: "ShippingOptionName - sellerID:ProfileName" -> "ShippingOptionName"
+ * @param shippingOptionName - The shipping option name (potentially with suffix)
+ * @returns The user-friendly shipping option name
+ */
+const extractUserFriendlyShippingOptionName = (shippingOptionName: string): string => {
+  // Handle format: "ShippingOptionName - sellerID:ProfileName"
+  const dashIndex = shippingOptionName.indexOf(' - sel_')
+  if (dashIndex !== -1) {
+    return shippingOptionName.substring(0, dashIndex)
+  }
+  
+  // Return original name if no pattern matches
+  return shippingOptionName
+}
+
 type LocationGeneralSectionProps = {
   location: HttpTypes.AdminStockLocation;
 };
@@ -204,7 +221,7 @@ function ShippingOption({
     <div className='flex items-center justify-between px-3 py-2'>
       <div className='flex-1'>
         <Text size='small' weight='plus'>
-          {option.name || 'Unnamed Option'}{' '}
+          {extractUserFriendlyShippingOptionName(option.name || 'Unnamed Option')}{' '}
           {option?.shipping_profile?.name && `- ${option.shipping_profile.name}`}{' '}
           ({formatProvider(option.provider_id || 'manual')})
         </Text>
