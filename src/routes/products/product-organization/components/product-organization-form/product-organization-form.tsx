@@ -127,7 +127,7 @@ export const ProductOrganizationForm = ({
       {
         onSuccess: ({ product }) => {
           toast.success(
-            t('products.organization.edit.toasts.success', {
+            t('organization.edit.toasts.success', {
               title: product.title,
             })
           );
@@ -155,7 +155,7 @@ export const ProductOrganizationForm = ({
                 return (
                   <Form.Item>
                     <Form.Label optional>
-                      {t('products.fields.type.label')}
+                      {t('formFields.type.label')}
                     </Form.Label>
                     <Form.Control>
                       <Combobox
@@ -181,7 +181,7 @@ export const ProductOrganizationForm = ({
                   <Form.Item>
                     <Form.Label optional>
                       {t(
-                        'products.fields.collection.label'
+                        'formFields.collection.label'
                       )}
                     </Form.Label>
                     <Form.Control>
@@ -210,7 +210,7 @@ export const ProductOrganizationForm = ({
                   <Form.Item>
                     <Form.Label optional>
                       {t(
-                        'products.fields.categories.label'
+                        'formFields.categories.label'
                       )}
                     </Form.Label>
                     <Form.Control>
@@ -228,7 +228,7 @@ export const ProductOrganizationForm = ({
                 return (
                   <Form.Item>
                     <Form.Label optional>
-                      {t('products.fields.tags.label')}
+                      {t('formFields.tags.label')}
                     </Form.Label>
                     <Form.Control>
                       <Combobox

@@ -66,12 +66,12 @@ export const VariantColorsEditForm = () => {
   useEffect(() => {
     if (assignedColors?.length > 0 && !isInitialized) {
       const colorIds = assignedColors.map((color: ColorType) => color.id)
-      console.log('[Variant Colors Edit] Initializing with colors:', colorIds)
+      
       setSelectedColorIds(colorIds)
       form.setValue('selectedColors', colorIds)
       setIsInitialized(true)
     } else if (assignedColors?.length === 0 && !isLoading && !isInitialized) {
-      console.log('[Variant Colors Edit] No colors found, initializing empty')
+      
       setSelectedColorIds([])
       form.setValue('selectedColors', [])
       setIsInitialized(true)
@@ -79,13 +79,13 @@ export const VariantColorsEditForm = () => {
   }, [assignedColors, form, isLoading, isInitialized])
   
   const handleToggleColor = (colorId: string) => {
-    console.log('[Variant Colors Edit] Toggling color:', colorId)
+    
     setSelectedColorIds(prev => {
       const newSelection = prev.includes(colorId)
         ? prev.filter(id => id !== colorId)
         : [...prev, colorId]
       
-      console.log('[Variant Colors Edit] New selection:', newSelection)
+      
       form.setValue('selectedColors', newSelection)
       return newSelection
     })
@@ -123,7 +123,7 @@ export const VariantColorsEditForm = () => {
 
   const onSubmit = form.handleSubmit(async () => {
     try {
-      console.log(`[Variant Colors Edit] Updating variant ${variant_id} with colors:`, selectedColorIds)
+      
       
       await assignColors({ 
         productId: product_id!, 
@@ -131,10 +131,10 @@ export const VariantColorsEditForm = () => {
         colorIds: selectedColorIds 
       })
       
-      console.log(`[Variant Colors Edit] Successfully updated variant ${variant_id} colors`)
+      
       
       toast.success(
-        t('products.variant.colors.successToast')
+        t('variant.colors.successToast')
       )
       
       // Small delay to allow backend processing
@@ -146,7 +146,7 @@ export const VariantColorsEditForm = () => {
     } catch (error: any) {
       console.error(`[Variant Colors Edit] Error updating variant ${variant_id} colors:`, error)
       toast.error(
-        t('products.variant.colors.errorToast')
+        t('variant.colors.errorToast')
       )
     }
   })
@@ -156,7 +156,7 @@ export const VariantColorsEditForm = () => {
     return (
       <div className="flex flex-col gap-y-8 min-h-[400px]">
         <div className="flex items-center justify-center p-8">
-          <Text className="text-ui-fg-subtle">{t('products.variant.colorsEditForm.loading')}</Text>
+          <Text className="text-ui-fg-subtle">{t('variant.colorsEditForm.loading')}</Text>
         </div>
       </div>
     )
@@ -168,7 +168,7 @@ export const VariantColorsEditForm = () => {
       <div className="flex flex-col gap-y-8 min-h-[400px]">
         <div className="flex items-center justify-center p-8">
           <Text className="text-ui-fg-on-color-danger">
-            {t('products.variant.colorsEditForm.error', { message: variantColorsError.message })}
+            {t('variant.colorsEditForm.error', { message: variantColorsError.message })}
           </Text>
         </div>
       </div>
@@ -186,12 +186,12 @@ export const VariantColorsEditForm = () => {
               {productVariantsData?.variants && productVariantsData.variants.length > 1 && (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <Text weight="plus" size="small">{t('products.variant.colorsEditForm.copyFromVariant')}</Text>
+                    <Text weight="plus" size="small">{t('variant.colorsEditForm.copyFromVariant')}</Text>
                     <DropdownMenu>
                       <DropdownMenu.Trigger asChild>
                         <Button variant="secondary" size="small">
                           <SquareTwoStack className="h-4 w-4" />
-                          {t('products.variant.colorsEditForm.copyColors')}
+                          {t('variant.colorsEditForm.copyColors')}
                         </Button>
                       </DropdownMenu.Trigger>
                       <DropdownMenu.Content align="end">
@@ -203,7 +203,7 @@ export const VariantColorsEditForm = () => {
                               onClick={() => handleCopyFromVariant(variant.id)}
                             >
                               <SquareTwoStack className="h-4 w-4" />
-                              {t('products.variant.colorsEditForm.copyFrom', { variantTitle: variant.title || `Wariant ${variant.id}` })}
+                              {t('variant.colorsEditForm.copyFrom', { variantTitle: variant.title || `Wariant ${variant.id}` })}
                             </DropdownMenu.Item>
                           ))
                         }
@@ -215,7 +215,7 @@ export const VariantColorsEditForm = () => {
 
               {/* Current colors display */}
               <div className="space-y-2">
-                <Text weight="plus" size="small">{t('products.variant.colorsEditForm.currentColors')}</Text>
+                <Text weight="plus" size="small">{t('variant.colorsEditForm.currentColors')}</Text>
                 
                 {assignedColors.length > 0 ? (
                   <div className="bg-ui-bg-subtle rounded-lg p-2 sm:p-3">
@@ -234,7 +234,7 @@ export const VariantColorsEditForm = () => {
                 ) : (
                   <div className="bg-ui-bg-subtle rounded-lg p-2 sm:p-3">
                     <Text size="small" className="text-ui-fg-subtle">
-                      {t('products.variant.colorsEditForm.noCurrentColors')}
+                      {t('variant.colorsEditForm.noCurrentColors')}
                     </Text>
                   </div>
                 )}
@@ -247,7 +247,7 @@ export const VariantColorsEditForm = () => {
                 render={() => {
                   return (
                     <Form.Item>
-                      <Form.Label>{t('products.variant.colorsEditForm.addColors')}</Form.Label>
+                      <Form.Label>{t('variant.colorsEditForm.addColors')}</Form.Label>
                       <Form.Control>
                         <Container className="p-0 border rounded-lg">
                           <div 
@@ -264,8 +264,8 @@ export const VariantColorsEditForm = () => {
                                   handleToggleColor(colorId)
                                 }
                               }}
-                              placeholder={t('products.variant.colorsEditForm.searchPlaceholder')}
-                              label={t('products.variant.colorsEditForm.searchLabel')}
+                              placeholder={t('variant.colorsEditForm.searchPlaceholder')}
+                              label={t('variant.colorsEditForm.searchLabel')}
                               showColorPreview={true}
                             />
                           </div>
@@ -279,7 +279,7 @@ export const VariantColorsEditForm = () => {
               
               {/* Selected colors - Responsive container */}
               <div className="space-y-2">
-                <Text weight="plus" size="small">{t('products.variant.colorsEditForm.selectedColors', { count: selectedColorIds.length })}</Text>
+                <Text weight="plus" size="small">{t('variant.colorsEditForm.selectedColors')} ({selectedColorIds.length})</Text>
                 
                 <div className="min-h-[60px] bg-ui-bg-subtle rounded-lg p-2 sm:p-3">
                   {selectedColorIds.length > 0 ? (
@@ -299,7 +299,7 @@ export const VariantColorsEditForm = () => {
                               className="p-0 ml-1 w-4 h-4 sm:w-3 sm:h-3 text-ui-fg-muted hover:text-ui-fg-subtle opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex items-center justify-center"
                               onClick={() => handleToggleColor(colorId)}
                               type="button"
-                              title={t('products.variant.colorsEditForm.removeColor')}
+                              title={t('variant.colorSection.removeAllColors')}
                             >
                               ×
                             </Button>
@@ -307,14 +307,14 @@ export const VariantColorsEditForm = () => {
                         ) : (
                           <div key={colorId} className="flex items-center gap-1 bg-ui-bg-base rounded px-2 py-1 border border-ui-border-error group text-xs sm:text-sm">
                             <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-ui-bg-disabled border border-ui-border-base shadow-sm flex-shrink-0" />
-                            <Text size="xsmall" className="text-ui-fg-muted whitespace-nowrap truncate max-w-[100px] sm:max-w-none">{t('products.variant.colors.unknownColor')}</Text>
+                            <Text size="xsmall" className="text-ui-fg-muted whitespace-nowrap truncate max-w-[100px] sm:max-w-none">{t('variant.colors.unknownColor')}</Text>
                             <Button
                               variant="transparent"
                               size="small"
                               className="p-0 ml-1 w-4 h-4 sm:w-3 sm:h-3 text-ui-fg-muted hover:text-ui-fg-subtle opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex items-center justify-center"
                               onClick={() => handleToggleColor(colorId)}
                               type="button"
-                              title={t('products.variant.colorsEditForm.removeColor')}
+                              title={t('variant.colorSection.removeAllColors')}
                             >
                               ×
                             </Button>
@@ -325,7 +325,7 @@ export const VariantColorsEditForm = () => {
                   ) : (
                     <div className="flex items-center justify-center h-12">
                       <Text size="small" className="text-ui-fg-muted text-center">
-                        {t('products.variant.colors.noColorsSelected')}
+                        {t('variant.colorSection.noColors')}
                       </Text>
                     </div>
                   )}
@@ -335,7 +335,7 @@ export const VariantColorsEditForm = () => {
               {/* Help text */}
               <div className="bg-ui-bg-base border border-ui-border-base rounded-lg p-2 sm:p-3">
                 <Text size="xsmall" className="text-ui-fg-subtle">
-                  {t('products.variant.colors.helpText')}
+                  {t('variant.colorsEditForm.helpText')}
                 </Text>
               </div>
             </div>

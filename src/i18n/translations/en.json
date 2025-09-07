@@ -462,64 +462,92 @@
       },
       "options": {
         "optionTitlePlaceholder": "Size, Color, Material",
-        "variantionsPlaceholder": "S, M, L, XL"
+        "variantionsPlaceholder": "S, M, L, XL",
+        "header": "Options",
+        "edit": {
+          "header": "Edit Option",
+          "successToast": "Option {{title}} was successfully updated."
+        },
+        "create": {
+          "header": "Create Option",
+          "successToast": "Option {{title}} was successfully created."
+        }
       }
     },
-    "products": {
-      "gpsr": {
-        "title": "GPSR Information",
-        "description": "Enter information in accordance with the General Product Safety Regulation (GPSR) for this product.",
-        "sections": {
-          "producer": "Producer Information",
-          "importer": "Importer Information (Optional)",
-          "additional": "Additional Information"
+    "gpsr": {
+      "title": "GPSR Information",
+      "description": "Enter information in accordance with the General Product Safety Regulation (GPSR) for this product.",
+      "sections": {
+        "producer": "Producer Information",
+        "importer": "Importer Information (Optional)",
+        "additional": "Additional Information"
+      },
+      "fields": {
+        "producerName": "Producer Name",
+        "producerAddress": "Producer Address",
+        "producerContact": "Producer Contact",
+        "importerName": "Importer Name",
+        "importerAddress": "Importer Address",
+        "importerContact": "Importer Contact",
+        "instructions": "Instructions/Warnings",
+        "certificates": "Certificates/Compliance",
+        "compliance_cert": {
+          "label": "Compliance Certificate"
         },
-        "fields": {
-          "producerName": "Producer Name",
-          "producerAddress": "Producer Address",
-          "producerContact": "Producer Contact",
-          "importerName": "Importer Name",
-          "importerAddress": "Importer Address",
-          "importerContact": "Importer Contact",
-          "instructions": "Instructions/Warnings",
-          "certificates": "Certificates/Compliance"
+        "safety_warning": {
+          "label": "Safety Warning"
         },
-        "producer": {
-          "name": {
-            "description": "Full name of the producer company.",
-            "placeholder": "e.g. XYZ Company Ltd."
-          },
-          "address": {
-            "description": "Full address of the producer's headquarters.",
-            "placeholder": "e.g. 123 Example Street, 00-001 Warsaw, Poland"
-          },
-          "contact": {
-            "description": "Email or phone number to contact the producer.",
-            "placeholder": "e.g. contact@company.com or +48 123 456 789"
-          }
-        },
-        "importer": {
-          "name": {
-            "description": "Full name of the importer company (required only if producer is outside EU).",
-            "placeholder": "e.g. EU Import Ltd."
-          },
-          "address": {
-            "description": "Full address of the importer's headquarters (required only if producer is outside EU).",
-            "placeholder": "e.g. 456 Import Street, 00-002 Krakow, Poland"
-          },
-          "contact": {
-            "description": "Email or phone number to contact the importer (required only if producer is outside EU).",
-            "placeholder": "e.g. import@company.eu or +48 987 654 321"
-          }
-        },
-        "instructions": {
-          "description": "Any instructions, warnings, or precautions to be taken when using this product.",
-          "placeholder": "e.g. Keep away from children under 3 years. Product contains small parts."
-        },
-        "certificates": {
-          "description": "Reference numbers of compliance certificates for this product, if applicable.",
-          "placeholder": "e.g. CE-12345-2023, ISO-9001"
+        "origin": {
+          "label": "Country of Origin"
         }
+      },
+      "producer": {
+        "name": {
+          "description": "Full name of the producer company.",
+          "placeholder": "e.g. XYZ Company Ltd."
+        },
+        "address": {
+          "description": "Full address of the producer's headquarters.",
+          "placeholder": "e.g. 123 Example Street, 00-001 Warsaw, Poland"
+        },
+        "contact": {
+          "description": "Email or phone number to contact the producer.",
+          "placeholder": "e.g. contact@company.com or +48 123 456 789"
+        }
+      },
+      "importer": {
+        "name": {
+          "description": "Full name of the importer company (required only if producer is outside EU).",
+          "placeholder": "e.g. EU Import Ltd."
+        },
+        "address": {
+          "description": "Full address of the importer's headquarters (required only if producer is outside EU).",
+          "placeholder": "e.g. 456 Import Street, 00-002 Krakow, Poland"
+        },
+        "contact": {
+          "description": "Email or phone number to contact the importer (required only if producer is outside EU).",
+          "placeholder": "e.g. import@company.eu or +48 987 654 321"
+        }
+      },
+      "instructions": {
+        "description": "Any instructions, warnings, or precautions to be taken when using this product.",
+        "placeholder": "e.g. Keep away from children under 3 years. Product contains small parts."
+      },
+      "certificates": {
+        "description": "Reference numbers of compliance certificates for this product, if applicable.",
+        "placeholder": "e.g. CE-12345-2023, ISO-9001"
+      },
+      "messages": {
+        "updateSuccess": "GPSR information updated successfully",
+        "updateError": "Failed to update GPSR information"
+      },
+      "placeholders": {
+        "producerAddress": "e.g. 123 Example Street, 00-001 Warsaw, Poland",
+        "producerContact": "e.g. contact@company.com or +48 123 456 789",
+        "importerAddress": "e.g. 456 Import Street, 00-002 Krakow, Poland",
+        "importerContact": "e.g. import@company.eu or +48 987 654 321",
+        "instructions": "e.g. Keep away from children under 3 years. Product contains small parts.",
+        "certificates": "e.g. CE-12345-2023, ISO-9001"
       }
     },
     "shippingProfile": {
@@ -655,122 +683,10 @@
     "editAttributes": "Edit Attributes",
     "editOptions": "Edit Options",
     "editPrices": "Edit prices",
-    "media": {
-      "label": "Media",
-      "header": "Media",
-      "edit": "Edit",
-      "editHint": "Add media to the product to showcase it in your storefront.",
-      "makeThumbnail": "Make thumbnail",
-      "recommendations": {
-        "title": "Recommendations",
-        "format": "Recommended format: WebP (supports JPEG, PNG, GIF, BMP, TIFF, SVG)",
-        "maxSize": "Maximum file size: 50MB per file",
-        "totalSize": "Maximum total size: 200MB"
-      },
-      "uploadImagesLabel": "Upload images",
-      "uploadImagesHint": "Drag and drop images here or click to upload.",
-      "invalidFileType": "'{{name}}' is not a supported file type. Supported file types are: {{types}}.",
-      "failedToUpload": "Failed to upload the added media. Please try again.",
-      "deleteWarning_one": "You are about to delete {{count}} image. This action cannot be undone.",
-      "deleteWarning_other": "You are about to delete {{count}} images. This action cannot be undone.",
-      "deleteWarningWithThumbnail_one": "You are about to delete {{count}} image including the thumbnail. This action cannot be undone.",
-      "deleteWarningWithThumbnail_other": "You are about to delete {{count}} images including the thumbnail. This action cannot be undone.",
-      "thumbnailTooltip": "Thumbnail",
-      "galleryLabel": "Gallery",
-      "downloadImageLabel": "Download current image",
-      "deleteImageLabel": "Delete current image",
-      "emptyState": {
-        "header": "No media yet",
-        "description": "Add media to the product to showcase it in your storefront.",
-        "action": "Add media"
-      },
-      "successToast": "Media was successfully updated."
-    },
     "noSalesChannels": "Not available in any sales channels",
     "variantCount_one": "{{count}} variant",
     "variantCount_other": "{{count}} variants",
     "deleteVariantWarning": "You are about to delete the variant {{title}}. This action cannot be undone.",
-    "productStatus": {
-      "draft": "Draft",
-      "published": "Published",
-      "proposed": "Proposed",
-      "rejected": "Rejected"
-    },
-    "formFields": {
-      "title": {
-        "label": "Title",
-        "hint": "Give your product a short and clear title.<0/>50-60 characters is the recommended length for search engines."
-      },
-      "subtitle": {
-        "label": "Subtitle"
-      },
-      "handle": {
-        "label": "Handle",
-        "tooltip": "The handle is used to reference the product in your storefront. If not specified, the handle will be generated from the product title."
-      },
-      "description": {
-        "label": "Description",
-        "hint": "Give your product a short and clear description.<0/>120-160 characters is the recommended length for search engines.",
-        "placeholder": "Product description..."
-      },
-      "discountable": {
-        "label": "Discountable",
-        "hint": "When unchecked, discounts will not be applied to this product"
-      },
-      "shipping_profile": {
-        "label": "Shipping Profile",
-        "placeholder": "Select shipping profile"
-      },
-      "type": {
-        "label": "Type"
-      },
-      "collection": {
-        "label": "Collection"
-      },
-      "categories": {
-        "label": "Categories"
-      },
-      "tags": {
-        "label": "Tags"
-      },
-      "sales_channels": {
-        "label": "Sales channels",
-        "hint": "This product will only be available in the default sales channel if left untouched."
-      },
-      "countryOrigin": {
-        "label": "Country of origin"
-      },
-      "material": {
-        "label": "Material"
-      },
-      "width": {
-        "label": "Width"
-      },
-      "length": {
-        "label": "Length"
-      },
-      "height": {
-        "label": "Height"
-      },
-      "weight": {
-        "label": "Weight"
-      },
-      "options": {
-        "label": "Product options",
-        "hint": "Options are used to define the color, size, etc. of the product",
-        "add": "Add option",
-        "optionTitle": "Option title",
-        "optionTitlePlaceholder": "Color",
-        "variations": "Variations (comma-separated)",
-        "variantionsPlaceholder": "Red, Blue, Green"
-      },
-      "mid_code": {
-        "label": "Mid code"
-      },
-      "hs_code": {
-        "label": "HS code"
-      }
-    },
     "variant": {
       "edit": {
         "header": "Edit Variant",
@@ -787,41 +703,45 @@
       "tableItem": "{{availableCount}} available at {{locationCount}} location",
       "goToInventory": "Go to inventory",
       "colors": {
-        "successToast": "Product exported successfully",
+        "successToast": "Variant colors updated successfully",
         "errorToast": "Failed to update variant colors",
+        "removeColor": "Remove color",
+        "unknownColor": "Unknown color",
         "noColorsSelected": "No colors selected",
-        "helpText": "Select colors for this variant",
-        "unknownColor": "Unknown color"
+        "helpText": "Select colors for this variant"
       },
+      "tableItem": "{{availableCount}} available at {{locationCount}} location",
+      "goToInventory": "Go to inventory",
       "colorSection": {
         "title": "Variant Color Scheme",
-        "editColors": "Edit colors",
-        "removeAllColors": "Remove all colors",
-        "loading": "Loading...",
+        "editColors": "Edit Colors",
+        "removeAllColors": "Remove All Colors",
+        "loading": "Loading colors...",
         "colors": "Colors",
-        "noColors": "No colors assigned to this variant.",
+        "noColors": "No colors assigned to this variant",
         "removeColors": {
-          "title": "Remove colors",
-          "description": "Are you sure you want to remove all colors from variant {{variantTitle}}?",
-          "confirm": "Remove",
+          "title": "Remove All Colors",
+          "description": "Are you sure you want to remove all colors from this variant?",
+          "confirm": "Remove All",
           "cancel": "Cancel"
         }
       },
       "colorsEditForm": {
-        "loading": "Loading variant colors...",
-        "error": "Error loading variant colors: {{message}}",
-        "copyFromVariant": "Copy colors from another variant",
+        "loading": "Loading colors...",
+        "error": "Failed to load colors",
+        "copyFromVariant": "Copy from variant",
         "copyColors": "Copy colors",
-        "copyFrom": "Copy from: {{variantTitle}}",
+        "copyFrom": "Copy from",
         "currentColors": "Current colors",
-        "noCurrentColors": "No colors assigned to this variant.",
+        "noCurrentColors": "No colors assigned",
         "addColors": "Add colors",
-        "searchPlaceholder": "Search and select colors...",
+        "searchPlaceholder": "Search colors...",
         "searchLabel": "Search colors",
-        "selectedColors": "Selected colors ({{count}})",
+        "selectedColors": "Selected colors",
         "removeColor": "Remove color",
-        "copySuccess": "Colors were copied from another variant",
-        "copyError": "Error copying colors"
+        "copySuccess": "Colors copied successfully",
+        "copyError": "Failed to copy colors",
+        "helpText": "Select colors that best represent this variant. You can select multiple colors."
       },
       "inventory": {
         "notManaged": "Not managed",
@@ -849,21 +769,9 @@
           "levelsBatch": "Inventory levels updated.",
           "update": "Inventory item updated successfully.",
           "updateLevel": "Inventory level updated successfully.",
-          "itemsManageSuccess": "Inventory items sucessfully updated."
+          "itemsManageSuccess": "Inventory items successfully updated."
         }
       }
-    },
-    "options": {
-      "header": "Options",
-      "edit": {
-        "header": "Edit Option",
-        "successToast": "Option {{title}} was successfully updated."
-      },
-      "create": {
-        "header": "Create Option",
-        "successToast": "Option {{title}} was successfully created."
-      },
-      "deleteWarning": "You are about to delete the product option: {{title}}. This action cannot be undone."
     },
     "organization": {
       "header": "Organize",
@@ -900,6 +808,54 @@
         }
       }
     },
+    "colors": {
+      "header": "Colors",
+      "loading": "Loading colors...",
+      "noColors": "No colors assigned to this product"
+    },
+    "variants": {
+      "header": "Variants",
+      "empty": {
+        "heading": "No variants",
+        "description": "You don't have any variants yet. Add the first variant to get started."
+      },
+      "variantColumn": "Variant",
+      "priceColumn": "Price",
+      "stockColumn": "Stock",
+      "actionsColumn": "Actions"
+    },
+    "editPrices": "Edit Prices",
+    "media": {
+      "label": "Media",
+      "header": "Media",
+      "edit": "Edit",
+      "editHint": "Add media to the product to showcase it in your storefront.",
+      "makeThumbnail": "Make thumbnail",
+      "recommendations": {
+        "title": "Recommendations",
+        "format": "Recommended format: WebP (supports JPEG, PNG, GIF, BMP, TIFF, SVG)",
+        "maxSize": "Maximum file size: 50MB per file",
+        "totalSize": "Maximum total size: 200MB"
+      },
+      "uploadImagesLabel": "Upload images",
+      "uploadImagesHint": "Drag and drop images here or click to upload.",
+      "invalidFileType": "'{{name}}' is not a supported file type. Supported file types are: {{types}}.",
+      "failedToUpload": "Failed to upload the added media. Please try again.",
+      "deleteWarning_one": "You are about to delete {{count}} image. This action cannot be undone.",
+      "deleteWarning_other": "You are about to delete {{count}} images. This action cannot be undone.",
+      "deleteWarningWithThumbnail_one": "You are about to delete {{count}} image including the thumbnail. This action cannot be undone.",
+      "deleteWarningWithThumbnail_other": "You are about to delete {{count}} images including the thumbnail. This action cannot be undone.",
+      "thumbnailTooltip": "Thumbnail",
+      "galleryLabel": "Gallery",
+      "downloadImageLabel": "Download current image",
+      "deleteImageLabel": "Delete current image",
+      "emptyState": {
+        "header": "No media yet",
+        "description": "Add media to the product to showcase it in your storefront.",
+        "action": "Add media"
+      },
+      "successToast": "Media was successfully updated."
+    },
     "toasts": {
       "delete": {
         "success": {
@@ -910,7 +866,7 @@
           "header": "Failed to delete product"
         }
       }
-  },
+    },
   "collections": {
     "domain": "Collections",
     "subtitle": "Organize products into collections.",
@@ -1180,11 +1136,7 @@
       }
     }
   },
-  "media": {
-    "uploadImagesLabel": "Upload Images",
-    "uploadImagesHint": "Drag and drop images here or click to browse",
-    "invalidFileType": "File {{name}} has an invalid format. Please use one of: {{types}}"
-  },
+  
   "orders": {
     "domain": "Orders",
     "claim": "Claim",
@@ -3660,6 +3612,105 @@
       "passwordMismatch": "Passwords do not match",
       "productDescriptionRequired": "Please describe what you want to sell",
       "invalidUrl": "Must be a valid URL or empty"
+    }
+  },
+  "variant": {
+    "colorSection": {
+      "title": "Variant Color Scheme",
+      "editColors": "Edit colors",
+      "removeAllColors": "Remove all colors",
+      "loading": "Loading...",
+      "colors": "Colors",
+      "noColors": "No colors assigned to this variant.",
+      "removeColors": {
+        "title": "Remove colors",
+        "description": "Are you sure you want to remove all colors from variant {{variantTitle}}?",
+        "confirm": "Remove",
+        "cancel": "Cancel"
+      }
+    }
+  },
+  "productStatus": {
+    "draft": "Draft",
+    "published": "Published",
+    "proposed": "Proposed",
+    "rejected": "Rejected"
+  },
+  "formFields": {
+    "title": {
+      "label": "Title",
+      "placeholder": "e.g. Elegant Cotton T-Shirt"
+    },
+    "subtitle": {
+      "label": "Subtitle",
+      "placeholder": "e.g. Comfortable and stylish"
+    },
+    "handle": {
+      "label": "Handle",
+      "placeholder": "e.g. elegant-cotton-t-shirt",
+      "tooltip": "The handle is used to reference the product in your storefront. If not specified, the handle will be generated from the product title."
+    },
+    "description": {
+      "label": "Description",
+      "placeholder": "e.g. This comfortable t-shirt is made from high-quality cotton..."
+    },
+    "discountable": {
+      "label": "Discountable",
+      "hint": "When unchecked, discounts will not be applied to this product"
+    },
+    "shipping_profile": {
+      "label": "Shipping Profile",
+      "placeholder": "Select shipping profile"
+    },
+    "type": {
+      "label": "Type"
+    },
+    "collection": {
+      "label": "Collection"
+    },
+    "categories": {
+      "label": "Categories"
+    },
+    "tags": {
+      "label": "Tags"
+    },
+    "sales_channels": {
+      "label": "Sales channels",
+      "hint": "This product will only be available in the default sales channel if left untouched."
+    },
+    "countryOrigin": {
+      "label": "Country of origin"
+    },
+    "material": {
+      "label": "Material",
+      "placeholder": "e.g. Cotton, Polyester, Wool"
+    },
+    "width": {
+      "label": "Width"
+    },
+    "length": {
+      "label": "Length"
+    },
+    "height": {
+      "label": "Height"
+    },
+    "weight": {
+      "label": "Weight"
+    },
+    "options": {
+      "label": "Product options",
+      "hint": "Options are used to define the color, size, etc. of the product",
+      "add": "Add option",
+      "optionTitle": "Option title",
+      "optionTitlePlaceholder": "Color",
+      "variations": "Variations (comma-separated)",
+      "variantionsPlaceholder": "Red, Blue, Green"
+    },
+    "mid_code": {
+      "label": "Mid code"
+    },
+    "hs_code": {
+      "label": "HS code"
     }
   },
   "languageSwitcher": {

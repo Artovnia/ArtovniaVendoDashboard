@@ -240,7 +240,7 @@ export const EditProductForm = ({
                     'bg-gray-500'
                   }`} />
                   <span className="text-sm text-ui-fg-base">
-                    {t(`products.productStatus.${product.status}`, product.status)}
+                    {t(`productStatus.${product.status}`, product.status)}
                   </span>
                 </div>
               </div>

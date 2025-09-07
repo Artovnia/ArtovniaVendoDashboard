@@ -123,7 +123,7 @@ export function CreateShippingProfileForm() {
               );
 
               handleSuccess(
-                `/settings/locations/shipping-profiles/${shipping_profile.id}`
+                `/settings/locations/shipping-profiles`
               );
             } else {
               // This would be strange but handle it gracefully

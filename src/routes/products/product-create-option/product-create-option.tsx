@@ -18,7 +18,7 @@ export const ProductCreateOption = () => {
   return (
     <RouteDrawer>
       <RouteDrawer.Header>
-        <Heading>{t("products.options.create.header")}</Heading>
+        <Heading>{t("products.fields.options.create.header")}</Heading>
       </RouteDrawer.Header>
       {!isLoading && product && <CreateProductOptionForm product={product} />}
     </RouteDrawer>

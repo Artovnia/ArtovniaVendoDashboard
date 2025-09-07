@@ -140,7 +140,7 @@ export const ProductShippingProfileForm = ({
                 return (
                   <Form.Item>
                     <Form.Label>
-                      {t("products.fields.shipping_profile.label")}
+                      {t("formFields.shipping_profile.label")}
                     </Form.Label>
                     <Form.Control>
                       <Combobox

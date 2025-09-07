@@ -425,21 +425,6 @@
         "instructionsRequired": "Instrukcje/ostrzeżenia są wymagane",
         "fillAllRequiredFields": "Proszę wypełnić wszystkie wymagane pola przed kontynuowaniem"
       },
-      "color_scheme": {
-        "title": "Schemat kolorów",
-        "description": "Przypisz kolory do wariantów produktu. Każdy wariant może mieć kilka kolorów.",
-        "default_variant": "Domyślny wariant",
-        "variant_name": "Wariant: {{name}}",
-        "assigned_colors": "Przypisane kolory",
-        "add_more_colors": "Dodaj więcej kolorów",
-        "add_color": "Dodaj kolor",
-        "select_color": "Wybierz kolor dla tego wariantu",
-        "color": "Kolor",
-        "no_color_option_warning": "Ten produkt nie ma jeszcze opcji koloru. Zalecamy dodanie opcji koloru aby ułatwić wyszukiwanie produktu w sklepie.",
-        "copy_colors": "Kopiuj kolory",
-        "copy_from_previous": "Kopiuj z poprzedniego wariantu",
-        "copy_from_variant": "Kopiuj z: {{name}}"
-      },
       "variantHeaders": {
         "options": "Opcje",
         "title": "Tytuł",
@@ -541,211 +526,104 @@
       },
       "options": {
         "optionTitlePlaceholder": "Rozmiar, Kolor, Materiał",
-        "variantionsPlaceholder": "S, M, L, XL"
-      }
-    },
-    "products": {
-      "gpsr": {
-        "title": "Informacje GPSR",
-        "description": "Wprowadź informacje zgodne z Ogólnym Rozporządzeniem o Bezpieczeństwie Produktów (GPSR) dla tego produktu.",
-        "sections": {
-          "producer": "Dane Producenta",
-          "importer": "Dane Importera (opcjonalne)",
-          "additional": "Informacje dodatkowe"
+        "variantionsPlaceholder": "S, M, L, XL",
+        "header": "Opcje",
+        "edit": {
+          "header": "Edytuj opcję",
+          "successToast": "Opcja {{title}} została pomyślnie zaktualizowana."
         },
-        "fields": {
-          "producerName": "Nazwa Producenta",
-          "producerAddress": "Adres Producenta",
-          "producerContact": "Kontakt do Producenta",
-          "importerName": "Nazwa Importera",
-          "importerAddress": "Adres Importera",
-          "importerContact": "Kontakt do Importera",
-          "instructions": "Instrukcje/Ostrzeżenia",
-          "certificates": "Certyfikaty/Zgodność"
-        },
-        "producer": {
-          "name": {
-            "description": "Pełna nazwa firmy producenta.",
-            "placeholder": "np. Firma XYZ Sp. z o.o."
-          },
-          "address": {
-            "description": "Pełny adres siedziby producenta.",
-            "placeholder": "np. ul. Przykładowa 123, 00-001 Warszawa, Polska"
-          },
-          "contact": {
-            "description": "Email lub numer telefonu do kontaktu z producentem.",
-            "placeholder": "np. kontakt@firma.com lub +48 123 456 789"
-          }
-        },
-        "importer": {
-          "name": {
-            "description": "Pełna nazwa firmy importera (wymagane tylko jeśli producent jest spoza UE).",
-            "placeholder": "np. Import UE Sp. z o.o."
-          },
-          "address": {
-            "description": "Pełny adres siedziby importera (wymagane tylko jeśli producent jest spoza UE).",
-            "placeholder": "np. ul. Importowa 456, 00-002 Kraków, Polska"
-          },
-          "contact": {
-            "description": "Email lub numer telefonu do kontaktu z importerem (wymagane tylko jeśli producent jest spoza UE).",
-            "placeholder": "np. import@firma.eu lub +48 987 654 321"
-          }
-        },
-        "instructions": {
-          "description": "Wszelkie instrukcje, ostrzeżenia lub środki ostrożności, które należy podjąć podczas korzystania z tego produktu.",
-          "placeholder": "np. Trzymać z dala od dzieci poniżej 3 lat. Produkt zawiera małe części."
-        },
-        "certificates": {
-          "description": "Certyfikaty zgodności lub bezpieczeństwa produktu.",
-          "placeholder": "np. CE-12345-2023, ISO-9001"
+        "create": {
+          "header": "Utwórz opcję",
+          "successToast": "Opcja {{title}} została pomyślnie utworzona."
         }
       }
     },
-    "organization": {
-      "header": "Organizuj"
+    "gpsr": {
+      "title": "Informacje GPSR",
+      "description": "Wprowadź informacje zgodne z Ogólnym Rozporządzeniem o Bezpieczeństwie Produktów (GPSR) dla tego produktu.",
+      "sections": {
+        "producer": "Dane Producenta",
+        "importer": "Dane Importera (opcjonalne)",
+        "additional": "Informacje dodatkowe"
+      },
+      "fields": {
+        "producerName": "Nazwa Producenta",
+        "producerAddress": "Adres Producenta",
+        "producerContact": "Kontakt do Producenta",
+        "importerName": "Nazwa Importera",
+        "importerAddress": "Adres Importera",
+        "importerContact": "Kontakt do Importera",
+        "instructions": "Instrukcje/Ostrzeżenia",
+        "certificates": "Certyfikaty/Zgodność",
+        "compliance_cert": {
+          "label": "Certyfikat zgodności"
+        },
+        "safety_warning": {
+          "label": "Ostrzeżenie bezpieczeństwa"
+        },
+        "origin": {
+          "label": "Kraj pochodzenia"
+        }
+      },
+      "producer": {
+        "name": {
+          "description": "Pełna nazwa firmy producenta.",
+          "placeholder": "np. Firma XYZ Sp. z o.o."
+        },
+        "address": {
+          "description": "Pełny adres siedziby producenta.",
+          "placeholder": "np. ul. Przykładowa 123, 00-001 Warszawa, Polska"
+        },
+        "contact": {
+          "description": "Email lub numer telefonu do kontaktu z producentem.",
+          "placeholder": "np. kontakt@firma.com lub +48 123 456 789"
+        }
+      },
+      "importer": {
+        "name": {
+          "description": "Pełna nazwa firmy importera (wymagane tylko jeśli producent jest spoza UE).",
+          "placeholder": "np. Import UE Sp. z o.o."
+        },
+        "address": {
+          "description": "Pełny adres siedziby importera (wymagane tylko jeśli producent jest spoza UE).",
+          "placeholder": "np. ul. Importowa 456, 00-002 Kraków, Polska"
+        },
+        "contact": {
+          "description": "Email lub numer telefonu do kontaktu z importerem (wymagane tylko jeśli producent jest spoza UE).",
+          "placeholder": "np. import@firma.eu lub +48 987 654 321"
+        }
+      },
+      "instructions": {
+        "description": "Wszelkie instrukcje, ostrzeżenia lub środki ostrożności, które należy podjąć podczas korzystania z tego produktu.",
+        "placeholder": "np. Trzymać z dala od dzieci poniżej 3 lat. Produkt zawiera małe części."
+      },
+      "certificates": {
+        "description": "Certyfikaty zgodności lub bezpieczeństwa produktu.",
+        "placeholder": "np. CE-12345-2023, ISO-9001"
+      },
+      "messages": {
+        "updateSuccess": "Informacje GPSR zostały pomyślnie zaktualizowane",
+        "updateError": "Nie udało się zaktualizować informacji GPSR"
+      },
+      "placeholders": {
+        "producerAddress": "np. ul. Przykładowa 123, 00-001 Warszawa, Polska",
+        "producerContact": "np. kontakt@firma.com lub +48 123 456 789",
+        "importerAddress": "np. ul. Importowa 456, 00-002 Kraków, Polska",
+        "importerContact": "np. import@firma.eu lub +48 987 654 321",
+        "instructions": "np. Trzymać z dala od dzieci poniżej 3 lat. Produkt zawiera małe części.",
+        "certificates": "np. CE-12345-2023, ISO-9001"
+      }
     },
+    
     "attributes": "Atrybuty",
     "editAttributes": "Edytuj atrybuty",
     "editOptions": "Edytuj opcje",
     "editPrices": "Edytuj ceny",
-    "media": {
-      "label": "Media",
-      "header": "Media",
-      "edit": "Edytuj",
-      "editHint": "Dodaj media do produktu, aby zaprezentować go w swoim sklepie.",
-      "makeThumbnail": "Ustaw jako miniaturę",
-      "recommendations": {
-        "title": "Rekomendacje",
-        "format": "Zalecany format: WebP (obsługuje JPEG, PNG, GIF, BMP, TIFF, SVG)",
-        "maxSize": "Maksymalny rozmiar pliku: 50MB na plik",
-        "totalSize": "Maksymalny całkowity rozmiar: 200MB"
-      },
-      "uploadImagesLabel": "Prześlij obrazy",
-      "uploadImagesHint": "Przeciągnij i upuść obrazy tutaj lub kliknij, aby przesłać.",
-      "invalidFileType": "'{{name}}' nie jest obsługiwanym typem pliku. Obsługiwane typy plików to: {{types}}.",
-      "failedToUpload": "Nie udało się przesłać dodanych mediów. Spróbuj ponownie.",
-      "deleteWarning_one": "Zamierzasz usunąć {{count}} obraz. Ta akcja nie może zostać cofnięta.",
-      "deleteWarning_other": "Zamierzasz usunąć {{count}} obrazów. Ta akcja nie może zostać cofnięta.",
-      "deleteWarningWithThumbnail_one": "Zamierzasz usunąć {{count}} obraz, w tym miniaturę. Ta akcja nie może zostać cofnięta.",
-      "deleteWarningWithThumbnail_other": "Zamierzasz usunąć {{count}} obrazów, w tym miniaturę. Ta akcja nie może zostać cofnięta.",
-      "thumbnailTooltip": "Miniatura",
-      "galleryLabel": "Galeria",
-      "downloadImageLabel": "Pobierz aktualny obraz",
-      "deleteImageLabel": "Usuń aktualny obraz",
-      "emptyState": {
-        "header": "Brak mediów",
-        "description": "Dodaj media do produktu, aby zaprezentować go w swoim sklepie.",
-        "action": "Dodaj media"
-      },
-      "successToast": "Media zostały pomyślnie zaktualizowane."
-    },
     "discountableHint": "Jeśli odznaczone, rabaty nie będą stosowane do tego produktu.",
     "noSalesChannels": "Niedostępny w żadnych kanałach sprzedaży",
     "variantCount_one": "{{count}} wariant",
     "variantCount_other": "{{count}} wariantów",
     "deleteVariantWarning": "Zamierzasz usunąć wariant {{title}}. Ta akcja nie może zostać cofnięta.",
-    "productStatus": {
-      "draft": "Szkic",
-      "published": "Opublikowany",
-      "proposed": "Proponowany",
-      "rejected": "Odrzucony"
-    },
-    "formFields": {
-      "title": {
-        "label": "Tytuł",
-        "placeholder": "np. Elegancka koszulka bawełniana"
-      },
-      "subtitle": {
-        "label": "Podtytuł",
-        "placeholder": "np. Wygodna i stylowa"
-      },
-      "handle": {
-        "label": "Uchwyt",
-        "placeholder": "np. elegancka-koszulka-bawelniana",
-        "tooltip": "Uchwyt jest używany do odniesienia do produktu w Twoim sklepie. Jeśli nie zostanie określony, uchwyt zostanie wygenerowany z tytułu produktu."
-      },
-      "description": {
-        "label": "Opis",
-        "placeholder": "np. Ta wygodna koszulka wykonana jest z wysokiej jakości bawełny..."
-      },
-      "discountable": {
-        "label": "Rabaty",
-        "hint": "Jeśli odznaczone, rabaty nie będą stosowane do tego produktu"
-      },
-      "shipping_profile": {
-        "label": "Profil wysyłki",
-        "placeholder": "Wybierz profil wysyłki"
-      },
-      "type": {
-        "label": "Typ"
-      },
-      "collection": {
-        "label": "Kolekcja"
-      },
-      "categories": {
-        "label": "Kategorie"
-      },
-      "tags": {
-        "label": "Tagi"
-      },
-      "sales_channels": {
-        "label": "Kanały sprzedaży",
-        "hint": "Produkt będzie dostępny tylko w domyślnym kanale sprzedaży, jeśli pozostanie nietknięty."
-      },
-      "countryOrigin": {
-        "label": "Kraj pochodzenia"
-      },
-      "material": {
-        "label": "Materiał",
-        "placeholder": "np. 100% bawełna"
-      },
-      "width": {
-        "label": "Szerokość"
-      },
-      "length": {
-        "label": "Długość"
-      },
-      "height": {
-        "label": "Wysokość"
-      },
-      "weight": {
-        "label": "Waga"
-      },
-      "options": {
-        "label": "Opcje produktu",
-        "hint": "Opcje służą do określenia koloru, rozmiaru itp. produktu",
-        "add": "Dodaj opcję",
-        "optionTitle": "Nazwa opcji",
-        "optionTitlePlaceholder": "Kolor",
-        "variations": "Warianty (oddzielone przecinkami)",
-        "variantionsPlaceholder": "Czerwony, Niebieski, Zielony"
-      },
-      "mid_code": {
-        "label": "Kod MID"
-      },
-      "hs_code": {
-        "label": "Kod HS"
-      },
-      "origin": {
-        "label": "Pochodzenie",
-        "description": "Kraj lub region pochodzenia produktu zgodnie z wymogami GPSR.",
-        "placeholder": "np. Polska, UE"
-      },
-      "safety_warning": {
-        "label": "Ostrzeżenia bezpieczeństwa",
-        "description": "Wszelkie instrukcje, ostrzeżenia lub środki ostrożności, które należy podjąć podczas korzystania z tego produktu.",
-        "placeholder": "np. Trzymać z dala od dzieci poniżej 3 lat. Produkt zawiera małe części."
-      },
-      "compliance_cert": {
-        "label": "Certyfikaty zgodności",
-        "description": "Certyfikaty zgodności lub bezpieczeństwa produktu.",
-        "placeholder": "np. CE-12345-2023, ISO-9001"
-      },
-      "options": {
-        "optionTitlePlaceholder": "Kolor",
-        "variantionsPlaceholder": "Czerwony, Niebieski, Zielony"
-      }
-    },
     "variant": {
       "edit": {
         "header": "Edytuj wariant",
@@ -754,6 +632,14 @@
       "create": {
         "header": "Szczegóły wariantu"
       },
+      "colors": {
+        "successToast": "Kolory wariantu zostały pomyślnie zaktualizowane",
+        "errorToast": "Nie udało się zaktualizować kolorów wariantu",
+        "removeColor": "Usuń kolor",
+        "unknownColor": "Nieznany kolor",
+        "noColorsSelected": "Nie wybrano kolorów",
+        "helpText": "Wybierz kolory dla tego wariantu"
+      },
       "deleteWarning": "Czy na pewno chcesz usunąć ten wariant?",
       "pricesPagination": "1 - {{current}} z {{total}} cen",
       "tableItemAvailable": "{{availableCount}} dostępne",
@@ -761,47 +647,42 @@
       "tableItem_other": "{{availableCount}} dostępne w {{locationCount}} lokalizacjach",
       "tableItem": "{{availableCount}} dostępne w {{locationCount}} lokalizacji",
       "goToInventory": "Przejdź do magazynu",
-      "colors": {
-        "successToast": "Kolory wariantu zostały pomyślnie zaktualizowane",
-        "errorToast": "Nie udało się zaktualizować kolorów wariantu",
-        "noColorsSelected": "Nie wybrano kolorów",
-        "helpText": "Wybierz kolory dla tego wariantu",
-        "unknownColor": "Nieznany kolor"
-      },
       "colorSection": {
         "title": "Schemat kolorów wariantu",
         "editColors": "Edytuj kolory",
         "removeAllColors": "Usuń wszystkie kolory",
-        "loading": "Ładowanie...",
+        "loading": "Ładowanie kolorów...",
         "colors": "Kolory",
-        "noColors": "Brak przypisanych kolorów dla tego wariantu.",
+        "noColors": "Brak kolorów przypisanych do tego wariantu",
         "removeColors": {
-          "title": "Usuń kolory",
-          "description": "Czy na pewno chcesz usunąć wszystkie kolory z wariantu {{variantTitle}}?",
-          "confirm": "Usuń",
+          "title": "Usuń wszystkie kolory",
+          "description": "Czy na pewno chcesz usunąć wszystkie kolory z tego wariantu?",
+          "confirm": "Usuń wszystkie",
           "cancel": "Anuluj"
         }
       },
       "colorsEditForm": {
-        "loading": "Ładowanie kolorów wariantu...",
-        "error": "Błąd podczas ładowania kolorów wariantu: {{message}}",
-        "copyFromVariant": "Kopiuj kolory z innego wariantu",
+        "loading": "Ładowanie kolorów...",
+        "error": "Nie udało się załadować kolorów",
+        "copyFromVariant": "Kopiuj z wariantu",
         "copyColors": "Kopiuj kolory",
-        "copyFrom": "Kopiuj z: {{variantTitle}}",
-        "currentColors": "Aktualne kolory",
-        "noCurrentColors": "Do tego wariantu nie przypisano żadnych kolorów.",
+        "copyFrom": "Kopiuj z",
+        "currentColors": "Obecne kolory",
+        "noCurrentColors": "Brak przypisanych kolorów",
         "addColors": "Dodaj kolory",
-        "searchPlaceholder": "Wyszukaj i wybierz kolory...",
-        "searchLabel": "Wyszukaj kolory",
-        "selectedColors": "Wybrane kolory ({{count}})",
+        "searchPlaceholder": "Szukaj kolorów...",
+        "searchLabel": "Szukaj kolorów",
+        "selectedColors": "Wybrane kolory",
         "removeColor": "Usuń kolor",
-        "copySuccess": "Kolory zostały skopiowane z innego wariantu",
-        "copyError": "Błąd podczas kopiowania kolorów"
+        "copySuccess": "Kolory zostały pomyślnie skopiowane",
+        "copyError": "Nie udało się skopiować kolorów",
+        "helpText": "Wybierz kolory, które najlepiej reprezentują ten wariant. Możesz wybrać wiele kolorów."
       },
       "inventory": {
         "notManaged": "Nie zarządzane",
+        "manageInventoryLabel": "Zarządzaj zapasami",
         "manageItems": "Zarządzaj elementami magazynowymi",
-        "notManagedDesc": "Zapasy nie są zarządzane dla tego wariantu. Włącz 'Zarządzaj zapasami', aby śledzić stan magazynowy wariantu.",
+        "notManagedDesc": "Magazyn nie jest zarządzany dla tego wariantu. Włącz 'Zarządzaj magazynem', aby śledzić zapasy wariantu.",
         "manageKit": "Zarządzaj zestawem magazynowym",
         "navigateToItem": "Przejdź do elementu magazynowego",
         "actions": {
@@ -816,7 +697,6 @@
         },
         "header": "Stan magazynowy i zapasy",
         "editItemDetails": "Edytuj szczegóły elementu",
-        "manageInventoryLabel": "Zarządzaj zapasami",
         "manageInventoryHint": "Po włączeniu będziemy zmieniać ilość w magazynie przy tworzeniu zamówień i zwrotów.",
         "allowBackordersLabel": "Zezwalaj na zamówienia z opóźnioną realizacją",
         "allowBackordersHint": "Po włączeniu klienci mogą kupić wariant nawet jeśli nie ma dostępnej ilości.",
@@ -866,14 +746,51 @@
       "noProfileAssigned": "Nie przypisano profilu wysyłki",
       "noProfileDescription": "Ten produkt nie ma profilu wysyłki",
       "edit": {
-        "header": "Konfiguracja wysyłki"
+        "header": "Konfiguracja wysyłki",
+        "toasts": {
+          "success": "Pomyślnie zaktualizowano profil wysyłki {{title}}."
+        }
+      },
+      "create": {
+        "errors": {
+          "required": "Profil wysyłki jest wymagany"
+        }
       }
     },
+    "color_scheme": {
+        "title": "Schemat kolorów",
+        "description": "Przypisz kolory do wariantów produktu. Każdy wariant może mieć kilka kolorów.",
+        "default_variant": "Domyślny wariant",
+        "variant_name": "Wariant: {{name}}",
+        "assigned_colors": "Przypisane kolory",
+        "add_more_colors": "Dodaj więcej kolorów",
+        "add_color": "Dodaj kolor",
+        "select_color": "Wybierz kolor dla tego wariantu",
+        "color": "Kolor",
+        "no_color_option_warning": "Ten produkt nie ma jeszcze opcji koloru. Zalecamy dodanie opcji koloru aby ułatwić wyszukiwanie produktu w sklepie.",
+        "copy_colors": "Kopiuj kolory",
+        "copy_from_previous": "Kopiuj z poprzedniego wariantu",
+        "copy_from_variant": "Kopiuj z: {{name}}"
+      },
     "colors": {
       "header": "Kolory",
       "loading": "Ładowanie kolorów...",
       "noColors": "Brak kolorów przypisanych do tego produktu"
     },
+    "variants": {
+      "header": "Warianty",
+      "empty": {
+        "heading": "Brak wariantów",
+        "description": "Nie masz jeszcze żadnych wariantów. Dodaj pierwszy wariant, aby rozpocząć."
+      },
+      "variantColumn": "Wariant",
+      "priceColumn": "Cena",
+      "stockColumn": "Stan",
+      "actionsColumn": "Akcje"
+    },
+    "editPrices": "Edytuj ceny"
+    
+  },
     "additionalAttributes": {
       "title": "Dodatkowe atrybuty",
       "loading": "Ładowanie atrybutów...",
@@ -899,8 +816,38 @@
         "noAttributesAssigned": "Brak dodatkowych atrybutów przypisanych. Kliknij Edytuj, aby dodać atrybuty.",
         "attributeFallback": "Atrybut {{index}}"
       }
-    }
-  },
+    },
+    "media": {
+      "label": "Media",
+      "header": "Media",
+      "edit": "Edytuj",
+      "editHint": "Dodaj media do produktu, aby zaprezentować go w swoim sklepie.",
+      "makeThumbnail": "Ustaw jako miniaturę",
+      "recommendations": {
+        "title": "Rekomendacje",
+        "format": "Zalecany format: WebP (obsługuje JPEG, PNG, GIF, BMP, TIFF, SVG)",
+        "maxSize": "Maksymalny rozmiar pliku: 50MB na plik",
+        "totalSize": "Maksymalny całkowity rozmiar: 200MB"
+      },
+      "uploadImagesLabel": "Prześlij obrazy",
+      "uploadImagesHint": "Przeciągnij i upuść obrazy tutaj lub kliknij, aby przesłać.",
+      "invalidFileType": "'{{name}}' nie jest obsługiwanym typem pliku. Obsługiwane typy plików to: {{types}}.",
+      "failedToUpload": "Nie udało się przesłać dodanych mediów. Spróbuj ponownie.",
+      "deleteWarning_one": "Zamierzasz usunąć {{count}} obraz. Ta akcja nie może zostać cofnięta.",
+      "deleteWarning_other": "Zamierzasz usunąć {{count}} obrazów. Ta akcja nie może zostać cofnięta.",
+      "deleteWarningWithThumbnail_one": "Zamierzasz usunąć {{count}} obraz, w tym miniaturę. Ta akcja nie może zostać cofnięta.",
+      "deleteWarningWithThumbnail_other": "Zamierzasz usunąć {{count}} obrazów, w tym miniaturę. Ta akcja nie może zostać cofnięta.",
+      "thumbnailTooltip": "Miniatura",
+      "galleryLabel": "Galeria",
+      "downloadImageLabel": "Pobierz aktualny obraz",
+      "deleteImageLabel": "Usuń aktualny obraz",
+      "emptyState": {
+        "header": "Brak mediów",
+        "description": "Dodaj media do produktu, aby zaprezentować go w swoim sklepie.",
+        "action": "Dodaj media"
+      },
+      "successToast": "Media zostały pomyślnie zaktualizowane."
+    },
   "collections": {
     "domain": "Kolekcje",
     "subtitle": "Organizuj produkty w kolekcje.",
@@ -1213,11 +1160,7 @@
       "updatedTaxInclusivitySuccessfully": "Ceny zawierające podatek zostały pomyślnie zaktualizowane"
     }
   },
-  "media": {
-    "uploadImagesLabel": "Prześlij obrazy",
-    "uploadImagesHint": "Przeciągnij i upuść obrazy tutaj lub kliknij, aby przeglądać",
-    "invalidFileType": "Plik {{name}} ma nieprawidłowy format. Użyj jednego z: {{types}}"
-  },
+  
   "orders": {
     "domain": "Zamówienia",
     "claim": "Reklamacja",
@@ -3549,6 +3492,129 @@
       "passwordMismatch": "Hasła nie są zgodne",
       "productDescriptionRequired": "Proszę opisać co chcesz sprzedawać",
       "invalidUrl": "Musi być prawidłowym URL lub pustym"
+    }
+  },
+  "variant": {
+    "colorSection": {
+      "title": "Schemat kolorów wariantu",
+      "editColors": "Edytuj kolory",
+      "removeAllColors": "Usuń wszystkie kolory",
+      "loading": "Ładowanie...",
+      "colors": "Kolory",
+      "noColors": "Brak przypisanych kolorów dla tego wariantu.",
+      "removeColors": {
+        "title": "Usuń kolory",
+        "description": "Czy na pewno chcesz usunąć wszystkie kolory z wariantu {{variantTitle}}?",
+        "confirm": "Usuń",
+        "cancel": "Anuluj"
+      }
+    }
+  },
+  "productStatus": {
+    "draft": "Szkic",
+    "published": "Opublikowany",
+    "proposed": "Proponowany",
+    "rejected": "Odrzucony"
+  },
+  "formFields": {
+    "title": {
+      "label": "Tytuł",
+      "placeholder": "np. Elegancka koszulka bawełniana"
+    },
+    "subtitle": {
+      "label": "Podtytuł",
+      "placeholder": "np. Wygodna i stylowa"
+    },
+    "handle": {
+      "label": "Uchwyt",
+      "placeholder": "np. elegancka-koszulka-bawelniana",
+      "tooltip": "Uchwyt jest używany do odniesienia do produktu w Twoim sklepie. Jeśli nie zostanie określony, uchwyt zostanie wygenerowany z tytułu produktu."
+    },
+    "description": {
+      "label": "Opis",
+      "placeholder": "np. Ta wygodna koszulka wykonana jest z wysokiej jakości bawełny..."
+    },
+    "discountable": {
+      "label": "Rabaty",
+      "hint": "Jeśli odznaczone, rabaty nie będą stosowane do tego produktu"
+    },
+    "shipping_profile": {
+      "label": "Profil wysyłki",
+      "placeholder": "Wybierz profil wysyłki"
+    },
+    "type": {
+      "label": "Typ"
+    },
+    "collection": {
+      "label": "Kolekcja"
+    },
+    "categories": {
+      "label": "Kategorie"
+    },
+    "tags": {
+      "label": "Tagi"
+    },
+    "sales_channels": {
+      "label": "Kanały sprzedaży",
+      "hint": "Produkt będzie dostępny tylko w domyślnym kanale sprzedaży, jeśli pozostanie nietknięty."
+    },
+    "countryOrigin": {
+      "label": "Kraj pochodzenia"
+    },
+    "material": {
+      "label": "Materiał",
+      "placeholder": "np. Bawełna, Poliester, Wełna"
+    },
+    "width": {
+      "label": "Szerokość"
+    },
+    "length": {
+      "label": "Długość"
+    },
+    "height": {
+      "label": "Wysokość"
+    },
+    "weight": {
+      "label": "Waga"
+    },
+    "options": {
+      "label": "Opcje produktu",
+      "hint": "Opcje służą do określenia koloru, rozmiaru itp. produktu",
+      "add": "Dodaj opcję",
+      "optionTitle": "Nazwa opcji",
+      "optionTitlePlaceholder": "Kolor",
+      "variations": "Warianty (oddzielone przecinkami)",
+      "variantionsPlaceholder": "Czerwony, Niebieski, Zielony"
+    },
+    "mid_code": {
+      "label": "Kod MID"
+    },
+    "hs_code": {
+      "label": "Kod HS"
+    },
+    "origin": {
+      "label": "Pochodzenie",
+      "description": "Kraj lub region pochodzenia produktu zgodnie z wymogami GPSR.",
+      "placeholder": "np. Polska, UE"
+    },
+    "safety_warning": {
+      "label": "Ostrzeżenia bezpieczeństwa",
+      "description": "Wszelkie instrukcje, ostrzeżenia lub środki ostrożności, które należy podjąć podczas korzystania z tego produktu.",
+      "placeholder": "np. Trzymać z dala od dzieci poniżej 3 lat. Produkt zawiera małe części."
+    },
+    "compliance_cert": {
+      "label": "Certyfikaty zgodności",
+      "description": "Certyfikaty zgodności lub bezpieczeństwa produktu.",
+      "placeholder": "np. CE-12345-2023, ISO-9001"
+    }
+  },
+  "organization": {
+    "header": "Organizacja",
+    "edit": {
+      "header": "Edytuj organizację",
+      "toasts": {
+        "success": "Pomyślnie zaktualizowano organizację {{title}}."
+      }
     }
   },
   "languageSwitcher": {

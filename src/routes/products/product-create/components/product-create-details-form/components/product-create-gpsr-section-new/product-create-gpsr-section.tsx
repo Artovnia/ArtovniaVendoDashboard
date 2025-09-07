@@ -16,15 +16,15 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
   return (
     <div className="flex flex-col gap-y-6">
       <div>
-        <Heading level="h2">{t("products.products.gpsr.title")}</Heading>
+        <Heading level="h2">{t("products.gpsr.title")}</Heading>
         <Text className="text-ui-fg-subtle">
-          {t("products.products.gpsr.description")}
+          {t("products.gpsr.description")}
         </Text>
       </div>
 
       {/* Producer Information - Required */}
       <div className="border-b pb-4 ">
-        <Heading level="h3" className="mb-2">{t("products.products.gpsr.sections.producer")}</Heading>
+        <Heading level="h3" className="mb-2">{t("products.gpsr.sections.producer")}</Heading>
         
         <Form.Field
           control={control}
@@ -32,13 +32,13 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
           render={({ field }) => (
             <Form.Item>
               <Form.Label>
-                {t("products.products.gpsr.fields.producerName")} *
+                {t("products.gpsr.fields.producerName")} *
               </Form.Label>
               <Form.Hint>
-                {t("products.products.gpsr.producer.name.description")}
+                {t("products.gpsr.producer.name.description")}
               </Form.Hint>
               <Form.Control>
-                <Input {...field} placeholder={t("products.products.gpsr.producer.name.placeholder", "e.g. XYZ Company Ltd.")} />
+                <Input {...field} placeholder={t("products.gpsr.producer.name.placeholder", "e.g. XYZ Company Ltd.")} />
               </Form.Control>
               <Form.ErrorMessage />
             </Form.Item>
@@ -51,10 +51,10 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
           render={({ field }) => (
             <Form.Item>
               <Form.Label>
-                {t("products.products.gpsr.fields.producerAddress")} *
+                {t("products.gpsr.fields.producerAddress")} *
               </Form.Label>
               <Form.Hint>
-                {t("products.products.gpsr.producer.address.description")}
+                {t("products.gpsr.producer.address.description")}
               </Form.Hint>
               <Form.Control>
                 <Textarea 
@@ -74,10 +74,10 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
           render={({ field }) => (
             <Form.Item>
               <Form.Label>
-                {t("products.products.gpsr.fields.producerContact")} *
+                {t("products.gpsr.fields.producerContact")} *
               </Form.Label>
               <Form.Hint>
-                {t("products.products.gpsr.producer.contact.description")}
+                {t("products.gpsr.producer.contact.description")}
               </Form.Hint>
               <Form.Control>
                 <Input 
@@ -93,7 +93,7 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
 
       {/* Importer Information - Optional */}
       <div className="border-b pb-4">
-        <Heading level="h3" className="mb-2 ">{t("products.products.gpsr.sections.importer")}</Heading>
+        <Heading level="h3" className="mb-2 ">{t("products.gpsr.sections.importer")}</Heading>
         
         <Form.Field
           control={control}
@@ -101,10 +101,10 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
           render={({ field }) => (
             <Form.Item>
               <Form.Label>
-                {t("products.products.gpsr.fields.importerName")}
+                {t("products.gpsr.fields.importerName")}
               </Form.Label>
               <Form.Hint>
-                {t("products.products.gpsr.importer.name.description")}
+                {t("products.gpsr.importer.name.description")}
               </Form.Hint>
               <Form.Control>
                 <Input {...field} placeholder={t("products.products.gpsr.importer.name.placeholder", "e.g. EU Import Ltd.")} />
@@ -120,10 +120,10 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
           render={({ field }) => (
             <Form.Item>
               <Form.Label>
-                {t("products.products.gpsr.fields.importerAddress")}
+                {t("products.gpsr.fields.importerAddress")}
               </Form.Label>
               <Form.Hint>
-                {t("products.products.gpsr.importer.address.description")}
+                {t("products.gpsr.importer.address.description")}
               </Form.Hint>
               <Form.Control>
                 <Textarea 
@@ -143,10 +143,10 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
           render={({ field }) => (
             <Form.Item>
               <Form.Label>
-                {t("products.products.gpsr.fields.importerContact")}
+                {t("products.gpsr.fields.importerContact")}
               </Form.Label>
               <Form.Hint>
-                {t("products.products.gpsr.importer.contact.description")}
+                {t("products.gpsr.importer.contact.description")}
               </Form.Hint>
               <Form.Control>
                 <Input 
@@ -167,10 +167,10 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
         render={({ field }) => (
           <Form.Item>
             <Form.Label>
-              {t("products.products.gpsr.fields.instructions")} *
+              {t("products.gpsr.fields.instructions")} *
             </Form.Label>
             <Form.Hint>
-              {t("products.products.gpsr.instructions.description")}
+              {t("products.gpsr.instructions.description")}
             </Form.Hint>
             <Form.Control>
               <Textarea 
@@ -190,9 +190,9 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
         name="metadata.gpsr_certificates"
         render={({ field }) => (
           <Form.Item>
-            <Form.Label>{t("products.products.gpsr.fields.certificates")}</Form.Label>
+            <Form.Label>{t("products.gpsr.fields.certificates")}</Form.Label>
             <Form.Hint>
-              {t("products.products.gpsr.certificates.description")}
+              {t("products.gpsr.certificates.description")}
             </Form.Hint>
             <Form.Control>
               <Input 

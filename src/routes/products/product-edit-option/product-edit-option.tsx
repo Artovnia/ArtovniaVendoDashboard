@@ -24,7 +24,7 @@ export const ProductEditOption = () => {
   return (
     <RouteDrawer>
       <RouteDrawer.Header>
-        <Heading>{t("products.options.edit.header")}</Heading>
+        <Heading>{t("products.fields.options.edit.header")}</Heading>
       </RouteDrawer.Header>
       {option && <CreateProductOptionForm option={option} isLoading={isPending} isFetching={isFetching} />}
     </RouteDrawer>

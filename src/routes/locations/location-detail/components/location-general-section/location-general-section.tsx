@@ -101,20 +101,20 @@ const extractUserFriendlyFulfillmentSetName = (fulfillmentSetName: string): stri
 }
 
 /**
- * Extracts the user-friendly name from a shipping option name with seller ID suffix
- * Format: "ShippingOptionName - sellerID:ProfileName" -> "ShippingOptionName"
- * @param shippingOptionName - The shipping option name (potentially with suffix)
- * @returns The user-friendly shipping option name
+ * Extracts the user-friendly name from a shipping profile name with seller ID suffix
+ * Format: "sel_01K4680TQ646K0V2ST2N3BXWZ3:Mała paczka" -> "Mała paczka"
+ * @param shippingProfileName - The shipping profile name (potentially with suffix)
+ * @returns The user-friendly shipping profile name
  */
-const extractUserFriendlyShippingOptionName = (shippingOptionName: string): string => {
-  // Handle format: "ShippingOptionName - sellerID:ProfileName"
-  const dashIndex = shippingOptionName.indexOf(' - sel_')
-  if (dashIndex !== -1) {
-    return shippingOptionName.substring(0, dashIndex)
+const extractUserFriendlyShippingProfileName = (shippingProfileName: string): string => {
+  // Handle format: "sel_01K4680TQ646K0V2ST2N3BXWZ3:Mała paczka"
+  const colonIndex = shippingProfileName.indexOf(':')
+  if (colonIndex !== -1 && shippingProfileName.startsWith('sel_')) {
+    return shippingProfileName.substring(colonIndex + 1)
   }
   
   // Return original name if no pattern matches
-  return shippingOptionName
+  return shippingProfileName
 }
 
 type LocationGeneralSectionProps = {
@@ -221,8 +221,8 @@ function ShippingOption({
     <div className='flex items-center justify-between px-3 py-2'>
       <div className='flex-1'>
         <Text size='small' weight='plus'>
-          {extractUserFriendlyShippingOptionName(option.name || 'Unnamed Option')}{' '}
-          {option?.shipping_profile?.name && `- ${option.shipping_profile.name}`}{' '}
+          {option.name || 'Unnamed Option'}{' '}
+          {option?.shipping_profile?.name && `- ${extractUserFriendlyShippingProfileName(option.shipping_profile.name)}`}{' '}
           ({formatProvider(option.provider_id || 'manual')})
         </Text>
       </div>

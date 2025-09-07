@@ -11,10 +11,10 @@ export const ProductStatusCell = ({ status }: ProductStatusCellProps) => {
   const { t } = useTranslation()
 
   const [color, text] = {
-    draft: ["grey", t("products.productStatus.draft")],
-    proposed: ["orange", t("products.productStatus.proposed")],
-    published: ["green", t("products.productStatus.published")],
-    rejected: ["red", t("products.productStatus.rejected")],
+    draft: ["grey", t("productStatus.draft")],
+    proposed: ["orange", t("productStatus.proposed")],
+    published: ["green", t("productStatus.published")],
+    rejected: ["red", t("productStatus.rejected")],
   }[status] as ["grey" | "orange" | "green" | "red", string]
 
   return <StatusCell color={color}>{text}</StatusCell>

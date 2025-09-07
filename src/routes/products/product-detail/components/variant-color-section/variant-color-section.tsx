@@ -42,10 +42,10 @@ export const VariantColorSection = ({
     
     try {
       const confirmed = await prompt({
-        title: t('products.variant.colorSection.removeColors.title'),
-        description: t('products.variant.colorSection.removeColors.description', { variantTitle }),
-        confirmText: t('products.variant.colorSection.removeColors.confirm'),
-        cancelText: t('products.variant.colorSection.removeColors.cancel'),
+        title: t('variant.colorSection.removeColors.title'),
+        description: t('variant.colorSection.removeColors.description', { variantTitle }),
+        confirmText: t('variant.colorSection.removeColors.confirm'),
+        cancelText: t('variant.colorSection.removeColors.cancel'),
       })
       
       if (confirmed) {
@@ -64,7 +64,7 @@ export const VariantColorSection = ({
       <div className="flex items-center justify-between px-6 py-4">
         <div className="flex items-center gap-2">
           <Swatch className="h-5 w-5" />
-          <Heading level="h2">{t('products.variant.colorSection.title' as any)}</Heading>
+          <Heading level="h2">{t('variant.colorSection.title')}</Heading>
         </div>
         
         <div className="flex items-center gap-2">
@@ -82,7 +82,7 @@ export const VariantColorSection = ({
                 <Link to={`/product-variants/${productId}/variants/${variantId}/colors`}>
                   <div className="flex items-center">
                     <PencilSquare />
-                    <span className="ml-2">{t('products.variant.colorSection.editColors')}</span>
+                    <span className="ml-2">{t('variant.colorSection.editColors')}</span>
                   </div>
                 </Link>
               </DropdownMenu.Item>
@@ -94,7 +94,7 @@ export const VariantColorSection = ({
                   disabled={isAssigning}
                 >
                   <Trash className="text-rose-500" />
-                  <span className="ml-2">{t('products.variant.colorSection.removeAllColors')}</span>
+                  <span className="ml-2">{t('variant.colorSection.removeAllColors')}</span>
                 </DropdownMenu.Item>
               )}
             </DropdownMenu.Content>
@@ -108,11 +108,11 @@ export const VariantColorSection = ({
           {isLoading ? (
             <div className="flex items-center gap-2 mt-2">
               <div className="w-4 h-4 bg-ui-bg-base rounded-full animate-pulse" />
-              <Text className="text-ui-fg-subtle">{t('products.variant.colorSection.loading')}</Text>
+              <Text className="text-ui-fg-subtle">{t('variant.colorSection.loading')}</Text>
             </div>
           ) : assignedColors.length > 0 ? (
             <div>
-              <Text className="text-ui-fg-subtle font-medium mb-3">{t('products.variant.colorSection.colors')}</Text>
+              <Text className="text-ui-fg-subtle font-medium mb-3">{t('variant.colorSection.colors')}</Text>
               <div className="flex flex-wrap gap-3">
                 {assignedColors.map(color => (
                   <div 
@@ -130,7 +130,7 @@ export const VariantColorSection = ({
             </div>
           ) : (
             <Text className="text-ui-fg-subtle ml-2 mt-2">
-              {t('products.variant.colorSection.noColors')}
+              {t('variant.colorSection.noColors')}
             </Text>
           )}
         </div>

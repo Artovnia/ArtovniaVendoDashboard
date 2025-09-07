@@ -36,7 +36,7 @@ export const ProductOrganization = () => {
     <RouteDrawer>
       <RouteDrawer.Header>
         <RouteDrawer.Title asChild>
-          <Heading>{t("products.organization.edit.header")}</Heading>
+          <Heading>{t("organization.edit.header")}</Heading>
         </RouteDrawer.Title>
       </RouteDrawer.Header>
       {!isLoading && product && <ProductOrganizationForm product={product} />}

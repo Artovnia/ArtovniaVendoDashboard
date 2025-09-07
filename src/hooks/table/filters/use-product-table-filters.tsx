@@ -177,19 +177,19 @@ export const useProductTableFilters = (
     multiple: true,
     options: [
       {
-        label: t("products.productStatus.draft"),
+        label: t("productStatus.draft"),
         value: "draft",
       },
       {
-        label: t("products.productStatus.proposed"),
+        label: t("productStatus.proposed"),
         value: "proposed",
       },
       {
-        label: t("products.productStatus.published"),
+        label: t("productStatus.published"),
         value: "published",
       },
       {
-        label: t("products.productStatus.rejected"),
+        label: t("productStatus.rejected"),
         value: "rejected",
       },
     ],

@@ -142,7 +142,7 @@ export const EditProductMediaForm = ({
           .catch(() => {
             form.setError('media', {
               type: 'invalid_file',
-              message: t('products.media.failedToUpload'),
+              message: t('media.failedToUpload'),
             });
             return { files: [] };
           });
@@ -178,7 +178,7 @@ export const EditProductMediaForm = ({
         },
         {
           onSuccess: () => {
-            toast.success(t('products.media.successToast'));
+            toast.success(t('media.successToast'));
             handleSuccess();
           },
           onError: (error) => {
@@ -259,7 +259,7 @@ export const EditProductMediaForm = ({
               <Link
                 to={{ pathname: '.', search: undefined }}
               >
-                {t('products.media.galleryLabel')}
+                {t('media.galleryLabel')}
               </Link>
             </Button>
           </div>
@@ -334,7 +334,7 @@ export const EditProductMediaForm = ({
               <Fragment>
                 <CommandBar.Command
                   action={handlePromoteToThumbnail}
-                  label={t('products.media.makeThumbnail')}
+                  label={t('media.makeThumbnail')}
                   shortcut='t'
                 />
                 <CommandBar.Seperator />
@@ -461,7 +461,7 @@ const MediaGridItem = ({
       {media.isThumbnail && (
         <div className='absolute left-2 top-2'>
           <Tooltip
-            content={t('products.media.thumbnailTooltip')}
+            content={t('media.thumbnailTooltip')}
           >
             <ThumbnailBadge />
           </Tooltip>

@@ -65,7 +65,7 @@ export const EditProductGPSR = ({ productId }: EditProductGPSRProps) => {
               render={({ field }) => (
                 <Form.Item>
                   <Form.Label>
-                    {t('products.fields.compliance_cert.label', 'Compliance Certificate')}
+                    {t('gpsr.fields.compliance_cert.label', 'Compliance Certificate')}
                   </Form.Label>
                   <Form.Control>
                     <Input {...field} placeholder="e.g., CE-12345" />
@@ -81,7 +81,7 @@ export const EditProductGPSR = ({ productId }: EditProductGPSRProps) => {
               render={({ field }) => (
                 <Form.Item>
                   <Form.Label>
-                    {t('products.fields.safety_warning.label', 'Safety Warning')}
+                    {t('gpsr.fields.safety_warning.label', 'Safety Warning')}
                   </Form.Label>
                   <Form.Control>
                     <Textarea
@@ -101,7 +101,7 @@ export const EditProductGPSR = ({ productId }: EditProductGPSRProps) => {
               render={({ field }) => (
                 <Form.Item>
                   <Form.Label>
-                    {t('products.fields.origin.label', 'Country of Origin')}
+                    {t('gpsr.fields.origin.label', 'Country of Origin')}
                   </Form.Label>
                   <Form.Control>
                     <Input {...field} placeholder="e.g., Poland" />

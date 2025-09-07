@@ -71,13 +71,13 @@ export const CreateProductOptionForm = ({
               return (
                 <Form.Item>
                   <Form.Label>
-                    {t("products.fields.options.optionTitle")}
+                    {t("formFields.options.optionTitle")}
                   </Form.Label>
                   <Form.Control>
                     <Input
                       {...field}
                       placeholder={t(
-                        "products.fields.options.optionTitlePlaceholder"
+                        "formFields.options.optionTitlePlaceholder"
                       )}
                     />
                   </Form.Control>
@@ -93,13 +93,13 @@ export const CreateProductOptionForm = ({
               return (
                 <Form.Item>
                   <Form.Label>
-                    {t("products.fields.options.variations")}
+                    {t("formFields.options.variations")}
                   </Form.Label>
                   <Form.Control>
                     <ChipInput
                       {...field}
                       placeholder={t(
-                        "products.fields.options.variantionsPlaceholder"
+                        "formFields.options.variantionsPlaceholder"
                       )}
                     />
                   </Form.Control>

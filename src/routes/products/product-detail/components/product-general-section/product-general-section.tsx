@@ -43,7 +43,7 @@ export const ProductGeneralSection = ({
   const handleDelete = async () => {
     const res = await prompt({
       title: t("general.areYouSure"),
-      description: t("products.deleteWarning", {
+      description: t("deleteWarning", {
         title: product.title,
       }),
       confirmText: t("actions.delete"),
@@ -67,7 +67,7 @@ export const ProductGeneralSection = ({
         <Heading>{product.title}</Heading>
         <div className="flex items-center gap-x-4">
           <StatusBadge color={productStatusColor(product.status)}>
-            {t(`products.productStatus.${product.status}`)}
+            {t(`productStatus.${product.status}`)}
           </StatusBadge>
           <ActionMenu
             groups={[

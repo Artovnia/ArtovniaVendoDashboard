@@ -137,10 +137,10 @@ const ProductActions = ({
   const { mutateAsync } = useDeleteProduct(product.id, {
     onSuccess: () => {
       toast.success(
-        t('products.toasts.delete.success.header'),
+        t('toasts.delete.success.header'),
         {
           description: t(
-            'products.toasts.delete.success.description',
+            'toasts.delete.success.description',
             {
               title: product.title,
             }
@@ -158,7 +158,7 @@ const ProductActions = ({
     },
     onError: (e: Error) => {
       toast.error(
-        t('products.toasts.delete.error.header'),
+        t('toasts.delete.error.header'),
         { description: e.message }
       );
     }
@@ -167,7 +167,7 @@ const ProductActions = ({
   const handleDelete = async () => {
     const res = await prompt({
       title: t('general.areYouSure'),
-      description: t('products.deleteWarning', {
+      description: t('deleteWarning', {
         title: product.title,
       }),
       confirmText: t('actions.delete'),

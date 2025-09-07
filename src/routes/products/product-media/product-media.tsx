@@ -19,10 +19,10 @@ export const ProductMedia = () => {
   return (
     <RouteFocusModal>
       <RouteFocusModal.Title asChild>
-        <span className="sr-only">{t("products.media.label")}</span>
+        <span className="sr-only">{t("media.label")}</span>
       </RouteFocusModal.Title>
       <RouteFocusModal.Description asChild>
-        <span className="sr-only">{t("products.media.editHint")}</span>
+        <span className="sr-only">{t("media.editHint")}</span>
       </RouteFocusModal.Description>
       {ready && <ProductMediaView product={product} />}
     </RouteFocusModal>

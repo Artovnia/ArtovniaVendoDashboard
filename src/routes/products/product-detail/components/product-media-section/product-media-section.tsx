@@ -50,10 +50,10 @@ export const ProductMediaSection = ({ product }: ProductMedisaSectionProps) => {
     const res = await prompt({
       title: t("general.areYouSure"),
       description: includingThumbnail
-        ? t("products.media.deleteWarningWithThumbnail", {
+        ? t("media.deleteWarningWithThumbnail", {
             count: ids.length,
           })
-        : t("products.media.deleteWarning", {
+        : t("media.deleteWarning", {
             count: ids.length,
           }),
       confirmText: t("actions.delete"),
@@ -85,7 +85,7 @@ export const ProductMediaSection = ({ product }: ProductMedisaSectionProps) => {
   return (
     <Container className="divide-y p-0">
       <div className="flex items-center justify-between px-6 py-4">
-        <Heading level="h2">{t("products.media.label")}</Heading>
+        <Heading level="h2">{t("media.label")}</Heading>
         <ActionMenu
           groups={[
             {
@@ -150,15 +150,15 @@ export const ProductMediaSection = ({ product }: ProductMedisaSectionProps) => {
               weight="plus"
               className="text-ui-fg-subtle"
             >
-              {t("products.media.emptyState.header")}
+              {t("media.emptyState.header")}
             </Text>
             <Text size="small" className="text-ui-fg-muted">
-              {t("products.media.emptyState.description")}
+              {t("media.emptyState.description")}
             </Text>
           </div>
           <Button size="small" variant="secondary" asChild>
             <Link to="media?view=edit">
-              {t("products.media.emptyState.action")}
+              {t("media.emptyState.action")}
             </Link>
           </Button>
         </div>

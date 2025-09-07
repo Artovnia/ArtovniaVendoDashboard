@@ -20,7 +20,7 @@ export const ProductOrganizationSection = ({
   return (
     <Container className="divide-y p-0">
       <div className="flex items-center justify-between px-6 py-4">
-        <Heading level="h2">{t("products.organization.header")}</Heading>
+        <Heading level="h2">{t("organization.header")}</Heading>
         <ActionMenu
           groups={[
             {
