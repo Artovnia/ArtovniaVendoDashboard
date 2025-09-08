@@ -109,7 +109,19 @@ const Breadcrumbs = () => {
       try {
         label = handle.breadcrumb?.(match)
       } catch (error) {
-        // noop
+        // Log breadcrumb errors for debugging
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('Breadcrumb generation failed for route:', match.pathname, error)
+        }
+        
+        // Return a fallback breadcrumb instead of null
+        const routeSegments = match.pathname.split('/').filter(Boolean)
+        const lastSegment = routeSegments[routeSegments.length - 1]
+        
+        // Create a user-friendly fallback label
+        if (lastSegment) {
+          label = lastSegment.charAt(0).toUpperCase() + lastSegment.slice(1).replace(/-/g, ' ')
+        }
       }
 
       if (!label) {

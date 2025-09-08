@@ -13475,6 +13475,168 @@
       },
       "required": ["label", "english", "polish"],
       "additionalProperties": false
+    },
+    "integratedVariantSection": {
+      "type": "object",
+      "properties": {
+        "header": {
+          "type": "string"
+        },
+        "empty": {
+          "type": "object",
+          "properties": {
+            "heading": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": ["heading", "description"],
+          "additionalProperties": false
+        },
+        "columns": {
+          "type": "object",
+          "properties": {
+            "variant": {
+              "type": "string"
+            },
+            "price": {
+              "type": "string"
+            },
+            "stock": {
+              "type": "string"
+            },
+            "actions": {
+              "type": "string"
+            }
+          },
+          "required": ["variant", "price", "stock", "actions"],
+          "additionalProperties": false
+        },
+        "actions": {
+          "type": "object",
+          "properties": {
+            "create": {
+              "type": "string"
+            },
+            "edit": {
+              "type": "string"
+            },
+            "editPrices": {
+              "type": "string"
+            },
+            "delete": {
+              "type": "string"
+            },
+            "goToInventory": {
+              "type": "string"
+            }
+          },
+          "required": ["create", "edit", "editPrices", "delete", "goToInventory"],
+          "additionalProperties": false
+        },
+        "search": {
+          "type": "object",
+          "properties": {
+            "placeholder": {
+              "type": "string"
+            }
+          },
+          "required": ["placeholder"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["header", "empty", "columns", "actions", "search"],
+      "additionalProperties": false
+    },
+    "variantColorsEditForm": {
+      "type": "object",
+      "properties": {
+        "loading": {
+          "type": "string"
+        },
+        "error": {
+          "type": "string"
+        },
+        "copyFromVariant": {
+          "type": "string"
+        },
+        "copyColors": {
+          "type": "string"
+        },
+        "copyFrom": {
+          "type": "string"
+        },
+        "currentColors": {
+          "type": "string"
+        },
+        "noCurrentColors": {
+          "type": "string"
+        },
+        "addColors": {
+          "type": "string"
+        },
+        "searchPlaceholder": {
+          "type": "string"
+        },
+        "searchLabel": {
+          "type": "string"
+        },
+        "selectedColors": {
+          "type": "string"
+        },
+        "removeColor": {
+          "type": "string"
+        },
+        "copySuccess": {
+          "type": "string"
+        },
+        "copyError": {
+          "type": "string"
+        },
+        "helpText": {
+          "type": "string"
+        },
+        "unknownColor": {
+          "type": "string"
+        },
+        "noColors": {
+          "type": "string"
+        },
+        "removeAllColors": {
+          "type": "string"
+        },
+        "successToast": {
+          "type": "string"
+        },
+        "errorToast": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "loading",
+        "error",
+        "copyFromVariant",
+        "copyColors",
+        "copyFrom",
+        "currentColors",
+        "noCurrentColors",
+        "addColors",
+        "searchPlaceholder",
+        "searchLabel",
+        "selectedColors",
+        "removeColor",
+        "copySuccess",
+        "copyError",
+        "helpText",
+        "unknownColor",
+        "noColors",
+        "removeAllColors",
+        "successToast",
+        "errorToast"
+      ],
+      "additionalProperties": false
     }
   },
   "required": [
@@ -13560,7 +13722,9 @@
     "auth",
     "productStatus",
     "formFields",
-    "languageSwitcher"
+    "languageSwitcher",
+    "integratedVariantSection",
+    "variantColorsEditForm"
   ],
   "additionalProperties": false
 }

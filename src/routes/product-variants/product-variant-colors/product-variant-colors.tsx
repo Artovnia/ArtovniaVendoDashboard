@@ -11,7 +11,7 @@ export const Component = () => {
     <RouteDrawer prev={`/products/${product_id}`}>
       <RouteDrawer.Header>
         <RouteDrawer.Title>
-          {t('products.variant.colorSection.title')}
+          {t('variant.colorSection.title')}
         </RouteDrawer.Title>
        
       </RouteDrawer.Header>
@@ -24,5 +24,5 @@ export const Component = () => {
 
 export const Breadcrumb = () => {
   const { t } = useTranslation()
-  return <>{t('products.variant.colorSection.breadcrumb')}</>
+  return <>{t('variant.colorSection.breadcrumb')}</>
 }

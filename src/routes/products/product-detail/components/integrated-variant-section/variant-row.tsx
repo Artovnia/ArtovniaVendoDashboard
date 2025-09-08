@@ -216,7 +216,7 @@ export const VariantRow = ({ variant, productId }: VariantRowProps) => {
                   <Link to={`/products/${productId}/edit-variant?variant_id=${variant.id}`}>
                     <div className="flex items-center">
                       <PencilSquare className="w-4 h-4" />
-                      <span className="ml-2">{t('actions.edit', 'Edytuj wariant')}</span>
+                      <span className="ml-2">{t('integratedVariantSection.actions.edit')}</span>
                     </div>
                   </Link>
                 </DropdownMenu.Item>
@@ -226,7 +226,7 @@ export const VariantRow = ({ variant, productId }: VariantRowProps) => {
                   <Link to={`/products/${productId}/prices?variant_id=${variant.id}`}>
                     <div className="flex items-center">
                       <PencilSquare className="w-4 h-4" />
-                      <span className="ml-2">{t('products.editPrices', 'Edytuj ceny')}</span>
+                      <span className="ml-2">{t('integratedVariantSection.actions.editPrices')}</span>
                     </div>
                   </Link>
                 </DropdownMenu.Item>
@@ -238,7 +238,7 @@ export const VariantRow = ({ variant, productId }: VariantRowProps) => {
                     <Link to={`/inventory/${inventoryItemId}`}>
                       <div className="flex items-center">
                         <Buildings className="w-4 h-4" />
-                        <span className="ml-2">{t('products.variant.goToInventory', 'Przejdź do magazynu')}</span>
+                        <span className="ml-2">{t('integratedVariantSection.actions.goToInventory')}</span>
                       </div>
                     </Link>
                   </DropdownMenu.Item>
@@ -251,7 +251,7 @@ export const VariantRow = ({ variant, productId }: VariantRowProps) => {
                 >
                   <div className="flex items-center">
                     <Trash className="w-4 h-4" />
-                    <span className="ml-2">{t('actions.delete', 'Usuń')}</span>
+                    <span className="ml-2">{t('integratedVariantSection.actions.delete')}</span>
                   </div>
                 </DropdownMenu.Item>
               </DropdownMenu.Content>

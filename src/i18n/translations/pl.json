@@ -436,6 +436,18 @@
         "price": "Cena"
       },
       "variants": {
+        "empty": {
+          "heading": "Brak wariantów",
+          "description": "Nie masz jeszcze żadnych wariantów. Dodaj pierwszy wariant, aby rozpocząć."
+        },
+        "filtered": {
+          "heading": "Brak wariantów",
+          "description": "Nie masz jeszcze żadnych wariantów. Dodaj pierwszy wariant, aby rozpocząć."
+        },
+        "variantColumn": "Wariant",
+        "priceColumn": "Cena",
+        "stockColumn": "Zapas",
+        "actionsColumn": "Akcje",
         "header": "Warianty",
         "subHeadingTitle": "Ten produkt ma warianty",
         "subHeadingDescription": "Utwórz warianty, jeśli ten produkt występuje w różnych opcjach, takich jak rozmiar, kolor, materiał itp.",
@@ -496,20 +508,94 @@
       }
     },
     "deleteWarning": "Zamierzasz usunąć produkt {{title}}. Ta akcja nie może zostać cofnięta.",
-    "variants": {
+    "variant": {
       "header": "Warianty",
       "empty": {
         "heading": "Brak wariantów",
         "description": "Nie masz jeszcze żadnych wariantów. Dodaj pierwszy wariant, aby rozpocząć."
       },
-      "filtered": {
-        "heading": "Brak wariantów",
-        "description": "Nie ma wariantów, które pasują do aktualnych kryteriów filtrów."
+      "edit": {
+        "header": "Edytuj wariant",
+        "success": "Wariant produktu został pomyślnie edytowany"
       },
-      "variantColumn": "Wariant",
-      "priceColumn": "Cena",
-      "stockColumn": "Stan",
-      "actionsColumn": "Akcje"
+      "create": {
+        "header": "Szczegóły wariantu"
+      },
+      "deleteWarning": "Czy na pewno chcesz usunąć ten wariant?",
+      "pricesPagination": "1 - {{current}} z {{total}} cen",
+      "tableItemAvailable": "{{availableCount}} dostępne",
+      "tableItem_one": "{{availableCount}} dostępne w {{locationCount}} lokalizacji",
+      "tableItem_other": "{{availableCount}} dostępne w {{locationCount}} lokalizacjach",
+      "tableItem": "{{availableCount}} dostępne w {{locationCount}} lokalizacji",
+      "goToInventory": "Przejdź do inwentarza",
+      "colors": {
+        "successToast": "Kolory wariantu zostały pomyślnie zaktualizowane",
+        "errorToast": "Nie udało się zaktualizować kolorów wariantu",
+        "removeColor": "Usuń kolor",
+        "unknownColor": "Nieznany kolor",
+        "noColorsSelected": "Nie wybrano kolorów",
+        "helpText": "Wybierz kolory dla tego wariantu"
+      },
+      "colorSection": {
+        "title": "Schemat kolorów wariantu",
+        "editColors": "Edytuj kolory",
+        "removeAllColors": "Usuń wszystkie kolory",
+        "loading": "Ładowanie kolorów...",
+        "colors": "Kolory",
+        "noColors": "Brak przypisanych kolorów do tego wariantu",
+        "removeColors": {
+          "title": "Usuń wszystkie kolory",
+          "description": "Czy na pewno chcesz usunąć wszystkie kolory z tego wariantu?",
+          "confirm": "Usuń wszystkie",
+          "cancel": "Anuluj"
+        }
+      },
+      "colorsEditForm": {
+        "loading": "Ładowanie kolorów...",
+        "error": "Nie udało się załadować kolorów",
+        "copyFromVariant": "Kopiuj z wariantu",
+        "copyColors": "Kopiuj kolory",
+        "copyFrom": "Kopiuj z",
+        "currentColors": "Aktualne kolory",
+        "noCurrentColors": "Brak przypisanych kolorów",
+        "addColors": "Dodaj kolory",
+        "searchPlaceholder": "Szukaj kolorów...",
+        "searchLabel": "Szukaj kolorów",
+        "selectedColors": "Wybrane kolory",
+        "removeColor": "Usuń kolor",
+        "copySuccess": "Kolory zostały pomyślnie skopiowane",
+        "copyError": "Nie udało się skopiować kolorów",
+        "helpText": "Wybierz kolory, które najlepiej reprezentują ten wariant. Możesz wybrać wiele kolorów."
+      },
+      "inventory": {
+        "notManaged": "Nie zarządzane",
+        "manageItems": "Zarządzaj pozycjami inwentarza",
+        "notManagedDesc": "Inwentarz nie jest zarządzany dla tego wariantu. Włącz 'Zarządzaj inwentarzem', aby śledzić inwentarz wariantu.",
+        "manageKit": "Zarządzaj zestawem inwentarza",
+        "navigateToItem": "Przejdź do pozycji inwentarza",
+        "actions": {
+          "inventoryItems": "Przejdź do pozycji inwentarza",
+          "inventoryKit": "Pokaż pozycje inwentarza"
+        },
+        "inventoryKit": "Zestaw inwentarza",
+        "inventoryKitHint": "Czy ten wariant składa się z kilku pozycji inwentarza?",
+        "validation": {
+          "itemId": "Proszę wybrać pozycję inwentarza.",
+          "quantity": "Ilość jest wymagana. Proszę podać liczbę dodatnią."
+        },
+        "header": "Stan i inwentarz",
+        "editItemDetails": "Edytuj szczegóły pozycji",
+        "manageInventoryLabel": "Zarządzaj inwentarzem",
+        "manageInventoryHint": "Gdy włączone, będziemy zmieniać ilość inwentarza za Ciebie, gdy zamówienia i zwroty są tworzone.",
+        "allowBackordersLabel": "Zezwalaj na zamówienia z góry",
+        "allowBackordersHint": "Gdy włączone, klienci mogą kupować wariant, nawet jeśli nie ma dostępnej ilości.",
+        "toast": {
+          "levelsBatch": "Poziomy inwentarza zostały zaktualizowane.",
+          "update": "Pozycja inwentarza została pomyślnie zaktualizowana.",
+          "updateLevel": "Poziom inwentarza został pomyślnie zaktualizowany.",
+          "itemsManageSuccess": "Pozycje inwentarza zostały pomyślnie zaktualizowane."
+        }
+      }
     },
     "fields": {
       "title": {
@@ -772,22 +858,7 @@
         "copy_from_previous": "Kopiuj z poprzedniego wariantu",
         "copy_from_variant": "Kopiuj z: {{name}}"
       },
-    "colors": {
-      "header": "Kolory",
-      "loading": "Ładowanie kolorów...",
-      "noColors": "Brak kolorów przypisanych do tego produktu"
-    },
-    "variants": {
-      "header": "Warianty",
-      "empty": {
-        "heading": "Brak wariantów",
-        "description": "Nie masz jeszcze żadnych wariantów. Dodaj pierwszy wariant, aby rozpocząć."
-      },
-      "variantColumn": "Wariant",
-      "priceColumn": "Cena",
-      "stockColumn": "Stan",
-      "actionsColumn": "Akcje"
-    },
+    
     "editPrices": "Edytuj ceny"
     
   },
@@ -847,6 +918,11 @@
         "action": "Dodaj media"
       },
       "successToast": "Media zostały pomyślnie zaktualizowane."
+    },
+    "colors": {
+      "header": "Kolory",
+      "loading": "Ładowanie kolorów...",
+      "noColors": "Brak kolorów przypisanych do tego produktu"
     },
   "collections": {
     "domain": "Kolekcje",
@@ -3621,5 +3697,50 @@
     "label": "Język:",
     "english": "English",
     "polish": "Polski"
+  },
+  "integratedVariantSection": {
+    "header": "Warianty",
+    "empty": {
+      "heading": "Brak wariantów",
+      "description": "Nie masz jeszcze żadnych wariantów. Dodaj pierwszy wariant, aby rozpocząć."
+    },
+    "columns": {
+      "variant": "Wariant",
+      "price": "Cena", 
+      "stock": "Zapas",
+      "actions": "Akcje"
+    },
+    "actions": {
+      "create": "Utwórz",
+      "edit": "Edytuj wariant",
+      "editPrices": "Edytuj ceny",
+      "delete": "Usuń",
+      "goToInventory": "Przejdź do magazynu"
+    },
+    "search": {
+      "placeholder": "Szukaj"
+    }
+  },
+  "variantColorsEditForm": {
+    "loading": "Ładowanie kolorów...",
+    "error": "Nie udało się załadować kolorów",
+    "copyFromVariant": "Kopiuj z wariantu",
+    "copyColors": "Kopiuj kolory",
+    "copyFrom": "Kopiuj z",
+    "currentColors": "Obecne kolory",
+    "noCurrentColors": "Brak przypisanych kolorów",
+    "addColors": "Dodaj kolory",
+    "searchPlaceholder": "Szukaj kolorów...",
+    "searchLabel": "Szukaj kolorów",
+    "selectedColors": "Wybrane kolory",
+    "removeColor": "Usuń kolor",
+    "copySuccess": "Kolory zostały pomyślnie skopiowane",
+    "copyError": "Nie udało się skopiować kolorów",
+    "helpText": "Wybierz kolory, które najlepiej reprezentują ten wariant. Możesz wybrać wiele kolorów.",
+    "unknownColor": "Nieznany kolor",
+    "noColors": "Brak kolorów przypisanych do tego wariantu",
+    "removeAllColors": "Usuń wszystkie kolory",
+    "successToast": "Kolory wariantu zostały pomyślnie zaktualizowane",
+    "errorToast": "Nie udało się zaktualizować kolorów wariantu"
   }
 }

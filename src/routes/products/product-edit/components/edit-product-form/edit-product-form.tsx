@@ -84,7 +84,6 @@ export const EditProductForm = ({
   useEffect(() => {
     if (!product) return;
     
-    console.log('Product data changed in edit form, resetting form:', product);
     
     form.reset({
       status: product.status === 'draft' || product.status === 'proposed' ? product.status : 'draft',
@@ -156,16 +155,11 @@ export const EditProductForm = ({
         ...nullableData,
       };
       
-      // Log the filtered payload
-      console.log('Filtered payload for vendor API:', payload);
-      
-      // Log what we're trying to update
-      console.log(`Updating product ${product.id} with data:`, payload);
+    
 
       // Update the product and handle various response formats
       const result = await mutateAsync(payload, {
         onSuccess: (data) => {
-          console.log('Product update success response:', data);
           
           // Handle different response formats safely
           const productData = data?.product || data;
@@ -185,7 +179,7 @@ export const EditProductForm = ({
           
           // If response has a _synthetic flag, it means our fallback mechanism created it
           if ((productData as any)?._synthetic) {
-            console.log('Using synthetic response - API update may have failed but UI will continue');
+           
             toast.warning("Niektóre zmiany mogły nie zostać zapisane");
           }
           
@@ -240,7 +234,13 @@ export const EditProductForm = ({
                     'bg-gray-500'
                   }`} />
                   <span className="text-sm text-ui-fg-base">
-                    {t(`productStatus.${product.status}`, product.status)}
+                    {/* CRITICAL FIX: Handle undefined/null status values with proper typing */}
+                    {(() => {
+                      const status = product.status as string | undefined;
+                      return status && status.trim() !== ''
+                        ? t(`productStatus.${status}`, status)
+                        : 'Unknown Status';
+                    })()}
                   </span>
                 </div>
               </div>

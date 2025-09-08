@@ -22,9 +22,26 @@ const organizationFields = [
   '*collection', // Also fix collection to get all fields
 ].join(',');
 
+// Define basic product fields that are always needed
+const basicProductFields = [
+  'id',
+  'title',
+  'subtitle', 
+  'description',
+  'handle',
+  'status',
+  'thumbnail',
+  'material',
+  'discountable',
+  'created_at',
+  'updated_at',
+  'deleted_at',
+  'metadata'
+].join(',');
+
 // Get basic product fields from extensions and add our specific field requirements
 export const PRODUCT_DETAIL_FIELDS = [
-  getLinkedFields('product', ''),
+  getLinkedFields('product', basicProductFields),
   variantFields,
   organizationFields,
   '*shipping_profile'

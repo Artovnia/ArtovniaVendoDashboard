@@ -30,7 +30,7 @@ export const IntegratedVariantSection = ({
     <div className="tab-content bg-ui-bg-base rounded-lg overflow-hidden  border-2 shadow-sm ">
       <Container className="p-0 border-b border-ui-border-base last:border-b-0">
         <div className="flex items-center justify-between px-6 py-4">
-          <Heading level="h2">{t('products.variants.header', 'Warianty')}</Heading>
+          <Heading level="h2">{t('integratedVariantSection.header')}</Heading>
         </div>
         
         {/* Action buttons and search bar at the top level */}
@@ -43,7 +43,7 @@ export const IntegratedVariantSection = ({
             >
               <Link to={`/products/${product.id}/variants/create`}>
                 <Plus className="w-4 h-4 mr-1" />
-                {t('actions.create', 'Utwórz')}
+                {t('actions.create')}
               </Link>
             </Button>
             
@@ -59,7 +59,7 @@ export const IntegratedVariantSection = ({
                   <Link to={`/products/${product.id}/prices`}>
                     <div className="flex items-center">
                       <PencilSquare className="w-4 h-4" />
-                      <span className="ml-2">{t('products.editPrices', 'Edytuj ceny')}</span>
+                      <span className="ml-2">{t('integratedVariantSection.actions.editPrices')}</span>
                     </div>
                   </Link>
                 </DropdownMenu.Item>
@@ -74,7 +74,7 @@ export const IntegratedVariantSection = ({
             <div className="relative w-64">
               <Input
                 type="text"
-                placeholder={t('general.search', 'Szukaj')}
+                placeholder={t('integratedVariantSection.search.placeholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pr-8"
@@ -91,9 +91,9 @@ export const IntegratedVariantSection = ({
       {/* Display empty state if no variants */}
       {!variants || variants.length === 0 ? (
         <Container className="p-6 text-center">
-          <Heading level="h3" className="mb-2">{t('products.variants.empty.heading', 'Brak wariantów')}</Heading>
+          <Heading level="h3" className="mb-2">{t('integratedVariantSection.empty.heading')}</Heading>
           <p className="text-ui-fg-subtle">
-            {t('products.variants.empty.description', 'Nie masz jeszcze żadnych wariantów. Dodaj pierwszy wariant, aby rozpocząć.')}
+            {t('integratedVariantSection.empty.description')}
           </p>
           <div className="mt-4">
             <Button
@@ -102,7 +102,7 @@ export const IntegratedVariantSection = ({
             >
               <Link to={`/products/${product.id}/variants/create`}>
                 <Plus className="w-4 h-4 mr-1" />
-                {t('actions.create', 'Dodaj wariant')}
+                {t('integratedVariantSection.actions.create')}
               </Link>
             </Button>
           </div>
@@ -112,10 +112,10 @@ export const IntegratedVariantSection = ({
         <div className="border-t border-ui-border-base">
           {/* Table headers for better readability */}
           <div className="flex items-center px-6 py-2 bg-ui-bg-base border-b border-ui-border-base text-ui-fg-subtle text-sm font-medium">
-            <div className="flex-1">{t('products.variants.variantColumn', 'Variant')}</div>
-            <div className="w-20 text-right">{t('products.variants.priceColumn', 'Price')}</div>
-            <div className="w-20 text-right">{t('products.variants.stockColumn', 'Stock')}</div>
-            <div className="w-24 text-right">{t('products.variants.actionsColumn', 'Actions')}</div>
+            <div className="flex-1">{t('integratedVariantSection.columns.variant')}</div>
+            <div className="w-20 text-right">{t('integratedVariantSection.columns.price')}</div>
+            <div className="w-20 text-right">{t('integratedVariantSection.columns.stock')}</div>
+            <div className="w-24 text-right">{t('integratedVariantSection.columns.actions')}</div>
           </div>
           
           {variants.map((variant) => (

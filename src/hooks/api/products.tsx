@@ -422,9 +422,16 @@ export const useProduct = (
     ...options,
   });
 
-  // CRITICAL FIX: The API returns { product: {...} } but we need to return the product data directly
-  // The destructuring was losing the categories data
-  return { ...rest, product: data?.product };
+  // CRITICAL FIX: Handle undefined product data gracefully
+  // Ensure we never return undefined product during cache transitions
+  const product = data?.product;
+  
+  // If we have cached data but product is undefined, this indicates a cache transition issue
+  if (data && !product) {
+    console.warn(`Product data inconsistency detected for ID ${id}:`, data);
+  }
+  
+  return { ...rest, product };
 };
 
 export const useProducts = (

@@ -688,6 +688,15 @@
     "variantCount_other": "{{count}} variants",
     "deleteVariantWarning": "You are about to delete the variant {{title}}. This action cannot be undone.",
     "variant": {
+      "header": "Variants",
+      "empty": {
+        "heading": "No variants",
+        "description": "You don't have any variants yet. Add the first variant to get started."
+      },
+      "variantColumn": "Variant",
+      "priceColumn": "Price",
+      "stockColumn": "Stock",
+      "actionsColumn": "Actions",
       "edit": {
         "header": "Edit Variant",
         "success": "Product variant edited sucessfully"
@@ -812,17 +821,6 @@
       "header": "Colors",
       "loading": "Loading colors...",
       "noColors": "No colors assigned to this product"
-    },
-    "variants": {
-      "header": "Variants",
-      "empty": {
-        "heading": "No variants",
-        "description": "You don't have any variants yet. Add the first variant to get started."
-      },
-      "variantColumn": "Variant",
-      "priceColumn": "Price",
-      "stockColumn": "Stock",
-      "actionsColumn": "Actions"
     },
     "editPrices": "Edit Prices",
     "media": {
@@ -3717,5 +3715,50 @@
     "label": "Language:",
     "english": "English",
     "polish": "Polski"
+  },
+  "integratedVariantSection": {
+    "header": "Variants",
+    "empty": {
+      "heading": "No variants",
+      "description": "You don't have any variants yet. Add the first variant to get started."
+    },
+    "columns": {
+      "variant": "Variant",
+      "price": "Price", 
+      "stock": "Stock",
+      "actions": "Actions"
+    },
+    "actions": {
+      "create": "Create",
+      "edit": "Edit variant",
+      "editPrices": "Edit prices",
+      "delete": "Delete",
+      "goToInventory": "Go to inventory"
+    },
+    "search": {
+      "placeholder": "Search"
+    }
+  },
+  "variantColorsEditForm": {
+    "loading": "Loading colors...",
+    "error": "Failed to load colors",
+    "copyFromVariant": "Copy from variant",
+    "copyColors": "Copy colors",
+    "copyFrom": "Copy from",
+    "currentColors": "Current colors",
+    "noCurrentColors": "No colors assigned",
+    "addColors": "Add colors",
+    "searchPlaceholder": "Search colors...",
+    "searchLabel": "Search colors",
+    "selectedColors": "Selected colors",
+    "removeColor": "Remove color",
+    "copySuccess": "Colors copied successfully",
+    "copyError": "Failed to copy colors",
+    "helpText": "Select colors that best represent this variant. You can select multiple colors.",
+    "unknownColor": "Unknown color",
+    "noColors": "No colors assigned to this variant",
+    "removeAllColors": "Remove All Colors",
+    "successToast": "Variant colors updated successfully",
+    "errorToast": "Failed to update variant colors"
   }
 }
