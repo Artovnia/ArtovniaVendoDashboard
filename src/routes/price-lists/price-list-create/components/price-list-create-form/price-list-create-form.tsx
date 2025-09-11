@@ -88,8 +88,7 @@ export const PriceListCreateForm = ({
     // Get all prices from products
     let prices = exctractPricesFromProducts(products, regions)
     
-    // Log the number of prices to be submitted
-    console.log(`Preparing to submit ${prices.length} prices for ${Object.keys(products).length} products`);
+
     
     // Check if we have any prices to submit
     if (prices.length === 0) {
@@ -101,48 +100,43 @@ export const PriceListCreateForm = ({
     }
     
     try {
-      // Filter out duplicate variants in the price list to avoid API conflicts
-      // This helps avoid the "Price lists can be applied only to seller own products!" error
-      const seenVariants = new Set<string>();
-      
-      // Log the number of prices before filtering
-      console.log(`Original prices count: ${prices.length}`);
+      // Filter prices but preserve region duplicates
+      // Create a unique key that includes both variant_id and region_id to allow currency + region price combinations
+      const seenPriceCombinations = new Set<string>();
+
       
       // Get the vendor ID if we can 
       const vendorId = localStorage.getItem('medusa_vendor_id');
-      console.log(`Current vendor ID: ${vendorId || 'Not found in localStorage'}`);
       
-      // Filter prices - remove duplicates and limit to first 25 to avoid overwhelming the API
-      // This is critical for the "Price lists can be applied only to seller own products!" error
+      // Filter prices - preserve both currency and region prices for the same variant
       prices = prices.filter(price => {
-        // Skip if we've seen this variant before to avoid duplicates
-        if (seenVariants.has(price.variant_id)) {
+        // Create a unique key that preserves both currency and region prices for the same variant
+        const priceKey = `${price.variant_id}_${price.currency_code}_${price.rules?.region_id || 'currency'}`;
+        
+        // Skip if we've seen this exact price combination before
+        if (seenPriceCombinations.has(priceKey)) {
           return false;
         }
         
         // Look for a pattern in variant IDs that matches your vendor's products
-        // Many systems use prefixes or other identifiers in the IDs
         const isLikelyVendorProduct = price.variant_id.includes('variant_');
         
         // Only include the price if it's likely to be the vendor's product
         if (!isLikelyVendorProduct) {
-          console.log(`Skipping variant ${price.variant_id} as it doesn't appear to be a vendor product`);
           return false;
         }
         
-        seenVariants.add(price.variant_id);
+        seenPriceCombinations.add(priceKey);
+       
         return true;
       });
       
-      // Log how many prices we're sending after filtering
-      console.log(`After filtering, keeping ${prices.length} prices`);
+
       
-      console.log(`After filtering, submitting ${prices.length} unique variant prices`);
+      
       
       // Process in batches if needed
       if (prices.length > 50) {
-        console.log(`Large price list detected (${prices.length} prices). Processing first 50 prices only.`);
-        // If we have too many prices, take only the first 50 to avoid overwhelming the API
         prices = prices.slice(0, 50);
       }
 

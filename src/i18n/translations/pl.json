@@ -2470,12 +2470,12 @@
         "hint": "Wybierz rodzaj cennika, który chcesz utworzyć.",
         "options": {
           "sale": {
-            "label": "Sprzedaż",
+            "label": "Wyprzedaż",
             "description": "Ceny wyprzedażowe są tymczasowymi zmianami cen produktów."
           },
           "override": {
-            "label": "Prześcigać",
-            "description": "Zastąpienia są zwykle używane do tworzenia cen specyficznych dla klienta."
+            "label": "Nadpisanie ceny",
+            "description": "Nadpisanie jest zwykle używane do tworzenia cen specyficznych dla klienta (grup klientów)."
           }
         }
       },

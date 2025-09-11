@@ -115,6 +115,7 @@ export const exctractPricesFromProducts = (
   products: PriceListCreateProductsSchema,
   regions: HttpTypes.AdminRegion[]
 ) => {
+  
   // Collect all prices from variants
   const allPrices = Object.values(products).flatMap(({ variants }) =>
     Object.entries(variants).flatMap(([variantId, variant]) =>
@@ -125,19 +126,48 @@ export const exctractPricesFromProducts = (
   // Create a map to track unique variant+currency combinations
   const uniquePriceCombinations = new Map();
   const uniquePrices = [];
+  let currencyPricesCount = 0;
+  let regionPricesCount = 0;
+  let duplicatedRegionPricesCount = 0;
   
   // Deduplicate prices (keep only one price per variant+currency)
   for (const price of allPrices) {
     // Create a unique key for each variant+currency combination
     const key = `${price.variant_id}_${price.currency_code}`;
     
+    // Track original price types
+    if (price.rules?.region_id) {
+      regionPricesCount++;
+    } else {
+      currencyPricesCount++;
+    }
+    
     // Only keep the first price for each variant+currency combination
     if (!uniquePriceCombinations.has(key)) {
       uniquePriceCombinations.set(key, true);
       uniquePrices.push(price);
-    }
+      
+
+      
+      // ⚠️ CRITICAL: Currency Prices Now Duplicate as Region Prices
+      // This ensures components that depend on region prices still work
+      const matchingRegions = regions.filter(region => region.currency_code === price.currency_code);
+     
+      for (const region of matchingRegions) {
+        const regionKey = `${price.variant_id}_${price.currency_code}_region_${region.id}`;
+        if (!uniquePriceCombinations.has(regionKey)) {
+          uniquePriceCombinations.set(regionKey, true);
+          const duplicatedPrice = {
+            ...price,
+            rules: { region_id: region.id }
+          };
+          uniquePrices.push(duplicatedPrice);
+          duplicatedRegionPricesCount++;
+          
+        }
+      }
+    } 
   }
   
-  console.log(`Processed ${allPrices.length} prices -> ${uniquePrices.length} unique variant+currency combinations`);
   return uniquePrices;
 }

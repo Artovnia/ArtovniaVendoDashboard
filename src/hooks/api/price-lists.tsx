@@ -78,14 +78,12 @@ const normalizePriceListResponse = (result: any, id: string) => {
  * This is crucial for ensuring the dashboard shows updated data
  */
 export const invalidatePriceListQueries = (id?: string, isDeleted: boolean = false) => {
-  console.log(`Invalidating price list queries ${id ? `for ID: ${id}` : '(all)'}`)
   
   // Handle differently depending on whether we're deleting or updating
   if (id) {
     if (isDeleted) {
       // For deleted price lists, remove from cache instead of refetching
       queryClient.removeQueries({ queryKey: priceListsQueryKeys.detail(id) })
-      console.log(`Removed deleted price list ${id} from cache`)
     } else {
       // For updates, invalidate and refetch to get fresh data
       queryClient.invalidateQueries({
@@ -121,13 +119,6 @@ export const invalidatePriceListQueries = (id?: string, isDeleted: boolean = fal
   
   // After a short delay, force refetch again to ensure data consistency
   setTimeout(() => {
-    // Double-check that everything is up to date after a delay
-    console.log('Running delayed price list cache refresh')
-    queryClient.invalidateQueries({
-      queryKey: priceListsQueryKeys.all,
-      refetchType: 'all',
-    })
-    
     // For the dashboard specifically, force refresh all queries
     queryClient.invalidateQueries({
       refetchType: 'all',
@@ -258,15 +249,21 @@ export const useCreatePriceList = (
         amount: number
         min_quantity?: number | null
         max_quantity?: number | null
+        rules?: { region_id?: string }
       }
 
-      const prices: PriceObject[] = payload.prices?.map(price => ({
-        variant_id: price.variant_id,
-        currency_code: price.currency_code,
-        amount: price.amount,
-        min_quantity: price.min_quantity,
-        max_quantity: price.max_quantity,
-      })) || []
+      const prices: PriceObject[] = payload.prices?.map(price => {
+        const priceObj = {
+          variant_id: price.variant_id,
+          currency_code: price.currency_code,
+          amount: price.amount,
+          min_quantity: price.min_quantity,
+          max_quantity: price.max_quantity,
+          ...(price.rules && { rules: price.rules })
+        };
+        
+        return priceObj;
+      }) || []
 
       const result = await fetchQuery('/vendor/price-lists', {
         method: "POST",
@@ -347,7 +344,7 @@ export const useDeletePriceList = (
         throw new Error('Price list ID is required for deletion')
       }
       
-      console.log(`Deleting price list with ID: ${id}`)
+
       
       // First, verify the price list exists
       try {
@@ -358,7 +355,6 @@ export const useDeletePriceList = (
         if (!priceListData?.price_list) {
           console.warn(`Price list with ID ${id} not found, may already be deleted`)
         } else {
-          console.log(`Found price list to delete: ${priceListData.price_list.title || id}`)
         }
       } catch (verifyError) {
         console.warn(`Could not verify price list ${id} before deletion:`, verifyError)
@@ -375,7 +371,7 @@ export const useDeletePriceList = (
             method: "DELETE",
           })
           
-          console.log(`Delete API response:`, deleteResult)
+          
           
           // If we get here, the deletion was successful
           // Immediately update the cache to reflect the deletion
@@ -393,8 +389,7 @@ export const useDeletePriceList = (
             throw deleteError
           }
           
-          // For 500 errors, we'll still update the UI to improve user experience
-          console.log(`Updating UI despite backend error for better user experience`)
+          
         }
         
         // Verify deletion was successful by checking if the price list still exists
@@ -404,16 +399,12 @@ export const useDeletePriceList = (
           })
           
           if (checkResult?.price_list) {
-            console.warn(`Price list ${id} still exists after deletion API call`)
             
-            // Instead of throwing an error, we'll try to remove it from the UI
-            // This provides a better user experience even if the backend failed
-            console.log(`Removing price list ${id} from UI despite backend failure`)
           }
         } catch (checkError: any) {
           // If we get a 404, that's good - it means the price list is gone
           if (checkError?.status === 404) {
-            console.log(`Confirmed price list ${id} no longer exists (404)`)
+            
           } else {
             console.warn(`Error verifying deletion:`, checkError)
             // Continue anyway since we want to update the UI
@@ -431,7 +422,7 @@ export const useDeletePriceList = (
         
         // If the error is a 404, the price list doesn't exist, so we can consider it "deleted"
         if (error?.status === 404) {
-          console.log(`Price list ${id} not found (404), considering it already deleted`)
+          
           return {
             id,
             object: "price_list",
@@ -443,7 +434,7 @@ export const useDeletePriceList = (
       }
     },
     onSuccess: (data, variables, context) => {
-      console.log(`Price list ${id} deleted successfully, updating UI`)
+      
       
       // Force immediate invalidation of all price list related queries
       // Mark as deleted to prevent refetching and causing errors
@@ -487,7 +478,6 @@ export const useDeletePriceList = (
       
       // Even on error, update the UI to remove the price list
       // This improves user experience when backend has issues but the UI should be updated
-      console.log(`Updating UI despite backend error for price list ${id}`)
       
       // Remove from cache anyway to improve user experience
       queryClient.removeQueries({ queryKey: priceListsQueryKeys.detail(id) })
@@ -576,8 +566,7 @@ export const useBatchPriceListPrices = (
     any
   >({
     mutationFn: async (payload) => {
-      // Log the complete payload for debugging
-      console.log(`Price list ${id} - Full batch operation payload:`, JSON.stringify(payload, null, 2));
+      
       
       // Determine which format we're working with
       let requestData: { prices: any[] };
@@ -585,7 +574,6 @@ export const useBatchPriceListPrices = (
       if (payload?.prices && Array.isArray(payload.prices)) {
         // New format - already has prices array
         requestData = { prices: payload.prices };
-        console.log(`Using direct prices array with ${payload.prices.length} prices`);
       } else if (payload?.products) {
         // Old format with nested product structure
         const prices: any[] = [];
@@ -597,7 +585,6 @@ export const useBatchPriceListPrices = (
           
           Object.keys(product.variants).forEach(variantOrProductId => {
             const variantData = product.variants[variantOrProductId];
-            console.log(`Processing variant/product: ${variantOrProductId}`);
             
             // Handle currency prices
             if (variantData.currency_prices) {
@@ -632,7 +619,6 @@ export const useBatchPriceListPrices = (
         });
         
         requestData = { prices };
-        console.log(`Converted to direct prices format with ${prices.length} prices`);
       } else {
         throw new Error('Invalid payload format. Expected prices array or products object');
       }
@@ -641,12 +627,6 @@ export const useBatchPriceListPrices = (
       if (!requestData.prices || requestData.prices.length === 0) {
         throw new Error('No valid prices to update');
       }
-      
-      // Log a sample of what we're sending to the API
-      console.log('Sending to API:', {
-        totalPrices: requestData.prices.length,
-        sample: requestData.prices.slice(0, 2)
-      });
       
       try {
         // Make the API call
@@ -704,7 +684,7 @@ export const usePriceListLinkProducts = (
           throw new Error('No product IDs specified for unlinking')
         }
         
-        console.log(`Deleting ${payload.product_ids.length} products from price list ${id}`);
+        
         
         // Try removing products from price list
         try {

@@ -143,7 +143,6 @@ export const PricingEdit = ({
       // Filter out any invalid variants (those without IDs)
       const validVariants = variantUpdates.filter(variant => !!variant.id);
       
-      console.log('Processing variant updates:', validVariants);
       
       // Instead of using the batch endpoint, update each variant individually
       const productId = product?.id;
@@ -158,7 +157,6 @@ export const PricingEdit = ({
       for (const variant of validVariants) {
         try {
           const variantId = variant.id;
-          console.log(`Updating variant ${variantId} with prices:`, variant.prices);
           
           // Use the fetchQuery client to update the variant
           await fetchQuery(`/vendor/products/${productId}/variants/${variantId}`, {

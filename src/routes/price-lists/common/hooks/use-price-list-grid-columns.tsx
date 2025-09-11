@@ -9,6 +9,7 @@ import {
   DataGrid,
 } from "../../../../components/data-grid"
 import { createDataGridPriceColumns } from "../../../../components/data-grid/helpers/create-data-grid-price-columns"
+import { formatCurrency } from "../../../../lib/format-currency"
 import { PricingCreateSchemaType } from "../../price-list-create/components/price-list-create-form/schema"
 import { isProductRow } from "../utils"
 
@@ -57,6 +58,53 @@ export const usePriceListGridColumns = ({
           )
         },
         disableHiding: true,
+      }),
+      // Current Price column to show existing prices for comparison
+      columnHelper.column({
+        id: "current_price",
+        header: t("fields.currentPrice", "Current Price"),
+        cell: (context) => {
+          const entity = context.row.original
+          if (isProductRow(entity)) {
+            return <DataGrid.ReadonlyCell context={context} />
+          }
+
+          // Find the current price for the variant
+          const currentPrice = entity.prices?.find(price => 
+            price.currency_code === currencies[0]?.currency_code || 
+            price.currency_code === 'pln' ||
+            price.currency_code === 'PLN'
+          )
+
+          // If no price found with currency filter, try to get any price
+          const fallbackPrice = entity.prices?.[0];
+          const displayPrice = currentPrice || fallbackPrice;
+
+ 
+
+          if (displayPrice) {
+            return (
+              <DataGrid.ReadonlyCell context={context} color="normal">
+                <div className="flex h-full w-full items-center justify-end">
+                  <span className="text-ui-fg-subtle">
+                    {formatCurrency(displayPrice.amount, displayPrice.currency_code)}
+                  </span>
+                </div>
+              </DataGrid.ReadonlyCell>
+            )
+          }
+
+          return (
+            <DataGrid.ReadonlyCell context={context} color="normal">
+              <div className="flex h-full w-full items-center justify-end">
+                <span className="text-ui-fg-subtle">
+                  No price
+                </span>
+              </div>
+            </DataGrid.ReadonlyCell>
+          )
+        },
+        disableHiding: false,
       }),
       ...createDataGridPriceColumns<
         HttpTypes.AdminProduct | HttpTypes.AdminProductVariant,

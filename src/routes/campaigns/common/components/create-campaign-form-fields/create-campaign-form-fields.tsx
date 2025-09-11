@@ -19,7 +19,7 @@ import {
   getCurrencySymbol,
 } from "../../../../../lib/data/currencies"
 
-export const CreateCampaignFormFields = ({ form, fieldScope = "" }) => {
+export const CreateCampaignFormFields = ({ form, fieldScope = "" }: { form: any, fieldScope?: string }) => {
   const { t } = useTranslation()
   const { store } = useStore()
 
@@ -138,7 +138,7 @@ export const CreateCampaignFormFields = ({ form, fieldScope = "" }) => {
         <Form.Field
           control={form.control}
           name={`${fieldScope}starts_at`}
-          render={({ field }) => {
+          render={({ field: { value, onChange, ...field } }) => {
             return (
               <Form.Item>
                 <Form.Label optional>
@@ -147,8 +147,12 @@ export const CreateCampaignFormFields = ({ form, fieldScope = "" }) => {
 
                 <Form.Control>
                   <DatePicker
-                    granularity="minute"
-                    shouldCloseOnSelect={false}
+                    granularity="day"
+                    shouldCloseOnSelect={true}
+                    modal={true}
+                    aria-label={t("campaigns.fields.start_date")}
+                    value={value}
+                    onChange={onChange}
                     {...field}
                   />
                 </Form.Control>
@@ -162,7 +166,7 @@ export const CreateCampaignFormFields = ({ form, fieldScope = "" }) => {
         <Form.Field
           control={form.control}
           name={`${fieldScope}ends_at`}
-          render={({ field }) => {
+          render={({ field: { value, onChange, ...field } }) => {
             return (
               <Form.Item>
                 <Form.Label optional>
@@ -171,8 +175,12 @@ export const CreateCampaignFormFields = ({ form, fieldScope = "" }) => {
 
                 <Form.Control>
                   <DatePicker
-                    granularity="minute"
-                    shouldCloseOnSelect={false}
+                    granularity="day"
+                    shouldCloseOnSelect={true}
+                    modal={true}
+                    aria-label={t("campaigns.fields.end_date")}
+                    value={value}
+                    onChange={onChange}
                     {...field}
                   />
                 </Form.Control>

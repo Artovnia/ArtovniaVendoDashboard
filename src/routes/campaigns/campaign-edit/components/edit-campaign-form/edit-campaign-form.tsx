@@ -126,16 +126,19 @@ export const EditCampaignForm = ({ campaign }: EditCampaignFormProps) => {
             <Form.Field
               control={form.control}
               name="starts_at"
-              render={({ field }) => {
+              render={({ field: { value, onChange, ...field } }) => {
                 return (
                   <Form.Item>
                     <Form.Label>{t("campaigns.fields.start_date")}</Form.Label>
 
                     <Form.Control>
                       <DatePicker
-                        granularity="minute"
-                        hourCycle={12}
-                        shouldCloseOnSelect={false}
+                        granularity="day"
+                        shouldCloseOnSelect={true}
+                        modal={true}
+                        aria-label={t("campaigns.fields.start_date")}
+                        value={value}
+                        onChange={onChange}
                         {...field}
                       />
                     </Form.Control>
@@ -149,15 +152,19 @@ export const EditCampaignForm = ({ campaign }: EditCampaignFormProps) => {
             <Form.Field
               control={form.control}
               name="ends_at"
-              render={({ field }) => {
+              render={({ field: { value, onChange, ...field } }) => {
                 return (
                   <Form.Item>
                     <Form.Label>{t("campaigns.fields.end_date")}</Form.Label>
 
                     <Form.Control>
                       <DatePicker
-                        granularity="minute"
-                        shouldCloseOnSelect={false}
+                        granularity="day"
+                        shouldCloseOnSelect={true}
+                        modal={true}
+                        aria-label={t("campaigns.fields.end_date")}
+                        value={value}
+                        onChange={onChange}
                         {...field}
                       />
                     </Form.Control>

@@ -212,7 +212,10 @@ export const DateFilter = ({
                   </div>
                   <div className="px-2 py-1">
                     <DatePicker
-                      modal
+                      modal={true}
+                      granularity="day"
+                      shouldCloseOnSelect={true}
+                      aria-label={t("filters.date.from")}
                       maxValue={customEndValue}
                       value={customStartValue}
                       onChange={(d) => handleCustomDateChange(d, "start")}
@@ -227,7 +230,10 @@ export const DateFilter = ({
                   </div>
                   <div className="px-2 py-1">
                     <DatePicker
-                      modal
+                      modal={true}
+                      granularity="day"
+                      shouldCloseOnSelect={true}
+                      aria-label={t("filters.date.to")}
                       minValue={customStartValue}
                       value={customEndValue || undefined}
                       onChange={(d) => {

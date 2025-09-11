@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { UseFormReturn, useWatch } from 'react-hook-form';
 import { DataGrid } from '../../../../../components/data-grid';
 import { useRouteModal } from '../../../../../components/modals';
-import { useProducts } from '../../../../../hooks/api/products';
+import { useProduct } from '../../../../../hooks/api/products';
 import { usePriceListGridColumns } from '../../../common/hooks/use-price-list-grid-columns';
 import { PriceListCreateProductVariantsSchema } from '../../../common/schemas';
 import { isProductRow } from '../../../common/utils';
@@ -32,11 +32,23 @@ export const PriceListPricesForm = ({
     name: 'products',
   });
 
-  const { products, isLoading, isError, error } =
-    useProducts({
-      limit: ids.length,
-      fields: 'title,thumbnail,*variants',
-    });
+  // Instead of using useProducts, fetch each selected product individually to get detailed variant prices
+  const selectedProductIds = ids.map(item => item.id);
+  
+  // Fetch detailed product data for each selected product to get variant prices
+  // Use the same approach as working pricing-edit.tsx - fetch without field restrictions
+  const productQueries = selectedProductIds.map(productId => 
+    useProduct(productId)
+  );
+
+  const isLoading = productQueries.some(query => query.isLoading);
+  const isError = productQueries.some(query => query.isError);
+  const error = productQueries.find(query => query.error)?.error;
+
+  // Combine all successfully fetched products
+  const products = productQueries
+    .map(query => query.product)
+    .filter(product => product !== undefined) as HttpTypes.AdminProduct[];
 
   const { setCloseOnEscape } = useRouteModal();
 
