@@ -38,7 +38,16 @@ export const useCampaign = (
     ...options,
   })
 
-  return { ...data, ...rest }
+  // Strip timestamp from campaign_identifier for display
+  const processedData = data ? {
+    ...data,
+    campaign: data.campaign ? {
+      ...data.campaign,
+      campaign_identifier: data.campaign.campaign_identifier?.replace(/_\d+$/, '') || data.campaign.campaign_identifier
+    } : data.campaign
+  } : data
+
+  return { ...processedData, ...rest }
 }
 
 export const useCampaigns = (
@@ -63,7 +72,16 @@ export const useCampaigns = (
     ...options,
   })
 
-  return { ...data, ...rest }
+  // Strip timestamp from campaign_identifier for display in list
+  const processedData = data ? {
+    ...data,
+    campaigns: data.campaigns?.map(campaign => ({
+      ...campaign,
+      campaign_identifier: campaign.campaign_identifier?.replace(/_\d+$/, '') || campaign.campaign_identifier
+    }))
+  } : data
+
+  return { ...processedData, ...rest }
 }
 
 export const useCreateCampaign = (

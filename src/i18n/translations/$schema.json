@@ -13637,6 +13637,254 @@
         "errorToast"
       ],
       "additionalProperties": false
+    },
+    "platformPromotions": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "list": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "subtitle": {
+              "type": "string"
+            },
+            "empty": {
+              "type": "object",
+              "properties": {
+                "heading": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": ["heading", "message"],
+              "additionalProperties": false
+            },
+            "search": {
+              "type": "object",
+              "properties": {
+                "placeholder": {
+                  "type": "string"
+                }
+              },
+              "required": ["placeholder"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["title", "subtitle", "empty", "search"],
+          "additionalProperties": false
+        },
+        "detail": {
+          "type": "object",
+          "properties": {
+            "promotionDetails": {
+              "type": "string"
+            },
+            "campaign": {
+              "type": "string"
+            },
+            "code": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "value": {
+              "type": "string"
+            },
+            "startDate": {
+              "type": "string"
+            },
+            "endDate": {
+              "type": "string"
+            },
+            "yourProducts": {
+              "type": "string"
+            },
+            "noProductsAdded": {
+              "type": "string"
+            },
+            "addProducts": {
+              "type": "string"
+            },
+            "removeProducts": {
+              "type": "string"
+            }
+          },
+          "required": ["promotionDetails", "campaign", "code", "type", "value", "startDate", "endDate", "yourProducts", "noProductsAdded", "addProducts", "removeProducts"],
+          "additionalProperties": false
+        },
+        "card": {
+          "type": "object",
+          "properties": {
+            "manage": {
+              "type": "string"
+            },
+            "joinPromotion": {
+              "type": "string"
+            },
+            "productsCount_one": {
+              "type": "string"
+            },
+            "productsCount_few": {
+              "type": "string"
+            },
+            "productsCount_many": {
+              "type": "string"
+            },
+            "productsCount_other": {
+              "type": "string"
+            }
+          },
+          "required": ["manage", "joinPromotion", "productsCount_one", "productsCount_other"],
+          "additionalProperties": false
+        },
+        "status": {
+          "type": "object",
+          "properties": {
+            "upcoming": {
+              "type": "string"
+            },
+            "active": {
+              "type": "string"
+            },
+            "expired": {
+              "type": "string"
+            },
+            "participating": {
+              "type": "string"
+            },
+            "notParticipating": {
+              "type": "string"
+            },
+            "available": {
+              "type": "string"
+            }
+          },
+          "required": ["upcoming", "active", "expired", "participating", "notParticipating", "available"],
+          "additionalProperties": false
+        },
+        "productSelector": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "subtitle": {
+              "type": "string"
+            },
+            "search": {
+              "type": "object",
+              "properties": {
+                "placeholder": {
+                  "type": "string"
+                }
+              },
+              "required": ["placeholder"],
+              "additionalProperties": false
+            },
+            "selectAll": {
+              "type": "string"
+            },
+            "deselectAll": {
+              "type": "string"
+            },
+            "confirm": {
+              "type": "string"
+            },
+            "cancel": {
+              "type": "string"
+            },
+            "noProducts": {
+              "type": "string"
+            },
+            "noProductsMessage": {
+              "type": "string"
+            },
+            "selected": {
+              "type": "string"
+            }
+          },
+          "required": ["title", "subtitle", "search", "selectAll", "deselectAll", "confirm", "cancel", "noProducts", "noProductsMessage", "selected"],
+          "additionalProperties": false
+        },
+        "actions": {
+          "type": "object",
+          "properties": {
+            "addProducts": {
+              "type": "string"
+            },
+            "removeSelected": {
+              "type": "string"
+            },
+            "backToList": {
+              "type": "string"
+            }
+          },
+          "required": ["addProducts", "removeSelected", "backToList"],
+          "additionalProperties": false
+        },
+        "toasts": {
+          "type": "object",
+          "properties": {
+            "productsAdded": {
+              "type": "string"
+            },
+            "productsRemoved": {
+              "type": "string"
+            },
+            "addProductsError": {
+              "type": "string"
+            },
+            "removeProductsError": {
+              "type": "string"
+            }
+          },
+          "required": ["productsAdded", "productsRemoved", "addProductsError", "removeProductsError"],
+          "additionalProperties": false
+        },
+        "noDate": {
+          "type": "string"
+        },
+        "campaignPromotion": {
+          "type": "string"
+        },
+        "participating": {
+          "type": "string"
+        },
+        "notParticipating": {
+          "type": "string"
+        },
+        "errorLoading": {
+          "type": "string"
+        },
+        "promotionNotFound": {
+          "type": "string"
+        },
+        "platformPromotionDetails": {
+          "type": "string"
+        },
+        "backToPromotions": {
+          "type": "string"
+        },
+        "showingResults": {
+          "type": "string"
+        },
+        "errorLoadingPromotions": {
+          "type": "string"
+        }
+      },
+      "required": ["domain", "subtitle", "list", "detail", "card", "status", "productSelector", "actions", "toasts", "noDate", "campaignPromotion", "participating", "notParticipating", "errorLoading", "promotionNotFound", "platformPromotionDetails", "backToPromotions", "showingResults", "errorLoadingPromotions"],
+      "additionalProperties": false
     }
   },
   "required": [
@@ -13724,7 +13972,8 @@
     "formFields",
     "languageSwitcher",
     "integratedVariantSection",
-    "variantColorsEditForm"
+    "variantColorsEditForm",
+    "platformPromotions"
   ],
   "additionalProperties": false
 }

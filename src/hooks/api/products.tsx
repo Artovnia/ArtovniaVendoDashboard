@@ -477,33 +477,63 @@ export const useProducts = (
       
       // Make sure we have products with variants properly initialized
       if (result?.products && Array.isArray(result.products)) {
-        for (const product of result.products) {
-          
-          
+        // Collect products that need variant data
+        const productsNeedingVariants = result.products.filter(product => 
+          product.id && (!product.variants || product.variants.length === 0)
+        );
+        
+        // If we have products needing variants, fetch them in a single batch request
+        if (productsNeedingVariants.length > 0) {
+          try {
+            const productIds = productsNeedingVariants.map(p => p.id);
+            
+            // Since batch querying by ID is not supported, we need to fall back to individual requests
+            // But we'll do them in parallel to minimize performance impact
+            const batchPromises = productIds.map(productId =>
+              fetchQuery(`/vendor/products/${productId}`, {
+                method: 'GET',
+                query: {
+                  fields: 'id,variants,variants.prices'
+                }
+              }).catch(err => {
+                console.error(`Failed to fetch variants for product ${productId}:`, err);
+                return null;
+              })
+            );
+            
+            const batchResults = await Promise.all(batchPromises);
+            
+            // Map the variant data back to the original products
+            const variantMap = new Map();
+            batchResults.forEach((result: any) => {
+              if (result?.product?.variants) {
+                variantMap.set(result.product.id, result.product.variants);
+              }
+            });
+            
+            // Update products with their variants
+            productsNeedingVariants.forEach((product: any) => {
+              const variants = variantMap.get(product.id);
+              if (variants) {
+                product.variants = variants;
+              }
+            });
+          } catch (err) {
+            console.error('Failed to batch fetch variants:', err);
+            // Fallback: ensure all products have empty variants array
+            productsNeedingVariants.forEach(product => {
+              if (!product.variants) {
+                product.variants = [];
+              }
+            });
+          }
+        }
+        
+        // Ensure all products have proper structure
+        result.products.forEach((product: any) => {
           // Ensure the variants array exists
           if (!product.variants) {
             product.variants = [];
-          }
-          
-          // If product has no variants, try to fetch them individually (if we have a product id)
-          if (product.id && product.variants.length === 0) {
-            
-            
-            try {
-              // Use individual product fetch to get details
-              const productData = await fetchQuery(`/vendor/products/${product.id}`, {
-                method: 'GET'
-              });
-              
-              if (productData?.product?.variants) {
-                product.variants = productData.product.variants;
-                
-              }
-            } catch (err) {
-              console.error(`Failed to fetch variants for product ${product.id}:`, err);
-            }
-          } else {
-            
           }
           
           // Ensure each variant has a prices array
@@ -512,9 +542,7 @@ export const useProducts = (
               variant.prices = [];
             }
           });
-          
-          
-        }
+        });
       }
       
       return result;

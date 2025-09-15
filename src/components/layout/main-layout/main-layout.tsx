@@ -175,6 +175,11 @@ const useCoreRoutes = (): Omit<INavItem, 'pathname'>[] => {
       ],
     },
     {
+      icon: <Tag />,
+      label: t('platformPromotions.domain'),
+      to: '/platform-promotions',
+    },
+    {
       icon: <CurrencyDollar />,
       label: t('priceLists.domain'),
       to: '/price-lists',

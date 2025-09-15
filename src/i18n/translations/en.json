@@ -3760,5 +3760,82 @@
     "removeAllColors": "Remove All Colors",
     "successToast": "Variant colors updated successfully",
     "errorToast": "Failed to update variant colors"
+  },
+  "platformPromotions": {
+    "domain": "Platform Promotions",
+    "subtitle": "Join promotion campaigns organized by Artovnia and get additional exposure for your store.",
+    "list": {
+      "title": "Platform Promotions",
+      "subtitle": "Browse and join promotion campaigns",
+      "empty": {
+        "heading": "No Artovnia promotions available",
+        "message": "There are currently no Artovnia promotions available to join."
+      },
+      "search": {
+        "placeholder": "Search promotions..."
+      }
+    },
+    "detail": {
+      "promotionDetails": "Promotion Details",
+      "campaign": "Campaign",
+      "code": "Code",
+      "type": "Type",
+      "value": "Value",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "yourProducts": "Your Products in Promotion",
+      "noProductsAdded": "You haven't added any products to this promotion yet.",
+      "addProducts": "Add Products",
+      "removeProducts": "Remove Products"
+    },
+    "card": {
+      "manage": "Manage",
+      "joinPromotion": "Join Promotion",
+      "productsCount_one": "{{count}} product",
+      "productsCount_other": "{{count}} products"
+    },
+    "status": {
+      "upcoming": "Upcoming",
+      "active": "Active",
+      "expired": "Expired",
+      "participating": "Participating",
+      "notParticipating": "Not Participating",
+      "available": "Available"
+    },
+    "productSelector": {
+      "title": "Select Products",
+      "subtitle": "Choose products to add to this promotion",
+      "search": {
+        "placeholder": "Search products..."
+      },
+      "selectAll": "Select All",
+      "deselectAll": "Deselect All",
+      "confirm": "Add Selected Products",
+      "cancel": "Cancel",
+      "noProducts": "No products available",
+      "noProductsMessage": "You don't have any published products to add to this promotion.",
+      "selected": "selected"
+    },
+    "actions": {
+      "addProducts": "Add Products",
+      "removeSelected": "Remove Selected",
+      "backToList": "Back to Platform Promotions"
+    },
+    "toasts": {
+      "productsAdded": "Products successfully added to promotion",
+      "productsRemoved": "Products successfully removed from promotion",
+      "addProductsError": "Failed to add products to promotion",
+      "removeProductsError": "Failed to remove products from promotion"
+    },
+    "noDate": "No date set",
+    "campaignPromotion": "Campaign Promotion",
+    "participating": "Participating",
+    "notParticipating": "Not Participating",
+    "errorLoading": "Error loading promotion",
+    "promotionNotFound": "Promotion not found",
+    "platformPromotionDetails": "Platform Promotion Details",
+    "backToPromotions": "Back to Platform Promotions",
+    "showingResults": "Showing {{start}}-{{end}} of {{total}} promotions",
+    "errorLoadingPromotions": "Error loading promotions"
   }
 }

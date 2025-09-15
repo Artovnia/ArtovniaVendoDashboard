@@ -1001,6 +1001,40 @@ export const RouteMap: RouteObject[] = [
             ],
           },
           {
+            path: '/platform-promotions',
+            errorElement: <ErrorBoundary />,
+            handle: {
+              breadcrumb: () => t('platformPromotions.domain'),
+            },
+            children: [
+              {
+                path: '',
+                lazy: async () => {
+                  const { PlatformPromotionsList } = await import(
+                    '../../routes/platform-promotions'
+                  );
+                  return {
+                    Component: PlatformPromotionsList,
+                  };
+                },
+              },
+              {
+                path: ':id',
+                lazy: async () => {
+                  const { PlatformPromotionDetail } = await import(
+                    '../../routes/platform-promotions'
+                  );
+                  return {
+                    Component: PlatformPromotionDetail,
+                    handle: {
+                      breadcrumb: () => t('platformPromotions.detail.breadcrumb'),
+                    },
+                  };
+                },
+              },
+            ],
+          },
+          {
             path: '/campaigns',
             errorElement: <ErrorBoundary />,
             handle: {

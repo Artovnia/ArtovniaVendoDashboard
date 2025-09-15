@@ -3742,5 +3742,84 @@
     "removeAllColors": "Usuń wszystkie kolory",
     "successToast": "Kolory wariantu zostały pomyślnie zaktualizowane",
     "errorToast": "Nie udało się zaktualizować kolorów wariantu"
+  },
+  "platformPromotions": {
+    "domain": "Promocje Platformy",
+    "subtitle": "Dołącz do kampanii promocyjnych organizowanych przez Artovnia i zyskaj dodatkową ekspozycję swojego sklepu.",
+    "list": {
+      "title": "Promocje Platformy",
+      "subtitle": "Przeglądaj i dołączaj do kampanii promocyjnych",
+      "empty": {
+        "heading": "Brak dostępnych promocji Artovnia",
+        "message": "Obecnie nie ma dostępnych promocji Artovnia do dołączenia."
+      },
+      "search": {
+        "placeholder": "Szukaj promocji..."
+      }
+    },
+    "detail": {
+      "promotionDetails": "Szczegóły Promocji",
+      "campaign": "Kampania",
+      "code": "Kod",
+      "type": "Typ",
+      "value": "Wartość",
+      "startDate": "Data Rozpoczęcia",
+      "endDate": "Data Zakończenia",
+      "yourProducts": "Twoje Produkty w Promocji",
+      "noProductsAdded": "Nie dodałeś jeszcze żadnych produktów do tej promocji.",
+      "addProducts": "Dodaj Produkty",
+      "removeProducts": "Usuń Produkty"
+    },
+    "card": {
+      "manage": "Zarządzaj",
+      "joinPromotion": "Dołącz do Promocji",
+      "productsCount_one": "{{count}} produkt",
+      "productsCount_few": "{{count}} produkty",
+      "productsCount_many": "{{count}} produktów",
+      "productsCount_other": "{{count}} produktów"
+    },
+    "status": {
+      "upcoming": "Nadchodząca",
+      "active": "Aktywna",
+      "expired": "Wygasła",
+      "participating": "Uczestniczysz",
+      "notParticipating": "Nie uczestniczysz",
+      "available": "Dostępna"
+    },
+    "productSelector": {
+      "title": "Wybierz Produkty",
+      "subtitle": "Wybierz produkty do dodania do tej promocji",
+      "search": {
+        "placeholder": "Szukaj produktów..."
+      },
+      "selectAll": "Zaznacz Wszystkie",
+      "deselectAll": "Odznacz Wszystkie",
+      "confirm": "Dodaj Wybrane Produkty",
+      "cancel": "Anuluj",
+      "noProducts": "Brak dostępnych produktów",
+      "noProductsMessage": "Nie masz żadnych opublikowanych produktów do dodania do tej promocji.",
+      "selected": "zaznaczonych"
+    },
+    "actions": {
+      "addProducts": "Dodaj Produkty",
+      "removeSelected": "Usuń Wybrane",
+      "backToList": "Powrót do Promocji Platformy"
+    },
+    "toasts": {
+      "productsAdded": "Produkty zostały pomyślnie dodane do promocji",
+      "productsRemoved": "Produkty zostały pomyślnie usunięte z promocji",
+      "addProductsError": "Nie udało się dodać produktów do promocji",
+      "removeProductsError": "Nie udało się usunąć produktów z promocji"
+    },
+    "noDate": "Brak ustawionej daty",
+    "campaignPromotion": "Promocja Kampanii",
+    "participating": "Uczestniczysz",
+    "notParticipating": "Nie uczestniczysz",
+    "errorLoading": "Błąd podczas ładowania promocji",
+    "promotionNotFound": "Promocja nie została znaleziona",
+    "platformPromotionDetails": "Szczegóły Promocji Platformy",
+    "backToPromotions": "Powrót do Promocji Platformy",
+    "showingResults": "Wyświetlane {{start}}-{{end}} z {{total}} promocji",
+    "errorLoadingPromotions": "Błąd podczas ładowania promocji"
   }
 }
