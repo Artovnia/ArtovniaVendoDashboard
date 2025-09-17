@@ -3821,5 +3821,90 @@
     "backToPromotions": "Powrót do Promocji Platformy",
     "showingResults": "Wyświetlane {{start}}-{{end}} z {{total}} promocji",
     "errorLoadingPromotions": "Błąd podczas ładowania promocji"
+  },
+  "stripeConnect": {
+    "title": "Stripe Connect",
+    "description": "Połącz swoje konto Stripe, aby otrzymywać płatności",
+    "notConnected": {
+      "title": "Nie połączone",
+      "description": "Połącz swoje konto Stripe, aby zacząć otrzymywać płatności od klientów"
+    },
+    "connected": {
+      "title": "Połączone",
+      "description": "Twoje konto Stripe jest połączone i gotowe do otrzymywania płatności"
+    },
+    "pending": {
+      "title": "Oczekujące",
+      "description": "Połączenie z kontem Stripe jest w toku. Proszę ukończyć proces wprowadzenia"
+    },
+    "restrictedSoon": {
+      "title": "Wkrótce ograniczone",
+      "description": "Twoje konto zostanie wkrótce ograniczone. Proszę podać dodatkowe informacje"
+    },
+    "rejected": {
+      "title": "Odrzucone",
+      "description": "Twoja aplikacja konta Stripe została odrzucona. Proszę skontaktować się z pomocą techniczną"
+    },
+    "unknown": {
+      "title": "Nieznany status",
+      "description": "Nie można określić statusu konta. Proszę spróbować ponownie"
+    },
+    "accountType": {
+      "label": "Typ konta",
+      "individual": "Indywidualne",
+      "individualDesc": "Do użytku osobistego lub jednoosobowej działalności",
+      "company": "Firma",
+      "companyDesc": "Dla firm i organizacji"
+    },
+    "requirements": {
+      "individual": "Wymagania konta indywidualnego",
+      "company": "Wymagania konta firmowego"
+    },
+    "details": {
+      "accountType": "Typ konta",
+      "country": "Kraj",
+      "currency": "Waluta",
+      "status": "Status",
+      "active": "Aktywne"
+    },
+    "status": {
+      "connected": "Połączone",
+      "pending": "Oczekujące",
+      "requiresAction": "Wymaga działania",
+      "rejected": "Odrzucone",
+      "notConnected": "Nie połączone"
+    },
+    "actions": {
+      "connect": "Połącz konto Stripe",
+      "continueOnboarding": "Kontynuuj wprowadzenie",
+      "manageAccount": "Zarządzaj kontem",
+      "viewDashboard": "Zobacz panel",
+      "contactSupport": "Skontaktuj się z pomocą"
+    },
+    "notes": {
+      "secureNote": "Twoje połączenie jest bezpieczne i szyfrowane",
+      "poweredBy": "Obsługiwane przez Stripe"
+    },
+    "form": {
+      "title": "Połącz Konto Wypłat",
+      "subtitle": "Podaj dane swojego konta, aby otrzymywać wypłaty",
+      "companyName": "Nazwa Firmy",
+      "taxId": "NIP",
+      "email": "Adres Email",
+      "phone": "Numer Telefonu",
+      "firstName": "Imię",
+      "lastName": "Nazwisko",
+      "address": "Adres",
+      "city": "Miasto",
+      "postalCode": "Kod Pocztowy",
+      "iban": "IBAN",
+      "ibanPlaceholder": "PL61 1090 1014 0000 0712 1981 2874",
+      "representativeInfo": "Dane Reprezentanta Firmy",
+      "back": "Wstecz",
+      "submit": "Połącz konto"
+    },
+    "required": "Pola wymagane są oznaczone *",
+    "back": "Wstecz",
+    "submit": "Połącz konto"
   }
 }

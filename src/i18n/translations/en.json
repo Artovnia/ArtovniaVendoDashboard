@@ -3837,5 +3837,90 @@
     "backToPromotions": "Back to Platform Promotions",
     "showingResults": "Showing {{start}}-{{end}} of {{total}} promotions",
     "errorLoadingPromotions": "Error loading promotions"
+  },
+  "stripeConnect": {
+    "title": "Stripe Connect",
+    "description": "Connect your Stripe account to receive payments",
+    "notConnected": {
+      "title": "Not Connected",
+      "description": "Connect your Stripe account to start receiving payments from customers"
+    },
+    "connected": {
+      "title": "Connected",
+      "description": "Your Stripe account is connected and ready to receive payments"
+    },
+    "pending": {
+      "title": "Pending",
+      "description": "Your Stripe account connection is pending. Please complete the onboarding process"
+    },
+    "restrictedSoon": {
+      "title": "Restricted Soon",
+      "description": "Your account will be restricted soon. Please provide additional information"
+    },
+    "rejected": {
+      "title": "Rejected",
+      "description": "Your Stripe account application was rejected. Please contact support"
+    },
+    "unknown": {
+      "title": "Unknown Status",
+      "description": "Unable to determine account status. Please try again"
+    },
+    "accountType": {
+      "label": "Account Type",
+      "individual": "Individual",
+      "individualDesc": "For personal use or sole proprietorship",
+      "company": "Company",
+      "companyDesc": "For businesses and organizations"
+    },
+    "requirements": {
+      "individual": "Individual account requirements",
+      "company": "Company account requirements"
+    },
+    "details": {
+      "accountType": "Account Type",
+      "country": "Country",
+      "currency": "Currency",
+      "status": "Status",
+      "active": "Active"
+    },
+    "status": {
+      "connected": "Connected",
+      "pending": "Pending",
+      "requiresAction": "Requires Action",
+      "rejected": "Rejected",
+      "notConnected": "Not Connected"
+    },
+    "actions": {
+      "connect": "Connect Stripe Account",
+      "continueOnboarding": "Continue Onboarding",
+      "manageAccount": "Manage Account",
+      "viewDashboard": "View Dashboard",
+      "contactSupport": "Contact Support"
+    },
+    "notes": {
+      "secureNote": "Your connection is secure and encrypted",
+      "poweredBy": "Powered by Stripe"
+    },
+    "form": {
+      "title": "Connect Your Payout Account",
+      "subtitle": "Please provide your account details to receive payouts",
+      "companyName": "Company Name",
+      "taxId": "Tax ID (NIP)",
+      "email": "Email Address",
+      "phone": "Phone Number",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "address": "Address",
+      "city": "City",
+      "postalCode": "Postal Code",
+      "iban": "IBAN",
+      "ibanPlaceholder": "PL61 1090 1014 0000 0712 1981 2874",
+      "representativeInfo": "Company Representative Information",
+      "back": "Back",
+      "submit": "Connect Account"
+    },
+    "required": "Required fields are marked with *",
+    "back": "Back",
+    "submit": "Connect Account"
   }
 }

@@ -43,9 +43,6 @@ export const useHolidayMode = (vendorId?: string) => {
   const { seller } = useMe();
   const actualVendorId = vendorId || seller?.id;
   
-  console.log('🔍 Holiday mode hook - seller:', seller);
-  console.log('🔍 Holiday mode hook - actualVendorId:', actualVendorId);
-  
   const { data, ...rest } = useQuery({
     queryKey: holidayModeKeys.detail(actualVendorId || 'unknown', 'holiday-mode'),
     queryFn: async () => {
@@ -55,11 +52,9 @@ export const useHolidayMode = (vendorId?: string) => {
       }
       
       try {
-        console.log(`🔍 Fetching holiday mode data for vendor: ${actualVendorId}`);
         const response = await fetchQuery(`/vendor/stores/${actualVendorId}/holiday`, { 
           method: 'GET' 
         });
-        console.log(`✅ Holiday mode data received:`, response);
         return response as HolidayModeData;
       } catch (e) {
         console.error(`❌ Error fetching holiday mode data:`, e);
@@ -82,9 +77,6 @@ export const useUpdateHolidayMode = (vendorId?: string) => {
   const actualVendorId = vendorId || seller?.id;
   const queryClient = useQueryClient();
 
-  console.log('🔧 Update holiday mode hook - seller:', seller);
-  console.log('🔧 Update holiday mode hook - actualVendorId:', actualVendorId);
-
   return useMutation({
     mutationFn: async (data: UpdateHolidayModeData) => {
       if (!actualVendorId) {
@@ -93,7 +85,6 @@ export const useUpdateHolidayMode = (vendorId?: string) => {
       }
       
       try {
-        console.log(`📢 Updating holiday mode for vendor: ${actualVendorId}`, data);
         const response = await fetchQuery(
           `/vendor/stores/${actualVendorId}/holiday`, 
           {
@@ -101,7 +92,6 @@ export const useUpdateHolidayMode = (vendorId?: string) => {
             body: data // Send the data as-is since it matches your schema
           }
         );
-        console.log('✅ Holiday mode update succeeded:', response);
         return response;
       } catch (e) {
         console.error('❌ Failed to update holiday mode:', e);
@@ -109,7 +99,6 @@ export const useUpdateHolidayMode = (vendorId?: string) => {
       }
     },
     onSuccess: (response) => {
-      console.log('✓ Holiday mode update successful:', response);
       if (actualVendorId) {
         queryClient.invalidateQueries({
           queryKey: holidayModeKeys.detail(actualVendorId, 'holiday-mode'),

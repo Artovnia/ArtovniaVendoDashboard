@@ -13885,6 +13885,374 @@
       },
       "required": ["domain", "subtitle", "list", "detail", "card", "status", "productSelector", "actions", "toasts", "noDate", "campaignPromotion", "participating", "notParticipating", "errorLoading", "promotionNotFound", "platformPromotionDetails", "backToPromotions", "showingResults", "errorLoadingPromotions"],
       "additionalProperties": false
+    },
+    "stripeConnect": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "notConnected": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": ["title", "description"],
+          "additionalProperties": false
+        },
+        "connected": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": ["title", "description"],
+          "additionalProperties": false
+        },
+        "pending": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": ["title", "description"],
+          "additionalProperties": false
+        },
+        "restrictedSoon": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": ["title", "description"],
+          "additionalProperties": false
+        },
+        "rejected": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": ["title", "description"],
+          "additionalProperties": false
+        },
+        "unknown": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": ["title", "description"],
+          "additionalProperties": false
+        },
+        "accountType": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "type": "string"
+            },
+            "individual": {
+              "type": "string"
+            },
+            "individualDesc": {
+              "type": "string"
+            },
+            "company": {
+              "type": "string"
+            },
+            "companyDesc": {
+              "type": "string"
+            }
+          },
+          "required": ["label", "individual", "individualDesc", "company", "companyDesc"],
+          "additionalProperties": false
+        },
+        "requirements": {
+          "type": "object",
+          "properties": {
+            "individual": {
+              "type": "string"
+            },
+            "company": {
+              "type": "string"
+            }
+          },
+          "required": ["individual", "company"],
+          "additionalProperties": false
+        },
+        "details": {
+          "type": "object",
+          "properties": {
+            "accountType": {
+              "type": "string"
+            },
+            "country": {
+              "type": "string"
+            },
+            "currency": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            },
+            "active": {
+              "type": "string"
+            }
+          },
+          "required": ["accountType", "country", "currency", "status", "active"],
+          "additionalProperties": false
+        },
+        "status": {
+          "type": "object",
+          "properties": {
+            "connected": {
+              "type": "string"
+            },
+            "pending": {
+              "type": "string"
+            },
+            "requiresAction": {
+              "type": "string"
+            },
+            "rejected": {
+              "type": "string"
+            },
+            "notConnected": {
+              "type": "string"
+            }
+          },
+          "required": ["connected", "pending", "requiresAction", "rejected", "notConnected"],
+          "additionalProperties": false
+        },
+        "actions": {
+          "type": "object",
+          "properties": {
+            "connect": {
+              "type": "string"
+            },
+            "continueOnboarding": {
+              "type": "string"
+            },
+            "manageAccount": {
+              "type": "string"
+            },
+            "viewDashboard": {
+              "type": "string"
+            },
+            "contactSupport": {
+              "type": "string"
+            }
+          },
+          "required": ["connect", "continueOnboarding", "manageAccount", "viewDashboard", "contactSupport"],
+          "additionalProperties": false
+        },
+        "notes": {
+          "type": "object",
+          "properties": {
+            "secureNote": {
+              "type": "string"
+            },
+            "poweredBy": {
+              "type": "string"
+            }
+          },
+          "required": ["secureNote", "poweredBy"],
+          "additionalProperties": false
+        },
+        "form": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "subtitle": {
+              "type": "string"
+            },
+            "companyName": {
+              "type": "string"
+            },
+            "taxId": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            },
+            "firstName": {
+              "type": "string"
+            },
+            "lastName": {
+              "type": "string"
+            },
+            "address": {
+              "type": "string"
+            },
+            "city": {
+              "type": "string"
+            },
+            "postalCode": {
+              "type": "string"
+            },
+            "iban": {
+              "type": "string"
+            },
+            "ibanPlaceholder": {
+              "type": "string"
+            },
+            "phone": {
+              "type": "string"
+            },
+            "representativeInfo": {
+              "type": "string"
+            }
+          },
+          "required": ["title", "subtitle", "companyName", "taxId", "email", "firstName", "lastName", "address", "city", "postalCode", "iban", "ibanPlaceholder", "phone", "representativeInfo"],
+          "additionalProperties": false
+      },
+      "required": ["accountType", "country", "currency", "status", "active"],
+      "additionalProperties": false
+    },
+    "status": {
+      "type": "object",
+      "properties": {
+        "connected": {
+          "type": "string"
+        },
+        "pending": {
+          "type": "string"
+        },
+        "requiresAction": {
+          "type": "string"
+        },
+        "rejected": {
+          "type": "string"
+        },
+        "notConnected": {
+          "type": "string"
+        }
+      },
+      "required": ["connected", "pending", "requiresAction", "rejected", "notConnected"],
+      "additionalProperties": false
+    },
+    "actions": {
+      "type": "object",
+      "properties": {
+        "connect": {
+          "type": "string"
+        },
+        "continueOnboarding": {
+          "type": "string"
+        },
+        "manageAccount": {
+          "type": "string"
+        },
+        "viewDashboard": {
+          "type": "string"
+        },
+        "contactSupport": {
+          "type": "string"
+        }
+      },
+      "required": ["connect", "continueOnboarding", "manageAccount", "viewDashboard", "contactSupport"],
+      "additionalProperties": false
+    },
+    "notes": {
+      "type": "object",
+      "properties": {
+        "secureNote": {
+          "type": "string"
+        },
+        "poweredBy": {
+          "type": "string"
+        }
+      },
+      "required": ["secureNote", "poweredBy"],
+      "additionalProperties": false
+    },
+    "form": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "companyName": {
+          "type": "string"
+        },
+        "taxId": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "postalCode": {
+          "type": "string"
+        },
+        "iban": {
+          "type": "string"
+        },
+        "ibanPlaceholder": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "representativeInfo": {
+          "type": "string"
+        },
+        "back": {
+          "type": "string"
+        },
+        "required": {
+          "type": "string"
+        },
+        "submit": {
+          "type": "string"
+        }
+      },
+      "required": ["title", "subtitle", "companyName", "taxId", "email", "firstName", "lastName", "address", "city", "postalCode", "iban", "ibanPlaceholder", "phone", "representativeInfo", "back", "required", "submit"],
+      "additionalProperties": false
     }
   },
   "required": [
@@ -13973,7 +14341,8 @@
     "languageSwitcher",
     "integratedVariantSection",
     "variantColorsEditForm",
-    "platformPromotions"
+    "platformPromotions",
+    "stripeConnect"
   ],
   "additionalProperties": false
 }

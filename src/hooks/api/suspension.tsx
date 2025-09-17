@@ -33,8 +33,6 @@ export const useSuspensionStatus = (vendorId?: string) => {
   const { seller } = useMe();
   const actualVendorId = vendorId || seller?.id;
   
-  console.log('🔍 Suspension hook - seller:', seller);
-  console.log('🔍 Suspension hook - actualVendorId:', actualVendorId);
   
   const { data, ...rest } = useQuery({
     queryKey: suspensionKeys.detail(actualVendorId || 'unknown', 'suspension-status'),
@@ -45,11 +43,9 @@ export const useSuspensionStatus = (vendorId?: string) => {
       }
       
       try {
-        console.log(`🔍 Fetching suspension status for vendor: ${actualVendorId}`);
         const response = await fetchQuery(`/vendor/stores/${actualVendorId}/suspension`, { 
           method: 'GET' 
         });
-        console.log(`✅ Suspension status received:`, response);
         return response as SuspensionData;
       } catch (e) {
         console.error(`❌ Error fetching suspension status:`, e);

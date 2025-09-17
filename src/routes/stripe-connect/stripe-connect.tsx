@@ -1,4 +1,5 @@
 import { Container, Heading, Text } from '@medusajs/ui';
+import { useTranslation } from 'react-i18next';
 import { NotConnected } from './components/not-connected';
 import { useStripeAccount } from '../../hooks/api';
 import { Status } from './components/status';
@@ -13,16 +14,16 @@ const getStatus = (payout_account: any) => {
 };
 
 export const StripeConnect = () => {
+  const { t } = useTranslation();
   const { payout_account } = useStripeAccount();
 
   return (
     <Container className='divide-y p-0'>
       <div className='flex items-center justify-between px-6 py-4'>
         <div>
-          <Heading>Stripe Connect</Heading>
+          <Heading>{t('stripeConnect.title')}</Heading>
           <Text className='text-ui-fg-subtle' size='small'>
-            Connect Stripe to receive automatic payouts from
-            the marketplace
+            {t('stripeConnect.description')}
           </Text>
         </div>
         <div>

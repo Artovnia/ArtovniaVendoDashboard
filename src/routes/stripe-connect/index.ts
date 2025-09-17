@@ -1,1 +1,1 @@
-export { StripeConnect as Component } from './stripe-connect';
+export { StripeConnect as default } from "./stripe-connect"

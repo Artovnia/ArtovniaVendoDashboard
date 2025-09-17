@@ -26,13 +26,13 @@ export const useStripeAccount = () => {
         return response;
       } catch (error) {
         console.error('[Stripe][Frontend] Error:', error);
-if (error && typeof error === 'object' && error.message && error.message.includes('supersecret')) {
-  console.error('[Stripe][Frontend][DEBUG] Received supersecret error at useStripeAccount > queryFn (stripe.tsx)');
-  console.error('[Stripe][Frontend][DEBUG] Error object:', error);
-  if (error.stack) {
-    console.error('[Stripe][Frontend][DEBUG] Stack trace:', error.stack);
-  }
-}
+        if (error && typeof error === 'object' && 'message' in error && typeof error.message === 'string' && error.message.includes('supersecret')) {
+          console.error('[Stripe][Frontend][DEBUG] Received supersecret error at useStripeAccount > queryFn (stripe.tsx)');
+          console.error('[Stripe][Frontend][DEBUG] Error object:', error);
+          if ('stack' in error && typeof error.stack === 'string') {
+            console.error('[Stripe][Frontend][DEBUG] Stack trace:', error.stack);
+          }
+        }
 
         throw error;
       }
@@ -58,13 +58,13 @@ export const useCreateStripeAccount = (
         return response;
       } catch (error) {
         console.error('[Stripe][Frontend] Error:', error);
-if (error && typeof error === 'object' && error.message && error.message.includes('supersecret')) {
-  console.error('[Stripe][Frontend][DEBUG] Received supersecret error at useStripeAccount > queryFn (stripe.tsx)');
-  console.error('[Stripe][Frontend][DEBUG] Error object:', error);
-  if (error.stack) {
-    console.error('[Stripe][Frontend][DEBUG] Stack trace:', error.stack);
-  }
-}
+        if (error && typeof error === 'object' && 'message' in error && typeof error.message === 'string' && error.message.includes('supersecret')) {
+          console.error('[Stripe][Frontend][DEBUG] Received supersecret error at useStripeAccount > queryFn (stripe.tsx)');
+          console.error('[Stripe][Frontend][DEBUG] Error object:', error);
+          if ('stack' in error && typeof error.stack === 'string') {
+            console.error('[Stripe][Frontend][DEBUG] Stack trace:', error.stack);
+          }
+        }
 
         throw error;
       }
@@ -95,13 +95,13 @@ export const useCreateStripeOnboarding = (
         return response;
       } catch (error) {
         console.error('[Stripe][Frontend] Error:', error);
-if (error && typeof error === 'object' && error.message && error.message.includes('supersecret')) {
-  console.error('[Stripe][Frontend][DEBUG] Received supersecret error at useStripeAccount > queryFn (stripe.tsx)');
-  console.error('[Stripe][Frontend][DEBUG] Error object:', error);
-  if (error.stack) {
-    console.error('[Stripe][Frontend][DEBUG] Stack trace:', error.stack);
-  }
-}
+        if (error && typeof error === 'object' && 'message' in error && typeof error.message === 'string' && error.message.includes('supersecret')) {
+          console.error('[Stripe][Frontend][DEBUG] Received supersecret error at useStripeAccount > queryFn (stripe.tsx)');
+          console.error('[Stripe][Frontend][DEBUG] Error object:', error);
+          if ('stack' in error && typeof error.stack === 'string') {
+            console.error('[Stripe][Frontend][DEBUG] Stack trace:', error.stack);
+          }
+        }
 
         throw error;
       }

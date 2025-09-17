@@ -215,9 +215,9 @@ const useExtensionRoutes = (): Omit<
   const { t } = useTranslation('translation', { useSuspense: false });
   return [
     {
-      icon: <CurrencyDollar />,
-      label: t('navigation.payoutAccount', 'Payout Account'),
-      to: '/payout-provider-select',
+      icon: <StripeIcon />,
+      label: t('navigation.stripeConnect', 'Stripe Connect'),
+      to: '/stripe-connect',
     },
     {
       icon: <ReceiptPercent />,
