@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams, Link } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import { useDate } from "../../../../hooks/use-date"
 import { useTranslation } from "react-i18next";
@@ -200,7 +200,14 @@ export const ReturnRequestDetail = () => {
               <div>
                 <Text className="text-ui-fg-subtle">{t('requests.returns.returnDetail.orderNumber', 'Order Number')}</Text>
                 <Text className="font-medium">
-                  {return_request.order ? `#${return_request.order.display_id}` : `-`}
+                  {return_request.order ? (
+                    <Link 
+                      to={`/orders/${return_request.order.id}`}
+                      className="text-blue-600 hover:text-blue-800 underline cursor-pointer"
+                    >
+                      #{return_request.order.display_id}
+                    </Link>
+                  ) : `-`}
                 </Text>
               </div>
               <div>

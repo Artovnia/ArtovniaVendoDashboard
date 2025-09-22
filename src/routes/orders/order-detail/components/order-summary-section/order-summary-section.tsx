@@ -84,6 +84,18 @@ export const OrderSummarySection = ({
     fields: '+received_at',
   });
 
+  // Debug: Log returns data
+  console.log('🔍 OrderSummarySection - Returns data:', {
+    orderId: order.id,
+    returnsCount: returns.length,
+    returns: returns.map(r => ({
+      id: r.id,
+      status: r.status,
+      order_id: r.order_id,
+      created_at: r.created_at
+    }))
+  });
+
   const receivableReturns = useMemo(
     () => returns.filter((r) => !r.canceled_at),
     [returns]
@@ -1210,7 +1222,7 @@ const Total = ({ order }: { order: AdminOrder }) => {
           weight='plus'
         >
           {getStylizedAmount(
-            order.summary.pending_difference || 0,
+            order.summary?.pending_difference || 0,
             order.currency_code
           )}
         </Text>

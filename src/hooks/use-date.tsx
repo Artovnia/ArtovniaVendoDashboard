@@ -19,19 +19,15 @@ export const useDate = () => {
     date: string | Date
     includeTime?: boolean
   }) => {
-    console.log("useDate getFullDate called with:", date, typeof date)
     
     // Handle null or undefined
     if (!date) {
-      console.log("Date is empty/falsy")
       return "-"
     }
     
     const ensuredDate = new Date(date)
-    console.log("Converted to Date object:", ensuredDate, ensuredDate.toString())
 
     if (isNaN(ensuredDate.getTime())) {
-      console.log("Invalid date detected")
       return "-"
     }
 
@@ -41,10 +37,8 @@ export const useDate = () => {
       const formatted = format(ensuredDate, `PP ${timeFormat}`, {
         locale,
       })
-      console.log("Formatted date result:", formatted)
       return formatted
     } catch (error) {
-      console.error("Date formatting error:", error)
       return ensuredDate.toString()
     }
   }

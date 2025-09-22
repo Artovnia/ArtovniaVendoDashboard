@@ -71,10 +71,13 @@ export const OrderPaymentSection = ({
 
 const Header = ({ order }: { order: any }) => {
   const { t } = useTranslation();
+  
+
   const { label, color } = getOrderPaymentStatus(
     t,
     order.payment_status
   );
+
 
   return (
     <div className='flex items-center justify-between px-6 py-4'>

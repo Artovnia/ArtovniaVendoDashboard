@@ -793,7 +793,7 @@ const OrderActivityCollapsible = ({
                 weight='plus'
                 className='text-ui-fg-muted'
               >
-                {t('orders.activity.showMoreActivities', {
+                {t('orders.activity.showMoreActivities_one', {
                   count: activities.length,
                 })}
               </Text>

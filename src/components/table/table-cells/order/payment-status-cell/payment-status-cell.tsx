@@ -10,8 +10,15 @@ type PaymentStatusCellProps = {
 export const PaymentStatusCell = ({ status }: PaymentStatusCellProps) => {
   const { t } = useTranslation()
 
-  const { label, color } = getOrderPaymentStatus(t, status)
+  // Only use fallback if status is truly null/undefined, not for valid status strings
+  if (!status) {
+    const { label, color } = getOrderPaymentStatus(t, "not_paid")
+    return <StatusCell color={color}>{label}</StatusCell>
+  }
 
+  const { label, color } = getOrderPaymentStatus(t, status)
+  
+  
   return <StatusCell color={color}>{label}</StatusCell>
 }
 

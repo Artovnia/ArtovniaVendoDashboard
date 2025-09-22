@@ -108,21 +108,12 @@ export const useVendorReturnRequests = (
     ...options,
   })
 
-  // Transform dates from strings to Date objects
-  console.log("Raw API return data:", JSON.stringify(data?.order_return_request?.[0] || {}, null, 2))
-  
   const processedReturnRequests = data?.order_return_request?.filter(request => request !== null)?.map((request: any) => {
-    console.log("Processing request:", request?.id || 'Unknown ID')
-    
-    // Get created_at from line_items since the top-level field seems to be missing
     let created_at = null
-    // Try to get created_at from the first line item if available
     if (request?.line_items && request.line_items.length > 0 && request.line_items[0]?.created_at) {
       try {
-        console.log("Using line_item created_at:", request.line_items[0].created_at)
         created_at = new Date(request.line_items[0].created_at)
         if (isNaN(created_at.getTime())) {
-          console.log("Invalid date detected in line_items[0].created_at")
           created_at = null
         }
       } catch (error) {
@@ -138,7 +129,6 @@ export const useVendorReturnRequests = (
       vendor_review_date: request?.vendor_review_date ? new Date(request.vendor_review_date) : null,
       admin_review_date: request?.admin_review_date ? new Date(request.admin_review_date) : null
     }
-    console.log("Processed request date:", processed?.id || 'Unknown ID', processed?.created_at || 'No date')
     return processed
   }) || []
 
@@ -173,20 +163,14 @@ export const useVendorReturnRequest = (
     ...options,
   })
 
-  // Transform dates from strings to Date objects for single request
-  console.log("Raw single return request data:", JSON.stringify(data?.order_return_request || {}, null, 2))
-  
   const processedRequest = data?.order_return_request ? {
     ...data.order_return_request,
     // Process created_at from line_items since top-level field is missing
     created_at: (() => {
       try {
-        // Try to get created_at from the first line item
         if (data.order_return_request.line_items && 
             data.order_return_request.line_items.length > 0 && 
             data.order_return_request.line_items[0].created_at) {
-          
-          console.log("Detail view using line_item date:", data.order_return_request.line_items[0].created_at)
           const date = new Date(data.order_return_request.line_items[0].created_at);
           return isNaN(date.getTime()) ? null : date;
         }
@@ -200,8 +184,6 @@ export const useVendorReturnRequest = (
     vendor_review_date: data.order_return_request.vendor_review_date ? new Date(data.order_return_request.vendor_review_date) : null,
     admin_review_date: data.order_return_request.admin_review_date ? new Date(data.order_return_request.admin_review_date) : null
   } : undefined
-  
-  console.log("Processed single return request:", processedRequest?.id, processedRequest?.created_at)
 
   return {
     return_request: processedRequest,

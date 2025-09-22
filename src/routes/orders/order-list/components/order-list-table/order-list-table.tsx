@@ -7,6 +7,7 @@ import { useOrderTableColumns } from '../../../../../hooks/table/columns/use-ord
 import { useOrderTableFilters } from '../../../../../hooks/table/filters/use-order-table-filters';
 import { useOrderTableQuery } from '../../../../../hooks/table/query/use-order-table-query';
 import { useDataTable } from '../../../../../hooks/use-data-table';
+import { DEFAULT_FIELDS } from '../../const';
 
 const PAGE_SIZE = 20;
 
@@ -16,13 +17,13 @@ export const OrderListTable = () => {
     pageSize: PAGE_SIZE,
   });
 
-  // Fetch all necessary fields including nested fields using the * prefix pattern
+  // Fetch all necessary fields including payment collections for correct payment status
   const { orders, count, isError, error, isLoading } =
     useOrders({
       limit: 1000,
       offset: 0,
-      // Fields including nested fields with * prefix
-      fields: 'display_id,created_at,total,payment_status,fulfillment_status,*customer,*sales_channel',
+      // Use DEFAULT_FIELDS which includes payment collections
+      fields: DEFAULT_FIELDS,
       ...searchParams,
     });
 
