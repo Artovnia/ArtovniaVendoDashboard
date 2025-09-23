@@ -116,3 +116,31 @@ export const useCreateStripeOnboarding = (
     ...options,
   });
 };
+
+export const useCompleteVerification = (
+  options?: UseMutationOptions<any, FetchError, any>
+) => {
+  return useMutation({
+    mutationFn: async () => {
+      console.log('[Stripe][Frontend] POST /vendor/payout-account/complete-verification');
+      try {
+        const response = await fetchQuery('/vendor/payout-account/complete-verification', {
+          method: 'POST',
+        });
+        console.log('[Stripe][Frontend] Complete verification response:', response);
+        return response;
+      } catch (error) {
+        console.error('[Stripe][Frontend] Complete verification error:', error);
+        throw error;
+      }
+    },
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({
+        queryKey: [STRIPE_QUERY_KEY, 'account'],
+      });
+
+      options?.onSuccess?.(data, variables, context);
+    },
+    ...options,
+  });
+};

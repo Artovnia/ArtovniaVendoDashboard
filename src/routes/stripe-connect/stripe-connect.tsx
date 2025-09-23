@@ -6,11 +6,59 @@ import { Status } from './components/status';
 import { Connected } from './components/connected';
 
 const getStatus = (payout_account: any) => {
-  if (!payout_account) return 'not connected';
+  if (!payout_account) {
+    return 'not connected';
+  }
 
-  if (!payout_account?.onboarding) return 'pending';
+  // Use the actual Stripe account data from API
+  const stripeData = payout_account.data;
+  if (!stripeData) {
+    return 'pending';
+  }
 
-  return 'connected';
+  // Extract actual Stripe account status indicators
+  const isChargesEnabled = stripeData.charges_enabled;
+  const isPayoutsEnabled = stripeData.payouts_enabled;
+  const requirements = stripeData.requirements || {};
+  const currentlyDue = requirements.currently_due || [];
+  const pastDue = requirements.past_due || [];
+  const eventuallyDue = requirements.eventually_due || [];
+  const disabledReason = requirements.disabled_reason;
+  const pendingVerification = requirements.pending_verification || [];
+
+  // Follow Stripe's official status determination logic
+  // 1. Check for disabled reasons first
+  if (disabledReason) {
+    return 'restricted';
+  }
+
+  // 2. Check for past due requirements (account is restricted)
+  if (pastDue.length > 0) {
+    return 'restricted';
+  }
+
+  // 3. Check for currently due requirements (action needed)
+  if (currentlyDue.length > 0) {
+    return 'pending';
+  }
+
+  // 4. Check if verification is pending
+  if (pendingVerification.length > 0) {
+    return 'pending';
+  }
+
+  // 5. Check if account is fully functional
+  if (isChargesEnabled && isPayoutsEnabled) {
+    return 'connected';
+  }
+
+  // 6. If eventually_due requirements exist but no immediate action needed
+  if (eventuallyDue.length > 0) {
+    return 'restricted_soon';
+  }
+
+  // 7. Default case - account exists but not fully enabled
+  return 'pending';
 };
 
 export const StripeConnect = () => {

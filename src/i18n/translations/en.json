@@ -238,7 +238,7 @@
         "description": "Navigation menu for the dashboard."
       },
       "common": {
-        "extensions": "Extensions"
+        "extensions": "Payouts"
       },
       "main": {
         "store": "Store",
@@ -3850,12 +3850,16 @@
       "description": "Your Stripe account is connected and ready to receive payments"
     },
     "pending": {
-      "title": "Pending",
-      "description": "Your Stripe account connection is pending. Please complete the onboarding process"
+      "title": "Additional Information Required",
+      "description": "Stripe requires additional information to verify your account. Click \"Manage Account\" to complete the process."
+    },
+    "restricted": {
+      "title": "Account Restricted",
+      "description": "Your account has restrictions due to unmet requirements. Please complete verification immediately."
     },
     "restrictedSoon": {
-      "title": "Restricted Soon",
-      "description": "Your account will be restricted soon. Please provide additional information"
+      "title": "Additional Information Required",
+      "description": "Stripe requires additional information. Complete the verification process to avoid restrictions."
     },
     "rejected": {
       "title": "Rejected",
@@ -3892,14 +3896,27 @@
     },
     "actions": {
       "connect": "Connect Stripe Account",
-      "continueOnboarding": "Continue Onboarding",
+      "continueOnboarding": "Complete Registration",
       "manageAccount": "Manage Account",
-      "viewDashboard": "View Dashboard",
+      "viewDashboard": "Stripe Dashboard",
       "contactSupport": "Contact Support"
+    },
+    "requirements": {
+      "error": "Error",
+      "accountBlocked": "Account Blocked",
+      "pastDue": "Past Due Requirements",
+      "currentlyDue": "Currently Due Requirements",
+      "pendingVerification": "Pending Verification",
+      "eventuallyDue": "Eventually Due Requirements",
+      "verificationErrors": "Verification Errors",
+      "deadline": "Deadline",
+      "verificationInProgress": "Stripe is verifying the provided information. No action is required.",
+      "individual": "Required documents: government ID, residential address, contact information, and business activity details.",
+      "company": "Required documents: company registration documents, legal representative information, beneficial owner details, and business bank account."
     },
     "notes": {
       "secureNote": "Your connection is secure and encrypted",
-      "poweredBy": "Powered by Stripe"
+      "poweredBy": "Powered by Stripe Connect"
     },
     "form": {
       "title": "Connect Your Payout Account",

@@ -46,7 +46,7 @@ export const LanguageSwitcher = () => {
   return (
     <div className="flex items-center gap-2">
       <Text size="small" className="text-ui-fg-subtle">
-        Language:
+        Język:
       </Text>
       <Select
         size="small"

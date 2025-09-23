@@ -89,12 +89,6 @@ export function MessagesPage() {
     }
   }, [threads]);
   
-  // Log current state for debugging
-  useEffect(() => {
-    if (threads.length > 0) {
-      console.log(`Displaying ${threads.length} ${activeTab} threads on page ${currentPage}`);
-    }
-  }, [threads, activeTab, currentPage]);
   
   // Mark thread as read when selected
   useEffect(() => {
@@ -118,9 +112,7 @@ export function MessagesPage() {
         if (file.type.startsWith('image/')) {
           setAttachmentThumbnailUrl(loadingPreview);
         }
-        
-        // Use the same uploadFilesQuery function that product uploads use
-        console.log('Uploading file using uploadFilesQuery');
+      
         
         // Format file for upload as expected by uploadFilesQuery
         const uploadResult = await uploadFilesQuery([{ file }]);
@@ -129,7 +121,7 @@ export function MessagesPage() {
           throw new Error('Upload failed: No files returned from server');
         }
         
-        console.log('Upload successful:', uploadResult);
+        
         
         // Clean up the temporary preview URL
         URL.revokeObjectURL(loadingPreview);
@@ -143,7 +135,7 @@ export function MessagesPage() {
         setAttachmentName(uploadedFile.originalname || file.name);
         
         toast.success('File uploaded successfully');
-        console.log(`File uploaded to S3: ${uploadedFile.url}`);
+        
       } catch (error) {
         console.error('File upload failed:', error);
         toast.error('Failed to upload file. Please try again.');
@@ -191,14 +183,7 @@ export function MessagesPage() {
       
       // Add attachment info if present
       if (attachmentUrl) {
-        // Check if it's a blob URL (local) or an S3 URL
-        const isLocalBlob = attachmentUrl.startsWith('blob:');
         
-        if (isLocalBlob) {
-          console.warn('Using blob URL instead of S3 URL for attachment. Upload may have failed.');
-        } else {
-          console.log('Using S3 URL for attachment:', attachmentUrl);
-        }
         
         // Add attachment properties directly to the payload
         // The useSendVendorMessage hook will handle them correctly for both new threads and replies
@@ -208,7 +193,6 @@ export function MessagesPage() {
         payload.attachment_type = attachmentType;
       }
       
-      console.log("Sending message with payload:", payload);
       await sendMessage(payload);
       
       // Reset form state
@@ -304,11 +288,6 @@ export function MessagesPage() {
   const currentThreads = useMemo(() => {
     if (threads.length === 0) return [];
     
-    // Log thread type counts for debugging
-    const adminThreadCount = threads.filter(t => !t.user_id).length;
-    const userThreadCount = threads.filter(t => t.user_id).length;
-    console.log(`Thread breakdown - Admin: ${adminThreadCount}, Customer: ${userThreadCount}`);
-    
     // Sort threads by creation date, newest first
     return [...threads].sort((a, b) => {
       // First try to sort by last_message_at if available
@@ -333,7 +312,6 @@ export function MessagesPage() {
   const handleTabChange = (tab: 'admin' | 'user') => {
     // Only proceed if we're actually changing tabs
     if (tab !== activeTab) {
-      console.log(`Switching message tab from ${activeTab} to ${tab}`);
       // Reset all pagination and selection state
       setCurrentPage(1);
       setSelectedThreadId(null);

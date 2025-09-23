@@ -247,7 +247,7 @@
         "description": "Menu nawigacyjne dla panelu."
       },
       "common": {
-        "extensions": "Rozszerzenia"
+        "extensions": "Wypłaty"
       },
       "main": {
         "store": "Sklep",
@@ -3834,24 +3834,28 @@
       "description": "Twoje konto Stripe jest połączone i gotowe do otrzymywania płatności"
     },
     "pending": {
-      "title": "Oczekujące",
-      "description": "Połączenie z kontem Stripe jest w toku. Proszę ukończyć proces wprowadzenia"
+      "title": "Wymagane dodatkowe informacje",
+      "description": "Stripe wymaga dodatkowych informacji do weryfikacji Twojego konta. Kliknij \"Zarządzaj kontem\" aby dokończyć proces."
+    },
+    "restricted": {
+      "title": "Konto ograniczone",
+      "description": "Twoje konto ma ograniczenia z powodu niespełnionych wymagań. Natychmiast dokończ weryfikację."
     },
     "restrictedSoon": {
-      "title": "Wkrótce ograniczone",
-      "description": "Twoje konto zostanie wkrótce ograniczone. Proszę podać dodatkowe informacje"
+      "title": "Wymagane dodatkowe informacje",
+      "description": "Stripe wymaga dodatkowych informacji. Dokończ proces weryfikacji, aby uniknąć ograniczeń."
     },
     "rejected": {
-      "title": "Odrzucone",
-      "description": "Twoja aplikacja konta Stripe została odrzucona. Proszę skontaktować się z pomocą techniczną"
+      "title": "Konto odrzucone",
+      "description": "Twoje konto Stripe zostało odrzucone. Skontaktuj się z obsługą klienta."
     },
     "unknown": {
       "title": "Nieznany status",
-      "description": "Nie można określić statusu konta. Proszę spróbować ponownie"
+      "description": "Status konta jest nieznany. Spróbuj odświeżyć stronę."
     },
     "accountType": {
       "label": "Typ konta",
-      "individual": "Indywidualne",
+      "individual": "Osoba fizyczna",
       "individualDesc": "Do użytku osobistego lub jednoosobowej działalności",
       "company": "Firma",
       "companyDesc": "Dla firm i organizacji"
@@ -3864,7 +3868,7 @@
       "accountType": "Typ konta",
       "country": "Kraj",
       "currency": "Waluta",
-      "status": "Status",
+      "status": "Status płatności",
       "active": "Aktywne"
     },
     "status": {
@@ -3876,14 +3880,27 @@
     },
     "actions": {
       "connect": "Połącz konto Stripe",
-      "continueOnboarding": "Kontynuuj wprowadzenie",
+      "continueOnboarding": "Dokończ rejestrację",
       "manageAccount": "Zarządzaj kontem",
-      "viewDashboard": "Zobacz panel",
-      "contactSupport": "Skontaktuj się z pomocą"
+      "viewDashboard": "Panel Stripe",
+      "contactSupport": "Skontaktuj się z obsługą"
+    },
+    "requirements": {
+      "error": "Błąd",
+      "accountBlocked": "Konto zablokowane",
+      "pastDue": "Przeterminowane wymagania",
+      "currentlyDue": "Wymagane natychmiast",
+      "pendingVerification": "W trakcie weryfikacji",
+      "eventuallyDue": "Wymagane w przyszłości",
+      "verificationErrors": "Błędy weryfikacji",
+      "deadline": "Termin",
+      "verificationInProgress": "Stripe weryfikuje podane informacje. Nie są wymagane żadne działania.",
+      "individual": "Wymagane dokumenty: dowód osobisty, adres zamieszkania, dane kontaktowe i informacje o działalności gospodarczej.",
+      "company": "Wymagane dokumenty: dokumenty rejestracyjne firmy, dane przedstawiciela prawnego, informacje o beneficjentach rzeczywistych i konto bankowe firmy."
     },
     "notes": {
       "secureNote": "Twoje połączenie jest bezpieczne i szyfrowane",
-      "poweredBy": "Obsługiwane przez Stripe"
+      "poweredBy": "Obsługiwane przez Stripe Connect"
     },
     "form": {
       "title": "Połącz Konto Wypłat",

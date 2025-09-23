@@ -8,7 +8,8 @@ import * as z from "zod"
 import { useState } from "react"
 import { decodeToken } from "react-jwt"
 import { Form } from "../../components/common/form"
-import { LogoBox } from "../../components/common/logo-box"
+import { LanguageSwitcher } from "../../components/common/language-switcher/language-switcher"
+import AvatarBox from "../../components/common/logo-box/avatar-box"
 import { i18n } from "../../components/utilities/i18n"
 import {
   useResetPasswordForEmailPass,
@@ -59,9 +60,12 @@ const InvalidResetToken = () => {
   const navigate = useNavigate()
 
   return (
-    <div className="bg-ui-bg-base flex min-h-dvh w-dvw items-center justify-center">
-      <div className="m-4 flex w-full max-w-[300px] flex-col items-center">
-        <LogoBox className="mb-4" />
+    <div className="bg-ui-bg-subtle flex min-h-dvh w-dvw items-center justify-center relative">
+      <div className="absolute top-4 right-4 z-10">
+        <LanguageSwitcher />
+      </div>
+      <div className="m-4 flex w-full max-w-[280px] flex-col items-center">
+        <AvatarBox />
         <div className="mb-6 flex flex-col items-center">
           <Heading>{t("resetPassword.invalidLinkTitle")}</Heading>
           <Text size="small" className="text-ui-fg-subtle text-center">
@@ -77,14 +81,14 @@ const InvalidResetToken = () => {
             {t("resetPassword.goToResetPassword")}
           </Button>
         </div>
-        <span className="txt-small my-6">
+        <span className="text-ui-fg-muted txt-small my-6">
           <Trans
             i18nKey="resetPassword.backToLogin"
             components={[
               <Link
                 key="login-link"
                 to="/login"
-                className="text-ui-fg-interactive transition-fg hover:text-ui-fg-interactive-hover focus-visible:text-ui-fg-interactive-hover outline-none"
+                className="text-ui-fg-interactive transition-fg hover:text-ui-fg-interactive-hover focus-visible:text-ui-fg-interactive-hover font-medium outline-none"
               />,
             ]}
           />
@@ -143,10 +147,13 @@ const ChooseNewPassword = ({ token }: { token: string }) => {
   }
 
   return (
-    <div className="bg-ui-bg-subtle flex min-h-dvh w-dvw items-center justify-center">
+    <div className="bg-ui-bg-subtle flex min-h-dvh w-dvw items-center justify-center relative">
+      <div className="absolute top-4 right-4 z-10">
+        <LanguageSwitcher />
+      </div>
       <div className="m-4 flex w-full max-w-[280px] flex-col items-center">
-        <LogoBox className="mb-4" />
-        <div className="mb-6 flex flex-col items-center">
+        <AvatarBox />
+        <div className="mb-4 flex flex-col items-center">
           <Heading>{t("resetPassword.resetPassword")}</Heading>
           <Text size="small" className="text-ui-fg-subtle text-center">
             {t("resetPassword.newPasswordHint")}
@@ -272,9 +279,12 @@ export const ResetPassword = () => {
   }
 
   return (
-    <div className="bg-ui-bg-base flex min-h-dvh w-dvw items-center justify-center">
-      <div className="m-4 flex w-full max-w-[300px] flex-col items-center">
-        <LogoBox className="mb-4" />
+    <div className="bg-ui-bg-subtle flex min-h-dvh w-dvw items-center justify-center relative">
+      <div className="absolute top-4 right-4 z-10">
+        <LanguageSwitcher />
+      </div>
+      <div className="m-4 flex w-full max-w-[280px] flex-col items-center">
+        <AvatarBox />
         <div className="mb-4 flex flex-col items-center">
           <Heading>{t("resetPassword.resetPassword")}</Heading>
           <Text size="small" className="text-ui-fg-subtle text-center">
@@ -323,14 +333,14 @@ export const ResetPassword = () => {
             </form>
           </Form>
         </div>
-        <span className="txt-small my-6">
+        <span className="text-ui-fg-muted txt-small my-6">
           <Trans
             i18nKey="resetPassword.backToLogin"
             components={[
               <Link
                 key="login-link"
                 to="/login"
-                className="text-ui-fg-base transition-fg hover:text-ui-fg-base-hover focus-visible:text-ui-fg-base-hover outline-none"
+                className="text-ui-fg-interactive transition-fg hover:text-ui-fg-interactive-hover focus-visible:text-ui-fg-interactive-hover font-medium outline-none"
               />,
             ]}
           />
