@@ -100,6 +100,12 @@ export const usePlatformPromotions = (
   return useQuery({
     queryKey: [PLATFORM_PROMOTIONS_QUERY_KEY, query],
     queryFn: async (): Promise<PlatformPromotionsResponse> => {
+      // ✅ FIX: Ensure token is available before making request
+      const token = await window.localStorage.getItem('medusa_auth_token')
+      if (!token) {
+        throw new Error('Authentication token not available')
+      }
+
       const queryParams: Record<string, string | number> = {}
       
       if (query?.limit) queryParams.limit = query.limit
@@ -118,6 +124,14 @@ export const usePlatformPromotions = (
       return result
     },
     enabled: options?.enabled ?? true,
+    retry: (failureCount, error) => {
+      // ✅ FIX: Retry on auth errors up to 3 times with delay
+      if (error.message.includes('401') || error.message.includes('Unauthorized')) {
+        return failureCount < 3
+      }
+      return failureCount < 1
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 3000), // Exponential backoff
   })
 }
 
@@ -133,6 +147,12 @@ export const usePlatformPromotion = (
   return useQuery({
     queryKey: [PLATFORM_PROMOTION_QUERY_KEY, id],
     queryFn: async (): Promise<PlatformPromotionResponse> => {
+      // ✅ FIX: Add retry delay to ensure token is available
+      const token = await window.localStorage.getItem('medusa_auth_token')
+      if (!token) {
+        throw new Error('Authentication token not available')
+      }
+
       const result = await fetchQuery(`/vendor/platform-promotions/${id}`, {
         method: "GET",
       })
@@ -144,6 +164,14 @@ export const usePlatformPromotion = (
       return result
     },
     enabled: options?.enabled ?? true,
+    retry: (failureCount, error) => {
+      // ✅ FIX: Retry on auth errors up to 3 times with delay
+      if (error.message.includes('401') || error.message.includes('Unauthorized')) {
+        return failureCount < 3
+      }
+      return failureCount < 1
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 3000), // Exponential backoff
   })
 }
 
@@ -172,7 +200,7 @@ export const useAddProductsToPromotion = (promotionId: string) => {
         throw new Error(error.message || 'Failed to add products to promotion')
       }
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success("Products added to promotion successfully")
       
       // Invalidate and refetch related queries
@@ -208,7 +236,7 @@ export const useRemoveProductsFromPromotion = (promotionId: string) => {
 
       return result
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success("Products removed from promotion successfully")
       
       // Invalidate and refetch related queries

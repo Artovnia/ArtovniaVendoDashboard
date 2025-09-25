@@ -98,17 +98,23 @@ export const ProductSelector = ({
                 e.stopPropagation()
               }}
             />
-            <div className="w-fit flex-shrink-0">
-              <div className="bg-ui-bg-component border-ui-border-base flex items-center justify-center overflow-hidden rounded border h-8 w-6">
-                {product.thumbnail ? (
-                  <img
-                    src={product.thumbnail}
-                    alt={product.title}
-                    className="h-full w-full object-cover object-center"
-                  />
-                ) : (
-                  <div className="text-ui-fg-subtle h-4 w-4" />
-                )}
+            <div className="flex items-center gap-x-3">
+              <div className="w-fit flex-shrink-0">
+                <div className="bg-ui-bg-component border-ui-border-base flex items-center justify-center overflow-hidden rounded border h-8 w-8">
+                  {product.thumbnail ? (
+                    <img
+                      src={product.thumbnail}
+                      alt={product.title}
+                      className="h-full w-full object-cover object-center"
+                    />
+                  ) : (
+                    <div className="text-ui-fg-subtle h-4 w-4" />
+                  )}
+                </div>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-ui-fg-base font-normal text-sm">{product.title}</span>
+               
               </div>
             </div>
           </div>
