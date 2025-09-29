@@ -1,16 +1,14 @@
 import { Heading } from '@medusajs/ui';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from '@tanstack/react-query';
-import { useMemo } from 'react';
 
 import { Form } from '../../../../../../../components/common/form';
 import { SwitchBox } from '../../../../../../../components/common/switch-box';
 import { Combobox } from '../../../../../../../components/inputs/combobox';
+import { ShippingProfileCombobox } from '../../../../../../../components/inputs/shipping-profile-combobox';
 import { useComboboxData } from '../../../../../../../hooks/use-combobox-data';
 import {
   fetchQuery,
-  sdk,
 } from '../../../../../../../lib/client';
 import { ProductCreateSchemaType } from '../../../../types';
 import { CategorySelect } from '../../../../../common/components/category-combobox/category-select';
@@ -24,37 +22,6 @@ export const ProductCreateOrganizationSection = ({
 }: ProductCreateOrganizationSectionProps) => {
   const { t } = useTranslation();
 
-  
-  // Fetch shipping profiles from vendor API using useQuery instead of useComboboxData to avoid pagination issues
-  const { data: shippingProfilesData } = useQuery({
-    queryKey: ['shipping_profiles'],
-    queryFn: async () => {
-      return fetchQuery('/vendor/shipping-profiles', {
-        method: 'GET',
-        query: {},
-      })
-    },
-  });
-
-  // Convert shipping profiles data to options format for the combobox
-  const shippingProfileOptions = useMemo(() => {
-    if (!shippingProfilesData?.shipping_profiles) return [];
-    return shippingProfilesData.shipping_profiles.map((profile: any) => ({
-      label: profile.name,
-      value: profile.id,
-    }));
-  }, [shippingProfilesData]);
-
-  // Create a compatible interface to replace useComboboxData
-  const shippingProfiles = {
-    options: shippingProfileOptions,
-    searchValue: '',
-    onSearchValueChange: () => {},
-    disabled: false,
-    fetchNextPage: () => {},
-    hasNextPage: false,
-    isPending: false,
-  };
 
 
   const tags = useComboboxData({
@@ -92,12 +59,10 @@ export const ProductCreateOrganizationSection = ({
                   {t('formFields.shipping_profile.label')}
                 </Form.Label>
                 <Form.Control>
-                  <Combobox
+                  <ShippingProfileCombobox
                     {...field}
-                    options={shippingProfiles.options}
-                    searchValue={shippingProfiles.searchValue}
-                    onSearchValueChange={shippingProfiles.onSearchValueChange}
-                    fetchNextPage={shippingProfiles.fetchNextPage}
+                    showValidationBadges={true}
+                    showWarningMessages={true}
                   />
                 </Form.Control>
                 <Form.ErrorMessage />

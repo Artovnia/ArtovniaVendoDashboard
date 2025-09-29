@@ -1715,7 +1715,15 @@
         "header": "Odbiór osobisty"
       },
       "shipping": {
-        "header": "Wysyłka"
+        "header": "Wysyłka",
+        "profile": {
+          "valid": "Ważny",
+          "needsOptions": "Utwórz opcje wysyłki",
+          "warning": {
+            "title": "Ostrzeżenie profilu wysyłki",
+            "action": "Proszę utworzyć opcje wysyłki dla tego profilu przed przypisaniem go do produktów."
+          }
+        }
       },
       "disable": {
         "confirmation": "Czy na pewno chcesz wyłączyć {{name}}? Spowoduje to usunięcie wszystkich powiązanych stref serwisowych i opcji wysyłki i nie można tego cofnąć.",

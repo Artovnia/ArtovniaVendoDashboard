@@ -1649,7 +1649,15 @@
         "header": "Pickup"
       },
       "shipping": {
-        "header": "Shipping"
+        "header": "Shipping",
+        "profile": {
+          "valid": "Valid",
+          "needsOptions": "Create shipping options",
+          "warning": {
+            "title": "Shipping Profile Warning",
+            "action": "Please create shipping options for this profile before assigning it to products."
+          }
+        }
       },
       "disable": {
         "confirmation": "Are you sure that you want to disable {{name}}? This will delete all associated service zones and shipping options, and cannot be undone.",

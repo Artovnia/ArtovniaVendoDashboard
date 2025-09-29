@@ -2,12 +2,10 @@ import { HttpTypes } from "@medusajs/types"
 import { Button, toast } from "@medusajs/ui"
 import { useRouteModal } from "../../../../../components/modals"
 import { Form } from "../../../../../components/common/form"
-import { Combobox } from "../../../../../components/inputs/combobox"
+import { ShippingProfileCombobox } from "../../../../../components/inputs/shipping-profile-combobox"
 import { RouteDrawer } from "../../../../../components/modals"
 import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
-import { useQuery } from "@tanstack/react-query"
-import { useMemo, useEffect, useState } from "react"
-import { fetchQuery } from "../../../../../lib/client"
+import { useEffect, useState } from "react"
 import { useAssociateProductWithShippingProfile, useRemoveProductShippingProfile } from "../../../../../hooks/api/product-shipping-profile"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -34,36 +32,6 @@ export const ProductShippingProfileForm = ({
   const { t } = useTranslation()
   const { handleSuccess } = useRouteModal()
 
-  // Fetch shipping profiles from vendor API using useQuery instead of useComboboxData to avoid pagination issues
-  const { data: shippingProfilesData } = useQuery({
-    queryKey: ['shipping_profiles'],
-    queryFn: async () => {
-      return fetchQuery('/vendor/shipping-profiles', {
-        method: 'GET',
-        query: {},
-      })
-    },
-  });
-
-  // Convert shipping profiles data to options format for the combobox
-  const shippingProfileOptions = useMemo(() => {
-    if (!shippingProfilesData?.shipping_profiles) return [];
-    return shippingProfilesData.shipping_profiles.map((profile: any) => ({
-      label: profile.name,
-      value: profile.id,
-    }));
-  }, [shippingProfilesData]);
-
-  // Create a compatible interface to replace useComboboxData
-  const shippingProfiles = {
-    options: shippingProfileOptions,
-    searchValue: '',
-    onSearchValueChange: () => {},
-    disabled: false,
-    fetchNextPage: () => {},
-    hasNextPage: false,
-    isPending: false,
-  }
 
   const form = useForm({
     defaultValues: {
@@ -143,15 +111,11 @@ export const ProductShippingProfileForm = ({
                       {t("formFields.shipping_profile.label")}
                     </Form.Label>
                     <Form.Control>
-                      <Combobox
+                      <ShippingProfileCombobox
                         {...field}
                         allowClear
-                        options={shippingProfiles.options}
-                        searchValue={shippingProfiles.searchValue}
-                        onSearchValueChange={
-                          shippingProfiles.onSearchValueChange
-                        }
-                        fetchNextPage={shippingProfiles.fetchNextPage}
+                        showValidationBadges={true}
+                        showWarningMessages={true}
                       />
                     </Form.Control>
                     <Form.ErrorMessage />
