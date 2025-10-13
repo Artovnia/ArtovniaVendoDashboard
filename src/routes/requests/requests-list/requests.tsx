@@ -1,3 +1,16 @@
+/**
+ * DEPRECATED: This component is deprecated and should not be used.
+ * 
+ * We have migrated to a new frontend architecture with dedicated return request management.
+ * Return requests are now handled through:
+ * - /returns - New return requests list (vendor-panel/src/routes/returns/components/returns-list.tsx)
+ * - /returns/:id - Return request detail page
+ * 
+ * The old requests system is being phased out in favor of the new modular approach.
+ * 
+ * @deprecated Use the new return requests system at /returns instead
+ */
+
 import {
   Badge,
   Button,
@@ -12,6 +25,9 @@ import { TriangleRightMini } from '@medusajs/icons';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * @deprecated This component is deprecated. Use /returns route instead.
+ */
 export const Requests = () => {
   const { t } = useTranslation('translation', { useSuspense: false });
   const { getWidgets } = useDashboardExtension();
@@ -117,6 +133,8 @@ export const Requests = () => {
               <TriangleRightMini color='grey' />
             </Button>
           </Link>
+          {/* DEPRECATED: Old returns requests link - use /returns route instead */}
+          {/* 
           <Link to='/requests/returns'>
             <Button
               variant='secondary'
@@ -129,6 +147,7 @@ export const Requests = () => {
               <TriangleRightMini color='grey' />
             </Button>
           </Link>
+          */}
         </div>
       </Container>
     </SingleColumnPage>

@@ -14,7 +14,8 @@ const DEFAULT_RELATIONS = [
   "*customer", 
   "*sales_channel",
   "*payment_collections",
-  "*payment_collections.payments"
+  "*payment_collections.payments",
+  "*payment_collections.payments.refunds"  // ← CRITICAL: needed to calculate refunded status
 ]
 
 export const DEFAULT_FIELDS = `${DEFAULT_PROPERTIES.join(

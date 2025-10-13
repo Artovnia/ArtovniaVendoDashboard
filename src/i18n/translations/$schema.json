@@ -12770,6 +12770,9 @@
         "returns": {
           "type": "object",
           "properties": {
+            "domain": {
+              "type": "string"
+            },
             "title": {
               "type": "string"
             },
@@ -12818,6 +12821,9 @@
                 },
                 "status": {
                   "type": "string"
+                },
+                "orderNumber": {
+                  "type": "string"
                 }
               },
               "required": [
@@ -12826,7 +12832,8 @@
                 "customerNote",
                 "reason",
                 "reasonId",
-                "status"
+                "status",
+                "orderNumber"
               ],
               "additionalProperties": false
             },
@@ -12879,10 +12886,37 @@
                 "created": {
                   "type": "string"
                 },
+                "createdAt": {
+                  "type": "string"
+                },
+                "updatedAt": {
+                  "type": "string"
+                },
                 "customer": {
                   "type": "string"
                 },
+                "customerInfo": {
+                  "type": "string"
+                },
                 "customerNote": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "orderNumber": {
+                  "type": "string"
+                },
+                "orderId": {
+                  "type": "string"
+                },
+                "returnDetails": {
+                  "type": "string"
+                },
+                "returnItems": {
                   "type": "string"
                 },
                 "orderItems": {
@@ -12897,13 +12931,43 @@
                 "reason": {
                   "type": "string"
                 },
+                "reasonNotProvided": {
+                  "type": "string"
+                },
+                "reasonFallback": {
+                  "type": "string"
+                },
                 "note": {
+                  "type": "string"
+                },
+                "addNote": {
                   "type": "string"
                 },
                 "updateStatus": {
                   "type": "string"
                 },
+                "selectStatus": {
+                  "type": "string"
+                },
+                "refunded": {
+                  "type": "string"
+                },
+                "withdrawn": {
+                  "type": "string"
+                },
+                "escalated": {
+                  "type": "string"
+                },
+                "statusRequired": {
+                  "type": "string"
+                },
+                "noteRequired": {
+                  "type": "string"
+                },
                 "saveChanges": {
+                  "type": "string"
+                },
+                "cancel": {
                   "type": "string"
                 },
                 "statusUpdated": {
@@ -12912,7 +12976,151 @@
                 "errorUpdating": {
                   "type": "string"
                 },
+                "vendorResponse": {
+                  "type": "string"
+                },
                 "backToList": {
+                  "type": "string"
+                },
+                "confirmationAlt": {
+                  "type": "string"
+                },
+                "retryAlt": {
+                  "type": "string"
+                },
+                "backToReturns": {
+                  "type": "string"
+                },
+                "customerInformation": {
+                  "type": "string"
+                },
+                "requestDate": {
+                  "type": "string"
+                },
+                "step1Title": {
+                  "type": "string"
+                },
+                "step2Title": {
+                  "type": "string"
+                },
+                "step3Title": {
+                  "type": "string"
+                },
+                "decision": {
+                  "type": "string"
+                },
+                "approveReturn": {
+                  "type": "string"
+                },
+                "rejectReturn": {
+                  "type": "string"
+                },
+                "escalateToAdmin": {
+                  "type": "string"
+                },
+                "vendorNote": {
+                  "type": "string"
+                },
+                "vendorNoteRequired": {
+                  "type": "string"
+                },
+                "vendorNotePlaceholder": {
+                  "type": "string"
+                },
+                "submitDecision": {
+                  "type": "string"
+                },
+                "itemsReceived": {
+                  "type": "string"
+                },
+                "receiveInstructions": {
+                  "type": "string"
+                },
+                "confirmItemsReceived": {
+                  "type": "string"
+                },
+                "processing": {
+                  "type": "string"
+                },
+                "refundPending": {
+                  "type": "string"
+                },
+                "refundCompleted": {
+                  "type": "string"
+                },
+                "awaitingReceipt": {
+                  "type": "string"
+                },
+                "refundAutomatic": {
+                  "type": "string"
+                },
+                "checkingRefundStatus": {
+                  "type": "string"
+                },
+                "reviewedOn": {
+                  "type": "string"
+                },
+                "confirmReceiveTitle": {
+                  "type": "string"
+                },
+                "confirmReceiveMessage": {
+                  "type": "string"
+                },
+                "confirmReceive": {
+                  "type": "string"
+                },
+                "itemsReceivedSuccess": {
+                  "type": "string"
+                },
+                "itemsReceivedError": {
+                  "type": "string"
+                },
+                "noReturnFound": {
+                  "type": "string"
+                },
+                "noItemsFound": {
+                  "type": "string"
+                },
+                "confirmApprovalTitle": {
+                  "type": "string"
+                },
+                "confirmApprovalMessage": {
+                  "type": "string"
+                },
+                "confirmApproval": {
+                  "type": "string"
+                },
+                "approvalSuccess": {
+                  "type": "string"
+                },
+                "approvalError": {
+                  "type": "string"
+                },
+                "updateError": {
+                  "type": "string"
+                },
+                "refundProcessedSuccess": {
+                  "type": "string"
+                },
+                "refundAlreadyProcessed": {
+                  "type": "string"
+                },
+                "refundProcessError": {
+                  "type": "string"
+                },
+                "itemsRequested": {
+                  "type": "string"
+                },
+                "variant": {
+                  "type": "string"
+                },
+                "ordered": {
+                  "type": "string"
+                },
+                "itemsNotReturned": {
+                  "type": "string"
+                },
+                "itemsToReceive": {
                   "type": "string"
                 }
               },
@@ -12923,23 +13131,91 @@
                 "title",
                 "status",
                 "created",
+                "createdAt",
+                "updatedAt",
                 "customer",
+                "customerInfo",
                 "customerNote",
+                "name",
+                "email",
+                "orderNumber",
+                "orderId",
+                "returnDetails",
+                "returnItems",
                 "orderItems",
                 "itemName",
                 "quantity",
                 "reason",
+                "reasonNotProvided",
+                "reasonFallback",
                 "note",
+                "addNote",
                 "updateStatus",
+                "selectStatus",
+                "refunded",
+                "withdrawn",
+                "escalated",
+                "statusRequired",
+                "noteRequired",
                 "saveChanges",
+                "cancel",
                 "statusUpdated",
                 "errorUpdating",
-                "backToList"
+                "vendorResponse",
+                "backToList",
+                "confirmationAlt",
+                "retryAlt",
+                "backToReturns",
+                "customerInformation",
+                "requestDate",
+                "step1Title",
+                "step2Title",
+                "step3Title",
+                "decision",
+                "approveReturn",
+                "rejectReturn",
+                "escalateToAdmin",
+                "vendorNote",
+                "vendorNoteRequired",
+                "vendorNotePlaceholder",
+                "submitDecision",
+                "itemsReceived",
+                "receiveInstructions",
+                "confirmItemsReceived",
+                "processing",
+                "refundPending",
+                "refundCompleted",
+                "awaitingReceipt",
+                "refundAutomatic",
+                "checkingRefundStatus",
+                "reviewedOn",
+                "confirmReceiveTitle",
+                "confirmReceiveMessage",
+                "confirmReceive",
+                "itemsReceivedSuccess",
+                "itemsReceivedError",
+                "noReturnFound",
+                "noItemsFound",
+                "confirmApprovalTitle",
+                "confirmApprovalMessage",
+                "confirmApproval",
+                "approvalSuccess",
+                "approvalError",
+                "updateError",
+                "refundProcessedSuccess",
+                "refundAlreadyProcessed",
+                "refundProcessError",
+                "itemsRequested",
+                "variant",
+                "ordered",
+                "itemsNotReturned",
+                "itemsToReceive"
               ],
               "additionalProperties": false
             }
           },
           "required": [
+            "domain",
             "title",
             "description",
             "loading",

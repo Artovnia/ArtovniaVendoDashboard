@@ -11,7 +11,11 @@ export const Dashboard = () => {
 
   const { onboarding, isError, error, isPending } = useOnboarding()
 
-  const { orders, isPending: isPendingOrders } = useOrders()
+  // Fetch all orders with explicit limit to get accurate counts
+  const { orders, isPending: isPendingOrders } = useOrders({
+    limit: 1000,
+    offset: 0,
+  })
   const { reviews, isPending: isPendingReviews } = useReviews()
 
   const notFulfilledOrders =
@@ -22,10 +26,25 @@ export const Dashboard = () => {
       order.fulfillment_status === "fulfilled" ||
       order.fulfillment_status === "shipped" ||
       order.fulfillment_status === "partially_shipped" ||
-      order.fulfillment_status === "partially_fulfilled"
+      order.fulfillment_status === "partially_fulfilled" ||
+      order.fulfillment_status === "delivered" ||
+      order.fulfillment_status === "partially_delivered"
     ).length || 0
   const reviewsToReply =
     reviews?.filter((review: any) => !review.seller_note).length || 0
+
+  // Debug logging to verify counts
+  if (orders && orders.length > 0) {
+    console.log('📊 Dashboard Orders Debug:', {
+      totalOrders: orders.length,
+      notFulfilled: notFulfilledOrders,
+      fulfilled: fulfilledOrders,
+      statusBreakdown: orders.reduce((acc, order) => {
+        acc[order.fulfillment_status] = (acc[order.fulfillment_status] || 0) + 1
+        return acc
+      }, {} as Record<string, number>)
+    })
+  }
 
   if (!isClient) return null
 

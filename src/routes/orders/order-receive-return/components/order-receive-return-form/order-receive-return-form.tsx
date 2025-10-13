@@ -11,6 +11,7 @@ import { Form } from "../../../../../components/common/form"
 import { Thumbnail } from "../../../../../components/common/thumbnail"
 import { RouteDrawer, useRouteModal } from "../../../../../components/modals"
 import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
+import { fetchQuery } from "../../../../../lib/client"
 import { useStockLocation, useStockLocations } from "../../../../../hooks/api/stock-locations"
 import {
   useAddReceiveItems,
@@ -186,7 +187,26 @@ export function OrderReceiveReturnForm({
         return
       }
       
+      // Step 1: Begin receive (creates order change)
+      console.log('🔍 Step 1: Beginning receive return...')
+      console.log('   Return location_id:', orderReturn.location_id)
+      console.log('   Default location:', defaultLocation?.id)
+      
+      await fetchQuery(`/vendor/returns/${orderReturn.id}/receive`, {
+        method: 'POST',
+        body: {
+          internal_note: data.internal_note || undefined,
+          description: data.description || undefined
+        }
+      })
+      
+      console.log('✅ Step 1 complete: Order change created')
+      
+      // Step 2: Confirm receive (completes order change & triggers refund)
+      console.log('🔍 Step 2: Confirming receive return...')
       await confirmReturnReceive({ no_notification: !data.send_notification })
+      
+      console.log('✅ Step 2 complete: Return received, refund will be processed')
 
       handleSuccess(`/orders/${order.id}`)
 

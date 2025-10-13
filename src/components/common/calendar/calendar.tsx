@@ -45,40 +45,39 @@ function Calendar({
             : '[&:has([aria-selected])]:rounded-md'
         ),
         day: clx(
-          'h-8 w-8 p-0 font-normal aria-selected:opacity-100 text-center'
+          'h-8 w-8 p-0 font-normal text-center transition-colors',
+          'hover:bg-ui-bg-subtle-hover rounded-md'
         ),
         button_next: 'absolute right-0',
         button_previous: 'absolute left-0',
-        day_range_start: 'day-range-start',
-        day_range_end: 'day-range-end',
-        day_selected:
-          'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground',
-        day_today: 'bg-accent text-accent-foreground',
-        day_outside:
-          'day-outside text-muted-foreground aria-selected:bg-accent/50 aria-selected:text-muted-foreground',
-        day_disabled: 'text-muted-foreground opacity-50',
-        day_range_middle:
-          'aria-selected:bg-accent aria-selected:text-accent-foreground',
-        day_hidden: 'invisible',
+        day_button: 'w-full h-full flex items-center justify-center',
+        selected: clx(
+          'bg-ui-bg-highlight text-black dark:text-ui-fg-on-color font-normal rounded-full',
+          'hover:bg-ui-bg-highlight hover:text-black/90 dark:hover:text-ui-fg-on-color'
+        ),
+        range_start: clx(
+          'bg-ui-bg-highlight text-black dark:text-ui-fg-on-color font-normal',
+          '!rounded-l-full !rounded-r-none'
+        ),
+        range_end: clx(
+          'bg-ui-bg-highlight text-black dark:text-ui-fg-on-color font-normal',
+          '!rounded-r-full !rounded-l-none'
+        ),
+        range_middle: clx(
+          'bg-ui-bg-highlight/10 text-ui-fg-base',
+          '!rounded-none'
+        ),
+        today: 'font-bold border-2 border-ui-border-interactive rounded-md',
+        outside: 'text-ui-fg-muted opacity-50',
+        disabled: 'text-ui-fg-disabled opacity-30 cursor-not-allowed',
+        hidden: 'invisible',
         ...classNames,
       }}
       components={{
-        PreviousMonthButton: ({ className }) => (
-          <ChevronLeft
-            className={clx(
-              'absolute left-2 top-5',
-              className
-            )}
-          />
-        ),
-        NextMonthButton: ({ className }) => (
-          <ChevronRight
-            className={clx(
-              'absolute right-2 top-5',
-              className
-            )}
-          />
-        ),
+        Chevron: ({ orientation }) => {
+          const Icon = orientation === 'left' ? ChevronLeft : ChevronRight;
+          return <Icon className="h-4 w-4" />;
+        },
       }}
       {...props}
     />

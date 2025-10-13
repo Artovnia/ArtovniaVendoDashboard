@@ -109,7 +109,7 @@ export const DashboardCharts = ({
     refetch()
   }
 
-  const { customers, orders, isPending, refetch } = useStatistics({
+  const { customers, orders, totalUniqueCustomers, isPending, refetch } = useStatistics({
     from: `${from}`,
     to: `${to}`,
   })
@@ -120,15 +120,10 @@ export const DashboardCharts = ({
     orders,
   })
 
-  const totals = chartData.reduce(
-    (acc, curr) => {
-      return {
-        orders: acc.orders + curr.orders,
-        customers: acc.customers + curr.customers,
-      }
-    },
-    { orders: 0, customers: 0 }
-  )
+  const totals = {
+    orders: chartData.reduce((acc, curr) => acc + curr.orders, 0),
+    customers: totalUniqueCustomers || 0  // Use the backend-provided total unique count
+  }
 
   const handleFilter = (label: string) => {
     if (filters.find((item) => item === label)) {

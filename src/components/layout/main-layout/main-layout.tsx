@@ -1,4 +1,5 @@
 import {
+  ArrowUturnLeft,
   Buildings,
   ChevronDownMini,
   CogSixTooth,
@@ -120,6 +121,11 @@ const useCoreRoutes = (): Omit<INavItem, 'pathname'>[] => {
         //   to: "/draft-orders",
         // },
       ],
+    },
+    {
+      icon: <ArrowUturnLeft />,
+      label: t('requests.returns.domain'),
+      to: '/returns',
     },
     {
       icon: <Tag />,

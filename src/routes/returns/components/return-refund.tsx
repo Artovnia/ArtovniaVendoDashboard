@@ -1,0 +1,239 @@
+import { useState, useEffect } from "react"
+import { Container, Heading, Text, Badge, Button } from "@medusajs/ui"
+import { useTranslation } from "react-i18next"
+import { useReturns } from "../../../hooks/api/returns"
+import { fetchQuery } from "../../../lib/client"
+import { toast } from "@medusajs/ui"
+import { queryClient } from "../../../lib/query-client"
+import { vendorReturnRequestsQueryKeys } from "../../../hooks/api/return-requests"
+
+interface ReturnRefundProps {
+  returnRequest: any
+  onSuccess: () => void
+}
+
+export const ReturnRefund = ({ returnRequest, onSuccess }: ReturnRefundProps) => {
+  const { t } = useTranslation()
+  const [refundStatus, setRefundStatus] = useState<'checking' | 'pending' | 'completed'>('checking')
+  const [isProcessing, setIsProcessing] = useState(false)
+
+  // Query all returns and find the one for this order
+  const { returns } = useReturns({
+    fields: 'id,status,refund_amount,order_id'
+  })
+
+  // Find the return that matches this order
+  const medusaReturn = returns?.find((r: any) => r.order_id === returnRequest.order?.id)
+
+  // Debug logging
+  useEffect(() => {
+
+  }, [returns, medusaReturn, returnRequest])
+
+  useEffect(() => {
+  
+
+    // Primary check: return request status = 'refunded'
+    if (returnRequest?.status === 'refunded') {
+      setRefundStatus('completed')
+      return
+    }
+
+    // Secondary check: order payment status = 'refunded' or 'partially_refunded'
+    const paymentStatus = returnRequest?.order?.payment_status
+    if (paymentStatus === 'refunded' || paymentStatus === 'partially_refunded') {
+      setRefundStatus('completed')
+      return
+    }
+
+    // Tertiary check: Check payment_collection for refunds directly
+    const paymentCollection = returnRequest?.order?.payment_collection
+    if (paymentCollection?.payments) {
+      const hasRefunds = paymentCollection.payments.some((payment: any) => 
+        payment.refunds && payment.refunds.length > 0
+      )
+      if (hasRefunds) {
+        setRefundStatus('completed')
+        return
+      }
+    }
+
+    // If return is received, awaiting refund
+    if (medusaReturn?.status === 'received' || medusaReturn?.status === 'partially_received') {
+      setRefundStatus('pending')
+      return
+    }
+
+
+    setRefundStatus('checking')
+  }, [medusaReturn, returnRequest])
+
+  // 🔧 DEVELOPMENT: Manual refund trigger
+  const handleManualRefund = async () => {
+    // Check if refund already processed
+    if (refundStatus === 'completed') {
+      toast.warning("Refund has already been processed for this return")
+      return
+    }
+
+    // Try to get return ID from multiple sources
+    const returnId = medusaReturn?.id || returns?.[0]?.id
+    
+    if (!returnId) {
+      toast.error("No return found to refund. Check console for details.")
+      return
+    }
+
+    setIsProcessing(true)
+
+    try {
+      const response = await fetchQuery(`/vendor/returns/${returnId}/refund`, {
+        method: 'POST'
+      })
+      
+      // Check if response indicates refund was already processed
+      if (response?.message?.includes('already') || response?.error?.includes('already')) {
+        toast.warning(t('requests.returns.returnDetail.refundAlreadyProcessed'))
+        
+        // Still refresh data to update UI
+        await queryClient.invalidateQueries({ 
+          queryKey: vendorReturnRequestsQueryKeys.lists() 
+        })
+        await queryClient.invalidateQueries({ 
+          queryKey: vendorReturnRequestsQueryKeys.details() 
+        })
+        onSuccess()
+        return
+      }
+      
+      // Invalidate ALL return request queries (lists AND details)
+      await queryClient.invalidateQueries({ 
+        queryKey: vendorReturnRequestsQueryKeys.lists() 
+      })
+      await queryClient.invalidateQueries({ 
+        queryKey: vendorReturnRequestsQueryKeys.details() 
+      })
+      
+      toast.success(t('requests.returns.returnDetail.refundProcessedSuccess'))
+      
+      // Call onSuccess which triggers parent refetch
+      onSuccess()
+      
+      // Force a small delay to ensure backend has updated
+      setTimeout(() => {
+        queryClient.invalidateQueries({ 
+          queryKey: vendorReturnRequestsQueryKeys.lists() 
+        })
+        queryClient.invalidateQueries({ 
+          queryKey: vendorReturnRequestsQueryKeys.details() 
+        })
+      }, 1000)
+    } catch (error: any) {
+      console.error('❌ Refund failed:', error)
+      
+      // Check if error message indicates already refunded
+      if (error.message?.toLowerCase().includes('already') || 
+          error.message?.toLowerCase().includes('refunded')) {
+        toast.warning(t('requests.returns.returnDetail.refundAlreadyProcessed'))
+        
+        // Refresh data anyway
+        await queryClient.invalidateQueries({ 
+          queryKey: vendorReturnRequestsQueryKeys.lists() 
+        })
+        await queryClient.invalidateQueries({ 
+          queryKey: vendorReturnRequestsQueryKeys.details() 
+        })
+        onSuccess()
+      } else {
+        toast.error(error.message || t('requests.returns.returnDetail.refundProcessError'))
+      }
+    } finally {
+      setIsProcessing(false)
+    }
+  }
+
+  if (refundStatus === 'completed') {
+    return (
+      <Container className="p-6 bg-ui-bg-subtle-success">
+        <Heading level="h2" className="mb-2">{t('requests.returns.returnDetail.step3Title')}</Heading>
+        <div className="flex items-center gap-2">
+          <Badge color="green">{t('requests.returns.returnDetail.refundCompleted')}</Badge>
+          <Text className="text-sm">{t('requests.returns.returnDetail.refundSuccessMessage')}</Text>
+        </div>
+      </Container>
+    )
+  }
+
+  if (refundStatus === 'pending') {
+    return (
+      <Container className="p-6 bg-ui-bg-subtle-warning">
+        <Heading level="h2" className="mb-2">{t('requests.returns.returnDetail.step3Title')}</Heading>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Badge color="orange">{t('requests.returns.returnDetail.refundPending')}</Badge>
+              <Text className="text-sm">{t('requests.returns.returnDetail.awaitingReceipt')}</Text>
+            </div>
+            <Text className="text-xs text-ui-fg-subtle">
+              {t('requests.returns.returnDetail.refundAutomatic')}
+            </Text>
+          </div>
+          
+          {/* 🔧 DEVELOPMENT ONLY: Manual refund trigger */}
+          {process.env.NODE_ENV === 'development' && medusaReturn?.status === 'received' && (
+            <div className="pt-4 border-t border-ui-border-base">
+              <div className="space-y-2">
+                <Text className="text-xs font-medium text-ui-fg-muted">
+                  🔧 Development Tools
+                </Text>
+                <Button
+                  variant="secondary"
+                  size="small"
+                  onClick={handleManualRefund}
+                  disabled={isProcessing}
+                >
+                  {isProcessing ? "Processing..." : "🔧 Manually Trigger Refund"}
+                </Button>
+                <Text className="text-xs text-ui-fg-subtle">
+                  This button manually calls the refund endpoint. Use this to test refund flow without creating new orders.
+                </Text>
+              </div>
+            </div>
+          )}
+        </div>
+      </Container>
+    )
+  }
+
+  // Fallback: Show development button even if we can't determine status
+  return (
+    <Container className="p-6">
+      <Heading level="h2" className="mb-2">{t('requests.returns.returnDetail.step3Title')}</Heading>
+      <div className="space-y-4">
+        <Text className="text-sm text-ui-fg-subtle">{t('requests.returns.returnDetail.checkingRefundStatus')}</Text>
+        
+        {/* 🔧 DEVELOPMENT ONLY: Show button even in checking state */}
+        {process.env.NODE_ENV === 'development' && returnRequest?.status === 'approved' && (
+          <div className="pt-4 border-t border-ui-border-base">
+            <div className="space-y-2">
+              <Text className="text-xs font-medium text-ui-fg-muted">
+                🔧 Development Tools
+              </Text>
+              <Button
+                variant="secondary"
+                size="small"
+                onClick={handleManualRefund}
+                disabled={isProcessing}
+              >
+                {isProcessing ? "Processing..." : "🔧 Manually Trigger Refund"}
+              </Button>
+              <Text className="text-xs text-ui-fg-subtle">
+                Manual refund trigger for testing. Click to process refund immediately.
+              </Text>
+            </div>
+          </div>
+        )}
+      </div>
+    </Container>
+  )
+}

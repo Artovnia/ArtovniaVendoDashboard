@@ -435,6 +435,24 @@ export const RouteMap: RouteObject[] = [
             lazy: () => import('../../routes/messages'),
           },
           {
+            path: '/returns',
+            errorElement: <ErrorBoundary />,
+            handle: {
+              breadcrumb: () => 'Returns',
+            },
+            lazy: () => import('../../routes/returns/page'),
+            children: [
+              {
+                index: true,
+                lazy: () => import('../../routes/returns/returns-list'),
+              },
+              {
+                path: ':id',
+                lazy: () => import('../../routes/returns/return-detail'),
+              },
+            ],
+          },
+          {
             path: '/reviews',
             errorElement: <ErrorBoundary />,
             handle: {

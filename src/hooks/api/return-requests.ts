@@ -1,4 +1,3 @@
-import { HttpTypes } from "@medusajs/types"
 import {
   QueryKey,
   useMutation,
@@ -8,7 +7,7 @@ import {
 } from "@tanstack/react-query"
 
 import { FetchError } from "@medusajs/js-sdk"
-import { fetchQuery, sdk } from "../../lib/client"
+import { fetchQuery } from "../../lib/client"
 import { queryClient } from "../../lib/query-client"
 import { queryKeysFactory } from "../../lib/query-key-factory"
 
@@ -45,6 +44,8 @@ export type ReturnRequest = {
   order?: {
     id: string
     display_id: number
+    total?: number
+    currency_code?: string
     customer?: {
       first_name: string
       last_name: string
@@ -63,6 +64,23 @@ export type ReturnRequest = {
         }
       }
     }>
+    payment_collection?: {
+      id: string
+      status: string
+      amount: number
+      payments?: Array<{
+        id: string
+        amount: number
+        currency_code: string
+        provider_id: string
+        captured_at?: string
+        refunds?: Array<{
+          id: string
+          amount: number
+          created_at: string
+        }>
+      }>
+    }
   }
 }
 
@@ -76,7 +94,7 @@ type ReturnRequestResponse = {
 }
 
 type UpdateReturnRequestParams = {
-  status: "refunded" | "withdrawn" | "escalated"
+  status: "approved" | "refunded" | "withdrawn" | "escalated"
   vendor_reviewer_note: string
 }
 
@@ -98,7 +116,7 @@ export const useVendorReturnRequests = (
   >
 ) => {
   const params = {
-    fields: query?.fields?.join(",") || "line_items.*,order.customer.*,order.items.*,order.items.variant.*,order.items.variant.product.*",
+    fields: query?.fields?.join(",") || "id,status,customer_id,customer_note,vendor_reviewer_id,vendor_reviewer_note,vendor_review_date,admin_reviewer_id,admin_reviewer_note,admin_review_date,shipping_option_id,line_items.*,line_items.line_item_id,line_items.quantity,line_items.reason_id,order.id,order.display_id,order.customer.*,order.items.*,order.items.id,order.items.title,order.items.quantity,order.items.variant.*,order.items.variant.id,order.items.variant.title,order.items.variant.product.*,order.items.variant.product.id,order.items.variant.product.title,order.payment_status",
     ...query?.filters,
   }
 
@@ -109,6 +127,15 @@ export const useVendorReturnRequests = (
   })
 
   const processedReturnRequests = data?.order_return_request?.filter(request => request !== null)?.map((request: any) => {
+    console.log('🔍 [ReturnRequests] Processing request:', {
+      id: request?.id,
+      status: request?.status,
+      hasOrder: !!request?.order,
+      hasCustomer: !!request?.order?.customer,
+      hasLineItems: !!request?.line_items,
+      lineItemCount: request?.line_items?.length || 0
+    })
+    
     let created_at = null
     if (request?.line_items && request.line_items.length > 0 && request.line_items[0]?.created_at) {
       try {
@@ -131,6 +158,8 @@ export const useVendorReturnRequests = (
     }
     return processed
   }) || []
+  
+  console.log('✅ [ReturnRequests] Total processed:', processedReturnRequests.length)
 
   return {
     return_requests: processedReturnRequests,
@@ -153,7 +182,7 @@ export const useVendorReturnRequest = (
   >
 ) => {
   const params = {
-    fields: query?.fields?.join(",") || "line_items.*,order.customer.*,order.items.*,order.items.variant.*,order.items.variant.product.*",
+    fields: query?.fields?.join(",") || "id,status,customer_id,customer_note,vendor_reviewer_id,vendor_reviewer_note,vendor_review_date,admin_reviewer_id,admin_reviewer_note,admin_review_date,shipping_option_id,line_items.*,line_items.line_item_id,line_items.quantity,line_items.reason_id,order.id,order.display_id,order.customer.*,order.items.*,order.items.id,order.items.title,order.items.quantity,order.items.variant.*,order.items.variant.id,order.items.variant.title,order.items.variant.product.*,order.items.variant.product.id,order.items.variant.product.title,order.payment_status",
   }
 
   const { data, ...rest } = useQuery({

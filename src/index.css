@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import react-day-picker base styles first, so we can override them */
+@import 'react-day-picker/dist/style.css';
+
 @layer base {
   @font-face {
     font-family: "Inter";
@@ -48,7 +51,7 @@
     --ui-fg-interactive: #3B3634;  /* Interactive text color */
     --ui-fg-muted: #9CA3AF;        /* Muted text color - more muted */
     --ui-fg-disabled: #D1D5DB;     /* Disabled text color - lighter */
-    --ui-fg-on-color: #FFFFFF;     /* Text color on colored backgrounds */
+    --ui-fg-on-color: #FFFFFF;     /* Text color on colored backgrounds (calendar selected days) */
     --ui-fg-on-inverted: #FFFFFF;  /* Text color on dark backgrounds */
     
     --ui-border-base: #E5E7EB;     /* Base border color - lighter */
@@ -242,3 +245,38 @@ button.ui-button[data-variant="secondary"]:hover,
   overflow-y: auto !important;
   scrollbar-width: thin !important;
 }
+
+/* Calendar Dark Mode Enhancements */
+.rdp {
+  --rdp-accent-color: var(--ui-bg-highlight);
+  --rdp-background-color: var(--ui-bg-component);
+  --rdp-accent-background-color: var(--ui-bg-highlight);
+  --rdp-outline: 2px solid var(--ui-border-interactive);
+}
+
+.dark .rdp {
+  --rdp-accent-color: #8B5CF6;
+  --rdp-background-color: #1A1D23;
+  --rdp-accent-background-color: #8B5CF6;
+}
+
+/* Ensure calendar buttons are clickable */
+.rdp-button_reset {
+  all: unset;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+/* Calendar navigation buttons */
+.rdp-nav button {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
+/* Calendar day buttons */
+.rdp-day {
+  cursor: pointer !important;
+}
+
+/* Calendar styling is now done via classNames prop in calendar.tsx */
+/* See CALENDAR_COLOR_GUIDE.md for customization instructions */
