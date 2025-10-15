@@ -11,10 +11,8 @@ export const fetchReturnReasons = async () => {
       method: "GET",
     })
     
-    console.log("Fetched return reasons:", return_reasons)
     return return_reasons || []
   } catch (error) {
-    console.error("Error fetching return reasons:", error)
     return []
   }
 }

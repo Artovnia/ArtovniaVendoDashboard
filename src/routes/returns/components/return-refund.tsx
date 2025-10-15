@@ -178,28 +178,6 @@ export const ReturnRefund = ({ returnRequest, onSuccess }: ReturnRefundProps) =>
               {t('requests.returns.returnDetail.refundAutomatic')}
             </Text>
           </div>
-          
-          {/* 🔧 DEVELOPMENT ONLY: Manual refund trigger */}
-          {process.env.NODE_ENV === 'development' && medusaReturn?.status === 'received' && (
-            <div className="pt-4 border-t border-ui-border-base">
-              <div className="space-y-2">
-                <Text className="text-xs font-medium text-ui-fg-muted">
-                  🔧 Development Tools
-                </Text>
-                <Button
-                  variant="secondary"
-                  size="small"
-                  onClick={handleManualRefund}
-                  disabled={isProcessing}
-                >
-                  {isProcessing ? "Processing..." : "🔧 Manually Trigger Refund"}
-                </Button>
-                <Text className="text-xs text-ui-fg-subtle">
-                  This button manually calls the refund endpoint. Use this to test refund flow without creating new orders.
-                </Text>
-              </div>
-            </div>
-          )}
         </div>
       </Container>
     )
@@ -211,28 +189,7 @@ export const ReturnRefund = ({ returnRequest, onSuccess }: ReturnRefundProps) =>
       <Heading level="h2" className="mb-2">{t('requests.returns.returnDetail.step3Title')}</Heading>
       <div className="space-y-4">
         <Text className="text-sm text-ui-fg-subtle">{t('requests.returns.returnDetail.checkingRefundStatus')}</Text>
-        
-        {/* 🔧 DEVELOPMENT ONLY: Show button even in checking state */}
-        {process.env.NODE_ENV === 'development' && returnRequest?.status === 'approved' && (
-          <div className="pt-4 border-t border-ui-border-base">
-            <div className="space-y-2">
-              <Text className="text-xs font-medium text-ui-fg-muted">
-                🔧 Development Tools
-              </Text>
-              <Button
-                variant="secondary"
-                size="small"
-                onClick={handleManualRefund}
-                disabled={isProcessing}
-              >
-                {isProcessing ? "Processing..." : "🔧 Manually Trigger Refund"}
-              </Button>
-              <Text className="text-xs text-ui-fg-subtle">
-                Manual refund trigger for testing. Click to process refund immediately.
-              </Text>
-            </div>
-          </div>
-        )}
+        {/* 🔧 DEVELOPMENT ONLY: Manual refund button commented out for production */}
       </div>
     </Container>
   )

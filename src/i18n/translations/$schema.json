@@ -12868,6 +12868,9 @@
             "returnDetail": {
               "type": "object",
               "properties": {
+                "heading": {
+                  "type": "string"
+                },
                 "loading": {
                   "type": "string"
                 },
@@ -13125,6 +13128,7 @@
                 }
               },
               "required": [
+                "heading",
                 "loading",
                 "error",
                 "empty",

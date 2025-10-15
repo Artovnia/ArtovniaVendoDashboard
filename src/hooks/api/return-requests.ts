@@ -101,6 +101,11 @@ type UpdateReturnRequestParams = {
 type ReturnRequestsQueryParams = {
   filters?: Record<string, any>
   fields?: string[]
+  limit?: number
+  offset?: number
+  status?: string[]
+  order?: string
+  q?: string
 }
 
 export const useVendorReturnRequests = (
@@ -115,10 +120,17 @@ export const useVendorReturnRequests = (
     "queryFn" | "queryKey"
   >
 ) => {
-  const params = {
+  const params: Record<string, any> = {
     fields: query?.fields?.join(",") || "id,status,customer_id,customer_note,vendor_reviewer_id,vendor_reviewer_note,vendor_review_date,admin_reviewer_id,admin_reviewer_note,admin_review_date,shipping_option_id,line_items.*,line_items.line_item_id,line_items.quantity,line_items.reason_id,order.id,order.display_id,order.customer.*,order.items.*,order.items.id,order.items.title,order.items.quantity,order.items.variant.*,order.items.variant.id,order.items.variant.title,order.items.variant.product.*,order.items.variant.product.id,order.items.variant.product.title,order.payment_status",
     ...query?.filters,
   }
+  
+  // Add optional params only if they exist
+  if (query?.limit !== undefined) params.limit = query.limit
+  if (query?.offset !== undefined) params.offset = query.offset
+  if (query?.status) params.status = query.status.join(",")
+  if (query?.order) params.order = query.order
+  if (query?.q) params.q = query.q
 
   const { data, ...rest } = useQuery({
     queryFn: async () => fetchQuery("/vendor/return-request", { method: "GET", query: params }),
@@ -127,14 +139,7 @@ export const useVendorReturnRequests = (
   })
 
   const processedReturnRequests = data?.order_return_request?.filter(request => request !== null)?.map((request: any) => {
-    console.log('🔍 [ReturnRequests] Processing request:', {
-      id: request?.id,
-      status: request?.status,
-      hasOrder: !!request?.order,
-      hasCustomer: !!request?.order?.customer,
-      hasLineItems: !!request?.line_items,
-      lineItemCount: request?.line_items?.length || 0
-    })
+
     
     let created_at = null
     if (request?.line_items && request.line_items.length > 0 && request.line_items[0]?.created_at) {
@@ -144,7 +149,6 @@ export const useVendorReturnRequests = (
           created_at = null
         }
       } catch (error) {
-        console.error("Error processing line item date:", error)
         created_at = null
       }
     }
@@ -159,7 +163,6 @@ export const useVendorReturnRequests = (
     return processed
   }) || []
   
-  console.log('✅ [ReturnRequests] Total processed:', processedReturnRequests.length)
 
   return {
     return_requests: processedReturnRequests,
@@ -205,7 +208,6 @@ export const useVendorReturnRequest = (
         }
         return null;
       } catch (e) {
-        console.error("Error creating date object:", e);
         return null;
       }
     })(),

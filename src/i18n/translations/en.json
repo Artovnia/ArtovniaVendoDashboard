@@ -3550,6 +3550,7 @@
         "withdrawn": "Withdrawn "
       },
       "returnDetail": {
+        "heading": "Return request for order #",
         "loading": "Loading return request details...",
         "error": "Error loading return request details",
         "empty": "No return request found",

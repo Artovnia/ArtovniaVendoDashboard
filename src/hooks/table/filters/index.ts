@@ -8,5 +8,6 @@ export * from './use-product-tag-table-filters';
 export * from './use-product-type-table-filters';
 export * from './use-promotion-table-filters';
 export * from './use-region-table-filters';
+export * from './use-return-request-table-filters';
 export * from './use-shipping-option-table-filters';
 export * from './use-tax-rate-table-filters';

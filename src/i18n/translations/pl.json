@@ -3506,6 +3506,7 @@
         "withdrawn": "Odrzucony"
       },
       "returnDetail": {
+        "heading": "Prośba o zwrot do zamówienia #",
         "loading": "Ładowanie szczegółów prośby o zwrot...",
         "error": "Błąd podczas ładowania szczegółów prośby o zwrot",
         "empty": "Nie znaleziono prośby o zwrot",

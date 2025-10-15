@@ -84,7 +84,7 @@ export const ReturnDetail = ({ returnId }: ReturnDetailProps) => {
               ← {t('requests.returns.returnDetail.backToReturns')}
             </Button>
             <Heading level="h1">
-              Return Request #{return_request.id.substring(0, 8)}
+              {t('requests.returns.returnDetail.heading')}{return_request.order?.display_id || "-"}
             </Heading>
             {getStatusBadge(return_request.status, t)}
           </div>

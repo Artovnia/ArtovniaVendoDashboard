@@ -8,5 +8,6 @@ export * from './use-product-tag-table-columns';
 export * from './use-product-type-table-columns';
 export * from './use-region-table-columns';
 export * from './use-return-reason-table-columns';
+export * from './use-return-request-table-columns';
 export * from './use-tax-rates-table-columns';
 export * from './use-review-table-columns';
