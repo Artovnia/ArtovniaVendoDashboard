@@ -4987,6 +4987,45 @@
             "addTracking": {
               "type": "string"
             },
+            "shippingCarrier": {
+              "type": "string"
+            },
+            "shippingCarrierPlaceholder": {
+              "type": "string"
+            },
+            "invoiceTitle": {
+              "type": "string"
+            },
+            "invoiceDescription": {
+              "type": "string"
+            },
+            "invoiceSelectFile": {
+              "type": "string"
+            },
+            "invoiceUploading": {
+              "type": "string"
+            },
+            "invoiceAllowedFormats": {
+              "type": "string"
+            },
+            "invoicePreview": {
+              "type": "string"
+            },
+            "invoiceRemove": {
+              "type": "string"
+            },
+            "invoiceUploadSuccess": {
+              "type": "string"
+            },
+            "invoiceUploadError": {
+              "type": "string"
+            },
+            "invoiceInvalidType": {
+              "type": "string"
+            },
+            "invoiceFileTooLarge": {
+              "type": "string"
+            },
             "sendNotification": {
               "type": "string"
             },
@@ -5001,6 +5040,19 @@
             "title",
             "trackingNumber",
             "addTracking",
+            "shippingCarrier",
+            "shippingCarrierPlaceholder",
+            "invoiceTitle",
+            "invoiceDescription",
+            "invoiceSelectFile",
+            "invoiceUploading",
+            "invoiceAllowedFormats",
+            "invoicePreview",
+            "invoiceRemove",
+            "invoiceUploadSuccess",
+            "invoiceUploadError",
+            "invoiceInvalidType",
+            "invoiceFileTooLarge",
             "sendNotification",
             "sendNotificationHint",
             "toastCreated"

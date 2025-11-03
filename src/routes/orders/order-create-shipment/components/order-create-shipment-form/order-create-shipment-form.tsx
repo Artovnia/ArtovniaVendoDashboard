@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next"
 import * as zod from "zod"
+import { useState, useRef } from "react"
 
 import { AdminFulfillment, AdminOrder } from "@medusajs/types"
 import { Button, Heading, Input, Switch, toast } from "@medusajs/ui"
@@ -26,6 +27,9 @@ export function OrderCreateShipmentForm({
 }: OrderCreateFulfillmentFormProps) {
   const { t } = useTranslation()
   const { handleSuccess } = useRouteModal()
+  const [uploadedInvoice, setUploadedInvoice] = useState<{ url: string; name: string } | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const { mutateAsync: createShipment, isPending: isMutating } =
     useCreateOrderShipment(order.id, fulfillment?.id)
@@ -42,8 +46,66 @@ export function OrderCreateShipmentForm({
     control: form.control,
   })
 
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    // Validate file type
+    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+    if (!allowedTypes.includes(file.type)) {
+      toast.error(t('orders.shipment.invoiceInvalidType'))
+      return
+    }
+
+    // Validate file size (10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error(t('orders.shipment.invoiceFileTooLarge'))
+      return
+    }
+
+    setIsUploading(true)
+
+    try {
+      const formData = new FormData()
+      formData.append('invoice', file)
+
+      const response = await fetch(
+        `/vendor/orders/${order.id}/fulfillments/${fulfillment?.id}/invoice-upload`,
+        {
+          method: 'POST',
+          body: formData,
+          credentials: 'include',
+        }
+      )
+
+      if (!response.ok) {
+        throw new Error('Upload failed')
+      }
+
+      const data = await response.json()
+      setUploadedInvoice({ url: data.url, name: data.name })
+      form.setValue('invoice_url', data.url)
+      form.setValue('invoice_name', data.name)
+      toast.success(t('orders.shipment.invoiceUploadSuccess'))
+    } catch (error) {
+      console.error('Upload error:', error)
+      toast.error(t('orders.shipment.invoiceUploadError'))
+    } finally {
+      setIsUploading(false)
+    }
+  }
+
+  const handleRemoveInvoice = () => {
+    setUploadedInvoice(null)
+    form.setValue('invoice_url', undefined)
+    form.setValue('invoice_name', undefined)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
+
   const handleSubmit = form.handleSubmit(async (data) => {
-    // Only send fields that the backend validator expects (items and labels)
+    // Only send fields that the backend validator expects (items, labels, invoice_url, invoice_name)
     // The backend validator doesn't accept no_notification field
     await createShipment(
       {
@@ -58,6 +120,9 @@ export function OrderCreateShipmentForm({
             tracking_url: "#",
             label_url: "#",
           })),
+        shipping_carrier: data.shipping_carrier,
+        invoice_url: data.invoice_url,
+        invoice_name: data.invoice_name,
         // no_notification field is used in the UI but not sent to the API
       },
       {
@@ -142,6 +207,86 @@ export function OrderCreateShipmentForm({
                   >
                     {t("orders.shipment.addTracking")}
                   </Button>
+                </div>
+
+                {/* Shipping Carrier Section */}
+                <div className="mt-8 pt-8 border-t">
+                  <Form.Field
+                    control={form.control}
+                    name="shipping_carrier"
+                    render={({ field }) => {
+                      return (
+                        <Form.Item>
+                          <Form.Label>
+                            {t("orders.shipment.shippingCarrier")}
+                          </Form.Label>
+                          <Form.Control>
+                            <Input 
+                              {...field} 
+                              placeholder={t("orders.shipment.shippingCarrierPlaceholder")} 
+                            />
+                          </Form.Control>
+                          <Form.ErrorMessage />
+                        </Form.Item>
+                      )
+                    }}
+                  />
+                </div>
+
+                {/* Invoice/Receipt Upload Section */}
+                <div className="mt-8 pt-8 border-t">
+                  <Heading level="h3" className="mb-4">
+                    {t("orders.shipment.invoiceTitle")}
+                  </Heading>
+                  <p className="text-sm text-gray-600 mb-4">
+                    {t("orders.shipment.invoiceDescription")}
+                  </p>
+                  
+                  {!uploadedInvoice ? (
+                    <div>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept=".pdf,.jpg,.jpeg,.png,.webp"
+                        onChange={handleFileUpload}
+                        style={{ display: 'none' }}
+                        id="invoice-upload"
+                      />
+                      <Button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        variant="secondary"
+                        disabled={isUploading}
+                      >
+                        {isUploading ? t("orders.shipment.invoiceUploading") : t("orders.shipment.invoiceSelectFile")}
+                      </Button>
+                      <p className="text-xs text-gray-500 mt-2">
+                        {t("orders.shipment.invoiceAllowedFormats")}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded border">
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">{uploadedInvoice.name}</p>
+                        <a
+                          href={uploadedInvoice.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-blue-600 hover:underline"
+                        >
+                          {t("orders.shipment.invoicePreview")}
+                        </a>
+                      </div>
+                      <Button
+                        type="button"
+                        onClick={handleRemoveInvoice}
+                        variant="secondary"
+                        size="small"
+                      >
+                        {t("orders.shipment.invoiceRemove")}
+                      </Button>
+                    </div>
+                  )}
                 </div>
 
                 <div className="mt-8 pt-8 ">

@@ -9,5 +9,8 @@ export const CreateShipmentSchema = z.object({
       label_url: z.string().optional(),
     })
   ),
+  shipping_carrier: z.string().optional(),
   send_notification: z.boolean().optional(),
+  invoice_url: z.string().optional(),
+  invoice_name: z.string().optional(),
 })
