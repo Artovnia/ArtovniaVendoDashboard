@@ -14010,56 +14010,6 @@
               },
               "required": ["placeholder"],
               "additionalProperties": false
-            }
-          },
-          "required": ["title", "subtitle", "empty", "search"],
-          "additionalProperties": false
-        },
-        "detail": {
-          "type": "object",
-          "properties": {
-            "promotionDetails": {
-              "type": "string"
-            },
-            "campaign": {
-              "type": "string"
-            },
-            "code": {
-              "type": "string"
-            },
-            "type": {
-              "type": "string"
-            },
-            "value": {
-              "type": "string"
-            },
-            "startDate": {
-              "type": "string"
-            },
-            "endDate": {
-              "type": "string"
-            },
-            "yourProducts": {
-              "type": "string"
-            },
-            "noProductsAdded": {
-              "type": "string"
-            },
-            "addProducts": {
-              "type": "string"
-            },
-            "removeProducts": {
-              "type": "string"
-            }
-          },
-          "required": ["promotionDetails", "campaign", "code", "type", "value", "startDate", "endDate", "yourProducts", "noProductsAdded", "addProducts", "removeProducts"],
-          "additionalProperties": false
-        },
-        "card": {
-          "type": "object",
-          "properties": {
-            "manage": {
-              "type": "string"
             },
             "joinPromotion": {
               "type": "string"
@@ -14584,6 +14534,60 @@
         }
       },
       "required": ["title", "subtitle", "companyName", "taxId", "email", "firstName", "lastName", "address", "city", "postalCode", "iban", "ibanPlaceholder", "phone", "representativeInfo", "back", "required", "submit"],
+      "additionalProperties": false
+    },
+    "validation": {
+      "type": "object",
+      "properties": {
+        "required": {
+          "type": "string"
+        },
+        "fillRequired": {
+          "type": "string"
+        },
+        "checkFields": {
+          "type": "string"
+        }
+      },
+      "required": ["required", "fillRequired", "checkFields"],
+      "additionalProperties": false
+    },
+    "success": {
+      "type": "object",
+      "properties": {
+        "accountCreated": {
+          "type": "string"
+        },
+        "redirectingToOnboarding": {
+          "type": "string"
+        }
+      },
+      "required": ["accountCreated", "redirectingToOnboarding"],
+      "additionalProperties": false
+    },
+    "error": {
+      "type": "object",
+      "properties": {
+        "generic": {
+          "type": "string"
+        },
+        "webhookFailed": {
+          "type": "string"
+        },
+        "webhookFailedDesc": {
+          "type": "string"
+        },
+        "stripeFailed": {
+          "type": "string"
+        },
+        "accountCreationFailed": {
+          "type": "string"
+        },
+        "tryAgainLater": {
+          "type": "string"
+        }
+      },
+      "required": ["generic", "webhookFailed", "webhookFailedDesc", "stripeFailed", "accountCreationFailed", "tryAgainLater"],
       "additionalProperties": false
     }
   },

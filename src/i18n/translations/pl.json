@@ -3963,9 +3963,9 @@
     "accountType": {
       "label": "Typ konta",
       "individual": "Osoba fizyczna",
-      "individualDesc": "Do użytku osobistego lub jednoosobowej działalności",
+      "individualDesc": "Dla osób fizycznych bez zarejestrowanej firmy (bez NIP)",
       "company": "Firma",
-      "companyDesc": "Dla firm i organizacji"
+      "companyDesc": "Dla zarejestrowanych firm i organizacji (wymagany NIP)"
     },
     "requirements": {
       "individual": "Wymagania konta indywidualnego",
@@ -4029,6 +4029,23 @@
     },
     "required": "Pola wymagane są oznaczone *",
     "back": "Wstecz",
-    "submit": "Połącz konto"
+    "submit": "Połącz konto",
+    "validation": {
+      "required": "To pole jest wymagane",
+      "fillRequired": "Proszę wypełnić wszystkie wymagane pola",
+      "checkFields": "Sprawdź formularz pod kątem błędów"
+    },
+    "success": {
+      "accountCreated": "Konto utworzone pomyślnie",
+      "redirectingToOnboarding": "Przekierowywanie do rejestracji Stripe..."
+    },
+    "error": {
+      "generic": "Nie udało się utworzyć konta",
+      "webhookFailed": "Błąd konfiguracji webhooka Stripe",
+      "webhookFailedDesc": "Sprawdź ustawienia webhooka Stripe i spróbuj ponownie",
+      "stripeFailed": "Błąd API Stripe",
+      "accountCreationFailed": "Tworzenie konta nie powiodło się",
+      "tryAgainLater": "Spróbuj ponownie później lub skontaktuj się z obsługą"
+    }
   }
 }

@@ -1,8 +1,9 @@
-import { ExclamationCircle, Buildings, User } from '@medusajs/icons';
-import { Button, Heading, Text, Select, Label, Input } from '@medusajs/ui';
+import { ExclamationCircle, Buildings, User, XCircle } from '@medusajs/icons';
+import { Button, Heading, Text, Select, Label, Input, toast } from '@medusajs/ui';
 import { useState } from 'react';
 import { useCreateStripeAccount } from '../../../hooks/api';
 import { useTranslation } from 'react-i18next';
+import { FetchError } from '@medusajs/js-sdk';
 
 interface IndividualFormData {
   first_name: string;
@@ -32,9 +33,10 @@ interface CompanyFormData {
 
 export const NotConnected = () => {
   const { t } = useTranslation();
-  const { mutateAsync, isPending } = useCreateStripeAccount();
+  const { mutateAsync, isPending, error, reset } = useCreateStripeAccount();
   const [accountType, setAccountType] = useState<'individual' | 'company'>('individual');
   const [showForm, setShowForm] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   
   const [individualFormData, setIndividualFormData] = useState<IndividualFormData>({
     first_name: '',
@@ -62,8 +64,49 @@ export const NotConnected = () => {
     representative_last_name: ''
   });
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const validateForm = () => {
+    const errors: Record<string, string> = {};
+    
+    if (accountType === 'individual') {
+      if (!individualFormData.first_name.trim()) errors.first_name = t('stripeConnect.validation.required');
+      if (!individualFormData.last_name.trim()) errors.last_name = t('stripeConnect.validation.required');
+      if (!individualFormData.email.trim()) errors.email = t('stripeConnect.validation.required');
+      if (!individualFormData.iban.trim()) errors.iban = t('stripeConnect.validation.required');
+      if (!individualFormData.address1.trim()) errors.address1 = t('stripeConnect.validation.required');
+      if (!individualFormData.city.trim()) errors.city = t('stripeConnect.validation.required');
+      if (!individualFormData.postal_code.trim()) errors.postal_code = t('stripeConnect.validation.required');
+    } else {
+      if (!companyFormData.company_name.trim()) errors.company_name = t('stripeConnect.validation.required');
+      if (!companyFormData.tax_id.trim()) errors.tax_id = t('stripeConnect.validation.required');
+      if (!companyFormData.email.trim()) errors.email = t('stripeConnect.validation.required');
+      if (!companyFormData.iban.trim()) errors.iban = t('stripeConnect.validation.required');
+      if (!companyFormData.address1.trim()) errors.address1 = t('stripeConnect.validation.required');
+      if (!companyFormData.city.trim()) errors.city = t('stripeConnect.validation.required');
+      if (!companyFormData.postal_code.trim()) errors.postal_code = t('stripeConnect.validation.required');
+      if (!companyFormData.representative_first_name.trim()) errors.representative_first_name = t('stripeConnect.validation.required');
+      if (!companyFormData.representative_last_name.trim()) errors.representative_last_name = t('stripeConnect.validation.required');
+    }
+    
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Reset previous errors
+    reset();
+    setValidationErrors({});
+    
+    // Validate form
+    if (!validateForm()) {
+      toast.error(t('stripeConnect.validation.fillRequired'), {
+        description: t('stripeConnect.validation.checkFields'),
+        duration: 5000,
+      });
+      return;
+    }
+    
     const formDataToSubmit = accountType === 'individual' ? {
       business_type: 'individual',
       ...individualFormData,
@@ -74,9 +117,43 @@ export const NotConnected = () => {
       country: 'PL'
     };
     
-    mutateAsync({
-      context: formDataToSubmit,
-    });
+    try {
+      await mutateAsync({
+        context: formDataToSubmit,
+      });
+      
+      toast.success(t('stripeConnect.success.accountCreated'), {
+        description: t('stripeConnect.success.redirectingToOnboarding'),
+        duration: 5000,
+      });
+    } catch (err) {
+      console.error('[Stripe Connect] Account creation failed:', err);
+      
+      const fetchError = err as FetchError;
+      let errorMessage = t('stripeConnect.error.generic');
+      let errorDescription = '';
+      
+      if (fetchError?.message) {
+        // Parse specific error messages
+        if (fetchError.message.includes('webhook')) {
+          errorMessage = t('stripeConnect.error.webhookFailed');
+          errorDescription = t('stripeConnect.error.webhookFailedDesc');
+        } else if (fetchError.message.includes('Stripe')) {
+          errorMessage = t('stripeConnect.error.stripeFailed');
+          errorDescription = fetchError.message;
+        } else if (fetchError.message.includes('reference_id')) {
+          errorMessage = t('stripeConnect.error.accountCreationFailed');
+          errorDescription = t('stripeConnect.error.tryAgainLater');
+        } else {
+          errorDescription = fetchError.message;
+        }
+      }
+      
+      toast.error(errorMessage, {
+        description: errorDescription,
+        duration: 10000,
+      });
+    }
   };
 
   const handleIndividualInputChange = (field: keyof IndividualFormData, value: string) => {

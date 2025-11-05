@@ -3980,9 +3980,9 @@
     "accountType": {
       "label": "Account Type",
       "individual": "Individual",
-      "individualDesc": "For personal use or sole proprietorship",
+      "individualDesc": "For individuals without a registered company (no NIP required)",
       "company": "Company",
-      "companyDesc": "For businesses and organizations"
+      "companyDesc": "For registered companies and organizations (NIP required)"
     },
     "requirements": {
       "individual": "Individual account requirements",
@@ -4046,6 +4046,23 @@
     },
     "required": "Required fields are marked with *",
     "back": "Back",
-    "submit": "Connect Account"
+    "submit": "Connect Account",
+    "validation": {
+      "required": "This field is required",
+      "fillRequired": "Please fill in all required fields",
+      "checkFields": "Check the form for errors"
+    },
+    "success": {
+      "accountCreated": "Account created successfully",
+      "redirectingToOnboarding": "Redirecting to Stripe onboarding..."
+    },
+    "error": {
+      "generic": "Failed to create account",
+      "webhookFailed": "Stripe webhook configuration error",
+      "webhookFailedDesc": "Please check your Stripe webhook settings and try again",
+      "stripeFailed": "Stripe API error",
+      "accountCreationFailed": "Account creation failed",
+      "tryAgainLater": "Please try again later or contact support"
+    }
   }
 }
