@@ -104,7 +104,10 @@ export const Connected = ({ status }: ConnectedProps) => {
       'representative.email': 'Email przedstawiciela',
       'representative.first_name': 'Imię przedstawiciela',
       'representative.last_name': 'Nazwisko przedstawiciela',
-      'representative.phone': 'Telefon przedstawiciela'
+      'representative.phone': 'Telefon przedstawiciela',
+      'representative.nationality': 'Narodowość przedstawiciela',
+      'requirements.past_due': 'Wymagane dodatkowe dane',
+      'requirements.pending_verification': 'Dane oczekują na weryfikację'
     };
 
     const englishDescriptions: Record<string, string> = {
@@ -135,7 +138,10 @@ export const Connected = ({ status }: ConnectedProps) => {
       'representative.email': 'Representative Email',
       'representative.first_name': 'Representative First Name',
       'representative.last_name': 'Representative Last Name',
-      'representative.phone': 'Representative Phone'
+      'representative.phone': 'Representative Phone',
+      'representative.nationality': 'Representative Nationality',
+      'requirements.past_due': 'Required more information',
+      'requirements.pending_verification': 'Information pending verification'
     };
     
     // Use Polish if current language is Polish, otherwise English
@@ -296,7 +302,7 @@ export const Connected = ({ status }: ConnectedProps) => {
                   {t('stripeConnect.requirements.accountBlocked')}:
                 </Text>
                 <Text size='small' className='text-ui-fg-error'>
-                  {payout_account.data.requirements.disabled_reason}
+                  {getRequirementDescription(payout_account.data.requirements.disabled_reason)}
                 </Text>
               </div>
             )}

@@ -4007,7 +4007,7 @@
     },
     "requirements": {
       "error": "Error",
-      "accountBlocked": "Account Blocked",
+      "accountBlocked": "Account requires verification",
       "requiredData": "Required Information",
       "pastDue": "Past Due Requirements",
       "currentlyDue": "Currently Due Requirements",

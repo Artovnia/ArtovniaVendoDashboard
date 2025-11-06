@@ -3990,7 +3990,7 @@
     },
     "requirements": {
       "error": "Błąd",
-      "accountBlocked": "Konto zablokowane",
+      "accountBlocked": "Konto wymaga weryfikacji",
       "requiredData": "Wymagane dane",
       "pastDue": "Przeterminowane wymagania",
       "currentlyDue": "Wymagane natychmiast",
