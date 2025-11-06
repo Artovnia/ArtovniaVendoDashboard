@@ -77,8 +77,8 @@ export const Connected = ({ status }: ConnectedProps) => {
   // Helper function to translate Stripe requirement codes
   const getRequirementDescription = (requirement: string): string => {
     const polishDescriptions: Record<string, string> = {
-      'business_profile.mcc': 'Kod branży (MCC)',
-      'business_profile.url': 'Strona internetowa firmy',
+      'business_profile.mcc': 'Kod branży (MCC) - przypisywany automatycznie na podstawie nazwy branży',
+      'business_profile.url': 'Strona internetowa lub nazwa sprzedawanych produktów',
       'business_type': 'Typ działalności',
       'external_account': 'Konto bankowe do wypłat',
       'individual.address.city': 'Miasto w adresie',
@@ -108,8 +108,8 @@ export const Connected = ({ status }: ConnectedProps) => {
     };
 
     const englishDescriptions: Record<string, string> = {
-      'business_profile.mcc': 'Industry Code (MCC)',
-      'business_profile.url': 'Business Website',
+      'business_profile.mcc': 'Industry Code (MCC) - assigned automatically based on industry name',
+      'business_profile.url': 'Website or product description',
       'business_type': 'Business Type',
       'external_account': 'Bank Account for Payouts',
       'individual.address.city': 'City in Address',
@@ -169,7 +169,6 @@ export const Connected = ({ status }: ConnectedProps) => {
                            response?.onboarding?.data?.url;
       
       if (onboardingUrl && typeof onboardingUrl === 'string') {
-        if (!isProduction) 
         // Use window.location.assign for better browser compatibility
         window.location.assign(onboardingUrl);
       } else {
@@ -271,112 +270,96 @@ export const Connected = ({ status }: ConnectedProps) => {
         </div>
       )}
 
-      {/* Requirements Information - Based on actual Stripe API data */}
-      {payout_account?.data?.requirements && (
-        <div className='w-full mb-6'>
-          {/* Disabled Reason */}
-          {payout_account.data.requirements.disabled_reason && (
-            <div className='p-4 border border-ui-border-error rounded-lg bg-ui-bg-error mb-4'>
-              <Text size='small' weight='plus' className='text-ui-fg-error mb-2'>
-                {t('stripeConnect.requirements.accountBlocked')}:
-              </Text>
-              <Text size='small' className='text-ui-fg-error'>
-                {payout_account.data.requirements.disabled_reason}
-              </Text>
-            </div>
-          )}
+      {/* Requirements Information - Consolidated and deduplicated */}
+      {payout_account?.data?.requirements && (() => {
+        // Combine all requirements into a single deduplicated list
+        const allRequirements = new Set<string>([
+          ...(payout_account.data.requirements.past_due || []),
+          ...(payout_account.data.requirements.currently_due || []),
+          ...(payout_account.data.requirements.eventually_due || [])
+        ]);
+        
+        const hasRequirements = allRequirements.size > 0;
+        const hasPendingVerification = payout_account.data.requirements.pending_verification && 
+                                      payout_account.data.requirements.pending_verification.length > 0;
+        const hasErrors = payout_account.data.requirements.errors && 
+                         payout_account.data.requirements.errors.length > 0;
+        const hasDeadline = payout_account.data.requirements.current_deadline;
+        const isBlocked = payout_account.data.requirements.disabled_reason;
 
-          {/* Past Due Requirements */}
-          {payout_account.data.requirements.past_due && payout_account.data.requirements.past_due.length > 0 && (
-            <div className='p-4 border border-ui-border-error rounded-lg bg-ui-bg-error mb-4'>
-              <Text size='small' weight='plus' className='text-ui-fg-error mb-2'>
-                {t('stripeConnect.requirements.pastDue')}:
-              </Text>
-              <ul className='text-left text-sm text-ui-fg-error space-y-1'>
-                {payout_account.data.requirements.past_due.map((req: string, index: number) => (
-                  <li key={`past-${index}`}>• {getRequirementDescription(req)}</li>
-                ))}
-              </ul>
-              {payout_account.data.requirements.current_deadline && (
-                <Text size='xsmall' className='text-ui-fg-error mt-2'>
-                  {t('stripeConnect.requirements.deadline')}: {new Date(payout_account.data.requirements.current_deadline * 1000).toLocaleDateString()}
+        return (
+          <div className='w-full mb-6'>
+            {/* Disabled Reason */}
+            {isBlocked && (
+              <div className='p-4 border border-ui-border-error rounded-lg bg-ui-bg-error mb-4'>
+                <Text size='small' weight='plus' className='text-ui-fg-error mb-2'>
+                  {t('stripeConnect.requirements.accountBlocked')}:
                 </Text>
-              )}
-            </div>
-          )}
+                <Text size='small' className='text-ui-fg-error'>
+                  {payout_account.data.requirements.disabled_reason}
+                </Text>
+              </div>
+            )}
 
-          {/* Currently Due Requirements */}
-          {payout_account.data.requirements.currently_due && payout_account.data.requirements.currently_due.length > 0 && (
-            <div className='p-4 border border-ui-border-error rounded-lg bg-ui-bg-subtle mb-4'>
-              <Text size='small' weight='plus' className='text-ui-fg-error mb-2'>
-                {t('stripeConnect.requirements.currentlyDue')}:
-              </Text>
-              <ul className='text-left text-sm text-ui-fg-subtle space-y-1'>
-                {payout_account.data.requirements.currently_due.map((req: string, index: number) => (
-                  <li key={`currently-${index}`}>• {getRequirementDescription(req)}</li>
-                ))}
-              </ul>
-              {payout_account.data.requirements.current_deadline && (
+            {/* Consolidated Required Information */}
+            {hasRequirements && (
+              <div className='p-4 border border-ui-border-error rounded-lg bg-ui-bg-subtle mb-4'>
+                <Text size='small' weight='plus' className='text-ui-fg-error mb-2'>
+                  {t('stripeConnect.requirements.requiredData')}:
+                </Text>
+                <ul className='text-left text-sm text-ui-fg-subtle space-y-1'>
+                  {Array.from(allRequirements).map((req: string, index: number) => (
+                    <li key={`req-${index}`}>• {getRequirementDescription(req)}</li>
+                  ))}
+                </ul>
+                {hasDeadline && (
+                  <Text size='xsmall' className='text-ui-fg-muted mt-2'>
+                    {t('stripeConnect.requirements.deadline')}: {new Date(payout_account.data.requirements.current_deadline! * 1000).toLocaleDateString()}
+                  </Text>
+                )}
+              </div>
+            )}
+
+            {/* Pending Verification */}
+            {hasPendingVerification && (
+              <div className='p-4 border border-ui-border-base rounded-lg bg-ui-bg-subtle mb-4'>
+                <Text size='small' weight='plus' className='text-ui-fg-base mb-2'>
+                  {t('stripeConnect.requirements.pendingVerification')}:
+                </Text>
+                <ul className='text-left text-sm text-ui-fg-subtle space-y-1'>
+                  {payout_account.data.requirements.pending_verification!.map((req: string, index: number) => (
+                    <li key={`pending-${index}`}>• {getRequirementDescription(req)}</li>
+                  ))}
+                </ul>
                 <Text size='xsmall' className='text-ui-fg-muted mt-2'>
-                  {t('stripeConnect.requirements.deadline')}: {new Date(payout_account.data.requirements.current_deadline * 1000).toLocaleDateString()}
+                  {t('stripeConnect.requirements.verificationInProgress')}
                 </Text>
-              )}
-            </div>
-          )}
+              </div>
+            )}
 
-          {/* Pending Verification */}
-          {payout_account.data.requirements.pending_verification && payout_account.data.requirements.pending_verification.length > 0 && (
-            <div className='p-4 border border-ui-border-base rounded-lg bg-ui-bg-subtle mb-4'>
-              <Text size='small' weight='plus' className='text-ui-fg-base mb-2'>
-                {t('stripeConnect.requirements.pendingVerification')}:
-              </Text>
-              <ul className='text-left text-sm text-ui-fg-subtle space-y-1'>
-                {payout_account.data.requirements.pending_verification.map((req: string, index: number) => (
-                  <li key={`pending-${index}`}>• {getRequirementDescription(req)}</li>
-                ))}
-              </ul>
-              <Text size='xsmall' className='text-ui-fg-muted mt-2'>
-                {t('stripeConnect.requirements.verificationInProgress')}
-              </Text>
-            </div>
-          )}
-
-          {/* Eventually Due Requirements - Only show if account is not fully connected */}
-          {status !== 'connected' && payout_account.data.requirements.eventually_due && payout_account.data.requirements.eventually_due.length > 0 && (
-            <div className='p-4 border border-ui-border-base rounded-lg bg-ui-bg-subtle mb-4'>
-              <Text size='small' weight='plus' className='text-ui-fg-base mb-2'>
-                {t('stripeConnect.requirements.eventuallyDue')}:
-              </Text>
-              <ul className='text-left text-sm text-ui-fg-subtle space-y-1'>
-                {payout_account.data.requirements.eventually_due.map((req: string, index: number) => (
-                  <li key={`eventually-${index}`}>• {getRequirementDescription(req)}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* Verification Errors */}
-          {payout_account.data.requirements.errors && payout_account.data.requirements.errors.length > 0 && (
-            <div className='p-4 border border-ui-border-error rounded-lg bg-ui-bg-error mb-4'>
-              <Text size='small' weight='plus' className='text-ui-fg-error mb-2'>
-                {t('stripeConnect.requirements.verificationErrors')}:
-              </Text>
-              <ul className='text-left text-sm text-ui-fg-error space-y-2'>
-                {payout_account.data.requirements.errors.map((error: any, index: number) => (
-                  <li key={`error-${index}`}>
-                    <Text size='small' weight='plus' className='text-ui-fg-error'>
-                      {getRequirementDescription(error.requirement)}:
-                    </Text>
-                    <Text size='small' className='text-ui-fg-error ml-2'>
-                      {error.reason || error.code}
-                    </Text>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      )}
+            {/* Verification Errors */}
+            {hasErrors && (
+              <div className='p-4 border border-ui-border-error rounded-lg bg-ui-bg-error mb-4'>
+                <Text size='small' weight='plus' className='text-ui-fg-error mb-2'>
+                  {t('stripeConnect.requirements.verificationErrors')}:
+                </Text>
+                <ul className='text-left text-sm text-ui-fg-error space-y-2'>
+                  {payout_account.data.requirements.errors!.map((error: any, index: number) => (
+                    <li key={`error-${index}`}>
+                      <Text size='small' weight='plus' className='text-ui-fg-error'>
+                        {getRequirementDescription(error.requirement)}:
+                      </Text>
+                      <Text size='small' className='text-ui-fg-error ml-2'>
+                        {error.reason || error.code}
+                      </Text>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        );
+      })()}
 
       {/* Account Details Card */}
       {payout_account && status === 'connected' && (

@@ -17,27 +17,19 @@ export const stripeQueryKeys = queryKeysFactory(
 export const useStripeAccount = () => {
   const { data, ...rest } = useQuery({
     queryFn: async () => {
-      console.log('[Stripe][Frontend] GET /vendor/payout-account');
       try {
         const response = await fetchQuery('/vendor/payout-account', {
           method: 'GET',
         });
-        console.log('[Stripe][Frontend] Response:', response);
         return response;
       } catch (error) {
-        console.error('[Stripe][Frontend] Error:', error);
-        if (error && typeof error === 'object' && 'message' in error && typeof error.message === 'string' && error.message.includes('supersecret')) {
-          console.error('[Stripe][Frontend][DEBUG] Received supersecret error at useStripeAccount > queryFn (stripe.tsx)');
-          console.error('[Stripe][Frontend][DEBUG] Error object:', error);
-          if ('stack' in error && typeof error.stack === 'string') {
-            console.error('[Stripe][Frontend][DEBUG] Stack trace:', error.stack);
-          }
-        }
-
+        // Re-throw to let React Query handle the error state
         throw error;
       }
     },
     queryKey: [STRIPE_QUERY_KEY, 'account'],
+    retry: 2,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 
   return { ...data, ...rest };
@@ -48,24 +40,21 @@ export const useCreateStripeAccount = (
 ) => {
   return useMutation({
     mutationFn: async (payload) => {
-      console.log('[Stripe][Frontend] POST /vendor/payout-account payload:', payload);
       try {
         const response = await fetchQuery('/vendor/payout-account', {
           method: 'POST',
           body: payload,
         });
-        console.log('[Stripe][Frontend] Response:', response);
         return response;
       } catch (error) {
-        console.error('[Stripe][Frontend] Error:', error);
-        if (error && typeof error === 'object' && 'message' in error && typeof error.message === 'string' && error.message.includes('supersecret')) {
-          console.error('[Stripe][Frontend][DEBUG] Received supersecret error at useStripeAccount > queryFn (stripe.tsx)');
-          console.error('[Stripe][Frontend][DEBUG] Error object:', error);
-          if ('stack' in error && typeof error.stack === 'string') {
-            console.error('[Stripe][Frontend][DEBUG] Stack trace:', error.stack);
-          }
+        // Enhance error message for better user feedback
+        if (error instanceof FetchError) {
+          const enhancedError = new Error(
+            error.message || 'Failed to create Stripe account. Please try again.'
+          );
+          enhancedError.name = 'StripeAccountCreationError';
+          throw enhancedError;
         }
-
         throw error;
       }
     },
@@ -75,6 +64,13 @@ export const useCreateStripeAccount = (
       });
 
       options?.onSuccess?.(data, variables, context);
+    },
+    onError: (error, variables, context) => {
+      // Log error in non-production for debugging
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('[Stripe] Account creation failed:', error);
+      }
+      options?.onError?.(error, variables, context);
     },
     ...options,
   });
@@ -85,33 +81,49 @@ export const useCreateStripeOnboarding = (
 ) => {
   return useMutation({
     mutationFn: async (payload) => {
-      console.log('[Stripe][Frontend] POST /vendor/payout-account/onboarding payload:', payload);
       try {
         const response = await fetchQuery('/vendor/payout-account/onboarding', {
           method: 'POST',
           body: payload,
         });
-        console.log('[Stripe][Frontend] Response:', response);
+        
+        // Validate response has onboarding URL
+        const onboardingUrl = response?.payout_account?.onboarding?.data?.url || 
+                             response?.onboarding?.data?.url;
+        
+        if (!onboardingUrl) {
+          throw new Error('No onboarding URL received from server');
+        }
+        
         return response;
       } catch (error) {
-        console.error('[Stripe][Frontend] Error:', error);
-        if (error && typeof error === 'object' && 'message' in error && typeof error.message === 'string' && error.message.includes('supersecret')) {
-          console.error('[Stripe][Frontend][DEBUG] Received supersecret error at useStripeAccount > queryFn (stripe.tsx)');
-          console.error('[Stripe][Frontend][DEBUG] Error object:', error);
-          if ('stack' in error && typeof error.stack === 'string') {
-            console.error('[Stripe][Frontend][DEBUG] Stack trace:', error.stack);
-          }
+        // Enhance error message for better user feedback
+        if (error instanceof FetchError) {
+          const enhancedError = new Error(
+            error.message || 'Failed to initialize Stripe onboarding. Please try again.'
+          );
+          enhancedError.name = 'StripeOnboardingError';
+          throw enhancedError;
         }
-
         throw error;
       }
     },
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
+        queryKey: [STRIPE_QUERY_KEY, 'account'],
+      });
+      queryClient.invalidateQueries({
         queryKey: [STRIPE_QUERY_KEY, 'onboarding'],
       });
 
       options?.onSuccess?.(data, variables, context);
+    },
+    onError: (error, variables, context) => {
+      // Log error in non-production for debugging
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('[Stripe] Onboarding initialization failed:', error);
+      }
+      options?.onError?.(error, variables, context);
     },
     ...options,
   });
@@ -122,15 +134,20 @@ export const useCompleteVerification = (
 ) => {
   return useMutation({
     mutationFn: async () => {
-      console.log('[Stripe][Frontend] POST /vendor/payout-account/complete-verification');
       try {
         const response = await fetchQuery('/vendor/payout-account/complete-verification', {
           method: 'POST',
         });
-        console.log('[Stripe][Frontend] Complete verification response:', response);
         return response;
       } catch (error) {
-        console.error('[Stripe][Frontend] Complete verification error:', error);
+        // Enhance error message for better user feedback
+        if (error instanceof FetchError) {
+          const enhancedError = new Error(
+            error.message || 'Failed to complete verification. Please try again.'
+          );
+          enhancedError.name = 'StripeVerificationError';
+          throw enhancedError;
+        }
         throw error;
       }
     },
@@ -140,6 +157,13 @@ export const useCompleteVerification = (
       });
 
       options?.onSuccess?.(data, variables, context);
+    },
+    onError: (error, variables, context) => {
+      // Log error in non-production for debugging
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('[Stripe] Verification completion failed:', error);
+      }
+      options?.onError?.(error, variables, context);
     },
     ...options,
   });

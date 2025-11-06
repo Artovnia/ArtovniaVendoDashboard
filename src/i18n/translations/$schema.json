@@ -14280,6 +14280,36 @@
         "requirements": {
           "type": "object",
           "properties": {
+            "error": {
+              "type": "string"
+            },
+            "accountBlocked": {
+              "type": "string"
+            },
+            "requiredData": {
+              "type": "string"
+            },
+            "pastDue": {
+              "type": "string"
+            },
+            "currentlyDue": {
+              "type": "string"
+            },
+            "pendingVerification": {
+              "type": "string"
+            },
+            "eventuallyDue": {
+              "type": "string"
+            },
+            "verificationErrors": {
+              "type": "string"
+            },
+            "deadline": {
+              "type": "string"
+            },
+            "verificationInProgress": {
+              "type": "string"
+            },
             "individual": {
               "type": "string"
             },
@@ -14287,7 +14317,7 @@
               "type": "string"
             }
           },
-          "required": ["individual", "company"],
+          "required": ["error", "accountBlocked", "requiredData", "pastDue", "currentlyDue", "pendingVerification", "eventuallyDue", "verificationErrors", "deadline", "verificationInProgress", "individual", "company"],
           "additionalProperties": false
         },
         "details": {

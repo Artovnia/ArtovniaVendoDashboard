@@ -1,20 +1,46 @@
 import { CheckCircleSolid, ExclamationCircle } from '@medusajs/icons';
-import { Button, Heading, Text } from '@medusajs/ui';
+import { Button, Heading, Text, toast } from '@medusajs/ui';
 import { useTranslation } from 'react-i18next';
 import { useCreateStripeOnboarding } from '../../../hooks/api';
+import { useState } from 'react';
 
 export const Connected = ({ status }: { status: string }) => {
   const { t } = useTranslation();
   const { mutateAsync, isPending } = useCreateStripeOnboarding();
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
-  const handleOnboarding = () => {
-    mutateAsync({
-      context: {
-        country: 'PL',
-        refresh_url: window.location.href,
-        return_url: window.location.href,
-      },
-    });
+  const handleOnboarding = async () => {
+    if (isRedirecting) return;
+    
+    setIsRedirecting(true);
+    
+    try {
+      const response = await mutateAsync({
+        context: {
+          country: 'PL',
+          refresh_url: window.location.href,
+          return_url: window.location.href,
+        },
+      });
+      
+      // Extract onboarding URL from response
+      const onboardingUrl = response?.payout_account?.onboarding?.data?.url || 
+                           response?.onboarding?.data?.url;
+      
+      if (onboardingUrl && typeof onboardingUrl === 'string') {
+        // Redirect to Stripe onboarding
+        window.location.assign(onboardingUrl);
+      } else {
+        throw new Error('No onboarding URL received from server');
+      }
+    } catch (error: any) {
+      const errorMessage = error?.message || 'Failed to initialize registration. Please try again.';
+      toast.error('Registration Error', {
+        description: errorMessage,
+        duration: 5000,
+      });
+      setIsRedirecting(false);
+    }
   };
 
   if (status === 'connected' || status === 'active') {
@@ -59,11 +85,15 @@ export const Connected = ({ status }: { status: string }) => {
           {t('stripeConnect.pending.description')}
         </Text>
         <Button
-          isLoading={isPending}
+          isLoading={isPending || isRedirecting}
           className='mt-4'
           onClick={handleOnboarding}
+          disabled={isRedirecting}
         >
-          {t('stripeConnect.actions.continueOnboarding')}
+          {isRedirecting 
+            ? 'Redirecting to Stripe...' 
+            : t('stripeConnect.actions.continueOnboarding')
+          }
         </Button>
       </div>
     );

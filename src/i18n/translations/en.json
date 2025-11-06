@@ -3984,10 +3984,6 @@
       "company": "Company",
       "companyDesc": "For registered companies and organizations (NIP required)"
     },
-    "requirements": {
-      "individual": "Individual account requirements",
-      "company": "Company account requirements"
-    },
     "details": {
       "accountType": "Account Type",
       "country": "Country",
@@ -4012,6 +4008,7 @@
     "requirements": {
       "error": "Error",
       "accountBlocked": "Account Blocked",
+      "requiredData": "Required Information",
       "pastDue": "Past Due Requirements",
       "currentlyDue": "Currently Due Requirements",
       "pendingVerification": "Pending Verification",

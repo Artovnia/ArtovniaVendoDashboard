@@ -3967,10 +3967,6 @@
       "company": "Firma",
       "companyDesc": "Dla zarejestrowanych firm i organizacji (wymagany NIP)"
     },
-    "requirements": {
-      "individual": "Wymagania konta indywidualnego",
-      "company": "Wymagania konta firmowego"
-    },
     "details": {
       "accountType": "Typ konta",
       "country": "Kraj",
@@ -3995,6 +3991,7 @@
     "requirements": {
       "error": "Błąd",
       "accountBlocked": "Konto zablokowane",
+      "requiredData": "Wymagane dane",
       "pastDue": "Przeterminowane wymagania",
       "currentlyDue": "Wymagane natychmiast",
       "pendingVerification": "W trakcie weryfikacji",
