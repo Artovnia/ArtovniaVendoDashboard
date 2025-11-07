@@ -139,10 +139,11 @@ export const InventoryDetail = () => {
         <InventoryItemVariantsSection
           variants={item.variants || []}
         />
-        <InventoryItemAttributeSection
+       {/* <InventoryItemAttributeSection
           inventoryItem={item as any}
-        />
-        {item.variants && item.variants.length > 0 && (
+        /> */}
+
+       {/* {item.variants && item.variants.length > 0 && (
           <VariantAttributesSection
             inventoryItem={item as any}
             variant={{
@@ -150,7 +151,7 @@ export const InventoryDetail = () => {
               product_id: item.variants[0].product?.id
             }}
           />
-        )}
+        )} */}
       </TwoColumnPage.Sidebar>
     </TwoColumnPage>
   );

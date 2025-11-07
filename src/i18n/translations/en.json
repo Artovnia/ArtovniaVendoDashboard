@@ -719,8 +719,6 @@
         "noColorsSelected": "No colors selected",
         "helpText": "Select colors for this variant"
       },
-      "tableItem": "{{availableCount}} available at {{locationCount}} location",
-      "goToInventory": "Go to inventory",
       "colorSection": {
         "title": "Variant Color Scheme",
         "editColors": "Edit Colors",
@@ -754,8 +752,9 @@
       },
       "inventory": {
         "notManaged": "Not managed",
+        "manageInventoryLabel": "Manage inventory",
         "manageItems": "Manage inventory items",
-        "notManagedDesc": "Inventory is not managed for this variant. Turn on ‘Manage Inventory’ to track the variant's inventory.",
+        "notManagedDesc": "Inventory is not managed for this variant. Turn on 'Manage Inventory' to track the variant's inventory.",
         "manageKit": "Manage inventory kit",
         "navigateToItem": "Go to inventory item",
         "actions": {
@@ -770,7 +769,6 @@
         },
         "header": "Stock & Inventory",
         "editItemDetails": "Edit item details",
-        "manageInventoryLabel": "Manage inventory",
         "manageInventoryHint": "When enabled, we'll change the inventory quantity for you when orders and returns are created.",
         "allowBackordersLabel": "Allow backorders",
         "allowBackordersHint": "When enabled, customers can purchase the variant even if there's no available quantity.",
@@ -823,6 +821,32 @@
       "noColors": "No colors assigned to this product"
     },
     "editPrices": "Edit Prices",
+    "additionalAttributes": {
+      "title": "Additional Attributes",
+      "loading": "Loading attributes...",
+      "description": "Product attributes allow you to specify additional characteristics that are unique to products.",
+      "save": "Save",
+      "saving": "Saving...",
+      "back": "Back",
+      "success": "Product attributes have been successfully updated",
+      "errorUpdate": "Failed to update product attributes. Please try again.",
+      "error": {
+        "title": "An error occurred while loading attributes",
+        "description": "The backend API returned an error. Please try again later or contact support."
+      },
+      "noAttributes": {
+        "title": "No available attributes",
+        "description": "Currently, no additional attributes are configured for this product category. The backend API may be experiencing issues."
+      },
+      "selectOption": "Select an option",
+      "enterValue": "Enter value",
+      "section": {
+        "heading": "Additional Attributes",
+        "edit": "Edit",
+        "noAttributesAssigned": "No additional attributes assigned. Click Edit to add attributes.",
+        "attributeFallback": "Attribute {{index}}"
+      }
+    },
     "media": {
       "label": "Media",
       "header": "Media",
@@ -3718,22 +3742,6 @@
       "passwordMismatch": "Passwords do not match",
       "productDescriptionRequired": "Please describe what you want to sell",
       "invalidUrl": "Must be a valid URL or empty"
-    }
-  },
-  "variant": {
-    "colorSection": {
-      "title": "Variant Color Scheme",
-      "editColors": "Edit colors",
-      "removeAllColors": "Remove all colors",
-      "loading": "Loading...",
-      "colors": "Colors",
-      "noColors": "No colors assigned to this variant.",
-      "removeColors": {
-        "title": "Remove colors",
-        "description": "Are you sure you want to remove all colors from variant {{variantTitle}}?",
-        "confirm": "Remove",
-        "cancel": "Cancel"
-      }
     }
   },
   "productStatus": {

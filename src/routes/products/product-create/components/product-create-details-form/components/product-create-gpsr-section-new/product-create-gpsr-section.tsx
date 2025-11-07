@@ -38,7 +38,7 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
                 {t("products.gpsr.producer.name.description")}
               </Form.Hint>
               <Form.Control>
-                <Input {...field} placeholder={t("products.gpsr.producer.name.placeholder", "e.g. XYZ Company Ltd.")} />
+                <Input {...field} placeholder={t("products.gpsr.producer.name.placeholder")} />
               </Form.Control>
               <Form.ErrorMessage />
             </Form.Item>
@@ -59,7 +59,7 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
               <Form.Control>
                 <Textarea 
                   {...field} 
-                  placeholder={t("products.products.gpsr.producer.address.placeholder", "e.g. 123 Example Street, 00-001 Warsaw, Poland")}
+                  placeholder={t("products.gpsr.producer.address.placeholder")}
                   rows={2}
                 />
               </Form.Control>
@@ -82,7 +82,7 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
               <Form.Control>
                 <Input 
                   {...field} 
-                  placeholder={t("products.products.gpsr.producer.contact.placeholder", "e.g. contact@company.com or +48 123 456 789")}
+                  placeholder={t("products.gpsr.producer.contact.placeholder")}
                 />
               </Form.Control>
               <Form.ErrorMessage />
@@ -107,7 +107,7 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
                 {t("products.gpsr.importer.name.description")}
               </Form.Hint>
               <Form.Control>
-                <Input {...field} placeholder={t("products.products.gpsr.importer.name.placeholder", "e.g. EU Import Ltd.")} />
+                <Input {...field} placeholder={t("products.gpsr.importer.name.placeholder")} />
               </Form.Control>
               <Form.ErrorMessage />
             </Form.Item>
@@ -128,7 +128,7 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
               <Form.Control>
                 <Textarea 
                   {...field} 
-                  placeholder={t("products.products.gpsr.importer.address.placeholder", "e.g. 456 Import Street, 00-002 Krakow, Poland")}
+                  placeholder={t("products.gpsr.importer.address.placeholder")}
                   rows={2}
                 />
               </Form.Control>
@@ -151,7 +151,7 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
               <Form.Control>
                 <Input 
                   {...field} 
-                  placeholder={t("products.products.gpsr.importer.contact.placeholder", "e.g. import@company.eu or +48 987 654 321")}
+                  placeholder={t("products.gpsr.importer.contact.placeholder")}
                 />
               </Form.Control>
               <Form.ErrorMessage />
@@ -175,7 +175,7 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
             <Form.Control>
               <Textarea 
                 {...field} 
-                placeholder={t("products.products.gpsr.instructions.placeholder", "e.g. Keep away from children under 3 years. Product contains small parts.")}
+                placeholder={t("products.gpsr.instructions.placeholder")}
                 rows={4}
               />
             </Form.Control>
@@ -197,7 +197,7 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
             <Form.Control>
               <Input 
                 {...field} 
-                placeholder={t("products.products.gpsr.certificates.placeholder", "e.g. CE-12345-2023, ISO-9001")}
+                placeholder={t("products.gpsr.certificates.placeholder")}
               />
             </Form.Control>
             <Form.ErrorMessage />

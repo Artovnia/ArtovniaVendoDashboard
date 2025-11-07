@@ -2592,6 +2592,103 @@
     "variant": {
       "type": "object",
       "properties": {
+        "header": {
+          "type": "string"
+        },
+        "empty": {
+          "type": "object",
+          "properties": {
+            "heading": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": ["heading", "description"],
+          "additionalProperties": false
+        },
+        "variantColumn": {
+          "type": "string"
+        },
+        "priceColumn": {
+          "type": "string"
+        },
+        "stockColumn": {
+          "type": "string"
+        },
+        "actionsColumn": {
+          "type": "string"
+        },
+        "edit": {
+          "type": "object",
+          "properties": {
+            "header": {
+              "type": "string"
+            },
+            "success": {
+              "type": "string"
+            }
+          },
+          "required": ["header", "success"],
+          "additionalProperties": false
+        },
+        "create": {
+          "type": "object",
+          "properties": {
+            "header": {
+              "type": "string"
+            }
+          },
+          "required": ["header"],
+          "additionalProperties": false
+        },
+        "deleteWarning": {
+          "type": "string"
+        },
+        "pricesPagination": {
+          "type": "string"
+        },
+        "tableItemAvailable": {
+          "type": "string"
+        },
+        "tableItem_one": {
+          "type": "string"
+        },
+        "tableItem_other": {
+          "type": "string"
+        },
+        "tableItem": {
+          "type": "string"
+        },
+        "goToInventory": {
+          "type": "string"
+        },
+        "colors": {
+          "type": "object",
+          "properties": {
+            "successToast": {
+              "type": "string"
+            },
+            "errorToast": {
+              "type": "string"
+            },
+            "removeColor": {
+              "type": "string"
+            },
+            "unknownColor": {
+              "type": "string"
+            },
+            "noColorsSelected": {
+              "type": "string"
+            },
+            "helpText": {
+              "type": "string"
+            }
+          },
+          "required": ["successToast", "errorToast", "removeColor", "unknownColor", "noColorsSelected", "helpText"],
+          "additionalProperties": false
+        },
         "colorSection": {
           "type": "object",
           "properties": {
@@ -2633,19 +2730,154 @@
               "additionalProperties": false
             }
           },
-          "required": [
-            "title",
-            "editColors",
-            "removeAllColors",
-            "loading",
-            "colors",
-            "noColors",
-            "removeColors"
-          ],
+          "required": ["title", "editColors", "removeAllColors", "loading", "colors", "noColors", "removeColors"],
+          "additionalProperties": false
+        },
+        "colorsEditForm": {
+          "type": "object",
+          "properties": {
+            "loading": {
+              "type": "string"
+            },
+            "error": {
+              "type": "string"
+            },
+            "copyFromVariant": {
+              "type": "string"
+            },
+            "copyColors": {
+              "type": "string"
+            },
+            "copyFrom": {
+              "type": "string"
+            },
+            "currentColors": {
+              "type": "string"
+            },
+            "noCurrentColors": {
+              "type": "string"
+            },
+            "addColors": {
+              "type": "string"
+            },
+            "searchPlaceholder": {
+              "type": "string"
+            },
+            "searchLabel": {
+              "type": "string"
+            },
+            "selectedColors": {
+              "type": "string"
+            },
+            "removeColor": {
+              "type": "string"
+            },
+            "copySuccess": {
+              "type": "string"
+            },
+            "copyError": {
+              "type": "string"
+            },
+            "helpText": {
+              "type": "string"
+            }
+          },
+          "required": ["loading", "error", "copyFromVariant", "copyColors", "copyFrom", "currentColors", "noCurrentColors", "addColors", "searchPlaceholder", "searchLabel", "selectedColors", "removeColor", "copySuccess", "copyError", "helpText"],
+          "additionalProperties": false
+        },
+        "inventory": {
+          "type": "object",
+          "properties": {
+            "notManaged": {
+              "type": "string"
+            },
+            "manageInventoryLabel": {
+              "type": "string"
+            },
+            "manageItems": {
+              "type": "string"
+            },
+            "notManagedDesc": {
+              "type": "string"
+            },
+            "manageKit": {
+              "type": "string"
+            },
+            "navigateToItem": {
+              "type": "string"
+            },
+            "actions": {
+              "type": "object",
+              "properties": {
+                "inventoryItems": {
+                  "type": "string"
+                },
+                "inventoryKit": {
+                  "type": "string"
+                }
+              },
+              "required": ["inventoryItems", "inventoryKit"],
+              "additionalProperties": false
+            },
+            "inventoryKit": {
+              "type": "string"
+            },
+            "inventoryKitHint": {
+              "type": "string"
+            },
+            "validation": {
+              "type": "object",
+              "properties": {
+                "itemId": {
+                  "type": "string"
+                },
+                "quantity": {
+                  "type": "string"
+                }
+              },
+              "required": ["itemId", "quantity"],
+              "additionalProperties": false
+            },
+            "header": {
+              "type": "string"
+            },
+            "editItemDetails": {
+              "type": "string"
+            },
+            "manageInventoryHint": {
+              "type": "string"
+            },
+            "allowBackordersLabel": {
+              "type": "string"
+            },
+            "allowBackordersHint": {
+              "type": "string"
+            },
+            "toast": {
+              "type": "object",
+              "properties": {
+                "levelsBatch": {
+                  "type": "string"
+                },
+                "update": {
+                  "type": "string"
+                },
+                "updateLevel": {
+                  "type": "string"
+                },
+                "itemsManageSuccess": {
+                  "type": "string"
+                }
+              },
+              "required": ["levelsBatch", "update", "updateLevel", "itemsManageSuccess"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["notManaged", "manageInventoryLabel", "manageItems", "notManagedDesc", "manageKit", "navigateToItem", "actions", "inventoryKit", "inventoryKitHint", "validation", "header", "editItemDetails", "manageInventoryHint", "allowBackordersLabel", "allowBackordersHint", "toast"],
           "additionalProperties": false
         }
       },
-      "required": ["colorSection"],
+      "required": ["header", "empty", "edit", "create", "deleteWarning", "pricesPagination", "tableItemAvailable", "tableItem_one", "tableItem_other", "tableItem", "goToInventory", "colors", "colorSection", "colorsEditForm", "inventory"],
       "additionalProperties": false
     },
     "organization": {
@@ -2776,6 +3008,102 @@
         }
       },
       "required": ["header", "loading", "noColors"],
+      "additionalProperties": false
+    },
+    "additionalAttributes": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "loading": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "save": {
+          "type": "string"
+        },
+        "saving": {
+          "type": "string"
+        },
+        "back": {
+          "type": "string"
+        },
+        "success": {
+          "type": "string"
+        },
+        "errorUpdate": {
+          "type": "string"
+        },
+        "error": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": ["title", "description"],
+          "additionalProperties": false
+        },
+        "noAttributes": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": ["title", "description"],
+          "additionalProperties": false
+        },
+        "selectOption": {
+          "type": "string"
+        },
+        "enterValue": {
+          "type": "string"
+        },
+        "section": {
+          "type": "object",
+          "properties": {
+            "heading": {
+              "type": "string"
+            },
+            "edit": {
+              "type": "string"
+            },
+            "noAttributesAssigned": {
+              "type": "string"
+            },
+            "attributeFallback": {
+              "type": "string"
+            }
+          },
+          "required": ["heading", "edit", "noAttributesAssigned", "attributeFallback"],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "title",
+        "loading",
+        "description",
+        "save",
+        "saving",
+        "back",
+        "success",
+        "errorUpdate",
+        "error",
+        "noAttributes",
+        "selectOption",
+        "enterValue",
+        "section"
+      ],
       "additionalProperties": false
     },
     "media": {
@@ -14655,6 +14983,7 @@
     "stock",
     "shippingProfile",
     "colors",
+    "additionalAttributes",
     "media",
     "toasts",
     "collections",

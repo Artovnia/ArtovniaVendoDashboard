@@ -480,7 +480,7 @@ export const ProductEditVariantForm = ({
           <Divider />
           {/* Custom Variant Attributes Section */}
           <div className="flex flex-col gap-y-4">
-            <Heading level="h2">{t('products.additionalAttributes.title')}</Heading>
+            <Heading level="h2">{t('additionalAttributes.title')}</Heading>
             {!isAttributesLoading && variantAttributesData?.attributes?.length > 0 && (
               <div className="flex flex-col gap-y-4">
                 {variantAttributesData.attributes.map((attribute) => (
@@ -498,7 +498,7 @@ export const ProductEditVariantForm = ({
                               onChange={(value) => {
                                 field.onChange(value || "")
                               }}
-                              placeholder={t('products.additionalAttributes.selectOption')}
+                              placeholder={t('additionalAttributes.selectOption')}
                               options={attribute.possible_values.map((val) => ({
                                 label: val,
                                 value: val,
@@ -508,7 +508,7 @@ export const ProductEditVariantForm = ({
                             <Input 
                               {...field}
                               value={field.value || ""} 
-                              placeholder={t('products.additionalAttributes.enterValue')} 
+                              placeholder={t('additionalAttributes.enterValue')} 
                             />
                           )}
                         </Form.Control>
@@ -526,7 +526,7 @@ export const ProductEditVariantForm = ({
               </div>
             )}
             {!isAttributesLoading && (!variantAttributesData?.attributes?.length) && (
-              <p className="text-ui-fg-subtle">{t('products.additionalAttributes.noAttributes.title')}</p>
+              <p className="text-ui-fg-subtle">{t('additionalAttributes.noAttributes.title')}</p>
             )}
           </div>
         </RouteDrawer.Body>

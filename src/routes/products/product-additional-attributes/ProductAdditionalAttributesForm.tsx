@@ -50,11 +50,11 @@ export const ProductAdditionalAttributesForm = () => {
     return (
       <RouteDrawer>
         <RouteDrawer.Header>
-          <Heading level="h2">{t('products.additionalAttributes.title')}</Heading>
+          <Heading level="h2">{t('additionalAttributes.title')}</Heading>
         </RouteDrawer.Header>
         <RouteDrawer.Body>
           <div className="flex items-center justify-center p-8">
-            <div className="animate-pulse">{t('products.additionalAttributes.loading')}</div>
+            <div className="animate-pulse">{t('additionalAttributes.loading')}</div>
           </div>
         </RouteDrawer.Body>
       </RouteDrawer>
@@ -85,13 +85,13 @@ export const ProductAdditionalAttributesForm = () => {
         attribute_values: attributeValues
       });
       
-      toast.success(t('products.additionalAttributes.success'));
+      toast.success(t('additionalAttributes.success'));
       
       // Navigate back to the product detail page after successful save
       navigate(`/products/${id}`);
     } catch (error) {
 
-      toast.error(t('products.additionalAttributes.errorUpdate'));
+      toast.error(t('additionalAttributes.errorUpdate'));
     }
   }
   
@@ -101,20 +101,20 @@ export const ProductAdditionalAttributesForm = () => {
   return (
     <RouteDrawer>
       <RouteDrawer.Header>
-        <Heading level="h2">{t('products.additionalAttributes.title')}</Heading>
+        <Heading level="h2">{t('additionalAttributes.title')}</Heading>
       </RouteDrawer.Header>
       <RouteDrawer.Body>
         {error && (
           <div className="bg-rose-50 p-4 mb-4 rounded border border-rose-200">
-            <p className="text-rose-700 font-medium">{t('products.additionalAttributes.error.title')}</p>
-            <p className="text-rose-600 text-sm">{t('products.additionalAttributes.error.description')}</p>
+            <p className="text-rose-700 font-medium">{t('additionalAttributes.error.title')}</p>
+            <p className="text-rose-600 text-sm">{t('additionalAttributes.error.description')}</p>
           </div>
         )}
         
         {!hasAttributes && !error && (
           <div className="bg-blue-50 p-4 mb-4 rounded border border-blue-200">
-            <p className="text-blue-700 font-medium">{t('products.additionalAttributes.noAttributes.title')}</p>
-            <p className="text-blue-600 text-sm">{t('products.additionalAttributes.noAttributes.description')}</p>
+            <p className="text-blue-700 font-medium">{t('additionalAttributes.noAttributes.title')}</p>
+            <p className="text-blue-600 text-sm">{t('additionalAttributes.noAttributes.description')}</p>
           </div>
         )}
 
@@ -147,20 +147,20 @@ export const ProductAdditionalAttributesForm = () => {
                     isLoading={updateProductAttributes.isPending}
                     disabled={updateProductAttributes.isPending}
                   >
-                    {updateProductAttributes.isPending ? t('products.additionalAttributes.saving') : t('products.additionalAttributes.save')}
+                    {updateProductAttributes.isPending ? t('additionalAttributes.saving') : t('additionalAttributes.save')}
                   </Button>
                 </div>
               </>
             ) : (
               <div className="flex justify-end mt-4">
-                <Button onClick={() => window.history.back()} variant="secondary">{t('products.additionalAttributes.back')}</Button>
+                <Button onClick={() => window.history.back()} variant="secondary">{t('additionalAttributes.back')}</Button>
               </div>
             )}
           </form>
         </Form>
         
         <div className="mt-8 pt-4 border-t text-sm text-gray-500">
-          <p>{t('products.additionalAttributes.description')}</p>
+          <p>{t('additionalAttributes.description')}</p>
         </div>
       </RouteDrawer.Body>
     </RouteDrawer>
