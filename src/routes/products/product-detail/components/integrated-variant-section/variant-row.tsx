@@ -23,7 +23,7 @@ type VariantRowProps = {
 
 export const VariantRow = ({ variant, productId }: VariantRowProps) => {
   const { t } = useTranslation()
-  const [expanded, setExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(true)
   const navigate = useNavigate()
   const prompt = usePrompt()
   const { mutateAsync: deleteVariant } = useDeleteVariantLazy(productId)
