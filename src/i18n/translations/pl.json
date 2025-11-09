@@ -1818,8 +1818,20 @@
     "subtitle": "Grupuj produkty o podobnych wymaganiach wysyłkowych w profile.",
     "create": {
       "header": "Utwórz profil wysyłki",
+      "description": "Utwórz nowy profil wysyłki",
       "hint": "Utwórz nowy profil wysyłki, aby pogrupować produkty o podobnych wymaganiach wysyłkowych.",
-      "successToast": "Profil wysyłki {{name}} został pomyślnie utworzony."
+      "successToast": "Profil wysyłki {{name}} został pomyślnie utworzony.",
+      "customProfile": "Profil niestandardowy",
+      "customProfileHint": "Użyj tej opcji, aby utworzyć profil z ograniczeniami regionalnymi. Na przykład, jeśli masz paczkę standardową, która jest wysyłana do Polski, Niemiec i Czech, ale chcesz ograniczyć konkretny produkt tylko do Polski, utwórz dla niego profil niestandardowy.",
+      "customNamePlaceholder": "Na przykład: Paczka standardowa Polska, Standard Parcel Poland Only",
+      "customNameHint": "Wprowadź opisową nazwę wskazującą ograniczenie regionalne",
+      "customTypeHint": "Wybierz podstawowy typ transportu dla tego profilu niestandardowego",
+      "namePlaceholder": "Wybierz opcję wysyłki",
+      "typePlaceholder": "Wybierz typ transportu",
+      "errorMissingData": "Błąd tworzenia profilu wysyłki: Brak danych w odpowiedzi",
+      "duplicateError": "Profil wysyłki o nazwie \"{{name}}\" już istnieje.",
+      "genericError": "Błąd tworzenia profilu wysyłki",
+      "unexpectedError": "Wystąpił nieoczekiwany błąd"
     },
     "delete": {
       "title": "Usuń profil wysyłki",

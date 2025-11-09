@@ -2954,14 +2954,50 @@
             "header": {
               "type": "string"
             },
+            "description": {
+              "type": "string"
+            },
             "hint": {
               "type": "string"
             },
             "successToast": {
               "type": "string"
+            },
+            "customProfile": {
+              "type": "string"
+            },
+            "customProfileHint": {
+              "type": "string"
+            },
+            "customNamePlaceholder": {
+              "type": "string"
+            },
+            "customNameHint": {
+              "type": "string"
+            },
+            "customTypeHint": {
+              "type": "string"
+            },
+            "namePlaceholder": {
+              "type": "string"
+            },
+            "typePlaceholder": {
+              "type": "string"
+            },
+            "errorMissingData": {
+              "type": "string"
+            },
+            "duplicateError": {
+              "type": "string"
+            },
+            "genericError": {
+              "type": "string"
+            },
+            "unexpectedError": {
+              "type": "string"
             }
           },
-          "required": ["header", "hint", "successToast"],
+          "required": ["header", "hint", "successToast", "customProfile", "customProfileHint", "customNamePlaceholder", "customNameHint", "customTypeHint", "namePlaceholder", "typePlaceholder", "errorMissingData", "duplicateError", "genericError", "unexpectedError"],
           "additionalProperties": false
         },
         "delete": {

@@ -30,7 +30,6 @@ type ShippingProfileGeneralSectionProps = {
 export const ShippingProfileGeneralSection = ({
   profile,
 }: ShippingProfileGeneralSectionProps) => {
-  console.log('Shipping profile in component:', profile);
   const { t } = useTranslation()
   const prompt = usePrompt()
   const navigate = useNavigate()

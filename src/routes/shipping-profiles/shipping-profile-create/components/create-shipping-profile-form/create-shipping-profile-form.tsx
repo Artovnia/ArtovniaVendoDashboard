@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Button, Heading, Input, Select, Text, toast } from "@medusajs/ui"
+import { Button, Heading, Input, Select, Text, toast, Switch } from "@medusajs/ui"
 import { useForm, useWatch } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import * as zod from "zod"
@@ -14,8 +14,9 @@ import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
 import { useCreateShippingProfile } from "../../../../../hooks/api/shipping-profiles"
 
 const CreateShippingOptionsSchema = zod.object({
-  name: zod.string().min(1),
-  type: zod.string().min(1),
+  name: zod.string().min(1, "Name is required"),
+  type: zod.string().min(1, "Type is required"),
+  isCustom: zod.boolean().optional(),
 })
 
 // Define shipping profile categories and options
@@ -24,19 +25,18 @@ type ShippingProfileOptionsType = {
   [key: string]: string[];
 };
 
-const shippingProfileOptions: ShippingProfileOptionsType = {
+// Polish shipping profile options
+const shippingProfileOptionsPL: ShippingProfileOptionsType = {
   "Listy i przesyłki pocztowe": [
     "List zwykły",
     "List polecony",
     "Przesyłka dokumentowa"
   ],
   "Paczki standardowe": [
+    "Mini paczka",
     "Mała paczka",
     "Średnia paczka",
     "Duża paczka",
-    "Paczkomaty – gabaryt A",
-    "Paczkomaty – gabaryt B",
-    "Paczkomaty – gabaryt C"
   ],
   "Paczki niestandardowe": [
     "Kształt nieregularny",
@@ -68,25 +68,77 @@ const shippingProfileOptions: ShippingProfileOptionsType = {
   ],
 };
 
+// English shipping profile options
+const shippingProfileOptionsEN: ShippingProfileOptionsType = {
+  "Letters and postal shipments": [
+    "Regular letter",
+    "Registered letter",
+    "Document shipment"
+  ],
+  "Standard parcels": [
+    "Mini parcel",
+    "Small parcel",
+    "Medium parcel",
+    "Large parcel",
+  ],
+  "Non-standard parcels": [
+    "Irregular shape",
+    "With protruding elements",
+    "Fragile or easily breakable",
+    "With additional protection"
+  ],
+  "Oversized / large items": [
+    "Furniture",
+    "Home appliances/Electronics",
+    "Bicycles, scooters, strollers",
+    "Online orders with delivery inside"
+  ],
+  "Pallets (heavy transport)": [
+    "EURO pallet",
+    "Industrial pallet",
+    "Non-standard pallet",
+    "Semi-heavy pallet",
+    "Stacked / stretch-wrapped pallet"
+  ],
+  "Atypical and specialized transport": [
+    "Furniture transport with assembly",
+    "ADR goods (dangerous)",
+    "Refrigerated goods",
+    "Medical, laboratory equipment transport",
+    "Air cargo shipments",
+    "Sea container (FCL/LCL)",
+    "Machinery, vehicles, steel structures"
+  ],
+};
+
 export function CreateShippingProfileForm() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { handleSuccess } = useRouteModal()
   const [availableNames, setAvailableNames] = useState<string[]>([])
+
+  // Get the appropriate shipping options based on language
+  const shippingProfileOptions = i18n.language === 'en' ? shippingProfileOptionsEN : shippingProfileOptionsPL;
 
   const form = useForm<zod.infer<typeof CreateShippingOptionsSchema>>({
     defaultValues: {
       name: "",
       type: "",
+      isCustom: false,
     },
     resolver: zodResolver(CreateShippingOptionsSchema),
   })
 
   const { mutateAsync, isPending } = useCreateShippingProfile()
   
-  // Watch for changes in the selected type
+  // Watch for changes in the selected type and custom toggle
   const selectedType = useWatch({
     control: form.control,
     name: "type"
+  });
+  
+  const isCustom = useWatch({
+    control: form.control,
+    name: "isCustom"
   });
   
   // Update available names when type changes
@@ -102,7 +154,15 @@ export function CreateShippingProfileForm() {
     } else {
       setAvailableNames([])
     }
-  }, [selectedType, form])
+  }, [selectedType, form, shippingProfileOptions])
+  
+  // Reset fields when custom toggle changes
+  useEffect(() => {
+    if (isCustom) {
+      form.setValue("type", "")
+      form.setValue("name", "")
+    }
+  }, [isCustom, form])
 
   const handleSubmit = form.handleSubmit(async (values) => {
     try {
@@ -129,9 +189,7 @@ export function CreateShippingProfileForm() {
               // This would be strange but handle it gracefully
               console.error("Missing shipping_profile in success response:", response);
               toast.error(
-                t("shippingProfile.create.errorMissingData", { 
-                  defaultValue: "Error creating shipping profile: Missing data in response" 
-                })
+                t("shippingProfile.create.errorMissingData")
               );
             }
           },
@@ -144,16 +202,13 @@ export function CreateShippingProfileForm() {
                 error?.message?.includes("You already have")) {
               toast.error(
                 t("shippingProfile.create.duplicateError", { 
-                  defaultValue: `A shipping profile named "${values.name}" already exists.`,
                   name: values.name 
                 })
               );
             } else {
               toast.error(
                 error.message || 
-                t("shippingProfile.create.genericError", { 
-                  defaultValue: "Error creating shipping profile" 
-                })
+                t("shippingProfile.create.genericError")
               );
             }
           },
@@ -163,9 +218,7 @@ export function CreateShippingProfileForm() {
       // Catch any unexpected errors that might occur
       console.error("Unexpected error in shipping profile creation:", unexpectedError);
       toast.error(
-        t("shippingProfile.create.unexpectedError", { 
-          defaultValue: "An unexpected error occurred" 
-        })
+        t("shippingProfile.create.unexpectedError")
       );
     }
   })
@@ -175,10 +228,10 @@ export function CreateShippingProfileForm() {
       <KeyboundForm onSubmit={handleSubmit}>
         <RouteFocusModal.Header>
           <RouteFocusModal.Title>
-            {t("shippingProfile.create.title", { defaultValue: "Stworz profil wysyłki" })}
+            {t("shippingProfile.create.header")}
           </RouteFocusModal.Title>
           <RouteFocusModal.Description>
-            {t("shippingProfile.create.description", { defaultValue: "Stworz nowy profil wysyłki" })}
+            {t("shippingProfile.create.description")}
           </RouteFocusModal.Description>
         </RouteFocusModal.Header>
         <RouteFocusModal.Body className="flex flex-col gap-y-8 overflow-y-auto">
@@ -192,65 +245,163 @@ export function CreateShippingProfileForm() {
                   {t("shippingProfile.create.hint")}
                 </Text>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <Form.Field
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => {
-                    return (
-                      <Form.Item>
-                        <Form.Label>{t("fields.name")}</Form.Label>
-                        <Form.Control>
-                          <Select
-                            {...field}
-                            onValueChange={field.onChange}
-                            disabled={!selectedType}
-                          >
-                            <Select.Trigger>
-                              <Select.Value placeholder="opcja transportu" />
-                            </Select.Trigger>
-                            <Select.Content>
-                              {availableNames.map((name) => (
-                                <Select.Item key={name} value={name}>{name}</Select.Item>
-                              ))}
-                            </Select.Content>
-                          </Select>
-                        </Form.Control>
-                        <Form.ErrorMessage />
-                      </Form.Item>
-                    )
-                  }}
-                />
-                <Form.Field
-                  control={form.control}
-                  name="type"
-                  render={({ field }) => {
-                    return (
-                      <Form.Item>
-                        <Form.Label tooltip={t("shippingProfile.tooltip.type")}>
-                          {t("fields.type")}
-                        </Form.Label>
-                        <Form.Control>
-                          <Select
-                            {...field}
-                            onValueChange={field.onChange}
-                          >
-                            <Select.Trigger>
-                              <Select.Value placeholder="typ transportu" />
-                            </Select.Trigger>
-                            <Select.Content>
-                              {Object.keys(shippingProfileOptions).map((type) => (
-                                <Select.Item key={type} value={type}>{type}</Select.Item>
-                              ))}
-                            </Select.Content>
-                          </Select>
-                        </Form.Control>
-                        <Form.ErrorMessage />
-                      </Form.Item>
-                    )
-                  }}
-                />
-              </div>
+              {/* Custom Profile Toggle - More Prominent */}
+              <Form.Field
+                control={form.control}
+                name="isCustom"
+                render={({ field: { value, onChange, ...field } }) => {
+                  return (
+                    <Form.Item>
+                      <div className={`rounded-lg border-2 p-4 transition-colors ${
+                        value 
+                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/20' 
+                          : 'border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-900/20'
+                      }`}>
+                        <div className="flex items-start gap-x-4">
+                          <Form.Control>
+                            <Switch
+                              checked={value}
+                              onCheckedChange={onChange}
+                              {...field}
+                              className="mt-1"
+                            />
+                          </Form.Control>
+                          <div className="flex flex-1 flex-col gap-y-2">
+                            <Form.Label className="!mt-0 text-base font-semibold">
+                              {t("shippingProfile.create.customProfile")}
+                            </Form.Label>
+                            <Form.Hint className="!mt-0 text-sm">
+                              {t("shippingProfile.create.customProfileHint")}
+                            </Form.Hint>
+                          </div>
+                        </div>
+                      </div>
+                      <Form.ErrorMessage />
+                    </Form.Item>
+                  )
+                }}
+              />
+
+              {/* Conditional rendering based on isCustom */}
+              {isCustom ? (
+                // Custom profile - requires both name and type
+                <div className="grid grid-cols-1 gap-4">
+                  <Form.Field
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => {
+                      return (
+                        <Form.Item>
+                          <Form.Label>{t("fields.name")}</Form.Label>
+                          <Form.Control>
+                            <Input
+                              {...field}
+                              placeholder={t("shippingProfile.create.customNamePlaceholder")}
+                            />
+                          </Form.Control>
+                          <Form.Hint>
+                            {t("shippingProfile.create.customNameHint")}
+                          </Form.Hint>
+                          <Form.ErrorMessage />
+                        </Form.Item>
+                      )
+                    }}
+                  />
+                  <Form.Field
+                    control={form.control}
+                    name="type"
+                    render={({ field }) => {
+                      return (
+                        <Form.Item>
+                          <Form.Label tooltip={t("shippingProfile.tooltip.type")}>
+                            {t("fields.type")}
+                          </Form.Label>
+                          <Form.Control>
+                            <Select
+                              {...field}
+                              onValueChange={field.onChange}
+                            >
+                              <Select.Trigger>
+                                <Select.Value placeholder={t("shippingProfile.create.typePlaceholder")} />
+                              </Select.Trigger>
+                              <Select.Content>
+                                {Object.keys(shippingProfileOptions).map((type) => (
+                                  <Select.Item key={type} value={type}>{type}</Select.Item>
+                                ))}
+                              </Select.Content>
+                            </Select>
+                          </Form.Control>
+                          <Form.Hint>
+                            {t("shippingProfile.create.customTypeHint")}
+                          </Form.Hint>
+                          <Form.ErrorMessage />
+                        </Form.Item>
+                      )
+                    }}
+                  />
+                </div>
+              ) : (
+                // Standard dropdowns
+                <div className="grid grid-cols-2 gap-4">
+                  <Form.Field
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => {
+                      return (
+                        <Form.Item>
+                          <Form.Label>{t("fields.name")}</Form.Label>
+                          <Form.Control>
+                            <Select
+                              {...field}
+                              onValueChange={field.onChange}
+                              disabled={!selectedType}
+                            >
+                              <Select.Trigger>
+                                <Select.Value placeholder={t("shippingProfile.create.namePlaceholder")} />
+                              </Select.Trigger>
+                              <Select.Content>
+                                {availableNames.map((name) => (
+                                  <Select.Item key={name} value={name}>{name}</Select.Item>
+                                ))}
+                              </Select.Content>
+                            </Select>
+                          </Form.Control>
+                          <Form.ErrorMessage />
+                        </Form.Item>
+                      )
+                    }}
+                  />
+                  <Form.Field
+                    control={form.control}
+                    name="type"
+                    render={({ field }) => {
+                      return (
+                        <Form.Item>
+                          <Form.Label tooltip={t("shippingProfile.tooltip.type")}>
+                            {t("fields.type")}
+                          </Form.Label>
+                          <Form.Control>
+                            <Select
+                              {...field}
+                              onValueChange={field.onChange}
+                            >
+                              <Select.Trigger>
+                                <Select.Value placeholder={t("shippingProfile.create.typePlaceholder")} />
+                              </Select.Trigger>
+                              <Select.Content>
+                                {Object.keys(shippingProfileOptions).map((type) => (
+                                  <Select.Item key={type} value={type}>{type}</Select.Item>
+                                ))}
+                              </Select.Content>
+                            </Select>
+                          </Form.Control>
+                          <Form.ErrorMessage />
+                        </Form.Item>
+                      )
+                    }}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </RouteFocusModal.Body>

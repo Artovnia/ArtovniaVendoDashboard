@@ -794,23 +794,7 @@
         "alreadyManagedWithSku": "This inventory item is already editable under {{title}} ({{sku}})."
       }
     },
-    "shippingProfile": {
-      "header": "Shipping Profile",
-      "currentlyAssigned": "Currently assigned",
-      "noProfileAssigned": "No shipping profile assigned",
-      "noProfileDescription": "This product has no shipping profile",
-      "edit": {
-        "header": "Shipping Configuration",
-        "toasts": {
-          "success": "Successfully updated the shipping profile for {{title}}."
-        }
-      },
-      "create": {
-        "errors": {
-          "required": "Shipping profile is required"
-        }
-      }
-    },
+    
     "colors": {
       "header": "Colors",
       "loading": "Loading colors...",
@@ -1865,8 +1849,20 @@
     "subtitle": "Group products with similar shipping requirements into profiles.",
     "create": {
       "header": "Create Shipping Profile",
+      "description": "Create a new shipping profile",
       "hint": "Create a new shipping profile to group products with similar shipping requirements.",
-      "successToast": "Shipping profile {{name}} was successfully created."
+      "successToast": "Shipping profile {{name}} was successfully created.",
+      "customProfile": "Custom Profile",
+      "customProfileHint": "Use this option to create a profile for region-specific restrictions. For example, if you have a standard parcel that ships to Poland, Germany, and Czech Republic, but want to restrict a specific product to Poland only, create a custom profile for it.",
+      "customNamePlaceholder": "For example: Paczka standardowa Polska, Standard Parcel Poland Only",
+      "customNameHint": "Enter a descriptive name that indicates the region restriction",
+      "customTypeHint": "Select the base transport type for this custom profile",
+      "namePlaceholder": "Select shipping option",
+      "typePlaceholder": "Select transport type",
+      "errorMissingData": "Error creating shipping profile: Missing data in response",
+      "duplicateError": "A shipping profile named \"{{name}}\" already exists.",
+      "genericError": "Error creating shipping profile",
+      "unexpectedError": "An unexpected error occurred"
     },
     "delete": {
       "title": "Delete Shipping Profile",
