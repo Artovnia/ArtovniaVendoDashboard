@@ -166,7 +166,7 @@ export const ProductEditVariantForm = ({
         }
       }
 
-      toast.success(t("products.variant.edit.success"))
+      toast.success(t("variant.edit.success"))
       handleSuccess()
     } catch (error: any) {
       console.error("Error updating variant:", error)
@@ -246,7 +246,7 @@ export const ProductEditVariantForm = ({
           <div className="flex flex-col gap-y-8">
             <div className="flex flex-col gap-y-4">
               <Heading level="h2">
-                {t("products.variant.inventory.header")}
+                {t("variant.inventory.header")}
               </Heading>
               <Form.Field
                 control={form.control}
@@ -318,7 +318,7 @@ export const ProductEditVariantForm = ({
                     <div className="flex flex-col gap-y-1">
                       <div className="flex items-center justify-between">
                         <Form.Label>
-                          {t("products.variant.inventory.manageInventoryLabel")}
+                          {t("variant.inventory.manageInventoryLabel")}
                         </Form.Label>
                         <Form.Control>
                           <Switch
@@ -329,7 +329,7 @@ export const ProductEditVariantForm = ({
                         </Form.Control>
                       </div>
                       <Form.Hint>
-                        {t("products.variant.inventory.manageInventoryHint")}
+                        {t("variant.inventory.manageInventoryHint")}
                       </Form.Hint>
                     </div>
                     <Form.ErrorMessage />
@@ -346,7 +346,7 @@ export const ProductEditVariantForm = ({
                     <div className="flex flex-col gap-y-1">
                       <div className="flex items-center justify-between">
                         <Form.Label>
-                          {t("products.variant.inventory.allowBackordersLabel")}
+                          {t("variant.inventory.allowBackordersLabel")}
                         </Form.Label>
                         <Form.Control>
                           <Switch
@@ -357,7 +357,7 @@ export const ProductEditVariantForm = ({
                         </Form.Control>
                       </div>
                       <Form.Hint>
-                        {t("products.variant.inventory.allowBackordersHint")}
+                        {t("variant.inventory.allowBackordersHint")}
                       </Form.Hint>
                     </div>
                     <Form.ErrorMessage />

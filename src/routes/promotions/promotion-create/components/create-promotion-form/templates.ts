@@ -1,15 +1,17 @@
+import i18n from 'i18next'
+
 const commonHiddenFields = [
   'type',
   'application_method.type',
   'application_method.allocation',
 ];
 
-export const templates = [
+export const getTemplates = () => [
   // {
   //   id: "amount_off_products",
   //   type: "standard",
-  //   title: "Amount off products",
-  //   description: "Discount specific products or collection of products",
+  //   titleKey: "promotions.templates.amount_off_products.title",
+  //   descriptionKey: "promotions.templates.amount_off_products.description",
   //   hiddenFields: [...commonHiddenFields],
   //   defaults: {
   //     is_automatic: "false",
@@ -24,8 +26,8 @@ export const templates = [
   // {
   //   id: "amount_off_order",
   //   type: "standard",
-  //   title: "Amount off order",
-  //   description: "Discounts the total order amount",
+  //   titleKey: "promotions.templates.amount_off_order.title",
+  //   descriptionKey: "promotions.templates.amount_off_order.description",
   //   hiddenFields: [...commonHiddenFields],
   //   defaults: {
   //     is_automatic: "false",
@@ -40,9 +42,8 @@ export const templates = [
   {
     id: 'percentage_off_product',
     type: 'standard',
-    title: 'Percentage off product',
-    description:
-      'Discounts a percentage off selected products',
+    title: i18n.t('promotions.templates.percentage_off_product.title'),
+    description: i18n.t('promotions.templates.percentage_off_product.description'),
     hiddenFields: [...commonHiddenFields],
     defaults: {
       is_automatic: 'false',
@@ -57,9 +58,8 @@ export const templates = [
   {
     id: 'percentage_off_order',
     type: 'standard',
-    title: 'Percentage off order',
-    description:
-      'Discounts a percentage of the total order amount',
+    title: i18n.t('promotions.templates.percentage_off_order.title'),
+    description: i18n.t('promotions.templates.percentage_off_order.description'),
     hiddenFields: [...commonHiddenFields],
     defaults: {
       is_automatic: 'false',
@@ -74,8 +74,8 @@ export const templates = [
   {
     id: 'buy_get',
     type: 'buy_get',
-    title: 'Buy X Get Y',
-    description: 'Buy X product(s), get Y product(s)',
+    title: i18n.t('promotions.templates.buy_get.title'),
+    description: i18n.t('promotions.templates.buy_get.description'),
     hiddenFields: [
       ...commonHiddenFields,
       'application_method.value',

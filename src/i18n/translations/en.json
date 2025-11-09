@@ -683,10 +683,6 @@
     "editAttributes": "Edit Attributes",
     "editOptions": "Edit Options",
     "editPrices": "Edit prices",
-    "noSalesChannels": "Not available in any sales channels",
-    "variantCount_one": "{{count}} variant",
-    "variantCount_other": "{{count}} variants",
-    "deleteVariantWarning": "You are about to delete the variant {{title}}. This action cannot be undone.",
     "variant": {
       "header": "Variants",
       "empty": {
@@ -821,32 +817,6 @@
       "noColors": "No colors assigned to this product"
     },
     "editPrices": "Edit Prices",
-    "additionalAttributes": {
-      "title": "Additional Attributes",
-      "loading": "Loading attributes...",
-      "description": "Product attributes allow you to specify additional characteristics that are unique to products.",
-      "save": "Save",
-      "saving": "Saving...",
-      "back": "Back",
-      "success": "Product attributes have been successfully updated",
-      "errorUpdate": "Failed to update product attributes. Please try again.",
-      "error": {
-        "title": "An error occurred while loading attributes",
-        "description": "The backend API returned an error. Please try again later or contact support."
-      },
-      "noAttributes": {
-        "title": "No available attributes",
-        "description": "Currently, no additional attributes are configured for this product category. The backend API may be experiencing issues."
-      },
-      "selectOption": "Select an option",
-      "enterValue": "Enter value",
-      "section": {
-        "heading": "Additional Attributes",
-        "edit": "Edit",
-        "noAttributesAssigned": "No additional attributes assigned. Click Edit to add attributes.",
-        "attributeFallback": "Attribute {{index}}"
-      }
-    },
     "media": {
       "label": "Media",
       "header": "Media",
@@ -913,6 +883,36 @@
         "successToast_one": "Product was successfully removed from the collection.",
         "successToast_other": "Products were successfully removed from the collection."
       }
+    }
+  },
+  "noSalesChannels": "Not available in any sales channels",
+  "variantCount_one": "{{count}} variant",
+  "variantCount_other": "{{count}} variants",
+  "deleteVariantWarning": "You are about to delete the variant {{title}}. This action cannot be undone.",
+  "additionalAttributes": {
+    "title": "Additional Attributes",
+    "loading": "Loading attributes...",
+    "description": "Product attributes allow you to specify additional characteristics that are unique to products.",
+    "save": "Save",
+    "saving": "Saving...",
+    "back": "Back",
+    "success": "Product attributes have been successfully updated",
+    "errorUpdate": "Failed to update product attributes. Please try again.",
+    "error": {
+      "title": "An error occurred while loading attributes",
+      "description": "The backend API returned an error. Please try again later or contact support."
+    },
+    "noAttributes": {
+      "title": "No available attributes",
+      "description": "Currently, no additional attributes are configured for this product category. The backend API may be experiencing issues."
+    },
+    "selectOption": "Select an option",
+    "enterValue": "Enter value",
+    "section": {
+      "heading": "Additional Attributes",
+      "edit": "Edit",
+      "noAttributesAssigned": "No additional attributes assigned. Click Edit to add attributes.",
+      "attributeFallback": "Attribute {{index}}"
     }
   },
   "categories": {
@@ -2161,6 +2161,20 @@
       "promotionCreateSuccess": "Promotion ({{code}}) was successfully created."
     },
     "create": {},
+    "templates": {
+      "percentage_off_product": {
+        "title": "Percentage off product",
+        "description": "Discounts a percentage off selected products"
+      },
+      "percentage_off_order": {
+        "title": "Percentage off order",
+        "description": "Discounts a percentage of the total order amount"
+      },
+      "buy_get": {
+        "title": "Buy X Get Y",
+        "description": "Buy X product(s), get Y product(s)"
+      }
+    },
     "edit": {
       "title": "Edit Promotion Details",
       "rules": {

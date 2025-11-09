@@ -1,7 +1,7 @@
 import { forwardRef, useState, useRef, useEffect } from "react"
 import { clx } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
-import { countries } from "../../../lib/data/countries"
+import { useTranslatedCountries } from "../../../hooks/use-translated-countries"
 import { ChevronDown } from "@medusajs/icons"
 
 type CountrySelectProps = {
@@ -21,6 +21,7 @@ export const CountrySelect = forwardRef<HTMLButtonElement, CountrySelectProps>(
     ref
   ) => {
     const { t } = useTranslation()
+    const countries = useTranslatedCountries()
     const [isOpen, setIsOpen] = useState(false)
     const [selectedValue, setSelectedValue] = useState(value || defaultValue || "")
     const [searchString, setSearchString] = useState("") 

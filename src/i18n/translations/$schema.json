@@ -7914,6 +7914,52 @@
           "required": [],
           "additionalProperties": false
         },
+        "templates": {
+          "type": "object",
+          "properties": {
+            "percentage_off_product": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                }
+              },
+              "required": ["title", "description"],
+              "additionalProperties": false
+            },
+            "percentage_off_order": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                }
+              },
+              "required": ["title", "description"],
+              "additionalProperties": false
+            },
+            "buy_get": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                }
+              },
+              "required": ["title", "description"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["percentage_off_product", "percentage_off_order", "buy_get"],
+          "additionalProperties": false
+        },
         "edit": {
           "type": "object",
           "properties": {
@@ -8344,6 +8390,7 @@
         "errors",
         "toasts",
         "create",
+        "templates",
         "edit",
         "campaign",
         "campaign_currency",

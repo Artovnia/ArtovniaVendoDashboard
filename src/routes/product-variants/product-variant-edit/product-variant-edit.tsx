@@ -53,7 +53,7 @@ export const ProductVariantEdit = () => {
   return (
     <RouteDrawer>
       <RouteDrawer.Header>
-        <Heading>{t("products.variant.edit.header")}</Heading>
+        <Heading>{t("variant.edit.header")}</Heading>
       </RouteDrawer.Header>
       {ready && <ProductEditVariantForm variant={variant} product={product} />}
     </RouteDrawer>

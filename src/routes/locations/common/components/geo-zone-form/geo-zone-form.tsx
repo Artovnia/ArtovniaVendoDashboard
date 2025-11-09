@@ -17,10 +17,8 @@ import {
 } from "../../../../../components/modals"
 import { _DataTable } from "../../../../../components/table/data-table"
 import { useDataTable } from "../../../../../hooks/use-data-table"
-import {
-  StaticCountry,
-  countries as staticCountries,
-} from "../../../../../lib/data/countries"
+import { StaticCountry } from "../../../../../lib/data/countries"
+import { useTranslatedCountries } from "../../../../../hooks/use-translated-countries"
 import { useCountries } from "../../../../regions/common/hooks/use-countries"
 import { useCountryTableColumns } from "../../../../regions/common/hooks/use-country-table-columns"
 import { useCountryTableQuery } from "../../../../regions/common/hooks/use-country-table-query"
@@ -127,12 +125,14 @@ const AreaStackedModal = <TForm extends UseFormReturn<any>>({
     []
   )
 
+  const translatedCountries = useTranslatedCountries()
+  
   const { searchParams, raw } = useCountryTableQuery({
     pageSize: PAGE_SIZE,
     prefix: PREFIX,
   })
   const { countries, count } = useCountries({
-    countries: staticCountries.map((c) => ({
+    countries: translatedCountries.map((c) => ({
       display_name: c.display_name,
       name: c.name,
       iso_2: c.iso_2,

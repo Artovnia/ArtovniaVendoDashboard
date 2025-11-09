@@ -41,11 +41,11 @@ import { RulesFormField } from "../../../common/edit-rules/components/rules-form
 import { AddCampaignPromotionFields } from "../../../promotion-add-campaign/components/add-campaign-promotion-form"
 import { Tab } from "./constants"
 import { CreatePromotionSchema } from "./form-schema"
-import { templates } from "./templates"
+import { getTemplates } from "./templates"
 
 const defaultValues = {
   campaign_id: undefined,
-  template_id: templates[0].id!,
+  template_id: getTemplates()[0].id!,
   campaign_choice: "none" as "none",
   is_automatic: "false",
   code: "",
@@ -254,6 +254,7 @@ export const CreatePromotionForm = () => {
   })
 
   const currentTemplate = useMemo(() => {
+    const templates = getTemplates()
     const currentTemplate = templates.find(
       (template) => template.id === watchTemplateId
     )
@@ -437,7 +438,7 @@ export const CreatePromotionForm = () => {
                               {...field}
                               onValueChange={field.onChange}
                             >
-                              {templates.map((template) => {
+                              {getTemplates().map((template) => {
                                 return (
                                   <RadioGroup.ChoiceBox
                                     key={template.id}
@@ -474,7 +475,7 @@ export const CreatePromotionForm = () => {
                         size="2xsmall"
                         rounded="full"
                       >
-                        {currentTemplate?.title}
+                        {currentTemplate.title}
                       </Badge>
                     )}
                   </Heading>

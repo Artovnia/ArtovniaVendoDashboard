@@ -12,7 +12,7 @@ import {
 } from "../../../../../components/modals"
 import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
 import { useUpdateFulfillmentSetServiceZone } from "../../../../../hooks/api/fulfillment-sets"
-import { countries } from "../../../../../lib/data/countries"
+import { useTranslatedCountries, getTranslatedCountryName } from "../../../../../hooks/use-translated-countries"
 import { GeoZoneForm } from "../../../common/components/geo-zone-form"
 import { GEO_ZONE_STACKED_MODAL_ID } from "../../../common/constants"
 
@@ -35,17 +35,18 @@ export function EditServiceZoneAreasForm({
   locationId,
   zone,
 }: EditServiceZoneAreasFormProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { handleSuccess } = useRouteModal()
+  const translatedCountries = useTranslatedCountries()
 
   const form = useForm<z.infer<typeof EditServiceZoneSchema>>({
     defaultValues: {
       countries: zone.geo_zones.map((z) => {
-        const country = countries.find((c) => c.iso_2 === z.country_code)
+        const country = translatedCountries.find((c) => c.iso_2 === z.country_code)
 
         return {
           iso_2: z.country_code,
-          display_name: country?.display_name || z.country_code.toUpperCase(),
+          display_name: country?.display_name || getTranslatedCountryName(z.country_code, i18n.language, t),
         }
       }),
     },
