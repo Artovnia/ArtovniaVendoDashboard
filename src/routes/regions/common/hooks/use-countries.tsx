@@ -53,7 +53,8 @@ export const useCountries = ({
     const results = countries.filter(
       (c) =>
         c.name.toLowerCase().includes(query) ||
-        c.iso_2.toLowerCase().includes(query)
+        c.iso_2.toLowerCase().includes(query) ||
+        c.display_name.toLowerCase().includes(query)
     )
     return {
       countries: results,
