@@ -15,6 +15,7 @@ import {
 import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
 import { useCreateOrderShipment } from "../../../../../hooks/api"
 import { CreateShipmentSchema } from "./constants"
+import { uploadInvoiceQuery } from "../../../../../lib/client"
 
 type OrderCreateFulfillmentFormProps = {
   order: AdminOrder
@@ -27,7 +28,10 @@ export function OrderCreateShipmentForm({
 }: OrderCreateFulfillmentFormProps) {
   const { t } = useTranslation()
   const { handleSuccess } = useRouteModal()
-  const [uploadedInvoice, setUploadedInvoice] = useState<{ url: string; name: string } | null>(null)
+  const [uploadedInvoice, setUploadedInvoice] = useState<{
+    url: string
+    name: string
+  } | null>(null)
   const [isUploading, setIsUploading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -37,6 +41,10 @@ export function OrderCreateShipmentForm({
   const form = useForm<zod.infer<typeof CreateShipmentSchema>>({
     defaultValues: {
       send_notification: !order.no_notification,
+      labels: [{ tracking_number: "" }],
+      shipping_carrier: "",
+      invoice_url: "",
+      invoice_name: "",
     },
     resolver: zodResolver(CreateShipmentSchema),
   })
@@ -46,67 +54,44 @@ export function OrderCreateShipmentForm({
     control: form.control,
   })
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (!file) return
+  const handleFileUpload = async (
+  event: React.ChangeEvent<HTMLInputElement>
+) => {
+  const file = event.target.files?.[0]
+  if (!file) return
 
-    // Validate file type
-    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png', 'image/webp']
-    if (!allowedTypes.includes(file.type)) {
-      toast.error(t('orders.shipment.invoiceInvalidType'))
-      return
-    }
+  setIsUploading(true)
 
-    // Validate file size (10MB)
-    if (file.size > 10 * 1024 * 1024) {
-      toast.error(t('orders.shipment.invoiceFileTooLarge'))
-      return
-    }
+  try {
+    // Just pass the file, no need for order/fulfillment IDs
+    const data = await uploadInvoiceQuery(file)
 
-    setIsUploading(true)
-
-    try {
-      const formData = new FormData()
-      formData.append('invoice', file)
-
-      const response = await fetch(
-        `/vendor/orders/${order.id}/fulfillments/${fulfillment?.id}/invoice-upload`,
-        {
-          method: 'POST',
-          body: formData,
-          credentials: 'include',
-        }
-      )
-
-      if (!response.ok) {
-        throw new Error('Upload failed')
-      }
-
-      const data = await response.json()
-      setUploadedInvoice({ url: data.url, name: data.name })
-      form.setValue('invoice_url', data.url)
-      form.setValue('invoice_name', data.name)
-      toast.success(t('orders.shipment.invoiceUploadSuccess'))
-    } catch (error) {
-      console.error('Upload error:', error)
-      toast.error(t('orders.shipment.invoiceUploadError'))
-    } finally {
-      setIsUploading(false)
-    }
+    setUploadedInvoice({ url: data.url, name: data.name })
+    form.setValue("invoice_url", data.url)
+    form.setValue("invoice_name", data.name)
+    toast.success(t("orders.shipment.invoiceUploadSuccess"))
+  } catch (error) {
+    console.error("Upload error:", error)
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "An error occurred while uploading the invoice"
+    toast.error(errorMessage)
+  } finally {
+    setIsUploading(false)
   }
+}
 
   const handleRemoveInvoice = () => {
     setUploadedInvoice(null)
-    form.setValue('invoice_url', undefined)
-    form.setValue('invoice_name', undefined)
+    form.setValue("invoice_url", "")
+    form.setValue("invoice_name", "")
     if (fileInputRef.current) {
-      fileInputRef.current.value = ''
+      fileInputRef.current.value = ""
     }
   }
 
   const handleSubmit = form.handleSubmit(async (data) => {
-    // Only send fields that the backend validator expects (items, labels, invoice_url, invoice_name)
-    // The backend validator doesn't accept no_notification field
     await createShipment(
       {
         items: fulfillment?.items?.map((i) => ({
@@ -121,9 +106,8 @@ export function OrderCreateShipmentForm({
             label_url: "#",
           })),
         shipping_carrier: data.shipping_carrier,
-        invoice_url: data.invoice_url,
-        invoice_name: data.invoice_name,
-        // no_notification field is used in the UI but not sent to the API
+        invoice_url: data.invoice_url || undefined,
+        invoice_name: data.invoice_name || undefined,
       },
       {
         onSuccess: () => {
@@ -209,7 +193,6 @@ export function OrderCreateShipmentForm({
                   </Button>
                 </div>
 
-                {/* Shipping Carrier Section */}
                 <div className="mt-8 pt-8 border-t">
                   <Form.Field
                     control={form.control}
@@ -221,9 +204,11 @@ export function OrderCreateShipmentForm({
                             {t("orders.shipment.shippingCarrier")}
                           </Form.Label>
                           <Form.Control>
-                            <Input 
-                              {...field} 
-                              placeholder={t("orders.shipment.shippingCarrierPlaceholder")} 
+                            <Input
+                              {...field}
+                              placeholder={t(
+                                "orders.shipment.shippingCarrierPlaceholder"
+                              )}
                             />
                           </Form.Control>
                           <Form.ErrorMessage />
@@ -233,7 +218,6 @@ export function OrderCreateShipmentForm({
                   />
                 </div>
 
-                {/* Invoice/Receipt Upload Section */}
                 <div className="mt-8 pt-8 border-t">
                   <Heading level="h3" className="mb-4">
                     {t("orders.shipment.invoiceTitle")}
@@ -241,7 +225,7 @@ export function OrderCreateShipmentForm({
                   <p className="text-sm text-gray-600 mb-4">
                     {t("orders.shipment.invoiceDescription")}
                   </p>
-                  
+
                   {!uploadedInvoice ? (
                     <div>
                       <input
@@ -249,7 +233,7 @@ export function OrderCreateShipmentForm({
                         type="file"
                         accept=".pdf,.jpg,.jpeg,.png,.webp"
                         onChange={handleFileUpload}
-                        style={{ display: 'none' }}
+                        style={{ display: "none" }}
                         id="invoice-upload"
                       />
                       <Button
@@ -258,16 +242,20 @@ export function OrderCreateShipmentForm({
                         variant="secondary"
                         disabled={isUploading}
                       >
-                        {isUploading ? t("orders.shipment.invoiceUploading") : t("orders.shipment.invoiceSelectFile")}
+                        {isUploading
+                          ? t("orders.shipment.invoiceUploading")
+                          : t("orders.shipment.invoiceSelectFile")}
                       </Button>
                       <p className="text-xs text-gray-500 mt-2">
                         {t("orders.shipment.invoiceAllowedFormats")}
                       </p>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded border">
+                    <div className="flex items-center gap-3 p-3  rounded border">
                       <div className="flex-1">
-                        <p className="text-sm font-medium">{uploadedInvoice.name}</p>
+                        <p className="text-sm font-medium">
+                          {uploadedInvoice.name}
+                        </p>
                         <a
                           href={uploadedInvoice.url}
                           target="_blank"
@@ -289,7 +277,7 @@ export function OrderCreateShipmentForm({
                   )}
                 </div>
 
-                <div className="mt-8 pt-8 ">
+                <div className="mt-8 pt-8">
                   <Form.Field
                     control={form.control}
                     name="send_notification"
@@ -301,13 +289,11 @@ export function OrderCreateShipmentForm({
                               {t("orders.shipment.sendNotification")}
                             </Form.Label>
                             <Form.Control>
-                              <Form.Control>
-                                <Switch
-                                  checked={!!value}
-                                  onCheckedChange={onChange}
-                                  {...field}
-                                />
-                              </Form.Control>
+                              <Switch
+                                checked={!!value}
+                                onCheckedChange={onChange}
+                                {...field}
+                              />
                             </Form.Control>
                           </div>
                           <Form.Hint className="!mt-1">

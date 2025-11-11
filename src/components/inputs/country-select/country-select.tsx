@@ -192,7 +192,7 @@ export const CountrySelect = forwardRef<HTMLButtonElement, CountrySelectProps>(
           disabled={disabled}
           onClick={() => !disabled && setIsOpen(!isOpen)}
           className={clx(
-            "bg-ui-bg-field shadow-buttons-neutral transition-fg txt-compact-small flex w-full select-none appearance-none items-center justify-between rounded-md px-2 py-1.5 outline-none",
+            "bg-ui-bg-field shadow-buttons-neutral hover:bg-[#3B3634] transition-fg txt-compact-small flex w-full select-none appearance-none items-center justify-between rounded-md px-2 py-1.5 outline-none",
             "placeholder:text-ui-fg-muted text-ui-fg-base",
             "hover:bg-ui-bg-field-hover",
             "focus-visible:shadow-borders-interactive-with-active",
