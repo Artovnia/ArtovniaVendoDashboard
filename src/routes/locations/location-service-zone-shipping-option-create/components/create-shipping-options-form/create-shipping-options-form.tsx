@@ -367,6 +367,7 @@ export function CreateShippingOptionsForm({
               <CreateShippingOptionsPricesForm
                 form={form}
                 type={type}
+                isReturn={isReturn}
               />
             </ProgressTabs.Content>
           </RouteFocusModal.Body>

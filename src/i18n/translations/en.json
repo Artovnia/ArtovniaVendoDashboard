@@ -1813,7 +1813,20 @@
         },
         "provider": "Fulfillment provider",
         "profile": "Shipping profile",
-        "fulfillmentOption": "Fulfillment option"
+        "fulfillmentOption": "Fulfillment option",
+        "name": {
+          "label": "Carrier",
+          "shippingByCustomer": "Shipping by customer",
+          "carriers": {
+            "inpostKurier": "Inpost Courier",
+            "inpostPaczkomat": "Inpost Parcel Locker",
+            "dhl": "DHL",
+            "fedex": "Fedex",
+            "dpd": "DPD",
+            "gls": "GLS",
+            "ups": "UPS"
+          }
+        }
       }
     },
     "serviceZones": {
@@ -1871,6 +1884,43 @@
     },
     "tooltip": {
       "type": "Enter shipping profile type, for example: Heavy, Oversized, Freight-only, etc."
+    },
+    "types": {
+      "letters_postal": "Letters and postal shipments",
+      "standard_parcels": "Standard parcels",
+      "nonstandard_parcels": "Non-standard parcels",
+      "oversized_items": "Oversized / large items",
+      "pallets_heavy": "Pallets (heavy transport)",
+      "specialized_transport": "Atypical and specialized transport"
+    },
+    "names": {
+      "regular_letter": "Regular letter",
+      "registered_letter": "Registered letter",
+      "document_shipment": "Document shipment",
+      "mini_parcel": "Mini parcel",
+      "small_parcel": "Small parcel",
+      "medium_parcel": "Medium parcel",
+      "large_parcel": "Large parcel",
+      "irregular_shape": "Irregular shape",
+      "protruding_elements": "With protruding elements",
+      "fragile_breakable": "Fragile or easily breakable",
+      "additional_protection": "With additional protection",
+      "furniture": "Furniture",
+      "appliances_electronics": "Home appliances/Electronics",
+      "bicycles_scooters_strollers": "Bicycles, scooters, strollers",
+      "delivery_inside": "Online orders with delivery inside",
+      "euro_pallet": "EURO pallet",
+      "industrial_pallet": "Industrial pallet",
+      "nonstandard_pallet": "Non-standard pallet",
+      "semiheavy_pallet": "Semi-heavy pallet",
+      "stacked_wrapped_pallet": "Stacked / stretch-wrapped pallet",
+      "furniture_assembly": "Furniture transport with assembly",
+      "adr_dangerous": "ADR goods (dangerous)",
+      "refrigerated_goods": "Refrigerated goods",
+      "medical_laboratory": "Medical, laboratory equipment transport",
+      "air_cargo": "Air cargo shipments",
+      "sea_container": "Sea container (FCL/LCL)",
+      "machinery_vehicles": "Machinery, vehicles, steel structures"
     }
   },
   "taxRegions": {

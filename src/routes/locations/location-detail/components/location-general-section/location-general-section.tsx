@@ -47,6 +47,7 @@ import {
   isOptionEnabledInStore,
   isReturnOption,
 } from '../../../../../lib/shipping-options';
+import { translateShippingProfileKey } from '../../../../../lib/shipping-profile-i18n';
 import { FulfillmentSetType, ShippingOptionPriceType } from '../../../common/constants';
 
 const STALE_TIME = 15 * 1000;
@@ -176,6 +177,21 @@ function ShippingOption({
   const { t } = useTranslation();
 
   const isStoreOption = isOptionEnabledInStore(option);
+  
+  // Translate carrier name if it's a known carrier key
+  const getTranslatedCarrierName = (name: string) => {
+    const carrierMap: Record<string, string> = {
+      'customer-shipping': t('stockLocations.shippingOptions.fields.name.shippingByCustomer'),
+      'Inpost Kurier': t('stockLocations.shippingOptions.fields.name.carriers.inpostKurier'),
+      'Inpost paczkomat': t('stockLocations.shippingOptions.fields.name.carriers.inpostPaczkomat'),
+      'DHL': t('stockLocations.shippingOptions.fields.name.carriers.dhl'),
+      'Fedex': t('stockLocations.shippingOptions.fields.name.carriers.fedex'),
+      'DPD': t('stockLocations.shippingOptions.fields.name.carriers.dpd'),
+      'GLS': t('stockLocations.shippingOptions.fields.name.carriers.gls'),
+      'UPS': t('stockLocations.shippingOptions.fields.name.carriers.ups'),
+    };
+    return carrierMap[name] || name;
+  };
 
   const { mutateAsync } = useDeleteShippingOption(
     option.id
@@ -221,8 +237,8 @@ function ShippingOption({
     <div className='flex items-center justify-between px-3 py-2'>
       <div className='flex-1'>
         <Text size='small' weight='plus'>
-          {option.name || 'Unnamed Option'}{' '}
-          {option?.shipping_profile?.name && `- ${extractUserFriendlyShippingProfileName(option.shipping_profile.name)}`}{' '}
+          {getTranslatedCarrierName(option.name) || 'Unnamed Option'}{' '}
+          {option?.shipping_profile?.name && `- ${translateShippingProfileKey(extractUserFriendlyShippingProfileName(option.shipping_profile.name), false, t)}`}{' '}
           ({formatProvider(option.provider_id || 'manual')})
         </Text>
       </div>
@@ -500,28 +516,13 @@ function ServiceZone({
             <span>·</span>
             <Text className='text-ui-fg-subtle txt-small'>
               {type === 'shipping' 
-                ? t('stockLocations.shippingOptions.fields.count.shipping_one', 
-                   { count: shippingOptionsCount },
-                   // Default value if translation is missing, dynamically pluralize based on count
-                   shippingOptionsCount === 1 
-                     ? '{{count}} shipping option' 
-                     : '{{count}} shipping options')
-                : t('stockLocations.shippingOptions.fields.count.pickup_one', 
-                   { count: shippingOptionsCount },
-                   shippingOptionsCount === 1 
-                     ? '{{count}} pickup option' 
-                     : '{{count}} pickup options')
+                ? t('stockLocations.shippingOptions.fields.count.shipping_one', { count: shippingOptionsCount })
+                : t('stockLocations.shippingOptions.fields.count.pickup_one', { count: shippingOptionsCount })
               }
             </Text>
             <span>·</span>
             <Text className='text-ui-fg-subtle txt-small'>
-              {t('stockLocations.shippingOptions.fields.count.returns_one', 
-                  { count: returnOptionsCount },
-                  // Default value if translation is missing
-                  returnOptionsCount === 1 
-                    ? '{{count}} return option' 
-                    : '{{count}} return options')
-              }
+              {t('stockLocations.shippingOptions.fields.count.returns_one', { count: returnOptionsCount })}
             </Text>
           </div>
         </div>

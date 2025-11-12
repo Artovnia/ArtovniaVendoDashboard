@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 import { Combobox } from './combobox'
 import { useShippingProfilesWithValidation } from '../../hooks/api/shipping-profile-validation'
+import { translateShippingProfileKey } from '../../lib/shipping-profile-i18n'
 
 // Define the props interface based on the Combobox component
 interface ShippingProfileComboboxProps extends Omit<ComponentPropsWithoutRef<typeof Combobox>, 'options'> {
@@ -21,7 +22,9 @@ export const ShippingProfileCombobox = forwardRef<
 
   // Convert profiles to combobox options with validation indicators
   const options = shipping_profiles.map((profile) => {
-    let label = profile.name
+    // Translate the profile name
+    const translatedName = translateShippingProfileKey(profile.name, false, t)
+    let label = translatedName
     
     if (showValidationBadges) {
       // Add shipping options count and validation status to label
@@ -29,7 +32,7 @@ export const ShippingProfileCombobox = forwardRef<
       const statusIndicator = profile.isValid ? '✅' : '⚠️'
       const statusText = profile.isValid ? t('stockLocations.fulfillmentSets.shipping.profile.valid') : t('stockLocations.fulfillmentSets.shipping.profile.needsOptions')
       
-   label = `${statusIndicator} ${profile.name} (${optionsCount} ${optionsCount === 1 ? 'opcja' : 'opcji'}) - ${statusText}`
+   label = `${statusIndicator} ${translatedName} (${optionsCount} ${optionsCount === 1 ? 'opcja' : 'opcji'}) - ${statusText}`
     }
 
     return {

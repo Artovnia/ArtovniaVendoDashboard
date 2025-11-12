@@ -23,11 +23,13 @@ import { CreateShippingOptionSchema } from "./schema"
 type PricingPricesFormProps = {
   form: UseFormReturn<CreateShippingOptionSchema>
   type: FulfillmentSetType
+  isReturn?: boolean
 }
 
 export const CreateShippingOptionsPricesForm = ({
   form,
   type,
+  isReturn = false,
 }: PricingPricesFormProps) => {
   const isPickup = type === FulfillmentSetType.Pickup
   const { getIsOpen, setIsOpen } = useStackedModal()
@@ -75,35 +77,31 @@ export const CreateShippingOptionsPricesForm = ({
   const columns = useShippingOptionPriceColumns({
     name,
     currencies,
-    regions,
+    regions: [], // Remove region-specific pricing columns
     pricePreferences,
   })
 
   const isLoading = isStoreLoading || !store || isRegionsLoading || !regions
 
   const data = useMemo(
-    () => [[...(currencies || []), ...(regions || [])]],
-    [currencies, regions]
+    () => [[...(currencies || [])]],
+    [currencies]
   )
 
   /**
-   * Prefill prices with 0 if createing a pickup (shipping) option
+   * Prefill prices with 0 if creating a pickup option or return option
+   * For returns: Customer pays for return shipping, not the seller
+   * Note: Only currency prices are used; region-specific prices are not needed
    */
   useEffect(() => {
-    if (!isLoading && isPickup) {
+    if (!isLoading && (isPickup || isReturn)) {
       if (currencies.length > 0) {
         currencies.forEach((currency) => {
           form.setValue(`currency_prices.${currency}`, "0")
         })
       }
-
-      if (regions.length > 0) {
-        regions.forEach((region) => {
-          form.setValue(`region_prices.${region.id}`, "0")
-        })
-      }
     }
-  }, [isLoading, isPickup])
+  }, [isLoading, isPickup, isReturn, currencies, form])
 
   if (isStoreError) {
     throw storeError
@@ -133,7 +131,7 @@ export const CreateShippingOptionsPricesForm = ({
             columns={columns}
             state={form}
             onEditingChange={(editing) => setCloseOnEscape(!editing)}
-            disableInteractions={getIsOpen(CONDITIONAL_PRICES_STACKED_MODAL_ID)}
+            disableInteractions={isReturn || getIsOpen(CONDITIONAL_PRICES_STACKED_MODAL_ID)}
           />
           {selectedPrice && (
             <ConditionalPriceForm info={selectedPrice} variant="create" />

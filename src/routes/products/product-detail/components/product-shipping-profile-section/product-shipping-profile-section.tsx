@@ -7,6 +7,7 @@ import { useMemo } from "react"
 import { fetchQuery } from "../../../../../lib/client"
 
 import { ActionMenu } from "../../../../../components/common/action-menu"
+import { translateShippingProfileKey } from "../../../../../lib/shipping-profile-i18n"
 
 type ProductShippingProfileSectionProps = {
   product: HttpTypes.AdminProduct & {
@@ -82,7 +83,7 @@ export const ProductShippingProfileSection = ({
               </div>
               <div className="flex flex-1 flex-col">
                 <span className="text-ui-fg-base font-medium">
-                  {shippingProfile.name || `Profile ${shippingProfile.id}`}
+                  {translateShippingProfileKey(shippingProfile.name, false, t) || `Profile ${shippingProfile.id}`}
                 </span>
                 <span className="text-ui-fg-subtle">
                   {t("products.shippingProfile.currentlyAssigned")}

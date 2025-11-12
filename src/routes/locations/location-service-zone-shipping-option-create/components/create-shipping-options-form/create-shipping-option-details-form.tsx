@@ -25,6 +25,7 @@ import { useShippingProfiles } from '../../../../../hooks/api/shipping-profiles'
 import { useFulfillmentProviders } from '../../../../../hooks/api/fulfillment-providers';
 import { sdk } from '../../../../../lib/client';
 import { formatProvider } from '../../../../../lib/format-provider';
+import { translateShippingProfileKey } from '../../../../../lib/shipping-profile-i18n';
 import {
   FulfillmentSetType,
   ShippingOptionPriceType,
@@ -185,7 +186,7 @@ export const CreateShippingOptionDetailsForm = ({
               return (
                 <Form.Item>
                   <Form.Label>
-                    {t('fields.name')}
+                    {t('stockLocations.shippingOptions.fields.name.label')}
                   </Form.Label>
                   <Form.Control>
                     <Select
@@ -197,13 +198,37 @@ export const CreateShippingOptionDetailsForm = ({
                       </Select.Trigger>
 
                       <Select.Content>
-                        <Select.Item value="Inpost Kurier">Inpost Kurier</Select.Item>
-                        <Select.Item value="Inpost paczkomat">Inpost paczkomat</Select.Item>
-                        <Select.Item value="DHL">DHL</Select.Item>
-                        <Select.Item value="Fedex">Fedex</Select.Item>
-                        <Select.Item value="DPD">DPD</Select.Item>
-                        <Select.Item value="GLS">GLS</Select.Item>
-                        <Select.Item value="UPS">UPS</Select.Item>
+                        {isReturn ? (
+                          // Return option: Only show "Shipping by customer"
+                          <Select.Item value="customer-shipping">
+                            {t('stockLocations.shippingOptions.fields.name.shippingByCustomer')}
+                          </Select.Item>
+                        ) : (
+                          // Shipping option: Show all carriers
+                          <>
+                            <Select.Item value="Inpost Kurier">
+                              {t('stockLocations.shippingOptions.fields.name.carriers.inpostKurier')}
+                            </Select.Item>
+                            <Select.Item value="Inpost paczkomat">
+                              {t('stockLocations.shippingOptions.fields.name.carriers.inpostPaczkomat')}
+                            </Select.Item>
+                            <Select.Item value="DHL">
+                              {t('stockLocations.shippingOptions.fields.name.carriers.dhl')}
+                            </Select.Item>
+                            <Select.Item value="Fedex">
+                              {t('stockLocations.shippingOptions.fields.name.carriers.fedex')}
+                            </Select.Item>
+                            <Select.Item value="DPD">
+                              {t('stockLocations.shippingOptions.fields.name.carriers.dpd')}
+                            </Select.Item>
+                            <Select.Item value="GLS">
+                              {t('stockLocations.shippingOptions.fields.name.carriers.gls')}
+                            </Select.Item>
+                            <Select.Item value="UPS">
+                              {t('stockLocations.shippingOptions.fields.name.carriers.ups')}
+                            </Select.Item>
+                          </>
+                        )}
                       </Select.Content>
                     </Select>
                   </Form.Control>
@@ -239,7 +264,7 @@ export const CreateShippingOptionDetailsForm = ({
                             value={profile.id}
                             key={profile.id}
                           >
-                            {profile.name}
+                            {translateShippingProfileKey(profile.name, false, t)}
                           </Select.Item>
                         ))}
                       </Select.Content>

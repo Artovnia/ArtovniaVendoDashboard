@@ -1644,7 +1644,7 @@
       "shipping": {
         "header": "Wysyłka",
         "profile": {
-          "valid": "Ważny",
+          "valid": "Aktywny",
           "needsOptions": "Utwórz opcje wysyłki",
           "warning": {
             "title": "Ostrzeżenie profilu wysyłki",
@@ -1782,7 +1782,20 @@
         },
         "fulfillmentOption": "Opcja realizacji",
         "provider": "Dostawca realizacji",
-        "profile": "Profil wysyłki"
+        "profile": "Profil wysyłki",
+        "name": {
+          "label": "Przewoźnik",
+          "shippingByCustomer": "Wysyłka przez klienta",
+          "carriers": {
+            "inpostKurier": "Inpost Kurier",
+            "inpostPaczkomat": "Inpost Paczkomat",
+            "dhl": "DHL",
+            "fedex": "Fedex",
+            "dpd": "DPD",
+            "gls": "GLS",
+            "ups": "UPS"
+          }
+        }
       }
     },
     "serviceZones": {
@@ -1840,6 +1853,43 @@
     },
     "tooltip": {
       "type": "Wprowadź typ profilu wysyłki, na przykład: Ciężki, Duży, Tylko fracht itp."
+    },
+    "types": {
+      "letters_postal": "Listy i przesyłki pocztowe",
+      "standard_parcels": "Paczki standardowe",
+      "nonstandard_parcels": "Paczki niestandardowe",
+      "oversized_items": "Towary gabarytowe / wielkogabarytowe",
+      "pallets_heavy": "Palety (transport ciężki)",
+      "specialized_transport": "Transport nietypowy i specjalistyczny"
+    },
+    "names": {
+      "regular_letter": "List zwykły",
+      "registered_letter": "List polecony",
+      "document_shipment": "Przesyłka dokumentowa",
+      "mini_parcel": "Mini paczka",
+      "small_parcel": "Mała paczka",
+      "medium_parcel": "Średnia paczka",
+      "large_parcel": "Duża paczka",
+      "irregular_shape": "Kształt nieregularny",
+      "protruding_elements": "Z wystającymi elementami",
+      "fragile_breakable": "Delikatne lub łatwo tłukące się",
+      "additional_protection": "Z dodatkowym zabezpieczeniem",
+      "furniture": "Meble",
+      "appliances_electronics": "Sprzęt AGD/RTV",
+      "bicycles_scooters_strollers": "Rowery, hulajnogi, wózki dziecięce",
+      "delivery_inside": "Zamówienia internetowe z wniesieniem",
+      "euro_pallet": "Paleta EURO",
+      "industrial_pallet": "Paleta przemysłowa",
+      "nonstandard_pallet": "Paleta niestandardowa",
+      "semiheavy_pallet": "Paleta półciężka",
+      "stacked_wrapped_pallet": "Paleta piętrowana / stretchowana",
+      "furniture_assembly": "Transport mebli z montażem",
+      "adr_dangerous": "Towary ADR (niebezpieczne)",
+      "refrigerated_goods": "Towary chłodnicze",
+      "medical_laboratory": "Transport sprzętu medycznego, laboratoryjnego",
+      "air_cargo": "Przesyłki lotnicze (Air cargo)",
+      "sea_container": "Morski kontenerowy (FCL/LCL)",
+      "machinery_vehicles": "Maszyny, pojazdy, konstrukcje stalowe"
     }
   },
   "taxRegions": {

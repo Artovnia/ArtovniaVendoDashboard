@@ -12,6 +12,7 @@ import {
 } from "../../../../../components/modals"
 import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
 import { useCreateShippingProfile } from "../../../../../hooks/api/shipping-profiles"
+import { translateShippingProfileKey } from "../../../../../lib/shipping-profile-i18n"
 
 const CreateShippingOptionsSchema = zod.object({
   name: zod.string().min(1, "Name is required"),
@@ -19,95 +20,52 @@ const CreateShippingOptionsSchema = zod.object({
   isCustom: zod.boolean().optional(),
 })
 
-// Define shipping profile categories and options
-// Define a type to help with TypeScript indexing
+// Define shipping profile categories and options using unified keys
+// These keys are language-independent and will be translated via i18n
 type ShippingProfileOptionsType = {
   [key: string]: string[];
 };
 
-// Polish shipping profile options
-const shippingProfileOptionsPL: ShippingProfileOptionsType = {
-  "Listy i przesyłki pocztowe": [
-    "List zwykły",
-    "List polecony",
-    "Przesyłka dokumentowa"
+// Unified shipping profile structure (language-independent keys)
+const shippingProfileOptions: ShippingProfileOptionsType = {
+  "letters_postal": [
+    "regular_letter",
+    "registered_letter",
+    "document_shipment"
   ],
-  "Paczki standardowe": [
-    "Mini paczka",
-    "Mała paczka",
-    "Średnia paczka",
-    "Duża paczka",
+  "standard_parcels": [
+    "mini_parcel",
+    "small_parcel",
+    "medium_parcel",
+    "large_parcel",
   ],
-  "Paczki niestandardowe": [
-    "Kształt nieregularny",
-    "Z wystającymi elementami",
-    "Delikatne lub łatwo tłukące się",
-    "Z dodatkowym zabezpieczeniem"
+  "nonstandard_parcels": [
+    "irregular_shape",
+    "protruding_elements",
+    "fragile_breakable",
+    "additional_protection"
   ],
-  "Towary gabarytowe / wielkogabarytowe": [
-    "Meble",
-    "Sprzęt AGD/RTV",
-    "Rowery, hulajnogi, wózki dziecięce",
-    "Zamówienia internetowe z wniesieniem"
+  "oversized_items": [
+    "furniture",
+    "appliances_electronics",
+    "bicycles_scooters_strollers",
+    "delivery_inside"
   ],
-  "Palety (transport ciężki)": [
-    "Paleta EURO",
-    "Paleta przemysłowa",
-    "Paleta niestandardowa",
-    "Paleta półciężka",
-    "Paleta piętrowana / stretchowana"
+  "pallets_heavy": [
+    "euro_pallet",
+    "industrial_pallet",
+    "nonstandard_pallet",
+    "semiheavy_pallet",
+    "stacked_wrapped_pallet"
   ],
-  "Transport nietypowy i specjalistyczny": [
-    "Transport mebli z montażem",
-    "Towary ADR (niebezpieczne)",
-    "Towary chłodnicze",
-    "Transport sprzętu medycznego, laboratoryjnego",
-    "Przesyłki lotnicze (Air cargo)",
-    "Morski kontenerowy (FCL/LCL)",
-    "Maszyny, pojazdy, konstrukcje stalowe"
-  ],
-};
-
-// English shipping profile options
-const shippingProfileOptionsEN: ShippingProfileOptionsType = {
-  "Letters and postal shipments": [
-    "Regular letter",
-    "Registered letter",
-    "Document shipment"
-  ],
-  "Standard parcels": [
-    "Mini parcel",
-    "Small parcel",
-    "Medium parcel",
-    "Large parcel",
-  ],
-  "Non-standard parcels": [
-    "Irregular shape",
-    "With protruding elements",
-    "Fragile or easily breakable",
-    "With additional protection"
-  ],
-  "Oversized / large items": [
-    "Furniture",
-    "Home appliances/Electronics",
-    "Bicycles, scooters, strollers",
-    "Online orders with delivery inside"
-  ],
-  "Pallets (heavy transport)": [
-    "EURO pallet",
-    "Industrial pallet",
-    "Non-standard pallet",
-    "Semi-heavy pallet",
-    "Stacked / stretch-wrapped pallet"
-  ],
-  "Atypical and specialized transport": [
-    "Furniture transport with assembly",
-    "ADR goods (dangerous)",
-    "Refrigerated goods",
-    "Medical, laboratory equipment transport",
-    "Air cargo shipments",
-    "Sea container (FCL/LCL)",
-    "Machinery, vehicles, steel structures"
+  "specialized_transport": [
+    "furniture_assembly",
+    "adr_dangerous",
+    "refrigerated_goods",
+    "medical_laboratory",
+    "air_cargo",
+    "sea_container",
+    "machinery_vehicles"
   ],
 };
 
@@ -115,9 +73,6 @@ export function CreateShippingProfileForm() {
   const { t, i18n } = useTranslation()
   const { handleSuccess } = useRouteModal()
   const [availableNames, setAvailableNames] = useState<string[]>([])
-
-  // Get the appropriate shipping options based on language
-  const shippingProfileOptions = i18n.language === 'en' ? shippingProfileOptionsEN : shippingProfileOptionsPL;
 
   const form = useForm<zod.infer<typeof CreateShippingOptionsSchema>>({
     defaultValues: {
@@ -325,8 +280,10 @@ export function CreateShippingProfileForm() {
                                 <Select.Value placeholder={t("shippingProfile.create.typePlaceholder")} />
                               </Select.Trigger>
                               <Select.Content>
-                                {Object.keys(shippingProfileOptions).map((type) => (
-                                  <Select.Item key={type} value={type}>{type}</Select.Item>
+                                {Object.keys(shippingProfileOptions).map((typeKey) => (
+                                  <Select.Item key={typeKey} value={typeKey}>
+                                    {translateShippingProfileKey(typeKey, true, t)}
+                                  </Select.Item>
                                 ))}
                               </Select.Content>
                             </Select>
@@ -360,8 +317,10 @@ export function CreateShippingProfileForm() {
                                 <Select.Value placeholder={t("shippingProfile.create.namePlaceholder")} />
                               </Select.Trigger>
                               <Select.Content>
-                                {availableNames.map((name) => (
-                                  <Select.Item key={name} value={name}>{name}</Select.Item>
+                                {availableNames.map((nameKey) => (
+                                  <Select.Item key={nameKey} value={nameKey}>
+                                    {translateShippingProfileKey(nameKey, false, t)}
+                                  </Select.Item>
                                 ))}
                               </Select.Content>
                             </Select>
@@ -389,8 +348,10 @@ export function CreateShippingProfileForm() {
                                 <Select.Value placeholder={t("shippingProfile.create.typePlaceholder")} />
                               </Select.Trigger>
                               <Select.Content>
-                                {Object.keys(shippingProfileOptions).map((type) => (
-                                  <Select.Item key={type} value={type}>{type}</Select.Item>
+                                {Object.keys(shippingProfileOptions).map((typeKey) => (
+                                  <Select.Item key={typeKey} value={typeKey}>
+                                    {translateShippingProfileKey(typeKey, true, t)}
+                                  </Select.Item>
                                 ))}
                               </Select.Content>
                             </Select>

@@ -14,6 +14,7 @@ import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
 import { useUpdateShippingOptions } from "../../../../../hooks/api/shipping-options"
 import { useShippingProfiles } from "../../../../../hooks/api/shipping-profiles"
 import { isOptionEnabledInStore } from "../../../../../lib/shipping-options"
+import { translateShippingProfileKey } from "../../../../../lib/shipping-profile-i18n"
 import {
   FulfillmentSetType,
   ShippingOptionPriceType,
@@ -41,11 +42,16 @@ export const EditShippingOptionForm = ({
   const { handleSuccess } = useRouteModal()
 
   const isPickup = type === FulfillmentSetType.Pickup
+  
+  // Determine if this is a return option by checking the rules
+  const isReturn = shippingOption.rules?.some(
+    rule => rule.attribute === "is_return" && rule.value === "true"
+  ) || false
 
   const { shipping_profiles = [], isLoading: isLoadingProfiles } = useShippingProfiles()
   
   const shippingProfileOptions = (shipping_profiles || []).map(profile => ({
-    label: profile.name,
+    label: translateShippingProfileKey(profile.name, false, t),
     value: profile.id,
   }))
 
@@ -173,7 +179,12 @@ export const EditShippingOptionForm = ({
                   render={({ field }) => {
                     return (
                       <Form.Item>
-                        <Form.Label>{t("fields.name")}</Form.Label>
+                        <Form.Label>
+                          {t(isReturn
+                            ? 'stockLocations.shippingOptions.fields.name.label'
+                            : 'fields.name'
+                          )}
+                        </Form.Label>
                         <Form.Control>
                           <Select
                             value={field.value}
@@ -183,13 +194,35 @@ export const EditShippingOptionForm = ({
                               <Select.Value />
                             </Select.Trigger>
                             <Select.Content>
-                              <Select.Item value="Inpost Kurier">Inpost Kurier</Select.Item>
-                              <Select.Item value="Inpost paczkomat">Inpost paczkomat</Select.Item>
-                              <Select.Item value="DHL">DHL</Select.Item>
-                              <Select.Item value="Fedex">Fedex</Select.Item>
-                              <Select.Item value="DPD">DPD</Select.Item>
-                              <Select.Item value="GLS">GLS</Select.Item>
-                              <Select.Item value="UPS">UPS</Select.Item>
+                              {isReturn ? (
+                                <Select.Item value="customer-shipping">
+                                  {t('stockLocations.shippingOptions.fields.name.shippingByCustomer')}
+                                </Select.Item>
+                              ) : (
+                                <>
+                                  <Select.Item value="Inpost Kurier">
+                                    {t('stockLocations.shippingOptions.fields.name.carriers.inpostKurier')}
+                                  </Select.Item>
+                                  <Select.Item value="Inpost paczkomat">
+                                    {t('stockLocations.shippingOptions.fields.name.carriers.inpostPaczkomat')}
+                                  </Select.Item>
+                                  <Select.Item value="DHL">
+                                    {t('stockLocations.shippingOptions.fields.name.carriers.dhl')}
+                                  </Select.Item>
+                                  <Select.Item value="Fedex">
+                                    {t('stockLocations.shippingOptions.fields.name.carriers.fedex')}
+                                  </Select.Item>
+                                  <Select.Item value="DPD">
+                                    {t('stockLocations.shippingOptions.fields.name.carriers.dpd')}
+                                  </Select.Item>
+                                  <Select.Item value="GLS">
+                                    {t('stockLocations.shippingOptions.fields.name.carriers.gls')}
+                                  </Select.Item>
+                                  <Select.Item value="UPS">
+                                    {t('stockLocations.shippingOptions.fields.name.carriers.ups')}
+                                  </Select.Item>
+                                </>
+                              )}
                             </Select.Content>
                           </Select>
                         </Form.Control>
