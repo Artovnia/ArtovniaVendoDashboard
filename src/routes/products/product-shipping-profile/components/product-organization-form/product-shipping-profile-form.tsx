@@ -83,15 +83,21 @@ export const ProductShippingProfileForm = ({
     if (!product || isLoading || isFetching) return;
     
     
-    // ONLY use the direct relationship - no metadata fallback
-    // This ensures single source of truth from the link table
-    const profileId = product.shipping_profile?.id || "";
+    // DEFENSIVE FIX: Handle null/undefined shipping_profile (orphaned relations)
+    // If shipping_profile is null (deleted profile), treat as empty
+    let profileId = "";
+    
+    if (product.shipping_profile && product.shipping_profile !== null) {
+      // Only access id if shipping_profile is a valid object
+      profileId = product.shipping_profile.id || "";
+    }
+    
     const currentFormValue = form.getValues('shipping_profile_id');
     
     // Only reset if the value actually changed to prevent unnecessary resets
     if (currentFormValue !== profileId) {
       form.reset({
-        shipping_profile_id: profileId as string
+        shipping_profile_id: profileId
       });
     }
   }, [form, product, product?.shipping_profile?.id, isLoading, isFetching]);

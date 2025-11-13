@@ -29,12 +29,18 @@ export const useShippingProfilesWithValidation = () => {
     if (!shipping_profiles) return []
     
     // shipping_options might be undefined if the API call fails, so provide fallback
-    const safeShippingOptions = shipping_options || []
+    // Also filter out any null/undefined options (orphaned relations)
+    const safeShippingOptions = (shipping_options || []).filter(
+      (option) => option !== null && option !== undefined
+    )
 
-    return shipping_profiles.map((profile) => {
+    return shipping_profiles
+      .filter((profile) => profile !== null && profile !== undefined)  // Filter out null profiles
+      .map((profile) => {
       // Count shipping options for this profile
+      // Add null check for option.shipping_profile_id
       const optionsForProfile = safeShippingOptions.filter(
-        (option) => option.shipping_profile_id === profile.id
+        (option) => option?.shipping_profile_id === profile.id
       )
       
       // Type assertion to handle the extended shipping profile type from backend
