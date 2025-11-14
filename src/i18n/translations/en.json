@@ -3495,6 +3495,7 @@
     "loading": "Loading...",
     "save": "Save",
     "cancel": "Cancel",
+    "processing": "Processing...",
     "debugInfo": "Debug Info"
   },
   "dashboard": {
@@ -3726,6 +3727,8 @@
         "refundPending": "Pending",
         "awaitingReceipt": "Awaiting item receipt",
         "refundAutomatic": "Refund will be processed automatically after you confirm receipt of the returned items.",
+        "retryRefund": "Retry Refund",
+        "retryRefundHint": "Click to manually retry the refund process if it didn't complete automatically",
         "checkingRefundStatus": "Checking refund status...",
         "reviewedOn": "Reviewed on",
         "confirmReceiveTitle": "Confirm Item Receipt",

@@ -87,7 +87,7 @@ const getQuantityFormat = (
 ): string => {
   if (quantity !== undefined && !isNaN(quantity)) {
     const locationCount = locations ?? 0;
-    return t('products.variant.tableItem', {
+    return t('variant.tableItem', {
       count: locationCount,
       availableCount: quantity,
       locationCount: locationCount

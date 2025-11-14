@@ -66,6 +66,18 @@ export interface CreatePayoutAccountPayload {
   }
 }
 
+export interface EarningsData {
+  total_earnings: number
+  pending_earnings: number
+  total_paid_out: number
+  available_for_payout: number
+  completed_orders_count: number
+  pending_orders_count: number
+  currency_code: string
+  gross_earnings: number
+  commission_deductions: number
+}
+
 // Payout Account Hooks
 export const usePayoutAccount = (
   query?: Record<string, any>,
@@ -132,113 +144,27 @@ export const usePayouts = (
   return { ...data, ...rest };
 };
 
-// Earnings calculation hook based on order transactions
+// Earnings calculation hook using dedicated earnings endpoint
 export const useEarningsCalculation = (
   query?: Record<string, any>,
   options?: Omit<
-    UseQueryOptions<any, FetchError, any, QueryKey>,
+    UseQueryOptions<EarningsData, FetchError, EarningsData, QueryKey>,
     'queryFn' | 'queryKey'
   >
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: async () => {
-      // First, let's try to get order transactions which should show actual captured amounts
-      try {
-        const transactionsResponse = await fetchQuery('/vendor/order-transactions', {
-          method: 'GET',
-          query: {
-            ...query,
-            fields: 'id,order_id,amount,currency_code,type,created_at',
-            limit: 1000,
-          },
-        });
-        
-        if (transactionsResponse.order_transactions?.length > 0) {
-          // Filter for capture transactions (actual earnings)
-          const captureTransactions = transactionsResponse.order_transactions.filter((tx: any) => 
-            tx.type === 'capture' && tx.amount > 0
-          );
-
-          const totalEarnings = captureTransactions.reduce((sum: number, tx: any) => {
-            return sum + (tx.amount || 0);
-          }, 0);
-
-          return {
-            total_earnings: totalEarnings,
-            pending_earnings: 0, // Will calculate from pending orders if needed
-            completed_transactions_count: captureTransactions.length,
-            currency_code: captureTransactions[0]?.currency_code || 'PLN',
-          };
-        }
-      } catch (error) {
-        console.log('🔍 DEBUG: Order transactions endpoint not available, falling back to orders');
-      }
-
-      // Fallback: Use orders but with better logic and commission calculation
-      const ordersResponse = await fetchQuery('/vendor/orders', {
+      // Use the comprehensive earnings endpoint that calculates everything server-side
+      // This includes: total earnings (order value - commission), pending earnings,
+      // total paid out, available for payout, and order counts
+      const response = await fetchQuery('/vendor/earnings', {
         method: 'GET',
-        query: {
-          ...query,
-          fields: 'id,total,currency_code,status,created_at,payment_status,fulfillment_status,payment_collections',
-          limit: 1000,
-        },
+        query,
       });
 
-      // Analyze the actual data structure
-      if (ordersResponse.orders?.length > 0) {
-        
-        // Look for orders with captured payments
-        const ordersWithCapturedPayments = ordersResponse.orders.filter((order: any) => {
-          // Check if payment is actually captured/completed
-          const hasValidPayment = order.payment_status === 'captured';
-          const isCompleted = order.status === 'completed';
-          
-          return hasValidPayment && isCompleted;
-        });
+      console.log('📊 Earnings data received:', response);
 
-        // Calculate gross earnings and commission deductions
-        let totalGrossEarnings = 0;
-        let totalCommissionDeductions = 0;
-
-        for (const order of ordersWithCapturedPayments) {
-          const orderTotal = order.total || 0;
-          totalGrossEarnings += orderTotal;
-
-          // Fetch commission lines for this order
-          try {
-            const commissionResponse = await fetchQuery(`/vendor/orders/${order.id}/commission-lines`, {
-              method: 'GET',
-            });
-
-            if (commissionResponse.commission_lines?.length > 0) {
-              const orderCommission = commissionResponse.commission_lines.reduce((sum: number, line: any) => 
-                sum + (line.value || 0), 0
-              );
-              totalCommissionDeductions += orderCommission;
-            }
-          } catch (error) {
-            console.log(`🔍 DEBUG: Could not fetch commission for order ${order.id}:`, error);
-          }
-        }
-
-        const netEarnings = totalGrossEarnings - totalCommissionDeductions;
-
-        return {
-          total_earnings: netEarnings,
-          gross_earnings: totalGrossEarnings,
-          commission_deductions: totalCommissionDeductions,
-          pending_earnings: 0,
-          completed_orders_count: ordersWithCapturedPayments.length,
-          currency_code: ordersWithCapturedPayments[0]?.currency_code || 'PLN',
-        };
-      }
-
-      return {
-        total_earnings: 0,
-        pending_earnings: 0,
-        completed_orders_count: 0,
-        currency_code: 'PLN',
-      };
+      return response as EarningsData;
     },
     queryKey: ['earnings', query],
     ...options,
@@ -252,20 +178,20 @@ export const usePayoutOverview = (
   options?: {
     payoutAccountOptions?: Omit<UseQueryOptions<PayoutAccountResponse, FetchError, PayoutAccountResponse, QueryKey>, 'queryFn' | 'queryKey'>
     payoutsOptions?: Omit<UseQueryOptions<PayoutsListResponse, FetchError, PayoutsListResponse, QueryKey>, 'queryFn' | 'queryKey'>
-    earningsOptions?: Omit<UseQueryOptions<any, FetchError, any, QueryKey>, 'queryFn' | 'queryKey'>
+    earningsOptions?: Omit<UseQueryOptions<EarningsData, FetchError, EarningsData, QueryKey>, 'queryFn' | 'queryKey'>
   }
 ) => {
   const payoutAccount = usePayoutAccount({}, options?.payoutAccountOptions);
   const payouts = usePayouts({}, options?.payoutsOptions);
   const earnings = useEarningsCalculation({}, options?.earningsOptions);
 
-  // Calculate total paid out
-  const totalPaidOut = payouts.payouts?.reduce((sum: number, payout: PayoutData) => 
-    sum + (payout.amount || 0), 0
-  ) || 0;
-
-  // Calculate available for payout (earnings - already paid out)
-  const availableForPayout = (earnings.total_earnings || 0) - totalPaidOut;
+  // Use backend-calculated values from earnings endpoint
+  // The /vendor/earnings endpoint now calculates:
+  // - total_earnings (order value - commission)
+  // - total_paid_out (sum of completed payouts)
+  // - available_for_payout (total_earnings - total_paid_out)
+  const totalPaidOut = earnings.total_paid_out || 0;
+  const availableForPayout = earnings.available_for_payout || 0;
 
   return {
     payoutAccount: payoutAccount.payout_account,

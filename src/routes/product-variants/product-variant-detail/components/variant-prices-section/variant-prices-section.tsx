@@ -62,7 +62,7 @@ export function VariantPricesSection({ variant }: VariantPricesSectionProps) {
       {hasPrices && (
         <div className="txt-small text-ui-fg-subtle flex items-center justify-between px-6 py-4">
           <span className="font-medium">
-            {t("products.variant.pricesPagination", {
+            {t("variant.pricesPagination", {
               total: prices.length,
               current: Math.min(pageSize, prices.length),
             })}

@@ -3358,6 +3358,7 @@
     "loading": "Ładowanie...",
     "save": "Zapisz",
     "cancel": "Anuluj",
+    "processing": "Przetwarzanie...",
     "debugInfo": "Informacje debugowania"
   },
   "dashboard": {
@@ -3588,6 +3589,8 @@
         "refundPending": "Oczekujący",
         "awaitingReceipt": "Oczekiwanie na odbiór przedmiotów",
         "refundAutomatic": "Zwrot pieniędzy zostanie przetworzony automatycznie po potwierdzeniu odbioru zwróconych przedmiotów.",
+        "retryRefund": "Ponów zwrot pieniędzy",
+        "retryRefundHint": "Kliknij, aby ręcznie ponowić proces zwrotu pieniędzy, jeśli nie zakończył się automatycznie",
         "checkingRefundStatus": "Sprawdzanie statusu zwrotu...",
         "reviewedOn": "Sprawdzono dnia",
         "confirmReceiveTitle": "Potwierdź odbiór przedmiotów",

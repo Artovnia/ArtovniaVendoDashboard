@@ -116,7 +116,7 @@ export const ReturnReceive = ({ returnRequest, onSuccess }: ReturnReceiveProps) 
 
   if (isReceived) {
     return (
-      <Container className="p-6 bg-ui-bg-subtle">
+      <Container className="p-6 bg-ui-bg-subtle-success">
         <Heading level="h2" className="mb-2">{t('requests.returns.returnDetail.step2Title')}</Heading>
         <Text className="text-ui-fg-success">✓ {t('requests.returns.returnDetail.itemsReceived')}</Text>
       </Container>

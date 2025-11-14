@@ -178,6 +178,21 @@ export const ReturnRefund = ({ returnRequest, onSuccess }: ReturnRefundProps) =>
               {t('requests.returns.returnDetail.refundAutomatic')}
             </Text>
           </div>
+
+          {/* Retry button for when automatic refund fails */}
+          <div className="pt-2">
+            <Button
+              onClick={handleManualRefund}
+              disabled={isProcessing}
+              variant="secondary"
+              size="small"
+            >
+              {isProcessing ? t('common.processing') : t('requests.returns.returnDetail.retryRefund')}
+            </Button>
+            <Text className="text-xs text-ui-fg-subtle mt-2">
+              {t('requests.returns.returnDetail.retryRefundHint')}
+            </Text>
+          </div>
         </div>
       </Container>
     )

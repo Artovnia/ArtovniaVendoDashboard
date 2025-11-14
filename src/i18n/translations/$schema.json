@@ -12781,11 +12781,14 @@
         "cancel": {
           "type": "string"
         },
+        "processing": {
+          "type": "string"
+        },
         "debugInfo": {
           "type": "string"
         }
       },
-      "required": ["loading", "save", "cancel", "debugInfo"],
+      "required": ["loading", "save", "cancel", "processing", "debugInfo"],
       "additionalProperties": false
     },
     "dashboard": {
@@ -13520,6 +13523,12 @@
                 "refundAutomatic": {
                   "type": "string"
                 },
+                "retryRefund": {
+                  "type": "string"
+                },
+                "retryRefundHint": {
+                  "type": "string"
+                },
                 "checkingRefundStatus": {
                   "type": "string"
                 },
@@ -13654,6 +13663,8 @@
                 "refundCompleted",
                 "awaitingReceipt",
                 "refundAutomatic",
+                "retryRefund",
+                "retryRefundHint",
                 "checkingRefundStatus",
                 "reviewedOn",
                 "confirmReceiveTitle",
