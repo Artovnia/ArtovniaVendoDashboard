@@ -70,78 +70,84 @@ export const useReturns = (
     "queryFn" | "queryKey"
   >
 ) => {
-  // Extract fields for backend query and keep other filters for client-side filtering
-  const fields = query?.fields || '';
-  const limit = query?.limit;
-  const offset = query?.offset;
-  
-  // Store filters for client-side filtering
-  const status = query?.status;
-  const orderId = query?.order_id;
-  
   const { data, ...rest } = useQuery({
     queryFn: async () => {
-      // Only send supported query params to backend
-      const supportedQuery: Record<string, string | number> = {};
+      // Only send fields, limit, offset to backend
+      // Backend can't filter by order_id/status at link table level
+      const backendQuery: Record<string, any> = {};
       
-      if (fields) supportedQuery.fields = fields;
-      if (limit) supportedQuery.limit = limit;
-      if (offset) supportedQuery.offset = offset;
+      if (query?.fields) backendQuery.fields = query.fields;
+      // CRITICAL: If filtering by order_id, fetch ALL returns (not just 50)
+      // The return we're looking for might be on page 2+
+      if (query?.order_id || query?.status) {
+        backendQuery.limit = 1000; // Fetch all returns when filtering
+      } else {
+        backendQuery.limit = query?.limit || 50;
+      }
+      if (query?.offset) backendQuery.offset = query.offset;
       
       try {
+        console.log('🔍 [useReturns] Fetching with query:', backendQuery)
+        console.log('🔍 [useReturns] Will filter by:', { order_id: query?.order_id, status: query?.status })
+        
         const response = await fetchQuery('/vendor/returns', {
           method: 'GET',
-          query: supportedQuery,
+          query: backendQuery,
         });
         
         // The fetchQuery returns the data directly, not nested under .data
-        const result = response.data || response;
+        let result = response.data || response;
+        
+        console.log('🔍 [useReturns] Backend response:', {
+          hasResult: !!result,
+          returnsCount: result?.returns?.length,
+          firstThreeReturns: result?.returns?.slice(0, 3).map((r: any) => ({ id: r.id, order_id: r.order_id, status: r.status }))
+        })
       
-      // Ensure we always return a valid structure
-      if (!result) {
-        return {
-          returns: [],
-          count: 0,
-          offset: 0,
-          limit: 50
-        };
-      }
-      
-      // Apply client-side filtering if needed
-      if (result && result.returns && (status || orderId)) {
-        console.log('🔍 Frontend: Applying client-side filters:', { status, orderId })
-        console.log('🔍 Frontend: Before filtering:', result.returns.length, 'returns')
-        
-        result.returns = result.returns.filter((returnItem: any) => {
-          let matches = true;
-          
-          if (status && returnItem.status !== status) {
-            console.log('🔍 Frontend: Status mismatch:', { expected: status, actual: returnItem.status })
-            matches = false;
-          }
-          
-          if (orderId && returnItem.order_id !== orderId) {
-            console.log('🔍 Frontend: Order ID mismatch:', { expected: orderId, actual: returnItem.order_id })
-            matches = false;
-          }
-          
-          return matches;
-        });
-        
-        console.log('🔍 Frontend: After filtering:', result.returns.length, 'returns')
-        
-        // Update count to reflect client-side filtering
-        result.count = result.returns.length;
-      }
+        // Ensure we always return a valid structure
+        if (!result) {
+          console.warn('⚠️  [useReturns] No result from backend')
+          return {
+            returns: [],
+            count: 0,
+            offset: 0,
+            limit: 50
+          };
+        }
       
         // Ensure returns is always an array
         if (!result.returns) {
+          console.warn('⚠️  [useReturns] No returns array in result')
           result.returns = [];
         }
         
-        return result;
+        // Client-side filtering by order_id and status
+        let filteredReturns = result.returns;
+        
+        if (query?.order_id) {
+          console.log('🔍 [useReturns] Filtering by order_id:', query.order_id)
+          filteredReturns = filteredReturns.filter((r: any) => r.order_id === query.order_id);
+          console.log('🔍 [useReturns] After order_id filter:', filteredReturns.length, 'returns')
+        }
+        
+        if (query?.status) {
+          console.log('🔍 [useReturns] Filtering by status:', query.status)
+          filteredReturns = filteredReturns.filter((r: any) => r.status === query.status);
+          console.log('🔍 [useReturns] After status filter:', filteredReturns.length, 'returns')
+        }
+        
+        console.log('🔍 [useReturns] Final result:', {
+          filteredCount: filteredReturns.length,
+          filteredReturns: filteredReturns.map((r: any) => ({ id: r.id, order_id: r.order_id, status: r.status }))
+        })
+        
+        return {
+          ...result,
+          returns: filteredReturns,
+          count: filteredReturns.length
+        };
       } catch (error) {
-        console.error('🔍 Frontend: Error in fetchQuery:', error)
+        console.error('❌ [useReturns] Error in fetchQuery:', error)
         return {
           returns: [],
           count: 0,

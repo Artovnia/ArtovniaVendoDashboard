@@ -3505,7 +3505,7 @@
       "status": {
         "pending": "Oczekujący",
         "approved": "Zatwierdzony",
-        "refunded": "Zaakceptowany",
+        "refunded": "Zrefundowany",
         "escalated": "Eskalowany - Admin obsłuży prośbę",
         "withdrawn": "Odrzucony"
       },

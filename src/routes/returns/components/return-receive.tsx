@@ -17,13 +17,26 @@ export const ReturnReceive = ({ returnRequest, onSuccess }: ReturnReceiveProps) 
   const [showConfirmation, setShowConfirmation] = useState(false)
 
   // Query Medusa returns for this order using existing seller-return link
-  const { returns } = useReturns({
+  const { returns, isLoading: isLoadingReturns } = useReturns({
     order_id: returnRequest.order?.id,
     fields: 'id,status,order_id'
   })
 
+  console.log('🔍 [RETURN-RECEIVE] Component state:', {
+    returnRequestOrderId: returnRequest.order?.id,
+    returnsFromHook: returns,
+    returnsCount: returns?.length,
+    isLoadingReturns
+  })
+
   const medusaReturn = returns?.[0] // Get the first (should be only one) return for this order
   const isReceived = medusaReturn?.status === 'received'
+  
+  console.log('🔍 [RETURN-RECEIVE] Medusa return:', {
+    medusaReturn,
+    isReceived,
+    hasReturnId: !!medusaReturn?.id
+  })
 
   const handleReceiveClick = () => {
     setShowConfirmation(true)
