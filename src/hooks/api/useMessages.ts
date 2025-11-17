@@ -214,6 +214,7 @@ export const useSendVendorMessage = () => {
       content, 
       thread_id,
       recipient_type = 'admin', // 'admin' or 'user'
+      customer_id, // For creating threads with specific customers
       initial_message,
       attachment_url,
       attachment_thumbnail_url,
@@ -224,6 +225,7 @@ export const useSendVendorMessage = () => {
       content: string;
       thread_id?: string | null;
       recipient_type?: 'admin' | 'user';
+      customer_id?: string; // Customer ID for new threads
       initial_message?: {
         content: string;
         attachment_url?: string;
@@ -267,7 +269,7 @@ export const useSendVendorMessage = () => {
             throw new Error('Subject is required when creating a new thread');
           }
           
-          const payload = {
+          const payload: any = {
             subject,
             type: 'general',
             recipient_type, // Who we're sending to
@@ -280,6 +282,11 @@ export const useSendVendorMessage = () => {
               attachment_type: initial_message?.attachment_type || attachment_type
             }
           };
+          
+          // Add customer_id if provided (for customer-specific threads)
+          if (customer_id) {
+            payload.customer_id = customer_id;
+          }
           
           
           

@@ -32,12 +32,6 @@ export const useReturn = (
         query: query as { [key: string]: string | number },
       });
       
-      console.log("🔍 useReturn fetchQuery response:", {
-        returnId: id,
-        response,
-        responseData: response.data,
-        responseReturn: response.return
-      })
       
       // The backend returns { return: result }, extract the return object
       const result = response.data || response;
@@ -87,9 +81,7 @@ export const useReturns = (
       if (query?.offset) backendQuery.offset = query.offset;
       
       try {
-        console.log('🔍 [useReturns] Fetching with query:', backendQuery)
-        console.log('🔍 [useReturns] Will filter by:', { order_id: query?.order_id, status: query?.status })
-        
+ 
         const response = await fetchQuery('/vendor/returns', {
           method: 'GET',
           query: backendQuery,
@@ -98,15 +90,10 @@ export const useReturns = (
         // The fetchQuery returns the data directly, not nested under .data
         let result = response.data || response;
         
-        console.log('🔍 [useReturns] Backend response:', {
-          hasResult: !!result,
-          returnsCount: result?.returns?.length,
-          firstThreeReturns: result?.returns?.slice(0, 3).map((r: any) => ({ id: r.id, order_id: r.order_id, status: r.status }))
-        })
+ 
       
         // Ensure we always return a valid structure
         if (!result) {
-          console.warn('⚠️  [useReturns] No result from backend')
           return {
             returns: [],
             count: 0,
@@ -117,7 +104,6 @@ export const useReturns = (
       
         // Ensure returns is always an array
         if (!result.returns) {
-          console.warn('⚠️  [useReturns] No returns array in result')
           result.returns = [];
         }
         
@@ -125,21 +111,13 @@ export const useReturns = (
         let filteredReturns = result.returns;
         
         if (query?.order_id) {
-          console.log('🔍 [useReturns] Filtering by order_id:', query.order_id)
           filteredReturns = filteredReturns.filter((r: any) => r.order_id === query.order_id);
-          console.log('🔍 [useReturns] After order_id filter:', filteredReturns.length, 'returns')
         }
         
         if (query?.status) {
-          console.log('🔍 [useReturns] Filtering by status:', query.status)
           filteredReturns = filteredReturns.filter((r: any) => r.status === query.status);
-          console.log('🔍 [useReturns] After status filter:', filteredReturns.length, 'returns')
         }
         
-        console.log('🔍 [useReturns] Final result:', {
-          filteredCount: filteredReturns.length,
-          filteredReturns: filteredReturns.map((r: any) => ({ id: r.id, order_id: r.order_id, status: r.status }))
-        })
         
         return {
           ...result,

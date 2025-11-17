@@ -7,6 +7,8 @@ import { useTranslation } from "react-i18next";
 import { useVendorThreads, useSendVendorMessage, useMarkThreadAsRead, useCustomersDetails, MessageThread as BaseMessageThread } from "../../hooks/api/useMessages";
 import { uploadFilesQuery } from "../../lib/client";
 import { toast } from "@medusajs/ui";
+import { CustomerSelector } from "./components/customer-selector";
+import { HttpTypes } from "@medusajs/types";
 
 // Enhanced MessageThread type that includes properties added by the hook
 type MessageThread = BaseMessageThread & {
@@ -29,6 +31,10 @@ export function MessagesPage() {
   const [attachmentThumbnailUrl, setAttachmentThumbnailUrl] = useState<string>("");
   // Track which threads are collapsed (true = collapsed, false = expanded)
   const [collapsedThreads, setCollapsedThreads] = useState<Record<string, boolean>>({});
+  // Customer selector state
+  const [selectedCustomer, setSelectedCustomer] = useState<HttpTypes.AdminCustomer | null>(null);
+  // Email filter state
+  const [emailFilter, setEmailFilter] = useState<string>("");
   const threadsPerPage = 5;
   
   // Fetch threads based on active tab and current page
@@ -42,9 +48,20 @@ export function MessagesPage() {
   const unsortedThreads = data?.threads || [];
   const totalCount = data?.count || 0;
   
-  // Sort threads to put unread messages at the top, then by most recent activity
+  // Filter and sort threads
   const threads = useMemo(() => {
-    return [...unsortedThreads].sort((a, b) => {
+    // First, filter by email if filter is active
+    let filteredThreads = unsortedThreads;
+    if (emailFilter && activeTab === 'user') {
+      const lowerFilter = emailFilter.toLowerCase();
+      filteredThreads = unsortedThreads.filter(thread => {
+        const email = thread.customer_email || thread.metadata?.customer_email || '';
+        return email.toLowerCase().includes(lowerFilter);
+      });
+    }
+    
+    // Then sort: unread first, then by most recent activity
+    return [...filteredThreads].sort((a, b) => {
       // First, sort by unread status (unread comes first)
       const aHasUnread = !a.seller_read_at || 
         (a.last_message_at && new Date(a.seller_read_at) < new Date(a.last_message_at));
@@ -61,7 +78,7 @@ export function MessagesPage() {
       // Sort by most recent activity (descending order)
       return new Date(bLastActivity).getTime() - new Date(aLastActivity).getTime();
     });
-  }, [unsortedThreads]);
+  }, [unsortedThreads, emailFilter, activeTab]);
   
   const { mutateAsync: sendMessage, isPending: isSending } = useSendVendorMessage();
   const { mutateAsync: markAsRead } = useMarkThreadAsRead();
@@ -167,6 +184,12 @@ export function MessagesPage() {
       return;
     }
     
+    // For user tab, require customer selection when creating new thread
+    if (activeTab === 'user' && !selectedThreadId && !selectedCustomer) {
+      toast.error("Wybierz klienta przed wysłaniem wiadomości");
+      return;
+    }
+    
     try {
       const payload: any = {
         content: message,
@@ -179,6 +202,11 @@ export function MessagesPage() {
       } else {
         // For new threads, subject is required
         payload.subject = subject;
+        
+        // Add customer_id if creating a thread with a customer
+        if (selectedCustomer) {
+          payload.customer_id = selectedCustomer.id;
+        }
       }
       
       // Add attachment info if present
@@ -195,9 +223,12 @@ export function MessagesPage() {
       
       await sendMessage(payload);
       
+      toast.success("Wiadomość wysłana pomyślnie");
+      
       // Reset form state
       setSubject("");
       setMessage("");
+      setSelectedCustomer(null);
       clearAttachment();
       refetch();
       
@@ -208,6 +239,7 @@ export function MessagesPage() {
       }
     } catch (error) {
       console.error("Failed to send message:", error);
+      toast.error("Nie udało się wysłać wiadomości");
     }
   };
   
@@ -368,6 +400,18 @@ export function MessagesPage() {
         </Tabs.List>
       </Tabs>
       
+      {/* Email filter for user tab */}
+      {activeTab === 'user' && (
+        <div className="mb-4">
+          <Input
+            placeholder="Filtruj po adresie email klienta..."
+            value={emailFilter}
+            onChange={(e) => setEmailFilter(e.target.value)}
+            className="w-full"
+          />
+        </div>
+      )}
+      
       <div className="mb-6">
         <Text className="text-gray-600 mb-4">
           {activeTab === 'admin' 
@@ -381,6 +425,15 @@ export function MessagesPage() {
             <div className="flex justify-between items-center">
               <Heading className="text-lg">{t('messages.newMessage', 'New message')}</Heading>
             </div>
+            
+            {/* Show customer selector only for user/client tab */}
+            {activeTab === 'user' && (
+              <CustomerSelector
+                selectedCustomer={selectedCustomer}
+                onSelectCustomer={setSelectedCustomer}
+                onClear={() => setSelectedCustomer(null)}
+              />
+            )}
             
             <div>
               <Text className="font-semibold mb-1">{t('messages.subject', 'Subject')}</Text>
@@ -522,23 +575,19 @@ export function MessagesPage() {
                           {thread.subject || t('messages.noSubject', 'No Subject')}
                         </Heading>
                         
-                        {/* Show customer email badge in user tab */}
-                        {activeTab === 'user' && (thread.customer_email || thread.metadata?.customer_email) && (
-                          <Badge className="ml-2 bg-blue-50 text-blue-700">
-                            {thread.customer_email || thread.metadata?.customer_email}
-                          </Badge>
-                        )}
-                        
                         {hasUnreadMessages(thread) && (
                           <Badge className="ml-2 bg-blue-100 text-blue-800">{t('messages.new', 'New')}</Badge>
                         )}
                       </div>
+                      
+                      {/* Show customer email prominently in user tab */}
+                      {activeTab === 'user' && (thread.customer_email || thread.metadata?.customer_email) && (
+                        <Text className="text-sm text-blue-600 font-medium">
+                          {thread.customer_email || thread.metadata?.customer_email}
+                        </Text>
+                      )}
+                      
                       <Text className="text-sm text-gray-500">
-                        {thread.subject ? (
-                          <span className="font-medium">{thread.subject} • </span>
-                        ) : (
-                          <span className="font-medium">{t('messages.noSubject', 'No Subject')} • </span>
-                        )}
                         {formatDate(thread.created_at)}
                       </Text>
                     </div>

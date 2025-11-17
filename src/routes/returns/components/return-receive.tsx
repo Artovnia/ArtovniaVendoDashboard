@@ -22,21 +22,9 @@ export const ReturnReceive = ({ returnRequest, onSuccess }: ReturnReceiveProps) 
     fields: 'id,status,order_id'
   })
 
-  console.log('🔍 [RETURN-RECEIVE] Component state:', {
-    returnRequestOrderId: returnRequest.order?.id,
-    returnsFromHook: returns,
-    returnsCount: returns?.length,
-    isLoadingReturns
-  })
 
   const medusaReturn = returns?.[0] // Get the first (should be only one) return for this order
   const isReceived = medusaReturn?.status === 'received'
-  
-  console.log('🔍 [RETURN-RECEIVE] Medusa return:', {
-    medusaReturn,
-    isReceived,
-    hasReturnId: !!medusaReturn?.id
-  })
 
   const handleReceiveClick = () => {
     setShowConfirmation(true)
