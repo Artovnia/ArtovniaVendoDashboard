@@ -133,7 +133,6 @@ export const useAssignVariantColors = () => {
       variantId: string,
       colorIds: string[] | ColorAssignment[] 
     }) => {
-      console.log(`[Frontend] Assigning colors to variant ${variantId}:`, colorIds);
       
       // Always make a clean POST with properly formatted colors
       let formattedColors: ColorAssignment[] = [];
@@ -141,7 +140,6 @@ export const useAssignVariantColors = () => {
       // Handle empty array case - this will clear all colors
       if (colorIds.length === 0) {
         formattedColors = [];
-        console.log('[Frontend] Clearing all colors for variant');
       }
       // Handle string array case
       else if (typeof colorIds[0] === 'string') {
@@ -150,12 +148,10 @@ export const useAssignVariantColors = () => {
           is_primary: index === 0, // First color is primary
           color_coverage: 'primary'
         }));
-        console.log('[Frontend] Formatted color assignments from string array:', formattedColors);
       }
       // Handle pre-formatted ColorAssignment objects
       else {
         formattedColors = colorIds as ColorAssignment[];
-        console.log('[Frontend] Using pre-formatted color assignments:', formattedColors);
       }
       
       const response = await fetchQuery(`/vendor/products/${productId}/variants/${variantId}/colors`, {
@@ -165,11 +161,9 @@ export const useAssignVariantColors = () => {
         },
       })
       
-      console.log(`[Frontend] Successfully updated variant ${variantId} colors, response:`, response);
       return response
     },
     onSuccess: (_, { productId, variantId }) => {
-      console.log(`[Frontend] Invalidating queries for product ${productId} and variant ${variantId}`);
       
       // Invalidate relevant queries to refresh data
       queryClient.invalidateQueries({
@@ -185,7 +179,6 @@ export const useAssignVariantColors = () => {
         queryClient.invalidateQueries({
           queryKey: ['product-colors', productId],
         })
-        console.log(`[Frontend] Re-invalidated product colors for ${productId} after delay`);
       }, 1000)
     },
   })

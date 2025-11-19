@@ -12673,6 +12673,102 @@
             },
             "noPayoutAccountDescription": {
               "type": "string"
+            },
+            "tabs": {
+              "type": "object",
+              "properties": {
+                "all": {
+                  "type": "string"
+                },
+                "completed": {
+                  "type": "string"
+                },
+                "pending": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "all",
+                "completed",
+                "pending"
+              ],
+              "additionalProperties": false
+            },
+            "fields": {
+              "type": "object",
+              "properties": {
+                "payoutAmount": {
+                  "type": "string"
+                },
+                "payoutStatus": {
+                  "type": "string"
+                },
+                "awaitingPayout": {
+                  "type": "string"
+                },
+                "partiallyRefunded": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "payoutAmount",
+                "payoutStatus",
+                "awaitingPayout",
+                "partiallyRefunded"
+              ],
+              "additionalProperties": false
+            },
+            "emptyStates": {
+              "type": "object",
+              "properties": {
+                "noPayoutsYet": {
+                  "type": "string"
+                },
+                "noPayoutsYetDescription": {
+                  "type": "string"
+                },
+                "noPendingOrders": {
+                  "type": "string"
+                },
+                "noPendingOrdersDescription": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "noPayoutsYet",
+                "noPayoutsYetDescription",
+                "noPendingOrders",
+                "noPendingOrdersDescription"
+              ],
+              "additionalProperties": false
+            },
+            "charts": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "selectDateRange": {
+                  "type": "string"
+                },
+                "earnings": {
+                  "type": "string"
+                },
+                "payouts": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "title",
+                "description",
+                "selectDateRange",
+                "earnings",
+                "payouts"
+              ],
+              "additionalProperties": false
             }
           },
           "required": [
@@ -12700,7 +12796,31 @@
             "noPayouts",
             "noPayoutsDescription",
             "noPayoutAccount",
-            "noPayoutAccountDescription"
+            "noPayoutAccountDescription",
+            "tabs",
+            "fields",
+            "emptyStates",
+            "charts"
+          ],
+          "additionalProperties": false
+        },
+        "tabs": {
+          "type": "object",
+          "properties": {
+            "all": {
+              "type": "string"
+            },
+            "completed": {
+              "type": "string"
+            },
+            "pending": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "all",
+            "completed",
+            "pending"
           ],
           "additionalProperties": false
         },
@@ -12721,6 +12841,12 @@
             },
             "notSetup": {
               "type": "string"
+            },
+            "awaitingPayout": {
+              "type": "string"
+            },
+            "active": {
+              "type": "string"
             }
           },
           "required": [
@@ -12728,7 +12854,9 @@
             "pending",
             "processing",
             "failed",
-            "notSetup"
+            "notSetup",
+            "awaitingPayout",
+            "active"
           ],
           "additionalProperties": false
         }
@@ -12765,6 +12893,7 @@
         "detail",
         "edit",
         "earnings",
+        "tabs",
         "status"
       ],
       "additionalProperties": false

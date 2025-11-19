@@ -1,18 +1,22 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Button,
   Container,
   Heading,
   Text,
   Badge,
+  Tabs,
 } from '@medusajs/ui';
 import { useTranslation } from 'react-i18next';
 import { CurrencyDollar, Clock, CheckCircle, ExclamationCircle, Plus, PencilSquare } from '@medusajs/icons';
 
-import { usePayoutOverview } from '../../../hooks/api/payouts';
+import { usePayoutOverview, useOrdersWithoutPayouts, useCompletedPayouts, usePayoutStatistics } from '../../../hooks/api/payouts';
 import { DataTable } from '../../../components/data-table';
 import { usePayoutTableColumns } from './components/use-payout-table-columns';
+import { useOrderTableColumns } from './components/use-order-table-columns';
+import { PayoutCharts } from './components/payout-charts';
+import { addDays, format } from 'date-fns';
 
 /**
  * PayoutEarnings component
@@ -22,18 +26,96 @@ import { usePayoutTableColumns } from './components/use-payout-table-columns';
 const PayoutEarnings: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   
+  // Tab state for filtering by status
+  const [activeTab, setActiveTab] = useState<'all' | 'completed' | 'pending'>('all');
+
+  // Get pagination from URL params (DataTable uses 'offset', not 'page')
+  const offset = parseInt(searchParams.get('offset') || '0');
+  const limit = 10; // Fixed page size
+
+  // Fetch overview data (for 'all' tab and summary cards)
   const { 
     payoutAccount, 
-    payouts, 
+    payouts: allPayouts, 
+    payoutsCount: allPayoutsCount,
     earnings, 
     totalPaidOut, 
     availableForPayout, 
-    isLoading, 
-    error 
-  } = usePayoutOverview();
+    isLoading: overviewLoading, 
+    error: overviewError 
+  } = usePayoutOverview(
+    { limit, offset },
+    { enabled: activeTab === 'all' } // Only fetch when 'all' tab is active
+  );
 
-  const columns = usePayoutTableColumns();
+  // Fetch completed payouts (for 'completed' tab)
+  const {
+    payouts: completedPayouts,
+    payoutsCount: completedPayoutsCount,
+    isLoading: completedLoading,
+    error: completedError
+  } = useCompletedPayouts(
+    { limit, offset },
+    { enabled: activeTab === 'completed' } // Only fetch when 'completed' tab is active
+  );
+
+  // Fetch orders without payouts (for 'pending' tab)
+  const {
+    orders: pendingOrders,
+    ordersCount: pendingOrdersCount,
+    isLoading: pendingLoading,
+    error: pendingError
+  } = useOrdersWithoutPayouts(
+    { limit, offset },
+    { enabled: activeTab === 'pending' } // Only fetch when pending tab is active
+  );
+
+  // Fetch payout statistics for charts
+  const from = searchParams.get("from") || format(addDays(new Date(), -7), "yyyy-MM-dd");
+  const to = searchParams.get("to") || format(new Date(), "yyyy-MM-dd");
+  
+  const {
+    earnings: earningsData,
+    payouts: payoutsData,
+    totalEarnings: chartTotalEarnings,
+    totalPayouts: chartTotalPayouts,
+    isLoading: statsLoading,
+    refetch: refetchStats
+  } = usePayoutStatistics(
+    { time_from: from, time_to: to }
+  );
+
+  // Determine which data to show based on active tab
+  let displayData, displayCount, isLoading, error;
+  
+  switch (activeTab) {
+    case 'completed':
+      displayData = completedPayouts;
+      displayCount = completedPayoutsCount;
+      isLoading = completedLoading;
+      error = completedError;
+      break;
+    case 'pending':
+      displayData = pendingOrders;
+      displayCount = pendingOrdersCount;
+      isLoading = pendingLoading;
+      error = pendingError;
+      break;
+    case 'all':
+    default:
+      displayData = allPayouts;
+      displayCount = allPayoutsCount;
+      isLoading = overviewLoading;
+      error = overviewError;
+      break;
+  }
+
+
+  const payoutColumns = usePayoutTableColumns();
+  const orderColumns = useOrderTableColumns();
+  const columns = activeTab === 'pending' ? orderColumns : payoutColumns;
 
   const formatCurrency = (amount: number, currencyCode: string = 'PLN') => {
     // Based on database analysis, amounts are stored as full currency units, not cents
@@ -102,20 +184,7 @@ const PayoutEarnings: React.FC = () => {
             {t('payout.earnings.subtitle')}
           </Text>
         </div>
-        <div className="flex items-center gap-x-2">
-          {!hasPayoutAccount && (
-            <Button size="small" variant="secondary" onClick={() => navigate('/payout/create')}>
-              <Plus />
-              {t('payout.earnings.setupAccount')}
-            </Button>
-          )}
-          {hasPayoutAccount && (
-            <Button size="small" variant="secondary" onClick={() => navigate('/payout/detail')}>
-              <PencilSquare />
-              {t('payout.earnings.manageAccount')}
-            </Button>
-          )}
-        </div>
+       
       </div>
 
       {/* Overview Cards */}
@@ -198,7 +267,19 @@ const PayoutEarnings: React.FC = () => {
         </div>
       </div>
 
-      {/* Payout History Table */}
+      {/* Payout Charts */}
+      {hasPayoutAccount && (
+        <PayoutCharts
+          earningsData={earningsData}
+          payoutsData={payoutsData}
+          totalEarnings={chartTotalEarnings}
+          totalPayouts={chartTotalPayouts}
+          isPending={statsLoading}
+          refetch={refetchStats}
+        />
+      )}
+
+      {/* Payout History Table with Tabs */}
       <div className="bg-ui-bg-base rounded-lg border border-ui-border-base">
         <div className="px-6 py-4 border-b border-ui-border-base">
           <Heading level="h3">{t('payout.earnings.payoutHistory')}</Heading>
@@ -207,28 +288,53 @@ const PayoutEarnings: React.FC = () => {
           </Text>
         </div>
         
+        {/* Status Filter Tabs */}
+        <div className="px-6 pt-4">
+          <Tabs value={activeTab} onValueChange={(value) => {
+            setActiveTab(value as 'all' | 'completed' | 'pending');
+          }}>
+            <Tabs.List>
+              <Tabs.Trigger value="all">
+                {t('payout.tabs.all') || 'All'}
+              </Tabs.Trigger>
+              <Tabs.Trigger value="completed">
+                <CheckCircle className="mr-1" />
+                {t('payout.tabs.completed') || 'Completed'}
+              </Tabs.Trigger>
+              <Tabs.Trigger value="pending">
+                <Clock className="mr-1" />
+                {t('payout.tabs.pending') || 'Pending'}
+              </Tabs.Trigger>
+            </Tabs.List>
+          </Tabs>
+        </div>
+        
         <div className="p-6">
           <DataTable
-            data={payouts || []}
+            data={displayData || []}
             columns={columns}
             getRowId={(row) => row.id}
-            rowCount={payouts?.length || 0}
+            rowCount={displayCount || 0}
             isLoading={isLoading}
             pageSize={10}
             enablePagination={true}
-            enableSearch={true}
+            enableSearch={false}
             emptyState={{
               empty: {
-                heading: hasPayoutAccount 
-                  ? t('payout.earnings.noPayouts') || 'No payouts yet'
-                  : t('payout.earnings.noPayoutAccount') || 'No payout account',
-                description: hasPayoutAccount
-                  ? t('payout.earnings.noPayoutsDescription') || 'Payouts will appear here once processed'
-                  : t('payout.earnings.noPayoutAccountDescription') || 'Set up a payout account to start receiving payments',
+                heading: activeTab === 'pending'
+                  ? 'No pending payouts'
+                  : hasPayoutAccount 
+                    ? 'No payouts yet'
+                    : 'No payout account',
+                description: activeTab === 'pending'
+                  ? 'All orders have been paid out'
+                  : hasPayoutAccount
+                    ? 'Payouts will appear here once processed'
+                    : 'Set up a payout account to start receiving payments',
               },
               filtered: {
-                heading: t('payout.earnings.noFilteredResults') || 'No results found',
-                description: t('payout.earnings.noFilteredResultsDescription') || 'Try adjusting your search or filter criteria',
+                heading: 'No results found',
+                description: 'Try adjusting your filter criteria',
               }
             }}
           />

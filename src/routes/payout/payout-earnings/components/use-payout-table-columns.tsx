@@ -32,10 +32,12 @@ export const usePayoutTableColumns = () => {
           const currencyCode = row.original.currency_code || 'PLN'
           
           const formatCurrency = (amount: number, currencyCode: string) => {
+            // FIXED: Amounts are stored as full currency units (PLN), not cents
+            // Database stores amounts as DECIMAL, not as cents
             return new Intl.NumberFormat('pl-PL', {
               style: 'currency',
               currency: currencyCode,
-            }).format(amount / 100) // Assuming amounts are in cents
+            }).format(amount)
           }
 
           return (
@@ -75,13 +77,44 @@ export const usePayoutTableColumns = () => {
           )
         },
       }),
-      columnHelper.display({
+      columnHelper.accessor("data", {
         id: "status",
         header: t("fields.status"),
-        cell: () => {
+        enableSorting: false,
+        cell: ({ row }) => {
+          // FIXED: Use status column first (database), fallback to data.payout_status (legacy)
+          const payoutStatus = row.original.status || row.original.data?.payout_status || 'PENDING'
+          
+          const getStatusColor = (status: string) => {
+            switch (status?.toUpperCase()) {
+              case 'COMPLETED':
+              case 'PAID':
+                return 'green'
+              case 'PROCESSING':
+              case 'IN_TRANSIT':
+                return 'blue'
+              case 'PENDING':
+              case 'PENDING_BATCH':
+                return 'orange'
+              case 'FAILED':
+              case 'CANCELED':
+                return 'red'
+              default:
+                return 'grey'
+            }
+          }
+          
+          const getStatusLabel = (status: string) => {
+            const statusUpper = status?.toUpperCase() || 'PENDING'
+            // Try to translate, fallback to status itself
+            const translationKey = `payout.status.${statusUpper.toLowerCase()}`
+            const translated = t(translationKey)
+            return translated === translationKey ? statusUpper : translated
+          }
+          
           return (
-            <Badge color="green" size="2xsmall">
-              {t("payout.status.completed")}
+            <Badge color={getStatusColor(payoutStatus)} size="2xsmall">
+              {getStatusLabel(payoutStatus)}
             </Badge>
           )
         },

@@ -15,16 +15,28 @@ import {
 
 const PAYOUTS_QUERY_KEY = "payouts" as const
 const PAYOUT_ACCOUNT_QUERY_KEY = "payout_account" as const
+const ORDERS_WITHOUT_PAYOUTS_QUERY_KEY = "orders_without_payouts" as const
 
 export const payoutsQueryKeys = queryKeysFactory(PAYOUTS_QUERY_KEY) as TQueryKey<"payouts">
 export const payoutAccountQueryKeys = queryKeysFactory(PAYOUT_ACCOUNT_QUERY_KEY) as TQueryKey<"payout_account">
+export const ordersWithoutPayoutsQueryKeys = queryKeysFactory(ORDERS_WITHOUT_PAYOUTS_QUERY_KEY) as TQueryKey<"orders_without_payouts">
 
 // Types based on backend models
 export interface PayoutData {
   id: string
   currency_code: string
   amount: number
-  data?: any
+  data?: {
+    payout_status?: string // PENDING, PROCESSING, COMPLETED, FAILED (from Stripe webhooks)
+    payout_status_updated_at?: string
+    failure_message?: string
+    [key: string]: any
+  }
+  // Status tracking fields from Migration20250831001
+  status?: string // PENDING, PENDING_BATCH, BATCHED, PROCESSING, COMPLETED, FAILED
+  bank_transfer_reference?: string
+  processed_at?: string
+  batch_id?: string
   created_at: string
   updated_at: string
   payout_account_id: string
@@ -132,11 +144,15 @@ export const usePayouts = (
   >
 ) => {
   const { data, ...rest } = useQuery({
-    queryFn: async () =>
-      fetchQuery('/vendor/payouts', {
+    queryFn: async () => {
+      const response = await fetchQuery('/vendor/payouts', {
         method: 'GET',
         query,
-      }),
+      });
+      
+
+      return response;
+    },
     queryKey: payoutsQueryKeys.list(query),
     ...options,
   });
@@ -162,8 +178,6 @@ export const useEarningsCalculation = (
         query,
       });
 
-      console.log('📊 Earnings data received:', response);
-
       return response as EarningsData;
     },
     queryKey: ['earnings', query],
@@ -175,15 +189,18 @@ export const useEarningsCalculation = (
 
 // Combined hook for payout overview
 export const usePayoutOverview = (
+  query?: Record<string, any>,
   options?: {
     payoutAccountOptions?: Omit<UseQueryOptions<PayoutAccountResponse, FetchError, PayoutAccountResponse, QueryKey>, 'queryFn' | 'queryKey'>
     payoutsOptions?: Omit<UseQueryOptions<PayoutsListResponse, FetchError, PayoutsListResponse, QueryKey>, 'queryFn' | 'queryKey'>
     earningsOptions?: Omit<UseQueryOptions<EarningsData, FetchError, EarningsData, QueryKey>, 'queryFn' | 'queryKey'>
   }
 ) => {
+  
   const payoutAccount = usePayoutAccount({}, options?.payoutAccountOptions);
-  const payouts = usePayouts({}, options?.payoutsOptions);
+  const payouts = usePayouts(query, options?.payoutsOptions);
   const earnings = useEarningsCalculation({}, options?.earningsOptions);
+  
 
   // Use backend-calculated values from earnings endpoint
   // The /vendor/earnings endpoint now calculates:
@@ -193,13 +210,151 @@ export const usePayoutOverview = (
   const totalPaidOut = earnings.total_paid_out || 0;
   const availableForPayout = earnings.available_for_payout || 0;
 
-  return {
+  const result = {
     payoutAccount: payoutAccount.payout_account,
     payouts: payouts.payouts || [],
+    payoutsCount: payouts.count || 0,
     earnings: earnings,
     totalPaidOut,
     availableForPayout,
     isLoading: payoutAccount.isLoading || payouts.isLoading || earnings.isLoading,
     error: payoutAccount.error || payouts.error || earnings.error,
   };
+  
+  
+  return result;
 };
+
+// Hook to fetch orders without payouts (pending payouts)
+export const useOrdersWithoutPayouts = (
+  query?: Record<string, any>,
+  options?: Omit<
+    UseQueryOptions<
+      { orders: any[]; count: number; offset: number; limit: number },
+      FetchError,
+      { orders: any[]; count: number; offset: number; limit: number },
+      QueryKey
+    >,
+    "queryFn" | "queryKey"
+  >
+) => {
+  const queryParams = new URLSearchParams()
+  
+  if (query) {
+    Object.entries(query).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        queryParams.append(key, String(value))
+      }
+    })
+  }
+
+  const { data, ...rest } = useQuery({
+    queryKey: ordersWithoutPayoutsQueryKeys.list(query),
+    queryFn: async () => {
+      const response = await fetchQuery(`/vendor/payouts/pending?${queryParams.toString()}`, {
+        method: 'GET'
+      })
+      
+      return response
+    },
+    ...options,
+  })
+
+  return {
+    orders: data?.orders || [],
+    ordersCount: data?.count || 0,
+    offset: data?.offset || 0,
+    limit: data?.limit || 10,
+    ...rest,
+  }
+}
+
+// Hook to fetch completed payouts
+export const useCompletedPayouts = (
+  query?: Record<string, any>,
+  options?: Omit<
+    UseQueryOptions<
+      { payouts: PayoutData[]; count: number; offset: number; limit: number },
+      FetchError,
+      { payouts: PayoutData[]; count: number; offset: number; limit: number },
+      QueryKey
+    >,
+    "queryFn" | "queryKey"
+  >
+) => {
+  const queryParams = new URLSearchParams()
+  
+  if (query) {
+    Object.entries(query).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        queryParams.append(key, String(value))
+      }
+    })
+  }
+
+  const { data, ...rest } = useQuery({
+    queryKey: payoutsQueryKeys.list({ ...query, status: 'COMPLETED' }),
+    queryFn: async () => {
+      const response = await fetchQuery(`/vendor/payouts/completed?${queryParams.toString()}`, {
+        method: 'GET'
+      })
+      
+      return response
+    },
+    ...options,
+  })
+
+  return {
+    payouts: data?.payouts || [],
+    payoutsCount: data?.count || 0,
+    offset: data?.offset || 0,
+    limit: data?.limit || 10,
+    ...rest,
+  }
+}
+
+// Payout Statistics Hook
+export interface PayoutStatisticsData {
+  earnings: { date: string; amount: string }[]
+  payouts: { date: string; amount: string }[]
+  totalEarnings: number
+  totalPayouts: number
+}
+
+export const usePayoutStatistics = (
+  query?: { time_from?: string; time_to?: string },
+  options?: Omit<
+    UseQueryOptions<PayoutStatisticsData, FetchError, PayoutStatisticsData, QueryKey>,
+    "queryFn" | "queryKey"
+  >
+) => {
+  const queryParams = new URLSearchParams()
+  
+  if (query) {
+    Object.entries(query).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        queryParams.append(key, String(value))
+      }
+    })
+  }
+
+  const { data, ...rest } = useQuery({
+    queryKey: ['payout_statistics', query],
+    queryFn: async () => {
+      const response = await fetchQuery(`/vendor/payouts/statistics?${queryParams.toString()}`, {
+        method: 'GET'
+      })
+      
+      return response
+    },
+    ...options,
+  })
+
+  return {
+    earnings: data?.earnings || [],
+    payouts: data?.payouts || [],
+    totalEarnings: data?.totalEarnings || 0,
+    totalPayouts: data?.totalPayouts || 0,
+    ...rest,
+  }
+}

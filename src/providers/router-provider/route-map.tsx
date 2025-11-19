@@ -88,28 +88,7 @@ export const RouteMap: RouteObject[] = [
                   return { Component: mod.default };
                 },
               },
-              {
-                path: 'create',
-                handle: {
-                  breadcrumb: () => 'Utworzenie konta wypłat',
-                },
-                errorElement: <ErrorBoundary />,
-                lazy: async () => {
-                  const mod = await import('../../routes/payout/payout-create');
-                  return { Component: mod.default };
-                },
-              },
-              {
-                path: 'edit/:section',
-                handle: {
-                  breadcrumb: () => 'Edycja konta wypłat',
-                },
-                errorElement: <ErrorBoundary />,
-                lazy: async () => {
-                  const mod = await import('../../routes/payout/payout-edit');
-                  return { Component: mod.default };
-                },
-              },
+              // Removed payout-create and payout-edit routes - now using Stripe onboarding
               {
                 path: 'earnings',
                 handle: {

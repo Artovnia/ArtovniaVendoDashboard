@@ -3480,14 +3480,49 @@
       "noPayouts": "No payouts yet",
       "noPayoutsDescription": "You haven't received any payouts yet",
       "noPayoutAccount": "No payout account",
-      "noPayoutAccountDescription": "Setup your payout account to receive payments"
+      "noPayoutAccountDescription": "Setup your payout account to receive payments",
+      "tabs": {
+        "all": "All",
+        "completed": "Completed",
+        "pending": "Pending"
+      },
+      "fields": {
+        "payoutAmount": "Payout Amount",
+        "payoutStatus": "Payout Status",
+        "awaitingPayout": "Awaiting Payout",
+        "partiallyRefunded": "Partially refunded"
+      },
+      "emptyStates": {
+        "noPayoutsYet": "No payouts yet",
+        "noPayoutsYetDescription": "You don't have any payouts to display yet",
+        "noPendingOrders": "No pending orders",
+        "noPendingOrdersDescription": "You don't have any orders awaiting payout"
+      },
+      "charts": {
+        "title": "Payout Statistics",
+        "description": "Overview of earnings and payouts over time",
+        "selectDateRange": "Select date range",
+        "earnings": "Earnings",
+        "payouts": "Payouts",
+        "zoomIn": "Zoom In",
+        "zoomOut": "Zoom Out",
+        "resetZoom": "Reset Zoom",
+        "zoomHint": "Use mouse wheel to zoom, drag to pan"
+      }
+    },
+    "tabs": {
+      "all": "All",
+      "completed": "Completed",
+      "pending": "Pending"
     },
     "status": {
       "completed": "Completed",
       "pending": "Pending",
       "processing": "Processing",
       "failed": "Failed",
-      "notSetup": "Not Setup"
+      "notSetup": "Not Setup",
+      "awaitingPayout": "Awaiting Payout",
+      "active": "Active"
     }
   },
   

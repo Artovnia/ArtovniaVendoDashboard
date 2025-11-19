@@ -3344,14 +3344,49 @@
       "noPayouts": "Brak wypłat",
       "noPayoutsDescription": "Nie otrzymałeś jeszcze żadnych wypłat",
       "noPayoutAccount": "Brak konta wypłat",
-      "noPayoutAccountDescription": "Skonfiguruj konto wypłat, aby otrzymywać płatności"
+      "noPayoutAccountDescription": "Skonfiguruj konto wypłat, aby otrzymywać płatności",
+      "tabs": {
+        "all": "Wszystkie",
+        "completed": "Ukończone",
+        "pending": "Oczekujące"
+      },
+      "fields": {
+        "payoutAmount": "Kwota wypłaty",
+        "payoutStatus": "Status wypłaty",
+        "awaitingPayout": "Oczekuje na wypłatę",
+        "partiallyRefunded": "Częściowo zwrócono"
+      },
+      "emptyStates": {
+        "noPayoutsYet": "Brak wypłat",
+        "noPayoutsYetDescription": "Nie masz jeszcze żadnych wypłat do wyświetlenia",
+        "noPendingOrders": "Brak oczekujących zamówień",
+        "noPendingOrdersDescription": "Nie masz zamówień oczekujących na wypłatę"
+      },
+      "charts": {
+        "title": "Statystyki wypłat",
+        "description": "Przegląd zarobków i wypłat w czasie",
+        "selectDateRange": "Wybierz zakres dat",
+        "earnings": "Zarobki",
+        "payouts": "Wypłaty",
+        "zoomIn": "Powiększ",
+        "zoomOut": "Pomniejsz",
+        "resetZoom": "Resetuj powiększenie",
+        "zoomHint": "Użyj kółka myszy do powiększania, przeciągnij aby przesunąć"
+      }
+    },
+    "tabs": {
+      "all": "Wszystkie",
+      "completed": "Ukończone",
+      "pending": "Oczekujące"
     },
     "status": {
       "completed": "Ukończone",
       "pending": "Oczekujące",
       "processing": "Przetwarzane",
       "failed": "Nieudane",
-      "notSetup": "Nie Skonfigurowane"
+      "notSetup": "Nie Skonfigurowane",
+      "awaitingPayout": "Oczekuje na wypłatę",
+      "active": "Aktywne"
     }
   },
   "common": {
