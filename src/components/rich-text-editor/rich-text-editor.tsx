@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkBreaks from 'remark-breaks';
+import { EmojiPicker } from './emoji-picker';
 
 interface RichTextEditorProps {
   value: string;
@@ -52,6 +53,7 @@ export const RichTextEditor = ({
   const effectivePlaceholder = placeholder || t('richtext.placeholder');
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const emojiButtonRef = useRef<HTMLButtonElement>(null);
 
   // Helper to get current line info
   const getCurrentLineInfo = useCallback(() => {
@@ -323,6 +325,7 @@ export const RichTextEditor = ({
         {/* Emoji picker */}
         <div className="relative">
           <Button
+            ref={emojiButtonRef}
             type="button"
             variant="secondary"
             size="small"
@@ -334,20 +337,11 @@ export const RichTextEditor = ({
           </Button>
           
           {showEmojiPicker && (
-            <div className="absolute top-full right-0 mt-1 p-2 bg-ui-bg-base border border-ui-border-base rounded-lg shadow-lg z-50 w-64 max-w-[calc(100vw-2rem)]">
-              <div className="grid grid-cols-8 gap-1 max-h-48 overflow-y-auto">
-                {['😊', '😂', '❤️', '👍', '🎉', '🔥', '✨', '💯', '🚀', '💪', '👏', '🙌', '💡', '⭐', '✅', '❌', '⚠️', '📦', '🎨', '🛒', '💰', '🎁', '📱', '💻', '🏆', '🌟', '💎', '🔔', '📢', '🎯', '📈', '💼'].map((emoji) => (
-                  <button
-                    key={emoji}
-                    type="button"
-                    onClick={() => insertEmoji(emoji)}
-                    className="text-xl hover:bg-ui-bg-subtle rounded p-1 cursor-pointer"
-                  >
-                    {emoji}
-                  </button>
-                ))}
-              </div>
-            </div>
+            <EmojiPicker
+              onEmojiSelect={insertEmoji}
+              onClickOutside={() => setShowEmojiPicker(false)}
+              buttonRef={emojiButtonRef}
+            />
           )}
         </div>
 
