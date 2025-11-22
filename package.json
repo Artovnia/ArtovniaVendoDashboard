@@ -75,8 +75,13 @@
     "react-hook-form": "7.49.1",
     "react-i18next": "13.5.0",
     "react-jwt": "^1.2.0",
+    "react-markdown": "^10.1.0",
     "react-router-dom": "6.20.1",
     "recharts": "^2.15.1",
+    "rehype-raw": "^7.0.0",
+    "rehype-sanitize": "^6.0.0",
+    "remark-breaks": "^4.0.0",
+    "remark-gfm": "^4.0.1",
     "talkjs": "^0.35.0",
     "zod": "3.22.4"
   },
@@ -92,7 +97,7 @@
     "@vitejs/plugin-react": "4.2.1",
     "ajv": "^8.17.1",
     "autoprefixer": "^10.4.17",
-    "esbuild": "0.14.54",
+    "esbuild": "^0.18.20",
     "postcss": "^8.4.33",
     "prettier": "^3.1.1",
     "tailwindcss": "^3.4.1",
@@ -104,7 +109,7 @@
   },
   "packageManager": "yarn@3.2.1",
   "resolutions": {
-    "esbuild": "0.14.54",
-    "awilix": "9.0.0" 
+    "esbuild": "^0.18.20",
+    "awilix": "9.0.0"
   }
 }

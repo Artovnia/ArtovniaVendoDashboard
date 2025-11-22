@@ -1,9 +1,10 @@
-import { Input, Textarea } from "@medusajs/ui"
+import { Input } from "@medusajs/ui"
 import { UseFormReturn } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 
 import { Form } from "../../../../../../../components/common/form"
 import { HandleInput } from "../../../../../../../components/inputs/handle-input"
+import { RichTextEditor } from "../../../../../../../components/rich-text-editor"
 import { ProductCreateSchemaType } from "../../../../types"
 
 type ProductCreateGeneralSectionProps = {
@@ -73,15 +74,17 @@ export const ProductCreateGeneralSection = ({
       <Form.Field
         control={form.control}
         name="description"
-        render={({ field }) => {
+        render={({ field, fieldState }) => {
           return (
             <Form.Item>
-              <Form.Label optional>
-                {t("products.fields.description.label")}
-              </Form.Label>
-              <Form.Control>
-                <Textarea {...field} placeholder="Ciepła i wygodna kurtka zimowa" />
-              </Form.Control>
+              <RichTextEditor
+                value={field.value || ''}
+                onChange={field.onChange}
+                label={t("products.fields.description.label")}
+                placeholder="Ciepła i wygodna kurtka zimowa z wysokiej jakości materiałów..."
+                optional
+                error={fieldState.error?.message}
+              />
             </Form.Item>
           )
         }}

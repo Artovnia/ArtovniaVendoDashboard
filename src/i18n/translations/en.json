@@ -843,6 +843,38 @@
         }
       }
     },
+  "richtext": {
+    "placeholder": "Enter product description with formatting...",
+    "toolbar": {
+      "bold": "Bold",
+      "italic": "Italic",
+      "heading": "Heading",
+      "bulletList": "Bullet List",
+      "numberedList": "Numbered List",
+      "link": "Insert Link",
+      "code": "Inline Code",
+      "preview": "Preview",
+      "edit": "Edit"
+    },
+    "help": {
+      "title": "Markdown formatting help",
+      "bold": "bold text",
+      "italic": "italic text",
+      "heading": "Heading",
+      "bulletList": "List item",
+      "numberedList": "Numbered item",
+      "link": "Link text",
+      "code": "code",
+      "strikethrough": "strikethrough",
+      "blockquote": "blockquote",
+      "taskList": "task",
+      "lineBreaks": "Line breaks:",
+      "lineBreaksHint": "Press Enter twice for new paragraph"
+    },
+    "label": {
+      "optional": "Optional"
+    }
+  },
   "collections": {
     "domain": "Collections",
     "subtitle": "Organize products into collections.",

@@ -3296,6 +3296,106 @@
       "required": ["delete"],
       "additionalProperties": false
     },
+    "richtext": {
+      "type": "object",
+      "properties": {
+        "placeholder": {
+          "type": "string"
+        },
+        "toolbar": {
+          "type": "object",
+          "properties": {
+            "bold": {
+              "type": "string"
+            },
+            "italic": {
+              "type": "string"
+            },
+            "heading": {
+              "type": "string"
+            },
+            "bulletList": {
+              "type": "string"
+            },
+            "numberedList": {
+              "type": "string"
+            },
+            "link": {
+              "type": "string"
+            },
+            "code": {
+              "type": "string"
+            },
+            "preview": {
+              "type": "string"
+            },
+            "edit": {
+              "type": "string"
+            }
+          },
+          "required": ["bold", "italic", "heading", "bulletList", "numberedList", "link", "code", "preview", "edit"],
+          "additionalProperties": false
+        },
+        "help": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "bold": {
+              "type": "string"
+            },
+            "italic": {
+              "type": "string"
+            },
+            "heading": {
+              "type": "string"
+            },
+            "bulletList": {
+              "type": "string"
+            },
+            "numberedList": {
+              "type": "string"
+            },
+            "link": {
+              "type": "string"
+            },
+            "code": {
+              "type": "string"
+            },
+            "strikethrough": {
+              "type": "string"
+            },
+            "blockquote": {
+              "type": "string"
+            },
+            "taskList": {
+              "type": "string"
+            },
+            "lineBreaks": {
+              "type": "string"
+            },
+            "lineBreaksHint": {
+              "type": "string"
+            }
+          },
+          "required": ["title", "bold", "italic", "heading", "bulletList", "numberedList", "link", "code", "strikethrough", "blockquote", "taskList", "lineBreaks", "lineBreaksHint"],
+          "additionalProperties": false
+        },
+        "label": {
+          "type": "object",
+          "properties": {
+            "optional": {
+              "type": "string"
+            }
+          },
+          "required": ["optional"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["placeholder", "toolbar", "help", "label"],
+      "additionalProperties": false
+    },
     "collections": {
       "type": "object",
       "properties": {

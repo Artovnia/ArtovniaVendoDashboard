@@ -1,9 +1,9 @@
+/* Import react-day-picker base styles first - @import must be at the top */
+@import 'react-day-picker/dist/style.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Import react-day-picker base styles first, so we can override them */
-@import 'react-day-picker/dist/style.css';
 
 @layer base {
   @font-face {

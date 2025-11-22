@@ -838,6 +838,38 @@
       "loading": "Ładowanie kolorów...",
       "noColors": "Brak kolorów przypisanych do tego produktu"
     },
+  "richtext": {
+    "placeholder": "Wprowadź opis produktu z formatowaniem...",
+    "toolbar": {
+      "bold": "Pogrubienie",
+      "italic": "Kursywa",
+      "heading": "Nagłówek",
+      "bulletList": "Lista punktowana",
+      "numberedList": "Lista numerowana",
+      "link": "Wstaw link",
+      "code": "Kod",
+      "preview": "Podgląd",
+      "edit": "Edytuj"
+    },
+    "help": {
+      "title": "Pomoc formatowania Markdown",
+      "bold": "pogrubiony tekst",
+      "italic": "tekst kursywą",
+      "heading": "Nagłówek",
+      "bulletList": "Element listy",
+      "numberedList": "Element numerowany",
+      "link": "Tekst linku",
+      "code": "kod",
+      "strikethrough": "przekreślony",
+      "blockquote": "cytat",
+      "taskList": "zadanie",
+      "lineBreaks": "Łamanie linii:",
+      "lineBreaksHint": "Naciśnij Enter dwa razy dla nowego akapitu"
+    },
+    "label": {
+      "optional": "Opcjonalne"
+    }
+  },
   "collections": {
     "domain": "Kolekcje",
     "subtitle": "Organizuj produkty w kolekcje.",

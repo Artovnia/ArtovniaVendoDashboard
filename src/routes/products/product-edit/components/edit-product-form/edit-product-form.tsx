@@ -1,12 +1,13 @@
 import React, { useState, useMemo, useEffect } from "react"
 import { HttpTypes } from "@medusajs/types"
-import { Button, Heading, Input, Label, Switch, Text, Textarea, toast } from "@medusajs/ui"
+import { Button, Heading, Input, Label, Switch, Text, toast } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import * as zod from "zod"
 
 import { Form } from '../../../../../components/common/form';
 import { SwitchBox } from '../../../../../components/common/switch-box';
+import { RichTextEditor } from '../../../../../components/rich-text-editor';
 import {
   RouteDrawer,
   useRouteModal,
@@ -330,16 +331,17 @@ export const EditProductForm = ({
               <Form.Field
                 control={form.control}
                 name='description'
-                render={({ field }) => {
+                render={({ field, fieldState }) => {
                   return (
                     <Form.Item>
-                      <Form.Label optional>
-                        {t('fields.description')}
-                      </Form.Label>
-                      <Form.Control>
-                        <Textarea {...field} />
-                      </Form.Control>
-                      <Form.ErrorMessage />
+                      <RichTextEditor
+                        value={field.value || ''}
+                        onChange={field.onChange}
+                        label={t('fields.description')}
+                        placeholder={t('richtext.placeholder')}
+                        optional
+                        error={fieldState.error?.message}
+                      />
                     </Form.Item>
                   );
                 }}
