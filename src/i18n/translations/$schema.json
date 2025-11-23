@@ -7009,9 +7009,92 @@
               },
               "required": ["noRecords", "tip"],
               "additionalProperties": false
+            },
+            "bundles": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "hint": {
+                  "type": "string"
+                },
+                "placeholder": {
+                  "type": "string"
+                },
+                "eu": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["name", "description"],
+                  "additionalProperties": false
+                },
+                "euWithoutPoland": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["name", "description"],
+                  "additionalProperties": false
+                },
+                "northAmerica": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["name", "description"],
+                  "additionalProperties": false
+                }
+              },
+              "required": ["label", "hint", "placeholder", "eu", "euWithoutPoland", "northAmerica"],
+              "additionalProperties": false
+            },
+            "bestPractices": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "intro": {
+                  "type": "string"
+                },
+                "poland": {
+                  "type": "string"
+                },
+                "eu": {
+                  "type": "string"
+                },
+                "usa": {
+                  "type": "string"
+                },
+                "canada": {
+                  "type": "string"
+                },
+                "note": {
+                  "type": "string"
+                }
+              },
+              "required": ["label", "intro", "poland", "eu", "usa", "canada", "note"],
+              "additionalProperties": false
             }
           },
-          "required": ["create", "edit", "delete", "manageAreas", "fields"],
+          "required": ["create", "edit", "delete", "manageAreas", "fields", "bundles", "bestPractices"],
           "additionalProperties": false
         }
       },

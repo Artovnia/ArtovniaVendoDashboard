@@ -121,6 +121,19 @@ export function CreateServiceZoneForm({
                   {t("stockLocations.serviceZones.fields.tip")}
                 </InlineTip>
 
+                <InlineTip label={t("stockLocations.serviceZones.bestPractices.label")} variant="info">
+                  <div className="flex flex-col gap-2">
+                    <p>{t("stockLocations.serviceZones.bestPractices.intro")}</p>
+                    <ul className="list-disc list-inside space-y-1 text-sm">
+                      <li>{t("stockLocations.serviceZones.bestPractices.poland")}</li>
+                      <li>{t("stockLocations.serviceZones.bestPractices.eu")}</li>
+                      <li>{t("stockLocations.serviceZones.bestPractices.usa")}</li>
+                      <li>{t("stockLocations.serviceZones.bestPractices.canada")}</li>
+                    </ul>
+                    <p className="text-sm mt-2">{t("stockLocations.serviceZones.bestPractices.note")}</p>
+                  </div>
+                </InlineTip>
+
                 <GeoZoneForm form={form} />
               </div>
             </div>

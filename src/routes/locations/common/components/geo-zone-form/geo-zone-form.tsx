@@ -1,4 +1,4 @@
-import { Button, Checkbox } from "@medusajs/ui"
+import { Button, Checkbox, Select } from "@medusajs/ui"
 import {
   OnChangeFn,
   RowSelectionState,
@@ -23,6 +23,7 @@ import { useCountries } from "../../../../regions/common/hooks/use-countries"
 import { useCountryTableColumns } from "../../../../regions/common/hooks/use-country-table-columns"
 import { useCountryTableQuery } from "../../../../regions/common/hooks/use-country-table-query"
 import { GEO_ZONE_STACKED_MODAL_ID } from "../../constants"
+import { COUNTRY_BUNDLES, CountryBundle } from "../../constants/country-bundles"
 
 const GeoZoneSchema = z.object({
   countries: z.array(
@@ -204,6 +205,40 @@ const AreaStackedModal = <TForm extends UseFormReturn<any>>({
     setIsOpen(GEO_ZONE_STACKED_MODAL_ID, false)
   }
 
+  const handleBundleSelect = (bundleId: string) => {
+    if (!bundleId) return
+    
+    const bundle = COUNTRY_BUNDLES.find(b => b.id === bundleId)
+    if (!bundle) return
+
+    // Find countries from the bundle in the translated countries list
+    const bundleCountries = translatedCountries.filter(country => 
+      bundle.countries.includes(country.iso_2.toLowerCase())
+    )
+
+    // Add bundle countries to current selection
+    const newCountries = bundleCountries.map(country => ({
+      iso_2: country.iso_2,
+      display_name: country.display_name
+    }))
+
+    // Merge with existing state, avoiding duplicates
+    setState(prev => {
+      const existingIsoCodes = new Set(prev.map(c => c.iso_2))
+      const uniqueNew = newCountries.filter(c => !existingIsoCodes.has(c.iso_2))
+      return [...prev, ...uniqueNew]
+    })
+
+    // Update selection state
+    setSelection(prev => {
+      const newSelection = { ...prev }
+      bundleCountries.forEach(country => {
+        newSelection[country.iso_2] = true
+      })
+      return newSelection
+    })
+  }
+
   const columns = useColumns()
 
   const { table } = useDataTable({
@@ -238,6 +273,33 @@ const AreaStackedModal = <TForm extends UseFormReturn<any>>({
         </StackedFocusModal.Description>
       </StackedFocusModal.Header>
       <StackedFocusModal.Body className="flex-1 overflow-hidden">
+        {/* Quick Select Bundles */}
+        <div className="px-6 py-4 border-b">
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium">
+              {t("stockLocations.serviceZones.bundles.label")}
+            </label>
+            <p className="text-xs text-ui-fg-subtle mb-2">
+              {t("stockLocations.serviceZones.bundles.hint")}
+            </p>
+            <Select onValueChange={handleBundleSelect}>
+              <Select.Trigger>
+                <Select.Value placeholder={t("stockLocations.serviceZones.bundles.placeholder")} />
+              </Select.Trigger>
+              <Select.Content>
+                {COUNTRY_BUNDLES.map(bundle => (
+                  <Select.Item key={bundle.id} value={bundle.id}>
+                    <div className="flex flex-col">
+                      <span className="font-medium">{t(bundle.nameKey)}</span>
+                      <span className="text-xs text-ui-fg-subtle">{t(bundle.descriptionKey)}</span>
+                    </div>
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select>
+          </div>
+        </div>
+        
         <_DataTable
           table={table}
           columns={columns}

@@ -1886,6 +1886,32 @@
       "fields": {
         "noRecords": "There are no service zones to add shipping options to.",
         "tip": "A service zone is a collection of geographical zones or areas. It's used to restrict available shipping options to a defined set of locations."
+      },
+      "bundles": {
+        "label": "Quick Country Selection",
+        "hint": "Select a predefined set of countries to quickly create a service zone.",
+        "placeholder": "Select country bundle...",
+        "eu": {
+          "name": "European Union (all countries)",
+          "description": "All 27 EU member states including Poland"
+        },
+        "euWithoutPoland": {
+          "name": "European Union (without Poland)",
+          "description": "All EU countries except Poland - useful when Poland has a separate zone"
+        },
+        "northAmerica": {
+          "name": "North America",
+          "description": "USA, Canada, and Mexico"
+        }
+      },
+      "bestPractices": {
+        "label": "Best Practices",
+        "intro": "We recommend creating the following service zones for optimal shipping management:",
+        "poland": "Zone for Poland with shipping options for Poland (e.g., InPost Parcel Locker, InPost Courier)",
+        "eu": "Zone for EU (without Poland) with shipping options for European countries",
+        "usa": "Zone for USA with shipping options for United States",
+        "canada": "Zone for Canada with shipping options for Canada",
+        "note": "Each zone should have appropriate shipping options with prices tailored to the region. Use 'Quick Country Selection' above to quickly add multiple countries at once."
       }
     }
   },

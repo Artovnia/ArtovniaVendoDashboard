@@ -1855,6 +1855,32 @@
       "fields": {
         "noRecords": "Nie ma stref serwisowych, do których można dodać opcje wysyłki.",
         "tip": "Strefa serwisowa to zbiór stref lub obszarów geograficznych. Służy do ograniczenia dostępnych opcji wysyłki do określonego zestawu lokalizacji."
+      },
+      "bundles": {
+        "label": "Szybki wybór krajów",
+        "hint": "Wybierz predefiniowany zestaw krajów, aby szybko utworzyć strefę serwisową.",
+        "placeholder": "Wybierz zestaw krajów...",
+        "eu": {
+          "name": "Unia Europejska (wszystkie kraje)",
+          "description": "Wszystkie 27 krajów członkowskich UE, w tym Polska"
+        },
+        "euWithoutPoland": {
+          "name": "Unia Europejska (bez Polski)",
+          "description": "Wszystkie kraje UE z wyjątkiem Polski - przydatne, gdy Polska ma osobną strefę"
+        },
+        "northAmerica": {
+          "name": "Ameryka Północna",
+          "description": "USA, Kanada i Meksyk"
+        }
+      },
+      "bestPractices": {
+        "label": "Zalecane praktyki",
+        "intro": "Zalecamy utworzenie następujących stref serwisowych dla optymalnej obsługi wysyłki:",
+        "poland": "Strefa dla Polski z opcjami wysyłki dla Polski (np. InPost Paczkomat, InPost Kurier)",
+        "eu": "Strefa dla UE (bez Polski) z opcjami wysyłki dla krajów europejskich",
+        "usa": "Strefa dla USA z opcjami wysyłki dla Stanów Zjednoczonych",
+        "canada": "Strefa dla Kanady z opcjami wysyłki dla Kanady",
+        "note": "Każda strefa powinna mieć odpowiednie opcje wysyłki z cenami dostosowanymi do regionu. Użyj 'Szybkiego wyboru krajów' powyżej, aby szybko dodać wiele krajów naraz."
       }
     }
   },
