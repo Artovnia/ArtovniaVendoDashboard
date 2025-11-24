@@ -4225,5 +4225,76 @@
       "accountCreationFailed": "Account creation failed",
       "tryAgainLater": "Please try again later or contact support"
     }
+  },
+  "navigation": {
+    "tickets": "Support Tickets"
+  },
+  "tickets": {
+    "domain": "Support Tickets",
+    "title": "Support Tickets",
+    "createNew": "New Ticket",
+    "create": "Create Ticket",
+    "createSuccess": "Ticket created successfully",
+    "createError": "Failed to create ticket",
+    "updateError": "Failed to update ticket",
+    "statusUpdated": "Status updated",
+    "priorityUpdated": "Priority updated",
+    "notFound": "Ticket not found",
+    "noTickets": "No tickets found",
+    "messages": "Messages",
+    "noMessages": "No messages yet",
+    "addMessage": "Add Message",
+    "sendMessage": "Send Message",
+    "messageSent": "Message sent",
+    "messageRequired": "Message is required",
+    "messageSendError": "Failed to send message",
+    "messagePlaceholder": "Type your message...",
+    "admin": "Admin",
+    "you": "You",
+    "created": "Created",
+    "table": {
+      "ticketNumber": "Ticket #",
+      "title": "Title",
+      "type": "Type",
+      "status": "Status",
+      "priority": "Priority",
+      "created": "Created"
+    },
+    "types": {
+      "support": "Support",
+      "bugReport": "Bug Report",
+      "featureRequest": "Feature Request",
+      "other": "Other"
+    },
+    "status": {
+      "open": "Open",
+      "inProgress": "In Progress",
+      "waitingCustomer": "Waiting",
+      "resolved": "Resolved",
+      "closed": "Closed"
+    },
+    "priority": {
+      "urgent": "Urgent",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "filters": {
+      "status": "Status",
+      "type": "Type"
+    },
+    "form": {
+      "type": "Type",
+      "priority": "Priority",
+      "title": "Title",
+      "titlePlaceholder": "Brief description of the issue",
+      "description": "Description",
+      "descriptionPlaceholder": "Detailed description of your issue...",
+      "attachments": "Attachments (Optional)",
+      "attachmentsHint": "Max 5 files, 10MB each",
+      "filesSelected": "file(s) selected",
+      "charactersMin": "(minimum {{count}})",
+      "status": "Status"
+    }
   }
 }

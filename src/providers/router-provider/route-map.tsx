@@ -432,6 +432,24 @@ export const RouteMap: RouteObject[] = [
             ],
           },
           {
+            path: '/tickets',
+            errorElement: <ErrorBoundary />,
+            handle: {
+              breadcrumb: () => 'Support Tickets',
+            },
+            lazy: () => import('../../routes/tickets/page'),
+            children: [
+              {
+                index: true,
+                lazy: () => import('../../routes/tickets/tickets-list'),
+              },
+              {
+                path: ':id',
+                lazy: () => import('../../routes/tickets/ticket-detail'),
+              },
+            ],
+          },
+          {
             path: '/reviews',
             errorElement: <ErrorBoundary />,
             handle: {

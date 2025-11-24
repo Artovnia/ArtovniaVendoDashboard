@@ -4367,5 +4367,76 @@
     "zm": "Zambia",
     "zw": "Zimbabwe",
     "ax": "Wyspy Alandzkie"
+  },
+  "navigation": {
+    "tickets": "Wsparcie"
+  },
+  "tickets": {
+    "domain": "Wsparcie",
+    "title": "Zgłoszenia do Wsparcia",
+    "createNew": "Nowe Zgłoszenie",
+    "create": "Utwórz Zgłoszenie",
+    "createSuccess": "Zgłoszenie utworzone pomyślnie",
+    "createError": "Nie udało się utworzyć zgłoszenia",
+    "updateError": "Nie udało się zaktualizować zgłoszenia",
+    "statusUpdated": "Status zaktualizowany",
+    "priorityUpdated": "Priorytet zaktualizowany",
+    "notFound": "Zgłoszenie nie znalezione",
+    "noTickets": "Nie znaleziono zgłoszeń",
+    "messages": "Wiadomości",
+    "noMessages": "Brak wiadomości",
+    "addMessage": "Dodaj Wiadomość",
+    "sendMessage": "Wyślij Wiadomość",
+    "messageSent": "Wiadomość wysłana",
+    "messageRequired": "Wiadomość jest wymagana",
+    "messageSendError": "Nie udało się wysłać wiadomości",
+    "messagePlaceholder": "Wpisz swoją wiadomość...",
+    "admin": "Administrator",
+    "you": "Ty",
+    "created": "Utworzono",
+    "table": {
+      "ticketNumber": "Nr Zgłoszenia",
+      "title": "Tytuł",
+      "type": "Typ",
+      "status": "Status",
+      "priority": "Priorytet",
+      "created": "Utworzono"
+    },
+    "types": {
+      "support": "Wsparcie",
+      "bugReport": "Zgłoszenie Błędu",
+      "featureRequest": "Prośba o Funkcję",
+      "other": "Inne"
+    },
+    "status": {
+      "open": "Otwarte",
+      "inProgress": "W Trakcie",
+      "waitingCustomer": "Oczekuje",
+      "resolved": "Rozwiązane",
+      "closed": "Zamknięte"
+    },
+    "priority": {
+      "urgent": "Pilne",
+      "high": "Wysoki",
+      "medium": "Średni",
+      "low": "Niski"
+    },
+    "filters": {
+      "status": "Status",
+      "type": "Typ"
+    },
+    "form": {
+      "type": "Typ",
+      "priority": "Priorytet",
+      "title": "Tytuł",
+      "titlePlaceholder": "Krótki opis problemu",
+      "description": "Opis",
+      "descriptionPlaceholder": "Szczegółowy opis problemu...",
+      "attachments": "Załączniki (Opcjonalne)",
+      "attachmentsHint": "Maks. 5 plików, 10MB każdy",
+      "filesSelected": "plik(ów) wybrano",
+      "charactersMin": "(minimum {{count}})",
+      "status": "Status"
+    }
   }
 }

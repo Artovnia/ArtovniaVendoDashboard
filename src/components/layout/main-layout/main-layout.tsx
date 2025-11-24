@@ -15,6 +15,7 @@ import {
   ListCheckbox,
   ChatBubbleLeftRight,
   Calendar,
+  Lifebuoy,
 } from '@medusajs/icons';
 import { Divider, Text, clx } from '@medusajs/ui';
 import { Collapsible as RadixCollapsible } from 'radix-ui';
@@ -127,6 +128,7 @@ const useCoreRoutes = (): Omit<INavItem, 'pathname'>[] => {
       label: t('requests.returns.domain'),
       to: '/returns',
     },
+   
     {
       icon: <Tag />,
       label: t('products.domain'),
@@ -210,6 +212,11 @@ const useCoreRoutes = (): Omit<INavItem, 'pathname'>[] => {
       icon: <Calendar />,
       label: t('navigation.holidayMode', 'Holiday Mode'),
       to: '/holiday-mode',
+    },
+     {
+      icon: <Lifebuoy />,
+      label: t('navigation.tickets', 'Support Tickets'),
+      to: '/tickets',
     },
   ];
 };

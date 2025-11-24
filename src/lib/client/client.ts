@@ -363,7 +363,7 @@ export const fetchQuery = async (
     retryCount = 0, // Track retry attempts
   }: {
     method: 'GET' | 'POST' | 'DELETE';
-    body?: object;
+    body?: object | FormData;
     query?: Record<string, string | number>;
     headers?: { [key: string]: string };
     retryCount?: number;
@@ -385,6 +385,9 @@ export const fetchQuery = async (
     ''
   );
 
+  // Check if body is FormData
+  const isFormData = body instanceof FormData;
+
   try {
     const response = await fetch(
       `${backendUrl}${url}${params && `?${params}`}`,
@@ -392,11 +395,12 @@ export const fetchQuery = async (
         method: method,
         headers: {
           authorization: `Bearer ${bearer}`,
-          'Content-Type': 'application/json',
+          // Don't set Content-Type for FormData - browser will set it with boundary
+          ...(!isFormData && { 'Content-Type': 'application/json' }),
           'x-publishable-api-key': publishableApiKey,
           ...headers,
         },
-        body: body ? JSON.stringify(body) : null,
+        body: body ? (isFormData ? body : JSON.stringify(body)) : null,
       }
     );
 

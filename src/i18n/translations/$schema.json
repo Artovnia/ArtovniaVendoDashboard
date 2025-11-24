@@ -15443,7 +15443,8 @@
     "integratedVariantSection",
     "variantColorsEditForm",
     "platformPromotions",
-    "stripeConnect"
+    "stripeConnect",
+    "tickets"
   ],
   "additionalProperties": false
 }
