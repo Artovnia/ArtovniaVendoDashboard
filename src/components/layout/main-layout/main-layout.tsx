@@ -215,7 +215,7 @@ const useCoreRoutes = (): Omit<INavItem, 'pathname'>[] => {
     },
      {
       icon: <Lifebuoy />,
-      label: t('navigation.tickets', 'Support Tickets'),
+      label: t('tickets.navigation.tickets', 'Support Tickets'),
       to: '/tickets',
     },
   ];

@@ -15355,6 +15355,230 @@
       "additionalProperties": false
     }
   },
+  "required": ["title", "description", "notConnected", "connected", "pending", "restrictedSoon", "rejected", "unknown", "accountType", "requirements", "details", "status", "actions", "notes", "form", "validation", "success", "error"],
+  "additionalProperties": false
+    },
+    "tickets": {
+      "type": "object",
+      "properties": {
+        "navigation": {
+          "type": "object",
+          "properties": {
+            "tickets": {
+              "type": "string"
+            }
+          },
+          "required": ["tickets"],
+          "additionalProperties": false
+        },
+        "domain": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "createNew": {
+          "type": "string"
+        },
+        "create": {
+          "type": "string"
+        },
+        "createSuccess": {
+          "type": "string"
+        },
+        "createError": {
+          "type": "string"
+        },
+        "updateError": {
+          "type": "string"
+        },
+        "statusUpdated": {
+          "type": "string"
+        },
+        "priorityUpdated": {
+          "type": "string"
+        },
+        "notFound": {
+          "type": "string"
+        },
+        "noTickets": {
+          "type": "string"
+        },
+        "messages": {
+          "type": "string"
+        },
+        "noMessages": {
+          "type": "string"
+        },
+        "addMessage": {
+          "type": "string"
+        },
+        "sendMessage": {
+          "type": "string"
+        },
+        "messageSent": {
+          "type": "string"
+        },
+        "messageRequired": {
+          "type": "string"
+        },
+        "messageSendError": {
+          "type": "string"
+        },
+        "messagePlaceholder": {
+          "type": "string"
+        },
+        "admin": {
+          "type": "string"
+        },
+        "you": {
+          "type": "string"
+        },
+        "created": {
+          "type": "string"
+        },
+        "table": {
+          "type": "object",
+          "properties": {
+            "ticketNumber": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            },
+            "priority": {
+              "type": "string"
+            },
+            "created": {
+              "type": "string"
+            }
+          },
+          "required": ["ticketNumber", "title", "type", "status", "priority", "created"],
+          "additionalProperties": false
+        },
+        "types": {
+          "type": "object",
+          "properties": {
+            "support": {
+              "type": "string"
+            },
+            "bugReport": {
+              "type": "string"
+            },
+            "featureRequest": {
+              "type": "string"
+            },
+            "other": {
+              "type": "string"
+            }
+          },
+          "required": ["support", "bugReport", "featureRequest", "other"],
+          "additionalProperties": false
+        },
+        "status": {
+          "type": "object",
+          "properties": {
+            "open": {
+              "type": "string"
+            },
+            "inProgress": {
+              "type": "string"
+            },
+            "waitingCustomer": {
+              "type": "string"
+            },
+            "resolved": {
+              "type": "string"
+            },
+            "closed": {
+              "type": "string"
+            }
+          },
+          "required": ["open", "inProgress", "waitingCustomer", "resolved", "closed"],
+          "additionalProperties": false
+        },
+        "priority": {
+          "type": "object",
+          "properties": {
+            "urgent": {
+              "type": "string"
+            },
+            "high": {
+              "type": "string"
+            },
+            "medium": {
+              "type": "string"
+            },
+            "low": {
+              "type": "string"
+            }
+          },
+          "required": ["urgent", "high", "medium", "low"],
+          "additionalProperties": false
+        },
+        "filters": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            }
+          },
+          "required": ["status", "type"],
+          "additionalProperties": false
+        },
+        "form": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string"
+            },
+            "priority": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            },
+            "titlePlaceholder": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "descriptionPlaceholder": {
+              "type": "string"
+            },
+            "attachments": {
+              "type": "string"
+            },
+            "attachmentsHint": {
+              "type": "string"
+            },
+            "filesSelected": {
+              "type": "string"
+            },
+            "charactersMin": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            }
+          },
+          "required": ["type", "priority", "title", "titlePlaceholder", "description", "descriptionPlaceholder", "attachments", "attachmentsHint", "filesSelected", "charactersMin", "status"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["navigation", "domain", "title", "createNew", "create", "createSuccess", "createError", "updateError", "statusUpdated", "priorityUpdated", "notFound", "noTickets", "messages", "noMessages", "addMessage", "sendMessage", "messageSent", "messageRequired", "messageSendError", "messagePlaceholder", "admin", "you", "created", "table", "types", "status", "priority", "filters", "form"],
+      "additionalProperties": false
+    },
   "required": [
     "$schema",
     "general",

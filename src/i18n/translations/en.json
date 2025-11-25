@@ -4226,10 +4226,10 @@
       "tryAgainLater": "Please try again later or contact support"
     }
   },
-  "navigation": {
-    "tickets": "Support Tickets"
-  },
   "tickets": {
+    "navigation": {
+      "tickets": "Support Tickets"
+    },
     "domain": "Support Tickets",
     "title": "Support Tickets",
     "createNew": "New Ticket",

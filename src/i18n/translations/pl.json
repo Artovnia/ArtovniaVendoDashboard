@@ -4368,10 +4368,10 @@
     "zw": "Zimbabwe",
     "ax": "Wyspy Alandzkie"
   },
-  "navigation": {
-    "tickets": "Wsparcie"
-  },
   "tickets": {
+    "navigation": {
+      "tickets": "Wsparcie"
+    },
     "domain": "Wsparcie",
     "title": "Zgłoszenia do Wsparcia",
     "createNew": "Nowe Zgłoszenie",
