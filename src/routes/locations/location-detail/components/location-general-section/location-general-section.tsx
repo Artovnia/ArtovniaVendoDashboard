@@ -18,6 +18,8 @@ import {
   Text,
   toast,
   usePrompt,
+  Tabs,
+  Select,
 } from '@medusajs/ui';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -33,6 +35,7 @@ import {
   useDeleteFulfillmentSet,
 } from '../../../../../hooks/api/fulfillment-sets';
 import { useDeleteShippingOption } from '../../../../../hooks/api/shipping-options';
+import { useShippingProfiles } from '../../../../../hooks/api/shipping-profiles';
 import {
   useCreateStockLocationFulfillmentSet,
   useDeleteStockLocation,
@@ -295,6 +298,7 @@ type ServiceZoneOptionsProps = {
   locationId: string;
   fulfillmentSetId: string;
   type: FulfillmentSetType;
+  selectedProfileId?: string;
 };
 
 function ServiceZoneOptions({
@@ -302,6 +306,7 @@ function ServiceZoneOptions({
   locationId,
   fulfillmentSetId,
   type,
+  selectedProfileId,
 }: ServiceZoneOptionsProps) {
   const { t } = useTranslation();
 
@@ -314,6 +319,13 @@ function ServiceZoneOptions({
     options.forEach(option => {
       const isReturn = isReturnOption(option, 'ServiceZoneOptions');
       
+      // Filter by shipping profile if selected
+      if (selectedProfileId && selectedProfileId !== 'all') {
+        if (option.shipping_profile?.id !== selectedProfileId) {
+          return; // Skip this option
+        }
+      }
+      
       if (isReturn) {
         returnOpts.push(option);
       } else {
@@ -322,7 +334,7 @@ function ServiceZoneOptions({
     });
       
     return [regularOptions, returnOpts];
-  }, [zone?.shipping_options]);
+  }, [zone?.shipping_options, selectedProfileId]);
 
   return (
     <div>
@@ -392,22 +404,23 @@ function ServiceZoneOptions({
   );
 }
 
-type ServiceZoneProps = {
+type ServiceZoneTabContentProps = {
   zone: HttpTypes.AdminServiceZone;
   locationId: string;
   fulfillmentSetId: string;
   type: FulfillmentSetType;
+  selectedProfileId?: string;
 };
 
-function ServiceZone({
+function ServiceZoneTabContent({
   zone,
   locationId,
   fulfillmentSetId,
   type,
-}: ServiceZoneProps) {
+  selectedProfileId,
+}: ServiceZoneTabContentProps) {
   const { t } = useTranslation();
   const prompt = usePrompt();
-  const [open, setOpen] = useState(true);
 
   const { mutateAsync: deleteZone } =
     useDeleteFulfillmentServiceZone(
@@ -493,7 +506,7 @@ function ServiceZone({
 
   return (
     <div className='flex flex-col'>
-      <div className='flex flex-row items-center justify-between gap-x-4 px-6 py-4'>
+      <div className='flex flex-row items-center justify-between gap-x-4 py-4'>
         <IconAvatar>
           <Map />
         </IconAvatar>
@@ -528,18 +541,6 @@ function ServiceZone({
         </div>
 
         <div className='flex grow-0 items-center gap-4'>
-          <IconButton
-            size='small'
-            onClick={() => setOpen((s) => !s)}
-            variant='transparent'
-          >
-            <TriangleDownMini
-              style={{
-                transform: `rotate(${!open ? 0 : 180}deg)`,
-                transition: '.2s transform ease-in-out',
-              }}
-            />
-          </IconButton>
           <ActionMenu
             groups={[
               {
@@ -571,14 +572,13 @@ function ServiceZone({
           />
         </div>
       </div>
-      {open && (
-        <ServiceZoneOptions
-          fulfillmentSetId={fulfillmentSetId}
-          locationId={locationId}
-          type={type}
-          zone={zone}
-        />
-      )}
+      <ServiceZoneOptions
+        fulfillmentSetId={fulfillmentSetId}
+        locationId={locationId}
+        type={type}
+        zone={zone}
+        selectedProfileId={selectedProfileId}
+      />
     </div>
   );
 }
@@ -601,6 +601,39 @@ function FulfillmentSet(props: FulfillmentSetProps) {
 
   const hasServiceZones =
     !!fulfillmentSet?.service_zones?.length;
+
+  // State for active service zone tab
+  const [activeZoneTab, setActiveZoneTab] = useState<string>('0');
+  
+  // State for shipping profile filter
+  const [selectedProfileId, setSelectedProfileId] = useState<string>('all');
+
+  // Fetch shipping profiles for filtering
+  const { shipping_profiles = [] } = useShippingProfiles(
+    {},
+    { enabled: hasServiceZones }
+  );
+
+  // Get unique shipping profiles from current service zone's options
+  const availableProfiles = useMemo(() => {
+    if (!fulfillmentSet?.service_zones?.length) return [];
+    
+    const zoneIndex = parseInt(activeZoneTab);
+    const currentZone = fulfillmentSet.service_zones[zoneIndex];
+    
+    if (!currentZone?.shipping_options) return [];
+    
+    const profileIds = new Set<string>();
+    currentZone.shipping_options.forEach(option => {
+      if (option.shipping_profile?.id) {
+        profileIds.add(option.shipping_profile.id);
+      }
+    });
+    
+    return shipping_profiles.filter((profile: any) => 
+      profileIds.has(profile.id)
+    );
+  }, [fulfillmentSet?.service_zones, activeZoneTab, shipping_profiles]);
 
   const { mutateAsync: createFulfillmentSet } =
     useCreateStockLocationFulfillmentSet(locationId);
@@ -743,16 +776,62 @@ function FulfillmentSet(props: FulfillmentSetProps) {
         )}
 
         {hasServiceZones && (
-          <div className='flex flex-col divide-y'>
-            {fulfillmentSet?.service_zones.map((zone) => (
-              <ServiceZone
-                zone={zone}
-                type={type}
-                key={zone.id}
-                locationId={locationId}
-                fulfillmentSetId={fulfillmentSet.id}
-              />
-            ))}
+          <div className='px-6 py-4'>
+            <Tabs value={activeZoneTab} onValueChange={setActiveZoneTab}>
+              <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4'>
+                <div className='flex items-center gap-3'>
+                  <Text size='small' weight='plus' className='text-ui-fg-subtle'>
+                    {t('stockLocations.serviceZones.label')}
+                  </Text>
+                  <Tabs.List>
+                    {fulfillmentSet?.service_zones.map((zone, index) => (
+                      <Tabs.Trigger key={zone.id} value={index.toString()}>
+                        {extractUserFriendlyName(zone.name)}
+                      </Tabs.Trigger>
+                    ))}
+                  </Tabs.List>
+                </div>
+                
+                {availableProfiles.length > 0 && (
+                  <div className='flex items-center gap-2'>
+                    <Text size='small' className='text-ui-fg-subtle'>
+                      {t('stockLocations.shippingOptions.fields.filterByProfile')}
+                    </Text>
+                    <Select
+                      value={selectedProfileId}
+                      onValueChange={setSelectedProfileId}
+                      size='small'
+                    >
+                      <Select.Trigger>
+                        <Select.Value />
+                      </Select.Trigger>
+                      <Select.Content>
+                        <Select.Item value='all'>
+                          {t('stockLocations.shippingOptions.fields.allProfiles')}
+                        </Select.Item>
+                        {availableProfiles.map((profile: any) => (
+                          <Select.Item key={profile.id} value={profile.id}>
+                            {translateShippingProfileKey(extractUserFriendlyShippingProfileName(profile.name), false, t)}
+                          </Select.Item>
+                        ))}
+                      </Select.Content>
+                    </Select>
+                  </div>
+                )}
+              </div>
+
+              {fulfillmentSet?.service_zones.map((zone, index) => (
+                <Tabs.Content key={zone.id} value={index.toString()}>
+                  <ServiceZoneTabContent
+                    zone={zone}
+                    type={type}
+                    locationId={locationId}
+                    fulfillmentSetId={fulfillmentSet.id}
+                    selectedProfileId={selectedProfileId}
+                  />
+                </Tabs.Content>
+              ))}
+            </Tabs>
           </div>
         )}
       </div>

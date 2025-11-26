@@ -1826,6 +1826,8 @@
           "returns_one": "{{count}} return option",
           "returns_other": "{{count}} return options"
         },
+        "filterByProfile": "Shipping profile",
+        "allProfiles": "All profiles",
         "priceType": {
           "label": "Price type",
           "options": {
@@ -1862,6 +1864,7 @@
       }
     },
     "serviceZones": {
+      "label": "Service zone:",
       "create": {
         "headerPickup": "Create Service Zone for Pickup from {{location}}",
         "headerShipping": "Create Service Zone for Shipping from {{location}}",

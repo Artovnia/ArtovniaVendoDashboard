@@ -6898,6 +6898,12 @@
                 },
                 "fulfillmentOption": {
                   "type": "string"
+                },
+                "filterByProfile": {
+                  "type": "string"
+                },
+                "allProfiles": {
+                  "type": "string"
                 }
               },
               "required": [
@@ -6906,7 +6912,9 @@
                 "enableInStore",
                 "provider",
                 "profile",
-                "fulfillmentOption"
+                "fulfillmentOption",
+                "filterByProfile",
+                "allProfiles"
               ],
               "additionalProperties": false
             }
@@ -6925,6 +6933,9 @@
         "serviceZones": {
           "type": "object",
           "properties": {
+            "label": {
+              "type": "string"
+            },
             "create": {
               "type": "object",
               "properties": {
@@ -7094,7 +7105,7 @@
               "additionalProperties": false
             }
           },
-          "required": ["create", "edit", "delete", "manageAreas", "fields", "bundles", "bestPractices"],
+          "required": ["label", "create", "edit", "delete", "manageAreas", "fields", "bundles", "bestPractices"],
           "additionalProperties": false
         }
       },
