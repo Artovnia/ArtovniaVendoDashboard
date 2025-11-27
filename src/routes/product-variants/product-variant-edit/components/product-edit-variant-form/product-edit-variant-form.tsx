@@ -157,7 +157,6 @@ export const ProductEditVariantForm = ({
           })
           .filter((item): item is { attribute_id: string; value: string } => item !== null)
 
-        console.log(`[DEBUG] Filtered attribute values for submission:`, attributeValues)
 
         if (attributeValues.length > 0) {
           await updateVariantAttributes.mutateAsync({

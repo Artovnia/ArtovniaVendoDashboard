@@ -56,12 +56,13 @@ export const EditInventoryItemForm = ({ item }: EditInventoryItemFormProps) => {
         className="flex flex-1 flex-col overflow-hidden"
       >
         <RouteDrawer.Body className="flex flex-1 flex-col gap-y-8 overflow-auto">
-          <Form.Field
+          {/* Title field commented out - inventory item title is now synced with variant title */}
+          {/* <Form.Field
             control={form.control}
             name="title"
             render={({ field }) => {
               return (
-                <Form.Item>
+             <Form.Item>
                   <Form.Label>{t("fields.title")}</Form.Label>
                   <Form.Control>
                     <Input {...field} />
@@ -70,7 +71,7 @@ export const EditInventoryItemForm = ({ item }: EditInventoryItemFormProps) => {
                 </Form.Item>
               )
             }}
-          />
+          /> */}
           <Form.Field
             control={form.control}
             name="sku"

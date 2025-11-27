@@ -144,14 +144,15 @@ export const LocationGeneralSection = ({
         </div>
       </Container>
 
-      <FulfillmentSet
+      {/* Personal pickup commented out - not needed for now */}
+      {/* <FulfillmentSet
         locationId={location.id}
         locationName={location.name}
         type={FulfillmentSetType.Pickup}
         fulfillmentSet={location.fulfillment_sets?.find(
           (f) => f.type === FulfillmentSetType.Pickup
         )}
-      />
+      /> */}
 
       <FulfillmentSet
         locationId={location.id}

@@ -20,6 +20,7 @@ import {
   useWatch,
 } from "react-hook-form"
 import { useTranslation } from "react-i18next"
+import { useEffect } from "react"
 
 import { Form } from "../../../../../../../components/common/form"
 import { SortableList } from "../../../../../../../components/common/sortable-list"
@@ -92,6 +93,23 @@ export const ProductCreateVariantsSection = ({
     name: "variants",
     defaultValue: [],
   })
+
+  const watchedProductTitle = useWatch({
+    control: form.control,
+    name: "title",
+    defaultValue: "",
+  })
+
+  // Update default variant title when product title changes (only if variants are NOT enabled)
+  useEffect(() => {
+    if (!watchedAreVariantsEnabled && watchedVariants.length === 1 && watchedVariants[0]?.is_default) {
+      const currentVariant = watchedVariants[0]
+      // Only update if the variant title is empty or still "Default variant"
+      if (!currentVariant.title || currentVariant.title === "Default variant" || currentVariant.title === "") {
+        form.setValue("variants.0.title", watchedProductTitle || "")
+      }
+    }
+  }, [watchedProductTitle, watchedAreVariantsEnabled, watchedVariants, form])
 
   const showInvalidOptionsMessage = !!form.formState.errors.options?.length
   const showInvalidVariantsMessage =
@@ -260,6 +278,9 @@ export const ProductCreateVariantsSection = ({
   }
 
   const createDefaultOptionAndVariant = () => {
+    // Get the product title from the form to use as variant name
+    const productTitle = form.getValues("title") || "Default variant"
+    
     form.setValue("options", [
       {
         title: "Default option",
@@ -270,7 +291,7 @@ export const ProductCreateVariantsSection = ({
       "variants",
       decorateVariantsWithDefaultValues([
         {
-          title: "Default variant",
+          title: productTitle, // Use product name instead of "Default variant"
           should_create: true,
           variant_rank: 0,
           options: {

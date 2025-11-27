@@ -127,12 +127,7 @@ export function CreateShippingOptionsForm({
 
   const { fulfillment_providers = [] } = useFulfillmentProviders();
 
-  // Log the provider IDs for debugging
-  useEffect(() => {
-    if (fulfillment_providers.length > 0) {
-      console.log('Available providers:', fulfillment_providers);
-    }
-  }, [fulfillment_providers]);
+
 
   useEffect(() => {
     if (!selectedProviderId && fulfillment_providers.length > 0) {
@@ -143,12 +138,7 @@ export function CreateShippingOptionsForm({
     }
   }, [fulfillment_providers, form, selectedProviderId]);
   
-  // Log the selected provider ID when it changes
-  useEffect(() => {
-    if (selectedProviderId) {
-      
-    }
-  }, [selectedProviderId]);
+
 
   useEffect(() => {
     if (shipping_profiles.length > 0) {
@@ -176,7 +166,6 @@ export function CreateShippingOptionsForm({
         (p): p is { currency_code: string; amount: number } => !!p
       );
 
-    console.log('Creating shipping option with isReturn =', isReturn);
     
     // Create shipping option with data for the admin workflow to process
     const shippingOptionPayload = {
@@ -211,7 +200,7 @@ export function CreateShippingOptionsForm({
       }
     };
     
-    console.log('Shipping option payload:', shippingOptionPayload);
+    
     
     // Pass the payload to the API using type assertion to bypass TypeScript constraints
     await mutateAsync(

@@ -149,7 +149,7 @@ export const PRODUCT_CREATE_FORM_DEFAULTS: Partial<
   ],
   variants: decorateVariantsWithDefaultValues([
     {
-      title: "Default variant",
+      title: "", // Will be set to product title when product name is entered
       should_create: true,
       variant_rank: 0,
       options: {
