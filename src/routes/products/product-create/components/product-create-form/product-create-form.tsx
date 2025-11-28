@@ -20,6 +20,7 @@ import {
 import { useCreateProduct } from '../../../../../hooks/api/products';
 import { useCreateUpdateGPSR } from '../../../../../hooks/api/gpsr';
 import { fetchQuery, uploadFilesQuery } from '../../../../../lib/client';
+import { saveGPSRDefaults } from '../../../../../lib/gpsr-storage';
 import {
   PRODUCT_CREATE_FORM_DEFAULTS,
   ProductCreateSchema,
@@ -389,6 +390,28 @@ export const ProductCreateForm = ({
       }, {
         onSuccess: async (data: any) => {
           setIsSubmitting(false);
+          
+          // Save GPSR data to localStorage FIRST (before any early returns)
+          // This ensures data is saved even in approval workflow
+          if (payload.metadata) {
+            const gpsrDataForStorage = {
+              producerName: payload.metadata.gpsr_producer_name || '',
+              producerAddress: payload.metadata.gpsr_producer_address || '',
+              producerContact: payload.metadata.gpsr_producer_contact || '',
+              importerName: payload.metadata.gpsr_importer_name || '',
+              importerAddress: payload.metadata.gpsr_importer_address || '',
+              importerContact: payload.metadata.gpsr_importer_contact || '',
+              instructions: payload.metadata.gpsr_instructions || '',
+              certificates: payload.metadata.gpsr_certificates || '',
+            };
+            
+            // Only save if at least one required field has data
+            if (gpsrDataForStorage.producerName || gpsrDataForStorage.producerAddress || 
+                gpsrDataForStorage.producerContact || gpsrDataForStorage.instructions) {
+              saveGPSRDefaults(gpsrDataForStorage);
+            }
+          }
+          
           try {
             
             const productId = data.product?.id;
@@ -477,7 +500,23 @@ export const ProductCreateForm = ({
                 
                 if (gpsrData.gpsr.producerName || gpsrData.gpsr.producerAddress || 
                     gpsrData.gpsr.producerContact || gpsrData.gpsr.instructions) {
+                  console.log('📤 Submitting GPSR data to API:', gpsrData);
                   await mutateGPSR(gpsrData);
+                  console.log('✅ GPSR data submitted to API successfully');
+                  
+                  // Save GPSR data to localStorage for future auto-fill
+                  console.log('💾 Saving GPSR data to localStorage...');
+                  const saved = saveGPSRDefaults({
+                    producerName: gpsrData.gpsr.producerName,
+                    producerAddress: gpsrData.gpsr.producerAddress,
+                    producerContact: gpsrData.gpsr.producerContact,
+                    importerName: gpsrData.gpsr.importerName,
+                    importerAddress: gpsrData.gpsr.importerAddress,
+                    importerContact: gpsrData.gpsr.importerContact,
+                    instructions: gpsrData.gpsr.instructions,
+                    certificates: gpsrData.gpsr.certificates,
+                  });
+                  console.log('💾 GPSR save result:', saved ? 'SUCCESS' : 'FAILED');
                 }
               } catch (gpsrError) {
                 console.error('Failed to submit GPSR data:', gpsrError);

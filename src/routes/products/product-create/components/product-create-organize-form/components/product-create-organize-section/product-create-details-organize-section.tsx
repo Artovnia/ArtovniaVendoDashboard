@@ -22,8 +22,6 @@ export const ProductCreateOrganizationSection = ({
 }: ProductCreateOrganizationSectionProps) => {
   const { t } = useTranslation();
 
-
-
   const tags = useComboboxData({
     queryKey: ['product_tags', 'creating'],
     queryFn: (params) =>
@@ -105,9 +103,7 @@ export const ProductCreateOrganizationSection = ({
                     {...field}
                     options={tags.options}
                     searchValue={tags.searchValue}
-                    onSearchValueChange={
-                      tags.onSearchValueChange
-                    }
+                    onSearchValueChange={tags.onSearchValueChange}
                     fetchNextPage={tags.fetchNextPage}
                   />
                 </Form.Control>

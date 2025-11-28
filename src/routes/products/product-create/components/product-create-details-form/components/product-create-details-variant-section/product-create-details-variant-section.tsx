@@ -102,14 +102,40 @@ export const ProductCreateVariantsSection = ({
 
   // Update default variant title when product title changes (only if variants are NOT enabled)
   useEffect(() => {
-    if (!watchedAreVariantsEnabled && watchedVariants.length === 1 && watchedVariants[0]?.is_default) {
-      const currentVariant = watchedVariants[0]
-      // Only update if the variant title is empty or still "Default variant"
-      if (!currentVariant.title || currentVariant.title === "Default variant" || currentVariant.title === "") {
-        form.setValue("variants.0.title", watchedProductTitle || "")
-      }
+    // Get the current form values directly to avoid stale data from useWatch
+    const formValues = form.getValues();
+    const currentVariants = formValues.variants || [];
+    const variantsEnabled = formValues.enable_variants;
+
+    // Check if variants array is empty or not initialized
+    if (currentVariants.length === 0) {
+      return;
     }
-  }, [watchedProductTitle, watchedAreVariantsEnabled, watchedVariants, form])
+
+    // Only sync if:
+    // 1. Variants are NOT enabled (single default variant mode)
+    // 2. There's exactly one variant
+    // 3. It's marked as default
+    // 4. Product title has a value
+    if (!variantsEnabled && currentVariants.length === 1 && currentVariants[0]?.is_default && watchedProductTitle) {
+      const currentVariant = currentVariants[0];
+      const currentVariantTitle = currentVariant.title || "";
+      
+      // Check if variant title was manually edited by user
+      // If it's different from product title AND not empty/default, user edited it manually
+      const isManuallyEdited = currentVariantTitle && 
+                               currentVariantTitle !== "Default variant" && 
+                               currentVariantTitle !== watchedProductTitle &&
+                               !watchedProductTitle.startsWith(currentVariantTitle);
+      
+      if (isManuallyEdited) {
+        return;
+      }
+      
+      // Always sync if not manually edited
+      form.setValue("variants.0.title", watchedProductTitle, { shouldDirty: false, shouldValidate: false });
+    }
+  }, [watchedProductTitle, form])
 
   const showInvalidOptionsMessage = !!form.formState.errors.options?.length
   const showInvalidVariantsMessage =

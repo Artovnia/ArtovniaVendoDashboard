@@ -1,9 +1,11 @@
-import { Heading, Text, Input, Textarea } from "@medusajs/ui"
+import { Heading, Text, Input, Textarea, Button, Badge } from "@medusajs/ui"
 import { UseFormReturn } from "react-hook-form"
 import { useTranslation } from "react-i18next"
+import { SparklesSolid } from "@medusajs/icons"
 
 import { Form } from "../../../../../../../components/common/form"
 import { ProductCreateSchemaType } from "../../../../types"
+import { useGPSRAutofill } from "../../../../../../../hooks/use-gpsr-autofill"
 
 type ProductGPSRSectionProps = {
   form: UseFormReturn<ProductCreateSchemaType>
@@ -13,13 +15,40 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
   const { t } = useTranslation()
   const { control } = form
 
+  // Initialize GPSR auto-fill hook
+  const { hasStoredData, loadDefaults, isAutoFilled } = useGPSRAutofill({
+    form,
+    autoFillOnMount: true, // Automatically fill on mount if data exists
+  })
+
   return (
     <div className="flex flex-col gap-y-6">
-      <div>
-        <Heading level="h2">{t("products.gpsr.title")}</Heading>
-        <Text className="text-ui-fg-subtle">
-          {t("products.gpsr.description")}
-        </Text>
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex-1">
+          <div className="flex items-center gap-2">
+            <Heading level="h2">{t("products.gpsr.title")}</Heading>
+            {isAutoFilled && (
+              <Badge size="small" color="green">
+                <SparklesSolid className="mr-1" />
+                {t("products.gpsr.autoFilled", "Auto-filled")}
+              </Badge>
+            )}
+          </div>
+          <Text className="text-ui-fg-subtle">
+            {t("products.gpsr.description")}
+          </Text>
+        </div>
+        {hasStoredData && !isAutoFilled && (
+          <Button
+            type="button"
+            variant="secondary"
+            size="small"
+            onClick={loadDefaults}
+          >
+            <SparklesSolid className="mr-1" />
+            {t("products.gpsr.useSavedData", "Use saved data")}
+          </Button>
+        )}
       </div>
 
       {/* Producer Information - Required */}
