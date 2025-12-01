@@ -34,6 +34,7 @@ export const ProductCreateOrganizationSection = ({
         label: tag.value,
         value: tag.id,
       })),
+    pageSize: 50, // Increase page size for better UX with many tags
   });
 
   return (
@@ -105,6 +106,7 @@ export const ProductCreateOrganizationSection = ({
                     searchValue={tags.searchValue}
                     onSearchValueChange={tags.onSearchValueChange}
                     fetchNextPage={tags.fetchNextPage}
+                    isFetchingNextPage={tags.isFetchingNextPage}
                   />
                 </Form.Control>
                 <Form.ErrorMessage />

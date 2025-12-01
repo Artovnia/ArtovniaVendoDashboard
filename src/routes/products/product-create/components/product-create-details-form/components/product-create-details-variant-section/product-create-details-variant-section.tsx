@@ -94,48 +94,65 @@ export const ProductCreateVariantsSection = ({
     defaultValue: [],
   })
 
-  const watchedProductTitle = useWatch({
-    control: form.control,
-    name: "title",
-    defaultValue: "",
-  })
-
   // Update default variant title when product title changes (only if variants are NOT enabled)
+  // Using form.watch() instead of useWatch for immediate, synchronous updates
   useEffect(() => {
-    // Get the current form values directly to avoid stale data from useWatch
-    const formValues = form.getValues();
-    const currentVariants = formValues.variants || [];
-    const variantsEnabled = formValues.enable_variants;
-
-    // Check if variants array is empty or not initialized
-    if (currentVariants.length === 0) {
-      return;
-    }
-
-    // Only sync if:
-    // 1. Variants are NOT enabled (single default variant mode)
-    // 2. There's exactly one variant
-    // 3. It's marked as default
-    // 4. Product title has a value
-    if (!variantsEnabled && currentVariants.length === 1 && currentVariants[0]?.is_default && watchedProductTitle) {
-      const currentVariant = currentVariants[0];
-      const currentVariantTitle = currentVariant.title || "";
-      
-      // Check if variant title was manually edited by user
-      // If it's different from product title AND not empty/default, user edited it manually
-      const isManuallyEdited = currentVariantTitle && 
-                               currentVariantTitle !== "Default variant" && 
-                               currentVariantTitle !== watchedProductTitle &&
-                               !watchedProductTitle.startsWith(currentVariantTitle);
-      
-      if (isManuallyEdited) {
+    const subscription = form.watch((value, { name, type }) => {
+      // Only react to title field changes
+      if (name !== 'title') {
         return;
       }
-      
-      // Always sync if not manually edited
-      form.setValue("variants.0.title", watchedProductTitle, { shouldDirty: false, shouldValidate: false });
-    }
-  }, [watchedProductTitle, form])
+
+      const productTitle = value.title || "";
+      const variantsEnabled = value.enable_variants;
+      const currentVariants = value.variants || [];
+
+      // Check if variants array is empty or not initialized
+      if (currentVariants.length === 0) {
+        return;
+      }
+
+      // Only sync if:
+      // 1. Variants are NOT enabled (single default variant mode)
+      // 2. There's exactly one variant
+      // 3. It's marked as default
+      // 4. Product title has a value
+      if (!variantsEnabled && currentVariants.length === 1 && currentVariants[0]?.is_default && productTitle) {
+        const currentVariant = currentVariants[0];
+        const currentVariantTitle = currentVariant.title || "";
+        
+        // Track if user has manually edited the variant title
+        // We consider it manually edited if:
+        // 1. It's not empty/default AND
+        // 2. It's different from the current product title AND
+        // 3. It's not a substring of the product title (user might have typed partial title then switched tabs)
+        const isDefaultValue = !currentVariantTitle || currentVariantTitle === "Default variant";
+        const matchesProductTitle = currentVariantTitle === productTitle;
+        
+        // If it's a default value or matches product title, always sync
+        // This ensures real-time syncing as user types
+        if (isDefaultValue || matchesProductTitle) {
+          form.setValue("variants.0.title", productTitle, { 
+            shouldDirty: false, 
+            shouldValidate: false,
+            shouldTouch: false 
+          });
+        }
+        // If variant title is different, check if it's a partial match (user is still typing)
+        else if (productTitle.startsWith(currentVariantTitle) || currentVariantTitle.startsWith(productTitle)) {
+          // Likely user is still typing - sync to latest value
+          form.setValue("variants.0.title", productTitle, { 
+            shouldDirty: false, 
+            shouldValidate: false,
+            shouldTouch: false 
+          });
+        }
+        // Otherwise, user has manually edited - don't sync
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [form])
 
   const showInvalidOptionsMessage = !!form.formState.errors.options?.length
   const showInvalidVariantsMessage =

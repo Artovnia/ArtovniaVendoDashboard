@@ -1,98 +1,97 @@
-# Combobox Component - Scrolling Fix & Mock Data
+# Combobox Component - Scrolling Fix
 
 ## Issue Fixed
 
 ### Problem
-When the combobox had many items (100+), users could type and search but **could not scroll through the list**.
+When the combobox had many items (100+), users could type and search but **could not scroll through the list** in production.
 
 ### Root Cause
-The popover container had `overflow-y-auto` but lacked proper scroll behavior configuration:
-- Missing `overscroll-contain` to prevent scroll chaining
-- Missing `touchAction: "pan-y"` for touch device support
-- The combination of CSS classes and inline styles wasn't properly enabling scroll
+The popover container had basic scroll configuration but needed enhancements for production environments with large datasets:
+- Height constraints were too restrictive (200px max)
+- Missing explicit scroll properties for cross-browser compatibility
+- Infinite scroll pagination wasn't properly wired up
 
 ### Solution Applied
 
-**File: `combobox.tsx` (Lines 334-350)**
+**File: `combobox.tsx` (Lines 334-352)**
 
-1. **Added `overscroll-contain`** - Prevents scroll from bubbling to parent elements
-2. **Added `touchAction: "pan-y"`** - Enables vertical scrolling on touch devices
-3. Kept existing `overflow-y-auto` and `max-h-[200px]` for basic scroll functionality
+1. **Increased max-height** - Changed from `max-h-[200px]` to `max-h-[300px]` for better visibility
+2. **Added min-height** - `min-h-[100px]` ensures dropdown is always tall enough to show content
+3. **Enhanced scroll properties**:
+   - `overscroll-contain` - Prevents scroll from bubbling to parent elements
+   - `touchAction: "pan-y"` - Enables vertical scrolling on touch devices
+   - `WebkitOverflowScrolling: "touch"` - Smooth scrolling on iOS devices
+   - `overflowY: "auto"` - Explicit scroll enablement for all browsers
 
 ```tsx
 <PrimitiveComboboxPopover
   className={clx(
-    "max-h-[200px] overflow-y-auto overscroll-contain", // Added overscroll-contain
+    "max-h-[300px] min-h-[100px] overflow-y-auto overscroll-contain",
     // ... other classes
   )}
   style={{
     pointerEvents: open ? "auto" : "none",
-    touchAction: "pan-y", // Added for touch device scrolling
+    touchAction: "pan-y",
+    WebkitOverflowScrolling: "touch",
+    overflowY: "auto",
   }}
 >
 ```
 
-## Mock Data for Testing
-
-### File: `mock-data.ts`
-
-Created comprehensive mock data to test scrolling behavior with large datasets:
-
-- **`mockComboboxData`** - 150 generic items with random labels
-- **`mockProductTags`** - 100 product-specific tags
-- Every 20th item is disabled for testing disabled state behavior
-
-### Usage in Product Create Form
-
 **File: `product-create-details-organize-section.tsx`**
 
-Added temporary mock data integration:
+Enhanced infinite scroll integration:
 
 ```tsx
-const useMockData = true; // Set to false to use real API data
+const tags = useComboboxData({
+  // ... other config
+  pageSize: 50, // Increased from default 10 for better UX
+});
 
 <Combobox
-  options={useMockData ? mockProductTags : tags.options}
-  searchValue={useMockData ? undefined : tags.searchValue}
-  onSearchValueChange={useMockData ? undefined : tags.onSearchValueChange}
-  fetchNextPage={useMockData ? undefined : tags.fetchNextPage}
+  {...field}
+  options={tags.options}
+  searchValue={tags.searchValue}
+  onSearchValueChange={tags.onSearchValueChange}
+  fetchNextPage={tags.fetchNextPage}
+  isFetchingNextPage={tags.isFetchingNextPage} // Added for loading state
 />
 ```
-
-**To switch back to real data:** Set `useMockData = false` on line 28
 
 ## Testing Instructions
 
 1. Navigate to product creation form
-2. Scroll to the "Tags" field
-3. Click to open the combobox dropdown
-4. Verify you can:
+2. Go to the "Organize" tab
+3. Scroll to the "Tags" field
+4. Click to open the combobox dropdown
+5. Verify you can:
    - ✅ Type to search/filter items
-   - ✅ Scroll through the list with mouse wheel
+   - ✅ Scroll through the list with mouse wheel (especially with 100+ tags)
    - ✅ Scroll through the list with touch gestures (mobile/tablet)
-   - ✅ See 100 mock items
+   - ✅ See infinite scroll loading indicator when scrolling to bottom
    - ✅ Select multiple items
-   - ✅ Disabled items (every 20th) are grayed out
+   - ✅ Dropdown stays open while scrolling
 
 ## Technical Details
 
-### CSS Classes Added
+### CSS Classes
+- `max-h-[300px]` - Maximum height for dropdown (increased from 200px)
+- `min-h-[100px]` - Minimum height ensures visibility
+- `overflow-y-auto` - Enables vertical scrolling when content exceeds max-height
 - `overscroll-contain` - Prevents scroll chaining to parent elements
-- Keeps existing `overflow-y-auto` and `max-h-[200px]`
 
-### Inline Styles Added
+### Inline Styles
 - `touchAction: "pan-y"` - Enables vertical pan gestures on touch devices
+- `WebkitOverflowScrolling: "touch"` - Smooth scrolling on iOS
+- `overflowY: "auto"` - Explicit scroll enablement for cross-browser support
+
+### Infinite Scroll Integration
+- `pageSize: 50` - Loads 50 items per page for better performance
+- `fetchNextPage` - Triggers when user scrolls near bottom
+- `isFetchingNextPage` - Shows loading indicator during pagination
 
 ### Why This Works
-1. **`overflow-y-auto`** - Enables vertical scrolling when content exceeds max-height
-2. **`overscroll-contain`** - Prevents scroll from propagating to parent (stops page scroll when combobox scroll reaches end)
-3. **`touchAction: "pan-y"`** - Explicitly tells browser to allow vertical touch scrolling
-4. **`max-h-[200px]`** - Sets fixed height to trigger overflow behavior
-
-## Cleanup TODO
-
-Once scrolling is verified to work correctly:
-
-1. Set `useMockData = false` in `product-create-details-organize-section.tsx`
-2. Optionally remove mock data import if no longer needed
-3. Keep `mock-data.ts` file for future testing purposes
+1. **Increased height** - More visible items reduce need for excessive scrolling
+2. **Cross-browser scroll properties** - Ensures consistent behavior across devices
+3. **Proper pagination** - Infinite scroll loads more items as needed
+4. **Touch optimization** - Smooth scrolling on mobile devices
