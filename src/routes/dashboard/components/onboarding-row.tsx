@@ -7,11 +7,13 @@ export const OnboardingRow = ({
   state,
   link,
   buttonLabel,
+  disabled = false,
 }: {
   label: string;
   state: boolean;
   link: string;
   buttonLabel: string;
+  disabled?: boolean;
 }) => {
   return (
     <div className='flex justify-between py-2'>
@@ -22,16 +24,25 @@ export const OnboardingRow = ({
             {
               'border-dashed ': !state,
               'border-current': state,
+              'opacity-50': disabled,
             }
           )}
         >
           {state && <Check />}
         </div>
-        <Heading className='text-sm'>{label}</Heading>
+        <Heading className={clx('text-sm', { 'opacity-50': disabled })}>
+          {label}
+        </Heading>
       </div>
-      <Link to={link}>
-        <Button className='min-w-20'>{buttonLabel}</Button>
-      </Link>
+      {disabled ? (
+        <Button className='min-w-20' disabled>
+          {buttonLabel}
+        </Button>
+      ) : (
+        <Link to={link}>
+          <Button className='min-w-20'>{buttonLabel}</Button>
+        </Link>
+      )}
     </div>
   );
 };

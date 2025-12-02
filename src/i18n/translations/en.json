@@ -132,12 +132,15 @@
     "apply": "Apply",
     "add": "Add",
     "select": "Select",
+    "selectAll": "Select all",
+    "deselectAll": "Deselect all",
     "browse": "Browse",
     "logout": "Logout",
     "hide": "Hide",
     "export": "Export",
     "import": "Import",
-    "cannotUndo": "This action cannot be undone"
+    "cannotUndo": "This action cannot be undone",
+    "search": "Search"
   },
   "operators": {
     "in": "In"
@@ -292,6 +295,9 @@
     "sortLabel": "Sort",
     "filterLabel": "Filter",
     "searchLabel": "Search",
+    "all": "All",
+    "filters": "Filters",
+    "noResults": "No results found",
     "date": {
       "today": "Today",
       "lastSevenDays": "Last 7 days",
@@ -388,6 +394,29 @@
     "domain": "Products",
     "list": {
       "noRecordsMessage": "Create your first product to start selling."
+    },
+    "bulk": {
+      "assignShippingProfile": "Assign shipping profile",
+      "removeShippingProfile": "Remove shipping profile",
+      "selectProfile": "Select a shipping profile to assign to the selected products",
+      "selectProfileHint": "Leave empty to remove shipping profile from selected products",
+      "selectProfileFirst": "First, select the shipping profile you want to assign to products",
+      "selectProfileToAssign": "Choose which shipping profile to assign",
+      "selectProductsForProfile": "Select products to assign shipping profile",
+      "selectProducts": "Select products",
+      "selectProductsAndProfile": "Select products and assign a shipping profile to them",
+      "noProductsSelected": "Please select at least one product",
+      "noProfileSelected": "Please select a shipping profile",
+      "noProducts": "No products available",
+      "noShippingProfile": "No shipping profile",
+      "selectedCount": "{{count}} products selected",
+      "assignToProfile": "Assign to shipping profile",
+      "assignToProfileDescription": "Select the shipping profile to assign to the selected products",
+      "assignSuccess": "Successfully assigned shipping profile to {{count}} products",
+      "removeSuccess": "Successfully removed shipping profile from {{count}} products",
+      "confirmAssign": "Assign shipping profile to {{count}} selected products?",
+      "error": "Failed to update products",
+      "unknownError": "An unknown error occurred"
     },
     "edit": {
       "header": "Edit Product",
@@ -854,7 +883,8 @@
       "link": "Insert Link",
       "code": "Inline Code",
       "preview": "Preview",
-      "edit": "Edit"
+      "edit": "Edit",
+      "import": "Import Text"
     },
     "help": {
       "title": "Markdown formatting help",
@@ -873,6 +903,34 @@
     },
     "label": {
       "optional": "Optional"
+    },
+    "import": {
+      "title": "Import formatted text",
+      "description": "Paste formatted text from Word, Google Docs, or any website. It will be automatically converted to Markdown.",
+      "inputLabel": "Paste your formatted text here",
+      "inputPlaceholder": "Paste text from Word, Google Docs, HTML, or plain text...",
+      "pasteHint": "Paste formatted text here (Ctrl+V). HTML formatting will be preserved and converted to Markdown.",
+      "pasteFromClipboard": "Paste from Clipboard",
+      "convert": "Convert to Markdown",
+      "result": "Converted Markdown",
+      "characters": "characters",
+      "modeLabel": "Import Mode",
+      "importButton": "Import",
+      "clipboardError": "Unable to read clipboard. Please paste manually using Ctrl+V.",
+      "format": {
+        "html": "HTML",
+        "markdown": "Markdown",
+        "plain": "Plain Text",
+        "unknown": "Unknown"
+      },
+      "mode": {
+        "replace": "Replace All",
+        "replaceHint": "Replace entire content with imported text",
+        "append": "Append",
+        "appendHint": "Add imported text to the end of existing content",
+        "insert": "Insert at Cursor",
+        "insertHint": "Insert imported text at current cursor position"
+      }
     }
   },
   "collections": {
@@ -2660,6 +2718,7 @@
     "domain": "Store",
     "manageYourStoresDetails": "Manage your store's details",
     "editStore": "Edit store",
+    "backToDashboard": "Back to Dashboard",
     "fields": {
       "photo": "Photo"
     },
@@ -3601,6 +3660,7 @@
       "steps": {
         "storeInfo": "Complete the store information",
         "locationsShipping": "Setup Locations & Shipping",
+        "stripeConnect": "Setup Stripe Connect for payments",
         "addProducts": "Add products and start selling"
       },
       "buttons": {
@@ -4298,6 +4358,116 @@
       "filesSelected": "file(s) selected",
       "charactersMin": "(minimum {{count}})",
       "status": "Status"
+    }
+  },
+  "shipping": {
+    "batch_setup": {
+      "page_title": "Automatic Shipping Setup",
+      "page_description": "Configure complete, basic shipping configuration with one click",
+      "title": "Automatic shipping setup",
+      "description": "Create a complete shipping configuration for your store in seconds. The system will automatically create a stock location, shipping zones, profiles, and delivery options.",
+      "will_create": "What will be created:",
+      "items": {
+        "location": {
+          "title": "1 Stock location",
+          "description": "Based on your profile data"
+        },
+        "zones": {
+          "title": "1-2 Shipping zones",
+          "description": "Poland only or Poland + European Union (26 countries) based on your selection"
+        },
+        "profiles": {
+          "title": "4 Shipping profiles for standard parcel",
+          "description": "Mini, small, medium and large parcel"
+        },
+        "options": {
+          "title": "16-20 Shipping options",
+          "description": "InPost Paczkomat, InPost Kurier, DPD, Fedex with ready prices"
+        }
+      },
+      "requirements": {
+        "title": "Requirements",
+        "description": "Make sure your store profile is complete (name, email, phone, address, city, postal code)."
+      },
+      "create_button": "Create shipping configuration",
+      "creating": "Creating...",
+      "success": {
+        "title": "Shipping configuration created!",
+        "description": "All elements have been successfully created. You can now add products to your store.",
+        "disclaimer": "Basic parcels with current prices have been created:",
+        "disclaimer_prices": "Prices must be adjusted individually by the seller. They were created with currently available prices.",
+        "disclaimer_carriers": "Only basic carriers and parcels have been created. To create profiles like: notstandard, pallet, letter, go to Locations and Shipping > Shipping Profiles."
+      },
+      "already_completed": {
+        "title": "Shipping configuration already exists",
+        "description": "Your shipping configuration has already been created. You can manage locations and shipping profiles or return to the dashboard.",
+        "button": "Already Configured"
+      },
+      "error": {
+        "incomplete_profile": "Store profile incomplete",
+        "complete_profile_first": "Complete all required fields in your store profile before configuring shipping.",
+        "go_to_profile": "Go to profile",
+        "generic": "Error creating configuration",
+        "country_required": "Select a country for the location"
+      },
+      "summary": {
+        "location": "Location",
+        "profiles": "Profiles",
+        "options": "Options",
+        "zones": "Zones"
+      },
+      "details": {
+        "location": "Stock location",
+        "zones": "Shipping zones",
+        "country": "country",
+        "countries": "countries"
+      },
+      "show_details": "Show details",
+      "hide_details": "Hide details",
+      "view_locations": "View locations",
+      "view_profiles": "View profiles",
+      "back_to_dashboard": "Back to Dashboard",
+      "location_config": {
+        "title": "Location configuration",
+        "use_default": "Use default location",
+        "use_custom": "Create custom location",
+        "location_name": "Location name",
+        "location_name_placeholder": "e.g. Main Warehouse",
+        "location_name_hint": "Leave empty to use default name",
+        "country": "Country",
+        "country_hint": "Select country for stock location",
+        "default_location_name": "Poland"
+      },
+      "zone_config": {
+        "title": "Shipping zones",
+        "poland_only": {
+          "title": "Poland only",
+          "description": "Create shipping options only for Poland. Products will be available for sale only in Poland.",
+          "carriers": "Carriers: InPost Paczkomat, InPost Kurier, DPD, Fedex",
+          "note": "Note: Products will be available for sale only in Poland until you create a service zone for EU."
+        },
+        "poland_and_eu": {
+          "title": "Poland and European Union",
+          "description": "Create shipping options for Poland and 26 EU countries. Products will be available across Europe.",
+          "carriers": "Poland: InPost Paczkomat, InPost Kurier, DPD, Fedex | EU: Fedex"
+        }
+      },
+      "pricing_table": {
+        "title": "Shipping Options & Pricing",
+        "description": "The following shipping options will be created with these prices (in PLN). You can adjust them later.",
+        "poland_zone": "Poland Zone",
+        "eu_zone": "European Union Zone (26 countries)",
+        "carrier": "Carrier",
+        "mini": "Mini",
+        "small": "Small",
+        "medium": "Medium",
+        "big": "Big",
+        "total_profiles": "Total Profiles:",
+        "total_options": "Total Options:",
+        "profiles": "profiles",
+        "options": "options"
+      },
+      "default_location_name": "Poland"
     }
   }
 }

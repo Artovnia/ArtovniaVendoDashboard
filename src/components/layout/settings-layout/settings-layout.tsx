@@ -90,7 +90,7 @@ const useMyAccountRoutes = (): INavItem[] => {
  */
 const getSafeFromValue = (from: string) => {
   if (from.startsWith('/settings')) {
-    return '/orders';
+    return '/dashboard';
   }
 
   return from;
@@ -155,7 +155,7 @@ const SettingsSidebar = () => {
 };
 
 const Header = () => {
-  const [from, setFrom] = useState('/orders');
+  const [from, setFrom] = useState('/dashboard');
 
   const { t } = useTranslation();
   const location = useLocation();

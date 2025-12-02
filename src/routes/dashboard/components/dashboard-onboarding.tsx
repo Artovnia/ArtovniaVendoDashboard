@@ -15,7 +15,7 @@ export const DashboardOnboarding = ({
   products,
   locations_shipping,
   store_information,
-  // stripe_connect,
+  stripe_connect,
 }: DashboardProps) => {
   const { mutateAsync } = useUpdateOnboarding();
   const { t } = useTranslation();
@@ -41,23 +41,26 @@ export const DashboardOnboarding = ({
           link='/settings/store'
           buttonLabel={t('dashboard.onboarding.buttons.manage')}
         />
-        {/* <OnboardingRow
-          label='Setup Stripe Connect account'
-          state={stripe_connect}
-          link='/stripe-connect'
-          buttonLabel='Setup'
-        /> */}
         <OnboardingRow
           label={t('dashboard.onboarding.steps.locationsShipping')}
           state={locations_shipping}
-          link='/settings/locations'
+          link='/settings/locations/batch-setup'
           buttonLabel={t('dashboard.onboarding.buttons.setup')}
+          disabled={!store_information}
+        />
+        <OnboardingRow
+          label={t('dashboard.onboarding.steps.stripeConnect')}
+          state={stripe_connect}
+          link='/stripe-connect'
+          buttonLabel={t('dashboard.onboarding.buttons.setup')}
+          disabled={!locations_shipping}
         />
         <OnboardingRow
           label={t('dashboard.onboarding.steps.addProducts')}
           state={products}
           link='/products/create'
           buttonLabel={t('dashboard.onboarding.buttons.add')}
+          disabled={!stripe_connect}
         />
       </div>
     </Container>

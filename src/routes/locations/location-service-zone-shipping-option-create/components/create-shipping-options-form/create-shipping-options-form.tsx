@@ -93,7 +93,7 @@ export function CreateShippingOptionsForm({
   // Log errors separately since onError is not supported in the options
   useEffect(() => {
     if (isOptionsError) {
-      console.log('Error fetching fulfillment options');
+      console.error('Error fetching fulfillment options:', isOptionsError);
     }
   }, [isOptionsError]);
   

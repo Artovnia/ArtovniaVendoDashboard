@@ -222,7 +222,7 @@ export function CreateShippingProfileForm() {
                             />
                           </Form.Control>
                           <div className="flex flex-1 flex-col gap-y-2">
-                            <Form.Label className="!mt-0 text-base font-semibold">
+                            <Form.Label className="!mt-0 text-base ">
                               {t("shippingProfile.create.customProfile")}
                             </Form.Label>
                             <Form.Hint className="!mt-0 text-sm">

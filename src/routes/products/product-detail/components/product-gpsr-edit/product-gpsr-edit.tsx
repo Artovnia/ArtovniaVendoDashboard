@@ -105,7 +105,7 @@ export const ProductGPSREdit = () => {
       navigate(`/products/${id}`);
     } catch (error) {
       console.error('Error updating GPSR data:', error);
-      toast.success(t('products.gpsr.messages.updateSuccess'));
+      toast.error(t('products.gpsr.messages.updateError'));
     } finally {
       setIsSaving(false);
     }

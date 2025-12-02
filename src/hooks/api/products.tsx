@@ -449,7 +449,6 @@ export const useProducts = (
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: async () => {
-      
       // Use only simple supported parameters
       const formattedQuery = { 
         ...query,
@@ -863,17 +862,39 @@ export const useUpdateProduct = (
     onSuccess: async (data, variables: any, context) => {
       const id = variables.id;
       
-      // Invalidate both list and detail queries to ensure data is refreshed
+      // Invalidate list queries
       await queryClient.invalidateQueries({
         queryKey: productsQueryKeys.lists(),
       });
-      await queryClient.invalidateQueries({
-        queryKey: productsQueryKeys.detail(id),
+      
+      // CRITICAL FIX: Refetch (not just invalidate) ALL detail queries for this product ID
+      // This forces an immediate refetch instead of waiting for the component to request it
+      // The useProduct hook creates cache keys like: ['products', 'detail', id, { fields: '...' }]
+      await queryClient.refetchQueries({
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          // Match any query key that starts with ['products', 'detail', id]
+          const matches = (
+            Array.isArray(queryKey) &&
+            queryKey[0] === 'products' &&
+            queryKey[1] === 'detail' &&
+            queryKey[2] === id
+          );
+          
+          
+          
+          return matches;
+        },
       });
 
+      // Call the form's onSuccess if provided
       options?.onSuccess?.(data, variables, context);
     },
-    ...options,
+    onError: (error: FetchError, variables, context) => {
+      // Call the form's onError if provided
+      options?.onError?.(error, variables, context);
+    },
+    // Don't spread options here as it would override our onSuccess/onError
   });
 };
 

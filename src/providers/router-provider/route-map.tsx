@@ -1854,11 +1854,22 @@ export const RouteMap: RouteObject[] = [
                   ),
               },
               {
+                path: 'batch-setup',
+                handle: {
+                  breadcrumb: () => t('shipping.batch_setup.page_title'),
+                },
+                errorElement: <ErrorBoundary />,
+                lazy: () =>
+                  import(
+                    '../../routes/locations/batch-setup'
+                  ),
+              },
+              {
                 path: 'shipping-profiles',
+                errorElement: <ErrorBoundary />,
                 element: <Outlet />,
                 handle: {
-                  breadcrumb: () =>
-                    t('shippingProfile.domain'),
+                  breadcrumb: () => t('shippingProfile.domain'),
                 },
                 children: [
                   {

@@ -539,7 +539,8 @@
         "hide",
         "export",
         "import",
-        "cannotUndo"
+        "cannotUndo",
+        "search"
       ],
       "additionalProperties": false
     },
@@ -1123,6 +1124,15 @@
         "searchLabel": {
           "type": "string"
         },
+        "all": {
+          "type": "string"
+        },
+        "filters": {
+          "type": "string"
+        },
+        "noResults": {
+          "type": "string"
+        },
         "date": {
           "type": "object",
           "properties": {
@@ -1258,6 +1268,9 @@
         "sortLabel",
         "filterLabel",
         "searchLabel",
+        "all",
+        "filters",
+        "noResults",
         "date",
         "compare",
         "sorting",
@@ -1491,6 +1504,68 @@
             }
           },
           "required": ["noRecordsMessage"],
+          "additionalProperties": false
+        },
+        "bulk": {
+          "type": "object",
+          "properties": {
+            "assignShippingProfile": {
+              "type": "string"
+            },
+            "removeShippingProfile": {
+              "type": "string"
+            },
+            "selectProfile": {
+              "type": "string"
+            },
+            "selectProfileHint": {
+              "type": "string"
+            },
+            "selectProducts": {
+              "type": "string"
+            },
+            "selectProductsAndProfile": {
+              "type": "string"
+            },
+            "noProductsSelected": {
+              "type": "string"
+            },
+            "noProducts": {
+              "type": "string"
+            },
+            "assignSuccess": {
+              "type": "string"
+            },
+            "removeSuccess": {
+              "type": "string"
+            },
+            "confirmAssign": {
+              "type": "string"
+            },
+            "error": {
+              "type": "string"
+            },
+            "unknownError": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "assignShippingProfile",
+            "removeShippingProfile",
+            "selectProfile",
+            "selectProfileHint",
+            "selectProducts",
+            "selectProductsAndProfile",
+            "noProductsSelected",
+            "noProducts",
+            "assignToProfile",
+            "assignToProfileDescription",
+            "assignSuccess",
+            "removeSuccess",
+            "confirmAssign",
+            "error",
+            "unknownError"
+          ],
           "additionalProperties": false
         },
         "edit": {
@@ -3331,9 +3406,12 @@
             },
             "edit": {
               "type": "string"
+            },
+            "import": {
+              "type": "string"
             }
           },
-          "required": ["bold", "italic", "heading", "bulletList", "numberedList", "link", "code", "preview", "edit"],
+          "required": ["bold", "italic", "heading", "bulletList", "numberedList", "link", "code", "preview", "edit", "import"],
           "additionalProperties": false
         },
         "help": {
@@ -3391,9 +3469,96 @@
           },
           "required": ["optional"],
           "additionalProperties": false
+        },
+        "import": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "inputLabel": {
+              "type": "string"
+            },
+            "inputPlaceholder": {
+              "type": "string"
+            },
+            "pasteHint": {
+              "type": "string"
+            },
+            "pasteFromClipboard": {
+              "type": "string"
+            },
+            "convert": {
+              "type": "string"
+            },
+            "result": {
+              "type": "string"
+            },
+            "characters": {
+              "type": "string"
+            },
+            "modeLabel": {
+              "type": "string"
+            },
+            "importButton": {
+              "type": "string"
+            },
+            "clipboardError": {
+              "type": "string"
+            },
+            "format": {
+              "type": "object",
+              "properties": {
+                "html": {
+                  "type": "string"
+                },
+                "markdown": {
+                  "type": "string"
+                },
+                "plain": {
+                  "type": "string"
+                },
+                "unknown": {
+                  "type": "string"
+                }
+              },
+              "required": ["html", "markdown", "plain", "unknown"],
+              "additionalProperties": false
+            },
+            "mode": {
+              "type": "object",
+              "properties": {
+                "replace": {
+                  "type": "string"
+                },
+                "replaceHint": {
+                  "type": "string"
+                },
+                "append": {
+                  "type": "string"
+                },
+                "appendHint": {
+                  "type": "string"
+                },
+                "insert": {
+                  "type": "string"
+                },
+                "insertHint": {
+                  "type": "string"
+                }
+              },
+              "required": ["replace", "replaceHint", "append", "appendHint", "insert", "insertHint"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["title", "description", "inputLabel", "inputPlaceholder", "pasteHint", "pasteFromClipboard", "convert", "result", "characters", "modeLabel", "importButton", "clipboardError", "format", "mode"],
+          "additionalProperties": false
         }
       },
-      "required": ["placeholder", "toolbar", "help", "label"],
+      "required": ["placeholder", "toolbar", "help", "label", "import"],
       "additionalProperties": false
     },
     "collections": {
@@ -9553,6 +9718,9 @@
         "editStore": {
           "type": "string"
         },
+        "backToDashboard": {
+          "type": "string"
+        },
         "fields": {
           "type": "object",
           "properties": {
@@ -9763,6 +9931,7 @@
         "domain",
         "manageYourStoresDetails",
         "editStore",
+        "backToDashboard",
         "fields",
         "company",
         "toast",
@@ -13135,11 +13304,14 @@
                 "locationsShipping": {
                   "type": "string"
                 },
+                "stripeConnect": {
+                  "type": "string"
+                },
                 "addProducts": {
                   "type": "string"
                 }
               },
-              "required": ["storeInfo", "locationsShipping", "addProducts"],
+              "required": ["storeInfo", "locationsShipping", "stripeConnect", "addProducts"],
               "additionalProperties": false
             },
             "buttons": {
@@ -15590,6 +15762,206 @@
       "required": ["navigation", "domain", "title", "createNew", "create", "createSuccess", "createError", "updateError", "statusUpdated", "priorityUpdated", "notFound", "noTickets", "messages", "noMessages", "addMessage", "sendMessage", "messageSent", "messageRequired", "messageSendError", "messagePlaceholder", "admin", "you", "created", "table", "types", "status", "priority", "filters", "form"],
       "additionalProperties": false
     },
+    "shipping": {
+      "type": "object",
+      "properties": {
+        "batch_setup": {
+          "type": "object",
+          "properties": {
+            "page_title": {"type": "string"},
+            "page_description": {"type": "string"},
+            "title": {"type": "string"},
+            "description": {"type": "string"},
+            "will_create": {"type": "string"},
+            "items": {
+              "type": "object",
+              "properties": {
+                "location": {
+                  "type": "object",
+                  "properties": {
+                    "title": {"type": "string"},
+                    "description": {"type": "string"}
+                  },
+                  "required": ["title", "description"],
+                  "additionalProperties": false
+                },
+                "zones": {
+                  "type": "object",
+                  "properties": {
+                    "title": {"type": "string"},
+                    "description": {"type": "string"}
+                  },
+                  "required": ["title", "description"],
+                  "additionalProperties": false
+                },
+                "profiles": {
+                  "type": "object",
+                  "properties": {
+                    "title": {"type": "string"},
+                    "description": {"type": "string"}
+                  },
+                  "required": ["title", "description"],
+                  "additionalProperties": false
+                },
+                "options": {
+                  "type": "object",
+                  "properties": {
+                    "title": {"type": "string"},
+                    "description": {"type": "string"}
+                  },
+                  "required": ["title", "description"],
+                  "additionalProperties": false
+                }
+              },
+              "required": ["location", "zones", "profiles", "options"],
+              "additionalProperties": false
+            },
+            "requirements": {
+              "type": "object",
+              "properties": {
+                "title": {"type": "string"},
+                "description": {"type": "string"}
+              },
+              "required": ["title", "description"],
+              "additionalProperties": false
+            },
+            "create_button": {"type": "string"},
+            "creating": {"type": "string"},
+            "success": {
+              "type": "object",
+              "properties": {
+                "title": {"type": "string"},
+                "description": {"type": "string"},
+                "disclaimer": {"type": "string"},
+                "disclaimer_prices": {"type": "string"},
+                "disclaimer_carriers": {"type": "string"}
+              },
+              "required": ["title", "description", "disclaimer", "disclaimer_prices", "disclaimer_carriers"],
+              "additionalProperties": false
+            },
+            "already_completed": {
+              "type": "object",
+              "properties": {
+                "title": {"type": "string"},
+                "description": {"type": "string"},
+                "button": {"type": "string"}
+              },
+              "required": ["title", "description", "button"],
+              "additionalProperties": false
+            },
+            "error": {
+              "type": "object",
+              "properties": {
+                "incomplete_profile": {"type": "string"},
+                "complete_profile_first": {"type": "string"},
+                "go_to_profile": {"type": "string"},
+                "generic": {"type": "string"},
+                "country_required": {"type": "string"}
+              },
+              "required": ["incomplete_profile", "complete_profile_first", "go_to_profile", "generic", "country_required"],
+              "additionalProperties": false
+            },
+            "summary": {
+              "type": "object",
+              "properties": {
+                "location": {"type": "string"},
+                "profiles": {"type": "string"},
+                "options": {"type": "string"},
+                "zones": {"type": "string"}
+              },
+              "required": ["location", "profiles", "options", "zones"],
+              "additionalProperties": false
+            },
+            "details": {
+              "type": "object",
+              "properties": {
+                "location": {"type": "string"},
+                "zones": {"type": "string"},
+                "country": {"type": "string"},
+                "countries": {"type": "string"}
+              },
+              "required": ["location", "zones", "country", "countries"],
+              "additionalProperties": false
+            },
+            "show_details": {"type": "string"},
+            "hide_details": {"type": "string"},
+            "view_locations": {"type": "string"},
+            "view_profiles": {"type": "string"},
+            "back_to_dashboard": {"type": "string"},
+            "location_config": {
+              "type": "object",
+              "properties": {
+                "title": {"type": "string"},
+                "use_default": {"type": "string"},
+                "use_custom": {"type": "string"},
+                "location_name": {"type": "string"},
+                "location_name_placeholder": {"type": "string"},
+                "location_name_hint": {"type": "string"},
+                "country": {"type": "string"},
+                "country_hint": {"type": "string"},
+                "default_location_name": {"type": "string"}
+              },
+              "required": ["title", "use_default", "use_custom", "location_name", "location_name_placeholder", "location_name_hint", "country", "country_hint", "default_location_name"],
+              "additionalProperties": false
+            },
+            "zone_config": {
+              "type": "object",
+              "properties": {
+                "title": {"type": "string"},
+                "poland_only": {
+                  "type": "object",
+                  "properties": {
+                    "title": {"type": "string"},
+                    "description": {"type": "string"},
+                    "carriers": {"type": "string"},
+                    "note": {"type": "string"}
+                  },
+                  "required": ["title", "description", "carriers", "note"],
+                  "additionalProperties": false
+                },
+                "poland_and_eu": {
+                  "type": "object",
+                  "properties": {
+                    "title": {"type": "string"},
+                    "description": {"type": "string"},
+                    "carriers": {"type": "string"}
+                  },
+                  "required": ["title", "description", "carriers"],
+                  "additionalProperties": false
+                }
+              },
+              "required": ["title", "poland_only", "poland_and_eu"],
+              "additionalProperties": false
+            },
+            "pricing_table": {
+              "type": "object",
+              "properties": {
+                "title": {"type": "string"},
+                "description": {"type": "string"},
+                "poland_zone": {"type": "string"},
+                "eu_zone": {"type": "string"},
+                "carrier": {"type": "string"},
+                "mini": {"type": "string"},
+                "small": {"type": "string"},
+                "medium": {"type": "string"},
+                "big": {"type": "string"},
+                "total_profiles": {"type": "string"},
+                "total_options": {"type": "string"},
+                "profiles": {"type": "string"},
+                "options": {"type": "string"}
+              },
+              "required": ["title", "description", "poland_zone", "eu_zone", "carrier", "mini", "small", "medium", "big", "total_profiles", "total_options", "profiles", "options"],
+              "additionalProperties": false
+            },
+            "default_location_name": {"type": "string"}
+          },
+          "required": ["page_title", "page_description", "title", "description", "will_create", "items", "requirements", "create_button", "creating", "success", "already_completed", "error", "summary", "details", "show_details", "hide_details", "view_locations", "view_profiles", "back_to_dashboard", "location_config", "zone_config", "pricing_table", "default_location_name"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["batch_setup"],
+      "additionalProperties": false
+    },
   "required": [
     "$schema",
     "general",
@@ -15679,7 +16051,8 @@
     "variantColorsEditForm",
     "platformPromotions",
     "stripeConnect",
-    "tickets"
+    "tickets",
+    "shipping"
   ],
   "additionalProperties": false
 }

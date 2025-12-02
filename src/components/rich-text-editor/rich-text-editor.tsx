@@ -5,6 +5,8 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkBreaks from 'remark-breaks';
 import { EmojiPicker } from './emoji-picker';
+import { ImportFormattedTextModal } from '../modals/import-formatted-text-modal';
+import { handlePasteEvent } from './format-converter';
 
 interface RichTextEditorProps {
   value: string;
@@ -48,6 +50,7 @@ export const RichTextEditor = ({
   const { t } = useTranslation();
   const [showPreview, setShowPreview] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
   
   // Use translation for placeholder if not provided
   const effectivePlaceholder = placeholder || t('richtext.placeholder');
@@ -176,6 +179,68 @@ export const RichTextEditor = ({
     setShowEmojiPicker(false);
   };
 
+  const handleImport = useCallback(
+    (markdown: string, mode: 'replace' | 'append' | 'insert') => {
+      const textarea = textareaRef.current;
+      
+      switch (mode) {
+        case 'replace':
+          onChange(markdown);
+          break;
+        case 'append':
+          onChange(value + '\n\n' + markdown);
+          break;
+        case 'insert': {
+          if (!textarea) {
+            onChange(value + '\n\n' + markdown);
+            return;
+          }
+          const start = textarea.selectionStart;
+          const end = textarea.selectionEnd;
+          const newText = value.substring(0, start) + markdown + value.substring(end);
+          onChange(newText);
+          
+          setTimeout(() => {
+            textarea.focus();
+            const newCursorPos = start + markdown.length;
+            textarea.setSelectionRange(newCursorPos, newCursorPos);
+          }, 0);
+          break;
+        }
+      }
+    },
+    [value, onChange]
+  );
+
+  const handlePaste = useCallback(
+    (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+      // Try to convert pasted content to Markdown
+      const result = handlePasteEvent(event.nativeEvent);
+      
+      if (result && result.detectedFormat === 'html') {
+        // Prevent default paste for HTML content
+        event.preventDefault();
+        
+        // Insert converted Markdown at cursor position
+        const textarea = textareaRef.current;
+        if (!textarea) return;
+        
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const newText = value.substring(0, start) + result.markdown + value.substring(end);
+        onChange(newText);
+        
+        setTimeout(() => {
+          textarea.focus();
+          const newCursorPos = start + result.markdown.length;
+          textarea.setSelectionRange(newCursorPos, newCursorPos);
+        }, 0);
+      }
+      // For plain text and markdown, allow default paste behavior
+    },
+    [value, onChange]
+  );
+
   return (
     <div className="flex flex-col gap-y-2">
       {label && (
@@ -190,7 +255,7 @@ export const RichTextEditor = ({
       )}
 
       {/* Toolbar */}
-      <div className="flex items-center gap-x-2 p-2 border border-ui-border-base rounded-t-lg bg-ui-bg-subtle">
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-2 p-2 border border-ui-border-base rounded-t-lg bg-ui-bg-subtle">
         <div className="flex items-center gap-x-1">
           <Button
             type="button"
@@ -322,6 +387,19 @@ export const RichTextEditor = ({
 
         <div className="w-px h-6 bg-ui-border-base" />
 
+        {/* Import button */}
+        <Button
+          type="button"
+          variant="secondary"
+          size="small"
+          onClick={() => setShowImportModal(true)}
+          className="px-3 py-1 text-xs"
+        >
+          {t('richtext.toolbar.import')}
+        </Button>
+
+        <div className="w-px h-6 bg-ui-border-base" />
+
         {/* Emoji picker */}
         <div className="relative">
           <Button
@@ -366,6 +444,7 @@ export const RichTextEditor = ({
             data-markdown-editor
             value={value}
             onChange={(e) => onChange(e.target.value)}
+            onPaste={handlePaste}
             placeholder={effectivePlaceholder}
             rows={12}
             className="font-mono text-sm rounded-t-none"
@@ -387,9 +466,24 @@ export const RichTextEditor = ({
             <ReactMarkdown 
               remarkPlugins={[remarkGfm, remarkBreaks]}
               components={{
+                // Paragraphs
                 p: ({node, ...props}) => <p className="mb-4" {...props} />,
-                h2: ({node, ...props}) => <h2 className="text-xl font-bold mb-2 mt-4" {...props} />,
-                h3: ({node, ...props}) => <h3 className="text-lg font-bold mb-2 mt-3" {...props} />,
+                
+                // Inline formatting - explicit font-weight
+                strong: ({node, ...props}) => <strong className="font-bold" style={{ fontWeight: 700 }} {...props} />,
+                b: ({node, ...props}) => <strong className="font-bold" style={{ fontWeight: 700 }} {...props} />,
+                em: ({node, ...props}) => <em className="italic" {...props} />,
+                i: ({node, ...props}) => <em className="italic" {...props} />,
+                
+                // Headings - all levels with explicit font-weight
+                h1: ({node, ...props}) => <h1 className="text-2xl font-bold mb-3 mt-6" style={{ fontWeight: 700 }} {...props} />,
+                h2: ({node, ...props}) => <h2 className="text-xl font-bold mb-2 mt-5" style={{ fontWeight: 700 }} {...props} />,
+                h3: ({node, ...props}) => <h3 className="text-lg font-bold mb-2 mt-4" style={{ fontWeight: 700 }} {...props} />,
+                h4: ({node, ...props}) => <h4 className="text-base font-bold mb-2 mt-3" style={{ fontWeight: 700 }} {...props} />,
+                h5: ({node, ...props}) => <h5 className="text-sm font-bold mb-2 mt-3" style={{ fontWeight: 700 }} {...props} />,
+                h6: ({node, ...props}) => <h6 className="text-xs font-bold mb-2 mt-2" style={{ fontWeight: 700 }} {...props} />,
+                
+                // Lists
                 ul: ({node, ...props}) => <ul className="list-disc ml-6 mb-4" {...props} />,
                 ol: ({node, ...props}) => <ol className="list-decimal ml-6 mb-4" {...props} />,
                 li: ({node, ...props}) => <li className="mb-1" {...props} />,
@@ -447,6 +541,14 @@ export const RichTextEditor = ({
       {error && (
         <p className="text-ui-fg-error txt-compact-small">{error}</p>
       )}
+
+      {/* Import Modal */}
+      <ImportFormattedTextModal
+        open={showImportModal}
+        onOpenChange={setShowImportModal}
+        onImport={handleImport}
+        currentContent={value}
+      />
     </div>
   );
 };

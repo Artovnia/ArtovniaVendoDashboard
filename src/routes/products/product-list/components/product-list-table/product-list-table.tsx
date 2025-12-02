@@ -9,7 +9,7 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import { keepPreviousData } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Link,
@@ -31,11 +31,13 @@ import { useProductTableFilters } from '../../../../../hooks/table/filters/use-p
 import { useProductTableQuery } from '../../../../../hooks/table/query/use-product-table-query';
 import { useDataTable } from '../../../../../hooks/use-data-table';
 import { productsLoader } from '../../loader';
+import { BulkShippingProfileSelectorModal } from '../bulk-shipping-profile-modal';
 
 const PAGE_SIZE = 20;
 
 export const ProductListTable = () => {
   const { t } = useTranslation();
+  const [showBulkModal, setShowBulkModal] = useState(false);
   // const location = useLocation();
 
   const initialData = useLoaderData() as Awaited<
@@ -45,11 +47,12 @@ export const ProductListTable = () => {
   const { searchParams, raw } = useProductTableQuery({
     pageSize: PAGE_SIZE,
   });
+  
   const { products, count, isLoading, isError, error } =
     useProducts(
       {
         ...searchParams,
-        fields: '+thumbnail',
+        fields: '+thumbnail,+shipping_profile',
       },
       {
         initialData,
@@ -86,6 +89,13 @@ export const ProductListTable = () => {
           <Button size='small' variant='secondary' asChild>
             <Link to='import'>{t('actions.import')}</Link>
           </Button> */}
+          <Button 
+            size='small' 
+            variant='secondary'
+            onClick={() => setShowBulkModal(true)}
+          >
+            {t('products.bulk.assignShippingProfile')}
+          </Button>
           <Button size='small' variant='secondary' asChild>
             <Link to='create'>{t('actions.create')}</Link>
           </Button>
@@ -117,6 +127,12 @@ export const ProductListTable = () => {
           message: t('products.list.noRecordsMessage'),
         }}
       />
+      {showBulkModal && (
+        <BulkShippingProfileSelectorModal
+          products={(products ?? []) as HttpTypes.AdminProduct[]}
+          onClose={() => setShowBulkModal(false)}
+        />
+      )}
       <Outlet />
     </Container>
   );

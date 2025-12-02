@@ -132,12 +132,15 @@
     "apply": "Zastosuj",
     "add": "Dodaj",
     "select": "Wybierz",
+    "selectAll": "Zaznacz wszystkie",
+    "deselectAll": "Odznacz wszystkie",
     "browse": "Przeglądaj",
     "logout": "Wyloguj się",
     "hide": "Ukryj",
     "export": "Eksportuj",
     "import": "Importuj",
-    "cannotUndo": "Tej akcji nie można cofnąć"
+    "cannotUndo": "Tej akcji nie można cofnąć",
+    "search": "Szukaj"
   },
   "operators": {
     "in": "W"
@@ -301,6 +304,9 @@
     "sortLabel": "Sortuj",
     "filterLabel": "Filtruj",
     "searchLabel": "Szukaj",
+    "all": "Wszystkie",
+    "filters": "Filtry",
+    "noResults": "Nie znaleziono wyników",
     "date": {
       "today": "Dzisiaj",
       "lastSevenDays": "Ostatnie 7 dni",
@@ -397,6 +403,29 @@
     "domain": "Produkty",
     "list": {
       "noRecordsMessage": "Utwórz swój pierwszy produkt, aby rozpocząć sprzedaż."
+    },
+    "bulk": {
+      "assignShippingProfile": "Przypisz profil wysyłki",
+      "removeShippingProfile": "Usuń profil wysyłki",
+      "selectProfile": "Wybierz profil wysyłki do przypisania do wybranych produktów",
+      "selectProfileHint": "Pozostaw puste, aby usunąć profil wysyłki z wybranych produktów",
+      "selectProfileFirst": "Najpierw wybierz profil wysyłki, który chcesz przypisać do produktów",
+      "selectProfileToAssign": "Wybierz, który profil wysyłki przypisać",
+      "selectProductsForProfile": "Wybierz produkty do przypisania profilu wysyłki",
+      "selectProducts": "Wybierz produkty",
+      "selectProductsAndProfile": "Wybierz produkty i przypisz do nich profil wysyłki",
+      "noProductsSelected": "Proszę wybrać co najmniej jeden produkt",
+      "noProfileSelected": "Proszę wybrać profil wysyłki",
+      "noProducts": "Brak dostępnych produktów",
+      "noShippingProfile": "Brak profilu wysyłki",
+      "selectedCount": "Wybrano {{count}} produktów",
+      "assignToProfile": "Przypisz do profilu wysyłki",
+      "assignToProfileDescription": "Wybierz profil wysyłki, który zostanie przypisany do wybranych produktów",
+      "assignSuccess": "Pomyślnie przypisano profil wysyłki do {{count}} produktów",
+      "removeSuccess": "Pomyślnie usunięto profil wysyłki z {{count}} produktów",
+      "confirmAssign": "Przypisać profil wysyłki do {{count}} wybranych produktów?",
+      "error": "Nie udało się zaktualizować produktów",
+      "unknownError": "Wystąpił nieznany błąd"
     },
     "edit": {
       "header": "Edytuj produkt",
@@ -849,7 +878,8 @@
       "link": "Wstaw link",
       "code": "Kod",
       "preview": "Podgląd",
-      "edit": "Edytuj"
+      "edit": "Edytuj",
+      "import": "Importuj tekst"
     },
     "help": {
       "title": "Pomoc formatowania Markdown",
@@ -868,6 +898,34 @@
     },
     "label": {
       "optional": "Opcjonalne"
+    },
+    "import": {
+      "title": "Importuj sformatowany tekst",
+      "description": "Wklej sformatowany tekst z Worda, Google Docs lub dowolnej strony internetowej. Zostanie automatycznie przekonwertowany na Markdown.",
+      "inputLabel": "Wklej tutaj swój sformatowany tekst",
+      "inputPlaceholder": "Wklej tekst z Worda, Google Docs, HTML lub zwykły tekst...",
+      "pasteHint": "Wklej sformatowany tekst tutaj (Ctrl+V). Formatowanie HTML zostanie zachowane i przekonwertowane na Markdown.",
+      "pasteFromClipboard": "Wklej ze schowka",
+      "convert": "Konwertuj na Markdown",
+      "result": "Przekonwertowany Markdown",
+      "characters": "znaków",
+      "modeLabel": "Tryb importu",
+      "importButton": "Importuj",
+      "clipboardError": "Nie można odczytać schowka. Proszę wkleić ręcznie używając Ctrl+V.",
+      "format": {
+        "html": "HTML",
+        "markdown": "Markdown",
+        "plain": "Zwykły tekst",
+        "unknown": "Nieznany"
+      },
+      "mode": {
+        "replace": "Zastąp wszystko",
+        "replaceHint": "Zastąp całą zawartość zaimportowanym tekstem",
+        "append": "Dołącz",
+        "appendHint": "Dodaj zaimportowany tekst na końcu istniejącej zawartości",
+        "insert": "Wstaw w kursorze",
+        "insertHint": "Wstaw zaimportowany tekst w bieżącej pozycji kursora"
+      }
     }
   },
   "collections": {
@@ -1118,6 +1176,7 @@
     "domain": "Sklep",
     "manageYourStoresDetails": "Zarządzaj szczegółami swojego sklepu",
     "editStore": "Edytuj sklep",
+    "backToDashboard": "Wróć do panelu głównego",
     "defaultCurrency": "Domyślna waluta",
     "defaultRegion": "Domyślny region",
     "defaultSalesChannel": "Domyślny kanał sprzedaży",
@@ -3465,6 +3524,7 @@
       "steps": {
         "storeInfo": "Uzupełnij informacje o sklepie",
         "locationsShipping": "Skonfiguruj lokalizacje i wysyłkę",
+        "stripeConnect": "Skonfiguruj Stripe Connect do płatności",
         "addProducts": "Dodaj produkty i rozpocznij sprzedaż"
       },
       "buttons": {
@@ -4441,6 +4501,116 @@
       "filesSelected": "plik(ów) wybrano",
       "charactersMin": "(minimum {{count}})",
       "status": "Status"
+    }
+  },
+  "shipping": {
+    "batch_setup": {
+      "page_title": "Automatyczna Konfiguracja Wysyłki",
+      "page_description": "Skonfiguruj kompletną, bazową konfigurację jednym kliknięciem",
+      "title": "Automatyczna konfiguracja wysyłki",
+      "description": "Utwórz kompletną konfigurację wysyłki dla swojego sklepu w kilka sekund. System automatycznie utworzy lokalizację magazynową, strefy wysyłki, profile i opcje dostawy.",
+      "will_create": "Co zostanie utworzone:",
+      "items": {
+        "location": {
+          "title": "1 Lokalizacja magazynowa",
+          "description": "Na podstawie danych Twojego profilu"
+        },
+        "zones": {
+          "title": "1-2 Strefy wysyłki",
+          "description": "Tylko Polska lub Polska + Unia Europejska (26 krajów) w zależności od wyboru"
+        },
+        "profiles": {
+          "title": "4 Profile wysyłki dla paczki standardowej",
+          "description": "Mini, mała, średnia i duża paczka"
+        },
+        "options": {
+          "title": "16-20 Opcji wysyłki",
+          "description": "InPost Paczkomat, InPost Kurier, DPD, Fedex z gotowymi cenami"
+        }
+      },
+      "requirements": {
+        "title": "Wymagania",
+        "description": "Upewnij się, że Twój profil sklepu jest kompletny (nazwa, email, telefon, adres, miasto, kod pocztowy)."
+      },
+      "create_button": "Utwórz konfigurację wysyłki",
+      "creating": "Tworzenie...",
+      "success": {
+        "title": "Konfiguracja wysyłki utworzona!",
+        "description": "Wszystkie elementy zostały pomyślnie utworzone. Możesz teraz dodawać produkty do swojego sklepu.",
+        "disclaimer": "Utworzono podstawowe paczki z aktualnymi cenami:",
+        "disclaimer_prices": "Ceny muszą być dostosowane indywidualnie przez sprzedawcę. Zostały utworzone z aktualnie dostępnymi cenami.",
+        "disclaimer_carriers": "Utworzono tylko podstawowych przewoźników i paczki. Aby utworzyć profile: gabarytowy, niestandardowy, paletowy czy listowy - przejdź do zakładki Profile wysyłki w menu bocznym (Lokalizacje i Wysyłka > Profile wysyłki)."
+      },
+      "already_completed": {
+        "title": "Konfiguracja wysyłki już istnieje",
+        "description": "Twoja konfiguracja wysyłki została już utworzona. Możesz zarządzać lokalizacjami i profilami wysyłki lub wrócić do panelu głównego.",
+        "button": "Już skonfigurowane"
+      },
+      "error": {
+        "incomplete_profile": "Profil sklepu niekompletny",
+        "complete_profile_first": "Uzupełnij wszystkie wymagane pola w profilu sklepu przed konfiguracją wysyłki.",
+        "go_to_profile": "Przejdź do profilu",
+        "generic": "Błąd podczas tworzenia konfiguracji",
+        "country_required": "Wybierz kraj dla lokalizacji"
+      },
+      "summary": {
+        "location": "Lokalizacja",
+        "profiles": "Profile",
+        "options": "Opcje",
+        "zones": "Strefy"
+      },
+      "details": {
+        "location": "Lokalizacja magazynowa",
+        "zones": "Strefy wysyłki",
+        "country": "kraj",
+        "countries": "krajów"
+      },
+      "show_details": "Pokaż szczegóły",
+      "hide_details": "Ukryj szczegóły",
+      "view_locations": "Zobacz lokalizacje",
+      "view_profiles": "Zobacz profile",
+      "back_to_dashboard": "Wróć do panelu głównego",
+      "location_config": {
+        "title": "Konfiguracja lokalizacji",
+        "use_default": "Użyj domyślnej lokalizacji",
+        "use_custom": "Utwórz niestandardową lokalizację",
+        "location_name": "Nazwa lokalizacji",
+        "location_name_placeholder": "np. Magazyn Główny",
+        "location_name_hint": "Zostaw puste, aby użyć domyślnej nazwy",
+        "country": "Kraj",
+        "country_hint": "Wybierz kraj dla lokalizacji magazynowej",
+        "default_location_name": "Polska"
+      },
+      "zone_config": {
+        "title": "Strefy wysyłki",
+        "poland_only": {
+          "title": "Tylko Polska",
+          "description": "Utwórz opcje wysyłki tylko dla Polski. Produkty będą dostępne do sprzedaży tylko w Polsce.",
+          "carriers": "Przewoźnicy: InPost Paczkomat, InPost Kurier, DPD, Fedex",
+          "note": "Uwaga: Produkty będą dostępne do sprzedaży tylko w Polsce, dopóki nie utworzysz strefy serwisowej dla UE."
+        },
+        "poland_and_eu": {
+          "title": "Polska i Unia Europejska",
+          "description": "Utwórz opcje wysyłki dla Polski i 26 krajów UE. Produkty będą dostępne w całej Europie.",
+          "carriers": "Polska: InPost Paczkomat, InPost Kurier, DPD, Fedex | UE: Fedex"
+        }
+      },
+      "pricing_table": {
+        "title": "Opcje Wysyłki i Cennik",
+        "description": "Następujące opcje wysyłki zostaną utworzone z tymi cenami (w PLN). Możesz je później dostosować.",
+        "poland_zone": "Strefa Polska",
+        "eu_zone": "Strefa Unia Europejska (26 krajów)",
+        "carrier": "Przewoźnik",
+        "mini": "Mini",
+        "small": "Mała",
+        "medium": "Średnia",
+        "big": "Duża",
+        "total_profiles": "Łącznie Profili:",
+        "total_options": "Łącznie Opcji:",
+        "profiles": "profile",
+        "options": "opcje"
+      },
+      "default_location_name": "Polska"
     }
   }
 }

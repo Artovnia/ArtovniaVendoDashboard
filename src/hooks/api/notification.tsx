@@ -44,18 +44,13 @@ export const useNotifications = (
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: async () => {
-      console.log('🔔 [NOTIFICATION] Fetching vendor notifications with query:', query);
       
       try {
         const result = await fetchQuery("/vendor/notifications", {
           method: "GET",
           query: query as Record<string, string | number>,
         });
-        
-        console.log('✅ [NOTIFICATION] Successfully fetched notifications:', {
-          count: result?.notifications?.length || 0,
-          total: result?.count || 0
-        });
+      
         
         return result;
       } catch (error) {

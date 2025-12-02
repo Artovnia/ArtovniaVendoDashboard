@@ -9,12 +9,26 @@ const productsListQuery = () => ({
   queryKey: productsQueryKeys.list({
     limit: 20,
     offset: 0,
+    fields: '+thumbnail,+shipping_profile',
   }),
-  queryFn: async () =>
-    fetchQuery('/vendor/products', {
-      method: 'GET',
-      query: { limit: 20, offset: 0 },
-    }),
+  queryFn: async () => {
+    try {
+      return await fetchQuery('/vendor/products', {
+        method: 'GET',
+        query: { limit: 20, offset: 0, fields: '+thumbnail,+shipping_profile' },
+      })
+    } catch (error: any) {
+      // If shipping_profile causes issues, retry without it
+      if (error.message?.includes('shipping_profile') || error.status === 500) {
+        return await fetchQuery('/vendor/products', {
+          method: 'GET',
+          query: { limit: 20, offset: 0, fields: '+thumbnail' },
+        })
+      }
+      
+      throw error
+    }
+  },
 });
 
 export const productsLoader = (client: QueryClient) => {

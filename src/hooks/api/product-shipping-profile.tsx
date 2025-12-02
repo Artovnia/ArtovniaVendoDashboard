@@ -111,3 +111,56 @@ export const useRemoveProductShippingProfile = (
     ...options,
   });
 };
+
+/**
+ * Hook to bulk associate multiple products with a shipping profile
+ */
+export const useBulkAssociateProductsWithShippingProfile = (
+  options?: UseMutationOptions<
+    any,
+    FetchError,
+    { productIds: string[]; shippingProfileId: string | null }
+  >
+) => {
+  return useMutation({
+    mutationFn: async ({ productIds, shippingProfileId }) => {
+      
+      try {
+        // Use the batch endpoint to update multiple products
+        const result = await fetchQuery(`/vendor/products/batch/shipping-profile`, {
+          method: 'POST',
+          body: {
+            product_ids: productIds,
+            shipping_profile_id: shippingProfileId
+          },
+        });
+    
+        return result;
+      } catch (error) {
+        console.error('Error bulk associating products with shipping profile:', error);
+        throw error;
+      }
+    },
+    onSuccess: (data, variables, context) => {
+      // Invalidate all product queries to reflect the updated shipping profiles
+      queryClient.invalidateQueries({
+        queryKey: productsQueryKeys.lists(),
+      });
+      
+      // Also invalidate shipping profiles cache
+      queryClient.invalidateQueries({
+        queryKey: ['shipping_profiles'],
+      });
+      
+      // Invalidate individual product details for all updated products
+      variables.productIds.forEach(productId => {
+        queryClient.invalidateQueries({
+          queryKey: productsQueryKeys.detail(productId),
+        });
+      });
+      
+      options?.onSuccess?.(data, variables, context);
+    },
+    ...options,
+  });
+};

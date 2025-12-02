@@ -1,4 +1,7 @@
-import { useLoaderData } from "react-router-dom"
+import { useLoaderData, useNavigate } from "react-router-dom"
+import { Button } from "@medusajs/ui"
+import { useTranslation } from "react-i18next"
+import { ArrowUturnLeft } from "@medusajs/icons"
 
 import { useStore } from "../../../hooks/api/store.tsx"
 import { StoreGeneralSection } from "./components/store-general-section/index.ts"
@@ -12,6 +15,8 @@ import { useMe } from "../../../hooks/api/users.tsx"
 
 export const StoreDetail = () => {
   const initialData = useLoaderData() as Awaited<ReturnType<typeof storeLoader>>
+  const navigate = useNavigate()
+  const { t } = useTranslation()
 
   const { store, isPending, isError, error } = useStore(undefined, {
     initialData,
@@ -40,6 +45,17 @@ export const StoreDetail = () => {
     >
       <StoreGeneralSection seller={seller} />
       <CompanySection seller={seller} />
+      
+      {/* Back to Dashboard Button */}
+      <div className="flex justify-center mt-6 mb-4">
+        <Button
+          variant="primary"
+          onClick={() => navigate("/dashboard")}
+        >
+          <ArrowUturnLeft className="mr-2" />
+          {t("store.backToDashboard")}
+        </Button>
+      </div>
     </SingleColumnPage>
   )
 }

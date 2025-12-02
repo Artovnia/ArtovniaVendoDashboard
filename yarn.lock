@@ -845,6 +845,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@mixmark-io/domino@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "@mixmark-io/domino@npm:2.2.0"
+  checksum: 547af4a8f74cb8e1f2f86e84dc968e7a722522d4748d8a1c9d30c5d1ce6a190ec400866338cc1f717b31beabed6e61c44edf17db5cf380317b63a1e7f253080f
+  languageName: node
+  linkType: hard
+
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
   resolution: "@nodelib/fs.scandir@npm:2.1.5"
@@ -4421,6 +4428,13 @@ __metadata:
     "@types/prop-types": "*"
     csstype: ^3.2.2
   checksum: c74d0ab5155226998a52b568f6280536205f8fe4317f77bd5d5258bc131cc9134a2db68dc818cb8e8402a2f229843c4a5bde339faf7e64d441630e569a9e5421
+  languageName: node
+  linkType: hard
+
+"@types/turndown@npm:^5.0.6":
+  version: 5.0.6
+  resolution: "@types/turndown@npm:5.0.6"
+  checksum: b406c95f0c2abcde9d00297ce567f8236eeb0733a7f2b3ff2942b298087884f22effa89ebfd755edd9aa81cedd7e091bfae6b66454d4e91de681c6d21fe23c18
   languageName: node
   linkType: hard
 
@@ -8741,6 +8755,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"turndown-plugin-gfm@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "turndown-plugin-gfm@npm:1.0.2"
+  checksum: 18191dc18d731ec16bb1f1a477af6471ce2acf152b882a7eccef8e0101e09628fec0f8499f352f0a291ce798f1f30d799b5a72bd5d2cde30a2a28070de24495c
+  languageName: node
+  linkType: hard
+
+"turndown@npm:^7.2.2":
+  version: 7.2.2
+  resolution: "turndown@npm:7.2.2"
+  dependencies:
+    "@mixmark-io/domino": ^2.2.0
+  checksum: 8e7cf1d2da8fbb7b4527fb052d1a64ed1ad06e3581dce94300c6158c6f4733418fe898e68bcc44ae2a9a787bedfa6b52b6ef4d50d1a11d0f56b6334a12c93fc7
+  languageName: node
+  linkType: hard
+
 "typescript@npm:5.2.2":
   version: 5.2.2
   resolution: "typescript@npm:5.2.2"
@@ -8951,6 +8981,7 @@ __metadata:
     "@types/node": ^20.11.15
     "@types/react": ^18.2.79
     "@types/react-dom": ^18.2.25
+    "@types/turndown": ^5.0.6
     "@uiw/react-json-view": ^2.0.0-alpha.17
     "@vitejs/plugin-react": 4.2.1
     ajv: ^8.17.1
@@ -8989,6 +9020,8 @@ __metadata:
     tailwindcss: ^3.4.1
     talkjs: ^0.35.0
     tsup: ^8.0.2
+    turndown: ^7.2.2
+    turndown-plugin-gfm: ^1.0.2
     typescript: 5.2.2
     vite: ^5.4.14
     vite-plugin-inspect: ^0.8.7

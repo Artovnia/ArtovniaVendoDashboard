@@ -99,7 +99,7 @@ export const EditProductForm = ({
 
   // Use the hook without product ID parameter since it expects options only
   const { mutateAsync, isPending } = useUpdateProduct({
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
       // Update the lastUpdatedAt timestamp when a successful update occurs
       setLastUpdatedAt(new Date().toISOString());
     },
@@ -156,57 +156,43 @@ export const EditProductForm = ({
         ...nullableData,
       };
       
-    
-
-      // Update the product and handle various response formats
-      const result = await mutateAsync(payload, {
-        onSuccess: (data) => {
-          
-          // Handle different response formats safely
-          const productData = data?.product || data;
-          const productTitle = productData?.title || product.title;
-          const productId = productData?.id || product.id;
-          
-          // Update the lastUpdatedAt timestamp to track successful updates
-          setLastUpdatedAt(new Date().toISOString());
-          
-          // Close the loading toast
-          toast.dismiss(loadingToast);
-          
-          // Show success message
-          toast.success(
-            `Produkt "${productTitle}" został zaktualizowany`
-          );
-          
-          // If response has a _synthetic flag, it means our fallback mechanism created it
-          if ((productData as any)?._synthetic) {
-           
-            toast.warning("Niektóre zmiany mogły nie zostać zapisane");
-          }
-          
-          // Force refresh product data when navigating back to product list
-          handleSuccess(`/products/${productId}`);
-        },
-        onError: (e) => {
-          console.error('Error in update product mutation:', e);
-          
-          // Close loading toast
-          toast.dismiss(loadingToast);
-          
-          // Show error message
-          toast.error(
-            `Nie udało się zaktualizować produktu: ${e.message}`
-          );
-        },
-      });
+      // CRITICAL: Don't pass onSuccess/onError to mutateAsync
+      // This allows the hook's built-in onSuccess (with refetchQueries) to run
+      const result = await mutateAsync(payload);
       
-      return result;
-    } catch (e) {
+      // Handle different response formats safely
+      const productData = result?.product || result;
+      const productTitle = productData?.title || product.title;
+      
+      // Update the lastUpdatedAt timestamp to track successful updates
+      setLastUpdatedAt(new Date().toISOString());
+      
+      // Close the loading toast
+      toast.dismiss(loadingToast);
+      
+      // Show success message
+      toast.success(
+        `Produkt "${productTitle}" został zaktualizowany`
+      );
+      
+      // If response has a _synthetic flag, it means our fallback mechanism created it
+      if ((productData as any)?._synthetic) {
+        toast.warning("Niektóre zmiany mogły nie zostać zapisane");
+      }
+      
+      // Call handleSuccess to close modal
+      // The hook's onSuccess already refetched the data
+      handleSuccess();
+      
+    } catch (e: any) {
       console.error('Error in update product submit handler:', e);
       
-      // Show error message for unexpected errors
+      // Close loading toast
+      toast.dismiss(loadingToast);
+      
+      // Show error message
       toast.error(
-        `Wystąpił nieoczekiwany błąd: ${e instanceof Error ? e.message : 'Unknown error'}`
+        `Nie udało się zaktualizować produktu: ${e?.message || 'Unknown error'}`
       );
     }
   });

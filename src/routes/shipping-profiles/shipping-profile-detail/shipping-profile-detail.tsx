@@ -15,13 +15,11 @@ export const ShippingProfileDetail = () => {
     ReturnType<typeof shippingProfileLoader>
   >;
 
-  console.log('Initial data from loader:', initialData);
 
   const result = useShippingProfile(shipping_profile_id!, undefined, {
     initialData,
   });
 
-  console.log('Result from useShippingProfile hook:', result);
   
   const { shipping_profile, isLoading, isError, error } = result;
 
