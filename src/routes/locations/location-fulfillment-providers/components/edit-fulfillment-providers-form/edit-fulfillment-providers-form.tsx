@@ -46,7 +46,7 @@ export const LocationEditFulfillmentProvidersForm = ({
   >({
     defaultValues: {
       fulfillment_providers:
-        location.fulfillment_providers?.map(
+        location.fulfillment_providers?.filter((fp) => fp !== null).map(
           (fp) => fp.id
         ) ?? [],
     },
@@ -58,7 +58,7 @@ export const LocationEditFulfillmentProvidersForm = ({
   const { setValue } = form;
 
   const initialState =
-    location.fulfillment_providers?.reduce((acc, curr) => {
+    location.fulfillment_providers?.filter((fp) => fp !== null).reduce((acc, curr) => {
       acc[curr.id] = true;
       return acc;
     }, {} as RowSelectionState) ?? {};
@@ -113,7 +113,7 @@ export const LocationEditFulfillmentProvidersForm = ({
     useUpdateStockLocationFulfillmentProviders(location.id);
 
   const handleSubmit = form.handleSubmit(async (data) => {
-    const originalIds = location.fulfillment_providers?.map(
+    const originalIds = location.fulfillment_providers?.filter((fp) => fp !== null).map(
       (sc) => sc.id
     );
 
