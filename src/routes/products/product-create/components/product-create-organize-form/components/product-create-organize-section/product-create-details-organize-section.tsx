@@ -34,7 +34,7 @@ export const ProductCreateOrganizationSection = ({
         label: tag.value,
         value: tag.id,
       })),
-    pageSize: 50, // Increase page size for better UX with many tags
+    pageSize: 100, // Increased to 100 to show more tags initially
   });
 
   return (

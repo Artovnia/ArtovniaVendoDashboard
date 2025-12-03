@@ -84,6 +84,7 @@ export const ProductOrganizationForm = ({
         label: tag.value,
         value: tag.id,
       })),
+    pageSize: 100, // Increased to 100 to show more tags initially
   });
 
   const form = useExtendableForm({
@@ -239,6 +240,8 @@ export const ProductOrganizationForm = ({
                           tags.onSearchValueChange
                         }
                         searchValue={tags.searchValue}
+                        fetchNextPage={tags.fetchNextPage}
+                        isFetchingNextPage={tags.isFetchingNextPage}
                       />
                     </Form.Control>
                     <Form.ErrorMessage />
