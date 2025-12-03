@@ -25,7 +25,7 @@ export const ProductCreateOrganizationSection = ({
   const tags = useComboboxData({
     queryKey: ['product_tags', 'creating'],
     queryFn: (params) =>
-      fetchQuery('/store/product-tags', {
+      fetchQuery('/vendor/product-tags', {
         method: 'GET',
         query: params,
       }),

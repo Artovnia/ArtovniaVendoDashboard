@@ -161,8 +161,14 @@ const ComboboxImpl = <T extends Value = string>(
     new IntersectionObserver(
       (entries) => {
         const first = entries[0]
-        if (first.isIntersecting) {
-          fetchNextPage?.()
+        console.log('🔍 IntersectionObserver triggered:', {
+          isIntersecting: first.isIntersecting,
+          hasFetchNextPage: !!fetchNextPage,
+          isFetchingNextPage
+        })
+        if (first.isIntersecting && fetchNextPage) {
+          console.log('✅ Calling fetchNextPage()')
+          fetchNextPage()
         }
       },
       { threshold: 0.1 } // Lower threshold for earlier loading

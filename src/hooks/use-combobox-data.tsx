@@ -53,19 +53,47 @@ export const useComboboxData = <
   const { data, ...rest } = useInfiniteQuery({
     queryKey: [...queryKey, query],
     queryFn: async ({ pageParam = 0 }) => {
-      return await queryFn({
+      const result = await queryFn({
         q: query,
         limit: pageSize,
         offset: pageParam,
       } as TParams)
+      
+      // Debug logging to see API response structure
+      console.log('🔍 Combobox API Response:', {
+        queryKey,
+        count: result.count,
+        offset: result.offset,
+        limit: result.limit,
+        itemsReturned: (result as any).product_tags?.length || (result as any).collections?.length || (result as any).product_types?.length || 0
+      })
+      
+      return result
   },
     initialPageParam: 0,
     getNextPageParam: (lastPage) => {
-      if (!lastPage || !lastPage.count || !lastPage.offset || !lastPage.limit) {
-        return undefined; // Handle null or missing properties
+      // Check if lastPage exists and has count
+      if (!lastPage || typeof lastPage.count !== 'number') {
+        console.log('⚠️ No lastPage or count:', lastPage)
+        return undefined
       }
-      const moreItemsExist = lastPage.count > lastPage.offset + lastPage.limit
-      return moreItemsExist ? lastPage.offset + lastPage.limit : undefined
+      
+      // offset can be 0, so check for undefined/null specifically
+      const currentOffset = typeof lastPage.offset === 'number' ? lastPage.offset : 0
+      const currentLimit = typeof lastPage.limit === 'number' ? lastPage.limit : pageSize
+      
+      const moreItemsExist = lastPage.count > currentOffset + currentLimit
+      const nextOffset = moreItemsExist ? currentOffset + currentLimit : undefined
+      
+      console.log('📊 Pagination check:', {
+        count: lastPage.count,
+        currentOffset,
+        currentLimit,
+        moreItemsExist,
+        nextOffset
+      })
+      
+      return nextOffset
     },
     placeholderData: keepPreviousData,
   });
