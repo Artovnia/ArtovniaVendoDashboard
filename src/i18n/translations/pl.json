@@ -452,8 +452,13 @@
         "producerAddressRequired": "Adres producenta jest wymagany",
         "producerContactRequired": "Kontakt do producenta jest wymagany",
         "instructionsRequired": "Instrukcje/ostrzeżenia są wymagane",
-        "fillAllRequiredFields": "Proszę wypełnić wszystkie wymagane pola przed kontynuowaniem"
+        "fillAllRequiredFields": "Proszę wypełnić wszystkie wymagane pola przed kontynuowaniem",
+        "priceRequired": "Cena jest wymagana dla wszystkich wariantów",
+        "stockLocationRequired": "Lokalizacja magazynowa jest wymagana",
+        "stockQuantityRequired": "Ilość w magazynie jest wymagana (może być 0)",
+        "stockQuantityRequiredWhenManaged": "Ilość w magazynie musi wynosić co najmniej 1 przy zarządzaniu zapasami"
       },
+      "stockLocationHint": "Ta lokalizacja będzie używana dla wszystkich wariantów produktu",
       "variantHeaders": {
         "options": "Opcje",
         "title": "Tytuł",
@@ -461,8 +466,11 @@
         "ean": "EAN",
         "barcode": "Kod kreskowy",
         "manage_inventory": "Zarządzaj zapasami",
+        "manage_inventory_description": "Włącz, aby śledzić poziomy zapasów (ograniczona ilość). Wyłącz dla produktów cyfrowych lub przedmiotów z nieograniczoną dostępnością.",
         "allow_backorder": "Pozwól na zamówienia wsteczne",
-        "price": "Cena"
+        "price": "Cena",
+        "stock_location": "Lokalizacja Magazynowa",
+        "stock_quantity": "Ilość w Magazynie"
       },
       "variants": {
         "empty": {

@@ -1,12 +1,14 @@
 import { Heading } from '@medusajs/ui';
-import { UseFormReturn } from 'react-hook-form';
+import { UseFormReturn, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { useEffect } from 'react';
 
 import { Form } from '../../../../../../../components/common/form';
 import { SwitchBox } from '../../../../../../../components/common/switch-box';
 import { Combobox } from '../../../../../../../components/inputs/combobox';
 import { ShippingProfileCombobox } from '../../../../../../../components/inputs/shipping-profile-combobox';
 import { useComboboxData } from '../../../../../../../hooks/use-combobox-data';
+import { useStockLocations } from '../../../../../../../hooks/api/stock-locations';
 import {
   fetchQuery,
 } from '../../../../../../../lib/client';
@@ -21,6 +23,7 @@ export const ProductCreateOrganizationSection = ({
   form,
 }: ProductCreateOrganizationSectionProps) => {
   const { t } = useTranslation();
+  const { stock_locations } = useStockLocations();
 
   const tags = useComboboxData({
     queryKey: ['product_tags', 'creating'],
@@ -36,6 +39,24 @@ export const ProductCreateOrganizationSection = ({
       })),
     pageSize: 100, // Increased to 100 to show more tags initially
   });
+
+  const stockLocationOptions = stock_locations?.map((loc) => ({
+    label: loc.name,
+    value: loc.id,
+  })) || [];
+
+  // Auto-select first stock location if available and none selected
+  const selectedStockLocation = useWatch({
+    control: form.control,
+    name: 'default_stock_location_id',
+  });
+
+  useEffect(() => {
+    if (!selectedStockLocation && stockLocationOptions.length > 0) {
+      form.setValue('default_stock_location_id', stockLocationOptions[0].value);
+      console.log('✅ Auto-selected stock location:', stockLocationOptions[0]);
+    }
+  }, [stockLocationOptions, selectedStockLocation, form]);
 
   return (
     <div id='organize' className='flex flex-col gap-y-8'>
@@ -83,6 +104,31 @@ export const ProductCreateOrganizationSection = ({
                 <Form.Control>
                   <CategorySelect {...field} />
                 </Form.Control>
+                <Form.ErrorMessage />
+              </Form.Item>
+            );
+          }}
+        />
+        <Form.Field
+          control={form.control}
+          name='default_stock_location_id'
+          render={({ field }) => {
+            return (
+              <Form.Item>
+                <Form.Label>
+                  {t('products.create.variantHeaders.stock_location')}
+                </Form.Label>
+                <Form.Control>
+                  <Combobox
+                    {...field}
+                    options={stockLocationOptions}
+                    searchValue={''}
+                    onSearchValueChange={() => {}}
+                  />
+                </Form.Control>
+                <Form.Hint>
+                  {t('products.create.stockLocationHint')}
+                </Form.Hint>
                 <Form.ErrorMessage />
               </Form.Item>
             );

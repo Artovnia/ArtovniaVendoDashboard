@@ -28,7 +28,8 @@ const ProductCreateVariantSchema = z.object({
   sku: z.string().optional(),
   manage_inventory: z.boolean().optional(),
   allow_backorder: z.boolean().optional(),
-  inventory_quantity: optionalInt,
+  stock_location_id: z.string().optional(),
+  stock_quantity: optionalInt,
   inventory_kit: z.boolean().optional(),
   options: z.record(z.string(), z.string()),
   variant_rank: z.number(),
@@ -67,6 +68,7 @@ export const ProductCreateSchema = (t: any) => z
     collection_id: z.string().optional(),
     shipping_profile_id: z.string().min(1, { message: t('products.create.validation.shippingProfileRequired') }),
     categories: z.array(z.string()).min(1, { message: t('products.create.validation.categoryRequired') }),
+    default_stock_location_id: z.string().min(1, { message: t('products.create.validation.stockLocationRequired') }),
     tags: z.array(z.string()).optional(),
     sales_channels: z
       .array(
@@ -117,16 +119,39 @@ export const ProductCreateSchema = (t: any) => z
     const skus = new Set<string>()
 
     data.variants.forEach((v, index) => {
-      if (v.sku) {
-        if (skus.has(v.sku)) {
+      if (v.should_create) {
+        // Validate unique SKU
+        if (v.sku) {
+          if (skus.has(v.sku)) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: [`variants.${index}.sku`],
+              message: i18n.t("products.create.errors.uniqueSku"),
+            })
+          }
+          skus.add(v.sku)
+        }
+
+        // Validate price is required
+        const priceValue = v.prices?.default;
+        if (!priceValue || (typeof priceValue === 'number' && priceValue <= 0) || (typeof priceValue === 'string' && parseFloat(priceValue) <= 0)) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            path: [`variants.${index}.sku`],
-            message: i18n.t("products.create.errors.uniqueSku"),
+            path: [`variants.${index}.prices.default`],
+            message: t("products.create.validation.priceRequired"),
           })
         }
 
-        skus.add(v.sku)
+        // Validate stock quantity if manage_inventory is true
+        if (v.manage_inventory) {
+          if (v.stock_quantity === undefined || v.stock_quantity === null || v.stock_quantity < 1) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              path: [`variants.${index}.stock_quantity`],
+              message: t("products.create.validation.stockQuantityRequiredWhenManaged"),
+            })
+          }
+        }
       }
     })
   })

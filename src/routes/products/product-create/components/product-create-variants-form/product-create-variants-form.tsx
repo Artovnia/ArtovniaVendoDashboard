@@ -14,6 +14,7 @@ import {
   ProductCreateVariantSchema,
 } from '../../constants';
 import { ProductCreateSchemaType } from '../../types';
+import { useStockLocations } from '../../../../../hooks/api/stock-locations';
 
 type ProductCreateVariantsFormProps = {
   form: UseFormReturn<ProductCreateSchemaType>;
@@ -103,6 +104,7 @@ const useColumns = ({
   pricePreferences?: HttpTypes.AdminPricePreference[];
 }) => {
   const { t } = useTranslation();
+  const { stock_locations, isLoading: isLoadingLocations } = useStockLocations();
 
   // Use translation keys for column headers
   const headers = {
@@ -114,7 +116,26 @@ const useColumns = ({
     manage_inventory: t('products.create.variantHeaders.manage_inventory'),
     allow_backorder: t('products.create.variantHeaders.allow_backorder'),
     price: t('products.create.variantHeaders.price'),
+    stock_location: t('products.create.variantHeaders.stock_location'),
+    stock_quantity: t('products.create.variantHeaders.stock_quantity'),
   };
+
+  // Prepare stock location options for select dropdown
+  const stockLocationOptions = useMemo(
+    () => {
+      if (!stock_locations || stock_locations.length === 0) {
+        console.log('⚠️ No stock locations available:', { stock_locations, isLoadingLocations });
+        return [];
+      }
+      const options = stock_locations.map((loc) => ({
+        label: loc.name,
+        value: loc.id,
+      }));
+      console.log('✅ Stock location options prepared:', options);
+      return options;
+    },
+    [stock_locations, isLoadingLocations]
+  );
 
   return useMemo(
     () => [
@@ -163,33 +184,45 @@ const useColumns = ({
           return <DataGrid.TextCell context={context} />;
         },
       }),
-      columnHelper.column({
-        id: 'ean',
-        name: headers.ean,
-        header: headers.ean,
-        field: (context) =>
-          `variants.${context.row.original.originalIndex}.ean`,
-        type: 'text',
-        cell: (context) => {
-          return <DataGrid.TextCell context={context} />;
-        },
-      }),
-      columnHelper.column({
-        id: 'barcode',
-        name: headers.barcode,
-        header: headers.barcode,
-        field: (context) =>
-          `variants.${context.row.original.originalIndex}.barcode`,
-        type: 'text',
-        cell: (context) => {
-          return <DataGrid.TextCell context={context} />;
-        },
-      }),
+      // EAN column - commented out
+      // columnHelper.column({
+      //   id: 'ean',
+      //   name: headers.ean,
+      //   header: headers.ean,
+      //   field: (context) =>
+      //     `variants.${context.row.original.originalIndex}.ean`,
+      //   type: 'text',
+      //   cell: (context) => {
+      //     return <DataGrid.TextCell context={context} />;
+      //   },
+      // }),
+      // Barcode column - commented out
+      // columnHelper.column({
+      //   id: 'barcode',
+      //   name: headers.barcode,
+      //   header: headers.barcode,
+      //   field: (context) =>
+      //     `variants.${context.row.original.originalIndex}.barcode`,
+      //   type: 'text',
+      //   cell: (context) => {
+      //     return <DataGrid.TextCell context={context} />;
+      //   },
+      // }),
 
       columnHelper.column({
         id: 'manage_inventory',
         name: headers.manage_inventory,
-        header: headers.manage_inventory,
+        header: () => (
+          <div className="flex items-center gap-x-1">
+            <span>{headers.manage_inventory}</span>
+            <div className="group relative">
+              <span className="text-ui-fg-muted cursor-help">ⓘ</span>
+              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 hidden group-hover:block z-[9999] w-64 p-2 bg-ui-bg-base border border-ui-border-base rounded shadow-elevation-tooltip text-xs text-ui-fg-base">
+                {t('products.create.variantHeaders.manage_inventory_description')}
+              </div>
+            </div>
+          </div>
+        ),
         field: (context) =>
           `variants.${context.row.original.originalIndex}.manage_inventory`,
         type: 'boolean',
@@ -206,6 +239,24 @@ const useColumns = ({
         type: 'boolean',
         cell: (context) => {
           return <DataGrid.BooleanCell context={context} />;
+        },
+      }),
+      // Stock Quantity column - moved before price
+      columnHelper.column({
+        id: 'stock_quantity',
+        name: headers.stock_quantity,
+        header: headers.stock_quantity,
+        field: (context) =>
+          `variants.${context.row.original.originalIndex}.stock_quantity`,
+        type: 'number',
+        cell: (context) => {
+          return (
+            <DataGrid.NumberCell
+              context={context}
+              min={0}
+              placeholder="0"
+            />
+          );
         },
       }),
       // Add explicit price column before the auto-generated price columns
@@ -239,6 +290,6 @@ const useColumns = ({
         t,
       }),
     ],
-    [currencies, regions, options, pricePreferences, t]
+    [currencies, regions, options, pricePreferences, t, stockLocationOptions]
   );
 };

@@ -61,10 +61,9 @@ export const VariantColorSection = ({
   return (
     <Container className="p-0">
       {/* Header with title and context menu */}
-      <div className="flex items-center justify-between px-6 py-4">
-        <div className="flex items-center gap-2">
-          <Swatch className="h-5 w-5" />
-          <Heading level="h2">{t('variant.colorSection.title')}</Heading>
+      <div className="flex items-center justify-between px-6 pt-4">
+        <div className="flex items-center gap-0">
+        
         </div>
         
         <div className="flex items-center gap-2">
@@ -104,9 +103,9 @@ export const VariantColorSection = ({
       
       {/* Color information displayed horizontally in a row */}
       <div className="divide-y">
-        <div className="px-6 py-4">
+        <div className="px-6 pb-4">
           {isLoading ? (
-            <div className="flex items-center gap-2 mt-2">
+            <div className="flex items-center gap-2 ">
               <div className="w-4 h-4 bg-ui-bg-base rounded-full animate-pulse" />
               <Text className="text-ui-fg-subtle">{t('variant.colorSection.loading')}</Text>
             </div>

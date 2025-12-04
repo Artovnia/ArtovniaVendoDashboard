@@ -1653,6 +1653,18 @@
                 },
                 "fillAllRequiredFields": {
                   "type": "string"
+                },
+                "priceRequired": {
+                  "type": "string"
+                },
+                "stockLocationRequired": {
+                  "type": "string"
+                },
+                "stockQuantityRequired": {
+                  "type": "string"
+                },
+                "stockQuantityRequiredWhenManaged": {
+                  "type": "string"
                 }
               },
               "required": [
@@ -1664,9 +1676,16 @@
                 "producerAddressRequired",
                 "producerContactRequired",
                 "instructionsRequired",
-                "fillAllRequiredFields"
+                "fillAllRequiredFields",
+                "priceRequired",
+                "stockLocationRequired",
+                "stockQuantityRequired",
+                "stockQuantityRequiredWhenManaged"
               ],
               "additionalProperties": false
+            },
+            "stockLocationHint": {
+              "type": "string"
             },
             "variantHeaders": {
               "type": "object",
@@ -1689,10 +1708,19 @@
                 "manage_inventory": {
                   "type": "string"
                 },
+                "manage_inventory_description": {
+                  "type": "string"
+                },
                 "allow_backorder": {
                   "type": "string"
                 },
                 "price": {
+                  "type": "string"
+                },
+                "stock_location": {
+                  "type": "string"
+                },
+                "stock_quantity": {
                   "type": "string"
                 }
               },
@@ -1703,8 +1731,11 @@
                 "ean",
                 "barcode",
                 "manage_inventory",
+                "manage_inventory_description",
                 "allow_backorder",
-                "price"
+                "price",
+                "stock_location",
+                "stock_quantity"
               ],
               "additionalProperties": false
             },
@@ -1785,6 +1816,7 @@
             "header",
             "tabs",
             "validation",
+            "stockLocationHint",
             "variantHeaders",
             "errors",
             "variants"
@@ -2311,6 +2343,12 @@
             },
             "price": {
               "type": "string"
+            },
+            "stock_location": {
+              "type": "string"
+            },
+            "stock_quantity": {
+              "type": "string"
             }
           },
           "required": [
@@ -2321,7 +2359,9 @@
             "barcode",
             "manage_inventory",
             "allow_backorder",
-            "price"
+            "price",
+            "stock_location",
+            "stock_quantity"
           ],
           "additionalProperties": false
         },

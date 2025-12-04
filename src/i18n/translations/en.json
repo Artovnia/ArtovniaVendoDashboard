@@ -443,8 +443,13 @@
         "producerAddressRequired": "Producer address is required",
         "producerContactRequired": "Producer contact is required",
         "instructionsRequired": "Instructions/Warnings are required",
-        "fillAllRequiredFields": "Please fill all required fields before proceeding"
+        "fillAllRequiredFields": "Please fill all required fields before proceeding",
+        "priceRequired": "Price is required for all variants",
+        "stockLocationRequired": "Stock location is required",
+        "stockQuantityRequired": "Stock quantity is required (can be 0)",
+        "stockQuantityRequiredWhenManaged": "Stock quantity must be at least 1 when managing inventory"
       },
+      "stockLocationHint": "This location will be used for all product variants",
       "variantHeaders": {
         "options": "Options",
         "title": "Title",
@@ -452,8 +457,11 @@
         "ean": "EAN",
         "barcode": "Barcode",
         "manage_inventory": "Manage inventory",
+        "manage_inventory_description": "Enable to track stock levels (limited quantity). Disable for digital products or items with unlimited availability.",
         "allow_backorder": "Allow backorder",
-        "price": "Price"
+        "price": "Price",
+        "stock_location": "Stock Location",
+        "stock_quantity": "Stock Quantity"
       },
       "errors": {
         "productCreateFailed": "Failed to create product. Please try again.",
@@ -619,7 +627,9 @@
         "barcode": "Barcode",
         "manage_inventory": "Manage Inventory",
         "allow_backorder": "Allow Backorder",
-        "price": "Price"
+        "price": "Price",
+        "stock_location": "Stock Location",
+        "stock_quantity": "Stock Quantity"
       },
       "errors": {
         "variants": "Please select at least one variant.",

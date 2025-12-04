@@ -327,66 +327,81 @@ export const ProductCreateForm = ({
           ...(payload.metadata?.raw_color_assignments && {
             raw_color_assignments: payload.metadata.raw_color_assignments,
             handle_colors_via_api: true
-          })
+          }),
+          // Flag that this product has pending stock levels to be created
+          pending_stock_levels: true,
         },
         categories: payload.categories.map((cat) => ({
           id: cat,
         })),
         tags: payload.tags ? payload.tags.map((tag) => ({ id: tag })) : [],
-        variants: payload.variants.map((variant, index) => ({
-          ...variant,
-          manage_inventory: true,
-          allow_backorder: false,
-          should_create: undefined,
-          is_default: undefined,
-          inventory_kit: undefined,
-          inventory: undefined,
-          sku: variant.sku || `${payload.title.substring(0, 3).toUpperCase()}-${Date.now().toString().substring(9)}-${index}`,
-          prices: (() => {
-            const createPriceObject = (amount: number, currency: string) => ({
-              amount: amount,
-              currency_code: currency.toLowerCase()
-            });
-            
-            try {
-              if (Array.isArray(variant.prices) && variant.prices.length > 0 && 
-                  variant.prices[0] && typeof variant.prices[0].amount !== 'undefined') {
-                return variant.prices;
-              }
+        variants: payload.variants.map((variant, index) => {
+          // Destructure to remove fields that shouldn't be sent to backend
+          const { stock_quantity, stock_location_id, manage_inventory, allow_backorder, ...cleanVariant } = variant;
+          
+          console.log(`📦 Variant ${index} - manage_inventory from form:`, manage_inventory, 'will send:', manage_inventory ?? false);
+          
+          return {
+            ...cleanVariant,
+            manage_inventory: manage_inventory ?? false, // Respect user's choice, default to false
+            allow_backorder: allow_backorder ?? false,
+            should_create: undefined,
+            is_default: undefined,
+            inventory_kit: undefined,
+            inventory: undefined,
+            sku: variant.sku || `${payload.title.substring(0, 3).toUpperCase()}-${Date.now().toString().substring(9)}-${index}`,
+            // Include stock data in variant metadata for backend processing
+            metadata: {
+              ...(variant.metadata || {}),  // Handle undefined metadata
+              stock_location_id: payload.default_stock_location_id, // Use default location for all variants
+              stock_quantity: stock_quantity || 0, // Default to 0 if not set
+            },
+            prices: (() => {
+              const createPriceObject = (amount: number, currency: string) => ({
+                amount: amount,
+                currency_code: currency.toLowerCase()
+              });
               
-              if (variant.prices && typeof variant.prices === 'object') {
-                const priceArray = [];
-                
-                if (variant.prices.default) {
-                  const defaultPrice = String(variant.prices.default);
-                  const amount = parseFloat(defaultPrice);
-                  
-                  if (!isNaN(amount)) {
-                    priceArray.push(createPriceObject(amount, "pln"));
-                  }
+              try {
+                if (Array.isArray(variant.prices) && variant.prices.length > 0 && 
+                    variant.prices[0] && typeof variant.prices[0].amount !== 'undefined') {
+                  return variant.prices;
                 }
                 
-                Object.entries(variant.prices).forEach(([currency, value]) => {
-                  if (currency !== 'default' && value) {
-                    const stringValue = String(value);
-                    const amount = parseFloat(stringValue);
+                if (variant.prices && typeof variant.prices === 'object') {
+                  const priceArray = [];
+                  
+                  if (variant.prices.default) {
+                    const defaultPrice = String(variant.prices.default);
+                    const amount = parseFloat(defaultPrice);
                     
                     if (!isNaN(amount)) {
-                      priceArray.push(createPriceObject(amount, currency));
+                      priceArray.push(createPriceObject(amount, "pln"));
                     }
                   }
-                });
+                  
+                  Object.entries(variant.prices).forEach(([currency, value]) => {
+                    if (currency !== 'default' && value) {
+                      const stringValue = String(value);
+                      const amount = parseFloat(stringValue);
+                      
+                      if (!isNaN(amount)) {
+                        priceArray.push(createPriceObject(amount, currency));
+                      }
+                    }
+                  });
+                  
+                  return priceArray;
+                }
                 
-                return priceArray;
+                return [];
+              } catch (error) {
+                console.error('Error parsing prices:', error);
+                return [];
               }
-              
-              return [];
-            } catch (error) {
-              console.error('Error parsing prices:', error);
-              return [];
-            }
-          })(),
-        })),
+            })(),
+          };
+        }),
       }, {
         onSuccess: async (data: any) => {
           setIsSubmitting(false);
@@ -500,12 +515,9 @@ export const ProductCreateForm = ({
                 
                 if (gpsrData.gpsr.producerName || gpsrData.gpsr.producerAddress || 
                     gpsrData.gpsr.producerContact || gpsrData.gpsr.instructions) {
-                  console.log('📤 Submitting GPSR data to API:', gpsrData);
                   await mutateGPSR(gpsrData);
-                  console.log('✅ GPSR data submitted to API successfully');
                   
                   // Save GPSR data to localStorage for future auto-fill
-                  console.log('💾 Saving GPSR data to localStorage...');
                   const saved = saveGPSRDefaults({
                     producerName: gpsrData.gpsr.producerName,
                     producerAddress: gpsrData.gpsr.producerAddress,
@@ -516,7 +528,6 @@ export const ProductCreateForm = ({
                     instructions: gpsrData.gpsr.instructions,
                     certificates: gpsrData.gpsr.certificates,
                   });
-                  console.log('💾 GPSR save result:', saved ? 'SUCCESS' : 'FAILED');
                 }
               } catch (gpsrError) {
                 console.error('Failed to submit GPSR data:', gpsrError);
