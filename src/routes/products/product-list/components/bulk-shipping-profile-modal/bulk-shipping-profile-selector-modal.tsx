@@ -222,7 +222,7 @@ export const BulkShippingProfileSelectorModal = ({
                 </Text>
                 <Button
                   size="small"
-                  variant="transparent"
+                  variant="secondary"
                   type="button"
                   onClick={handleSelectAll}
                 >

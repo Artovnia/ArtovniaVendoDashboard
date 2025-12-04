@@ -161,13 +161,7 @@ const ComboboxImpl = <T extends Value = string>(
     new IntersectionObserver(
       (entries) => {
         const first = entries[0]
-        console.log('🔍 IntersectionObserver triggered:', {
-          isIntersecting: first.isIntersecting,
-          hasFetchNextPage: !!fetchNextPage,
-          isFetchingNextPage
-        })
         if (first.isIntersecting && fetchNextPage) {
-          console.log('✅ Calling fetchNextPage()')
           fetchNextPage()
         }
       },

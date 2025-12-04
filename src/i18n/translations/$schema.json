@@ -3084,12 +3084,48 @@
             "description": {
               "type": "string"
             },
+            "warningWithProducts": {
+              "type": "string"
+            },
+            "warningWithShippingOptions": {
+              "type": "string"
+            },
+            "warningBoth": {
+              "type": "string"
+            },
+            "confirmText": {
+              "type": "string"
+            },
             "successToast": {
+              "type": "string"
+            },
+            "successWithUnlink": {
+              "type": "string"
+            },
+            "errorToast": {
+              "type": "string"
+            },
+            "productSingular": {
+              "type": "string"
+            },
+            "productPlural": {
+              "type": "string"
+            },
+            "optionSingular": {
+              "type": "string"
+            },
+            "optionPlural": {
               "type": "string"
             }
           },
-          "required": ["title", "description", "successToast"],
+          "required": ["title", "description", "warningWithProducts", "warningWithShippingOptions", "warningBoth", "confirmText", "successToast", "successWithUnlink", "errorToast", "productSingular", "productPlural", "optionSingular", "optionPlural"],
           "additionalProperties": false
+        },
+        "deleteAction": {
+          "type": "string"
+        },
+        "cancelAction": {
+          "type": "string"
         },
         "tooltip": {
           "type": "object",
@@ -3100,9 +3136,34 @@
           },
           "required": ["type"],
           "additionalProperties": false
+        },
+        "types": {
+          "type": "object",
+          "properties": {
+            "letters_postal": {
+              "type": "string"
+            },
+            "standard_parcels": {
+              "type": "string"
+            },
+            "nonstandard_parcels": {
+              "type": "string"
+            },
+            "oversized_items": {
+              "type": "string"
+            },
+            "pallets_heavy": {
+              "type": "string"
+            },
+            "specialized_transport": {
+              "type": "string"
+            }
+          },
+          "required": ["letters_postal", "standard_parcels", "nonstandard_parcels", "oversized_items", "pallets_heavy", "specialized_transport"],
+          "additionalProperties": false
         }
       },
-      "required": ["domain", "subtitle", "create", "delete", "tooltip"],
+      "required": ["domain", "subtitle", "create", "delete", "deleteAction", "cancelAction", "tooltip", "types"],
       "additionalProperties": false
     },
     "colors": {

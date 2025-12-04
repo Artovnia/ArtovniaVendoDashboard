@@ -1969,9 +1969,21 @@
     },
     "delete": {
       "title": "Usuń profil wysyłki",
-      "description": "Masz zamiar usunąć profil wysyłki {{name}}. Tej akcji nie można cofnąć.",
-      "successToast": "Profil wysyłki {{name}} został pomyślnie usunięty."
+      "description": "Masz zamiar usunąć profil wysyłki {{name}}. Zostaną usunięte opcje wysyłki powiązane z tym profilem oraz produkty będą wymagały przypisanie nowego profilu. Tej akcji nie można cofnąć.",
+      "warningWithProducts": "⚠️ {{count}} {{count_plural}} przypisanych do tego profilu.\n\nPo usunięciu profilu, produkty nie będą miały przypisanego profilu wysyłki i będą wymagały ponownego przypisania.",
+      "warningWithShippingOptions": "⚠️ Ten profil ma {{count}} {{count_plural}} wysyłki.\n\nOpcje wysyłki zostaną również usunięte wraz z profilem.",
+      "warningBoth": "⚠️ Ten profil ma:\n• {{productCount}} {{product_plural}} przypisanych\n• {{optionCount}} {{option_plural}} wysyłki\n\nPo usunięciu profilu:\n• Produkty nie będą miały przypisanego profilu wysyłki\n• Wszystkie opcje wysyłki zostaną usunięte",
+      "confirmText": "Wpisz {{name}} aby potwierdzić",
+      "successToast": "Profil wysyłki {{name}} został pomyślnie usunięty.",
+      "successWithUnlink": "Profil \"{{name}}\" został usunięty. Odłączono {{count}} {{count_plural}}.",
+      "errorToast": "Nie udało się usunąć profilu: {{error}}",
+      "productSingular": "produkt jest",
+      "productPlural": "produktów jest",
+      "optionSingular": "opcję",
+      "optionPlural": "opcji"
     },
+    "deleteAction": "Usuń",
+    "cancelAction": "Anuluj",
     "tooltip": {
       "type": "Wprowadź typ profilu wysyłki, na przykład: Ciężki, Duży, Tylko fracht itp."
     },

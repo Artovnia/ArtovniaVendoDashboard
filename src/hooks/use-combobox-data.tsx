@@ -59,14 +59,7 @@ export const useComboboxData = <
         offset: pageParam,
       } as TParams)
       
-      // Debug logging to see API response structure
-      console.log('🔍 Combobox API Response:', {
-        queryKey,
-        count: result.count,
-        offset: result.offset,
-        limit: result.limit,
-        itemsReturned: (result as any).product_tags?.length || (result as any).collections?.length || (result as any).product_types?.length || 0
-      })
+    
       
       return result
   },
@@ -74,7 +67,6 @@ export const useComboboxData = <
     getNextPageParam: (lastPage) => {
       // Check if lastPage exists and has count
       if (!lastPage || typeof lastPage.count !== 'number') {
-        console.log('⚠️ No lastPage or count:', lastPage)
         return undefined
       }
       
@@ -85,13 +77,7 @@ export const useComboboxData = <
       const moreItemsExist = lastPage.count > currentOffset + currentLimit
       const nextOffset = moreItemsExist ? currentOffset + currentLimit : undefined
       
-      console.log('📊 Pagination check:', {
-        count: lastPage.count,
-        currentOffset,
-        currentLimit,
-        moreItemsExist,
-        nextOffset
-      })
+
       
       return nextOffset
     },

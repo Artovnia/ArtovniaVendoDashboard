@@ -73,7 +73,6 @@ export const useShippingProfile = (
         method: 'GET',
         query: query as { [key: string]: string | number },
       });
-      console.log('API response in hook:', response);
       return response;
     },
     queryKey: shippingProfileQueryKeys.detail(id, query),
@@ -145,11 +144,34 @@ export const useUpdateShippingProfile = (
   });
 };
 
+// Get linked products count for a shipping profile
+export const useShippingProfileLinkedProducts = (
+  id: string,
+  options?: Omit<
+    UseQueryOptions<
+      { count: number; product_ids: string[] },
+      FetchError,
+      { count: number; product_ids: string[] },
+      QueryKey
+    >,
+    'queryFn' | 'queryKey'
+  >
+) => {
+  return useQuery({
+    queryFn: () =>
+      fetchQuery(`/vendor/shipping-profiles/${id}/linked-products`, {
+        method: 'GET',
+      }),
+    queryKey: [...shippingProfileQueryKeys.detail(id), 'linked-products'],
+    ...options,
+  });
+};
+
 // Delete a shipping profile
 export const useDeleteShippingProfile = (
   id: string,
   options?: UseMutationOptions<
-    HttpTypes.AdminShippingProfileDeleteResponse,
+    HttpTypes.AdminShippingProfileDeleteResponse & { unlinked_products_count?: number },
     FetchError,
     void
   >

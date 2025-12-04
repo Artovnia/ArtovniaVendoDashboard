@@ -1998,9 +1998,21 @@
     },
     "delete": {
       "title": "Delete Shipping Profile",
-      "description": "You are about to delete the shipping profile {{name}}. This action cannot be undone.",
-      "successToast": "Shipping profile {{name}} was successfully deleted."
+      "description": "You are about to delete the shipping profile {{name}}. Assigned shipping options will also be deleted. Products will require assigning new profiles. This action cannot be undone.",
+      "warningWithProducts": "⚠️ {{count}} {{count_plural}} assigned to this profile.\n\nAfter deleting the profile, products will not have an assigned shipping profile and will require reassignment.",
+      "warningWithShippingOptions": "⚠️ This profile has {{count}} shipping {{count_plural}}.\n\nShipping options will also be deleted along with the profile.",
+      "warningBoth": "⚠️ This profile has:\n• {{productCount}} {{product_plural}} assigned\n• {{optionCount}} shipping {{option_plural}}\n\nAfter deleting the profile:\n• Products will not have an assigned shipping profile\n• All shipping options will be deleted",
+      "confirmText": "Type {{name}} to confirm",
+      "successToast": "Shipping profile {{name}} was successfully deleted.",
+      "successWithUnlink": "Profile \"{{name}}\" was deleted. Unlinked {{count}} {{count_plural}}.",
+      "errorToast": "Failed to delete profile: {{error}}",
+      "productSingular": "product is",
+      "productPlural": "products are",
+      "optionSingular": "option",
+      "optionPlural": "options"
     },
+    "deleteAction": "Delete",
+    "cancelAction": "Cancel",
     "tooltip": {
       "type": "Enter shipping profile type, for example: Heavy, Oversized, Freight-only, etc."
     },
