@@ -55,8 +55,8 @@ export const ReviewDetail = () => {
       </TwoColumnPage.Main>
       <TwoColumnPage.Sidebar>
         <ReviewCustomerSection customer={review.customer} />
-        {review.reference !== 'seller' && (
-          <ReviewProductSection />
+        {review.reference === 'product' && (
+          <ReviewProductSection product={review.product} />
         )}
       </TwoColumnPage.Sidebar>
     </TwoColumnPage>

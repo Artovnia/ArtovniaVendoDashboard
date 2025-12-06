@@ -23,6 +23,20 @@ export const useReviewTableColumns = () => {
   return useMemo(
     () => [
       columnHelper.display({
+        id: 'type',
+        header: () => <TextHeader text='Type' />,
+        cell: ({ row }) => {
+          const reference = row.original?.reference
+          const productTitle = row.original?.product?.title
+          
+          if (reference === 'product' && productTitle) {
+            return <TextCell text={productTitle} />
+          }
+          
+          return <TextCell text={reference === 'seller' ? 'Seller Review' : 'Product Review'} />
+        },
+      }),
+      columnHelper.display({
         id: 'customer',
         header: () => <CustomerHeader />,
         cell: ({ row }) => (

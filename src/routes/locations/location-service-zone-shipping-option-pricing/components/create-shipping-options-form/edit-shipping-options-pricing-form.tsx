@@ -1,6 +1,6 @@
 // C:\repo\mercur\vendor-panel\src\routes\locations\location-service-zone-shipping-option-pricing\components\create-shipping-options-form\edit-shipping-options-pricing-form.tsx
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import * as zod from "zod"
 
@@ -86,6 +86,14 @@ export function EditShippingOptionsPricingForm({
     defaultValues: getDefaultValues(shippingOption.prices || []),
     resolver: zodResolver(EditShippingOptionPricingSchema),
   })
+
+  // Reset form when shippingOption prices change (fixes race condition)
+  useEffect(() => {
+    if (shippingOption?.prices) {
+      const defaultValues = getDefaultValues(shippingOption.prices)
+      form.reset(defaultValues)
+    }
+  }, [shippingOption?.prices, form])
 
   const { mutateAsync, isPending } = useUpdateShippingOptions(shippingOption.id)
 

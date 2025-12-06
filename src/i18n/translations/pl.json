@@ -465,7 +465,7 @@
         "sku": "SKU",
         "ean": "EAN",
         "barcode": "Kod kreskowy",
-        "manage_inventory": "Zarządzaj zapasami",
+        "manage_inventory": "Zarządzaj zapasami (ograniczona ilość)",
         "manage_inventory_description": "Włącz, aby śledzić poziomy zapasów (ograniczona ilość). Wyłącz dla produktów cyfrowych lub przedmiotów z nieograniczoną dostępnością.",
         "allow_backorder": "Pozwól na zamówienia wsteczne",
         "price": "Cena",
@@ -3591,7 +3591,8 @@
       "added": "Dodano",
       "replyButton": "Odpowiedz",
       "editReplyButton": "Edytuj odpowiedź",
-      "orderSection": "Zamówienie"
+      "orderSection": "Zamówienie",
+      "productSection": "Produkt"
     },
     "reply": {
       "title": "Odpowiedź",

@@ -456,7 +456,7 @@
         "sku": "SKU",
         "ean": "EAN",
         "barcode": "Barcode",
-        "manage_inventory": "Manage inventory",
+        "manage_inventory": "Manage inventory (limited quantity)",
         "manage_inventory_description": "Enable to track stock levels (limited quantity). Disable for digital products or items with unlimited availability.",
         "allow_backorder": "Allow backorder",
         "price": "Price",
@@ -3729,7 +3729,8 @@
       "added": "Added",
       "replyButton": "Reply",
       "editReplyButton": "Edit Reply",
-      "orderSection": "Order"
+      "orderSection": "Order",
+      "productSection": "Product"
     },
     "reply": {
       "title": "Reply",

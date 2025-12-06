@@ -2,6 +2,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { HttpTypes } from "@medusajs/types"
 import { Button, Divider, RadioGroup, Select, toast } from "@medusajs/ui"
+import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import * as zod from "zod"
@@ -66,6 +67,19 @@ export const EditShippingOptionForm = ({
     },
     resolver: zodResolver(EditShippingOptionSchema),
   })
+
+  // Reset form when shippingOption changes (fixes race condition)
+  useEffect(() => {
+    if (shippingOption) {
+      const isEnabled = Boolean(isOptionEnabledInStore(shippingOption))
+      form.reset({
+        name: shippingOption.name,
+        price_type: shippingOption.price_type as ShippingOptionPriceType,
+        enabled_in_store: isEnabled,
+        shipping_profile_id: shippingOption.shipping_profile_id,
+      })
+    }
+  }, [shippingOption, form])
 
   const { mutateAsync, isPending: isLoading } = useUpdateShippingOptions(
     shippingOption.id
