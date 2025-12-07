@@ -149,9 +149,28 @@ const ProductActions = ({
   // Get the queryClient to manually invalidate and refetch after deletion
   const queryClient = useQueryClient();
   
-  // Pass the product.id to useDeleteProduct with proper error handling
-  const { mutateAsync } = useDeleteProduct(product.id, {
-    onSuccess: () => {
+  // Pass the product.id to useDeleteProduct
+  const { mutateAsync } = useDeleteProduct(product.id);
+
+  const handleDelete = async () => {
+    const res = await prompt({
+      title: t('general.areYouSure'),
+      description: t('deleteWarning', {
+        title: product.title,
+      }),
+      confirmText: t('actions.delete'),
+      cancelText: t('actions.cancel'),
+    });
+
+    if (!res) {
+      return;
+    }
+
+    try {
+      // Call mutateAsync and handle success
+      await mutateAsync();
+      
+      // Show success toast
       toast.success(
         t('toasts.delete.success.header'),
         {
@@ -171,34 +190,14 @@ const ProductActions = ({
       queryClient.refetchQueries({
         queryKey: productsQueryKeys.lists(),
       });
-    },
-    onError: (e: Error) => {
+    } catch (error: any) {
+      // Show error toast with the actual error message
       toast.error(
         t('toasts.delete.error.header'),
-        { description: e.message }
+        { 
+          description: error?.message || error?.body?.message || t('toasts.delete.error.description')
+        }
       );
-    }
-  });
-
-  const handleDelete = async () => {
-    const res = await prompt({
-      title: t('general.areYouSure'),
-      description: t('deleteWarning', {
-        title: product.title,
-      }),
-      confirmText: t('actions.delete'),
-      cancelText: t('actions.cancel'),
-    });
-
-    if (!res) {
-      return;
-    }
-
-    try {
-      // Call mutateAsync without parameters since we already set the id and callbacks
-      await mutateAsync();
-    } catch (error) {
-      // Error handling is already set up in the useDeleteProduct hook
       console.error('Error deleting product:', error);
     }
   };

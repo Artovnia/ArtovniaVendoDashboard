@@ -215,7 +215,19 @@ export const ProductOrganizationForm = ({
                       )}
                     </Form.Label>
                     <Form.Control>
-                      <CategoryCombobox {...field} />
+                      <CategoryCombobox 
+                        {...field}
+                        onChange={(newValue) => {
+                          // Only allow ONE category - take the last selected one
+                          if (newValue.length > 1) {
+                            // User selected a new category, keep only the newest one
+                            field.onChange([newValue[newValue.length - 1]]);
+                          } else {
+                            // User cleared or selected first category
+                            field.onChange(newValue);
+                          }
+                        }}
+                      />
                     </Form.Control>
                     <Form.ErrorMessage />
                   </Form.Item>

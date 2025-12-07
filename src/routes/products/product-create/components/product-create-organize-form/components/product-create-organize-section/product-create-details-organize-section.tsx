@@ -54,7 +54,6 @@ export const ProductCreateOrganizationSection = ({
   useEffect(() => {
     if (!selectedStockLocation && stockLocationOptions.length > 0) {
       form.setValue('default_stock_location_id', stockLocationOptions[0].value);
-      console.log('✅ Auto-selected stock location:', stockLocationOptions[0]);
     }
   }, [stockLocationOptions, selectedStockLocation, form]);
 

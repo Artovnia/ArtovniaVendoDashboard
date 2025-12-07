@@ -198,7 +198,10 @@ const ComboboxImpl = <T extends Value = string>(
   const showSelected = showTag && !searchValue && !open
 
   const hideInput = !isArrayValue && !open
-  const selectedLabel = options.find((o) => o.value === selectedValues)?.label
+  // Find the selected option label, with fallback to the value itself if not found
+  const selectedOption = options.find((o) => o.value === selectedValues)
+  // Ensure we always have a label to display when there's a value
+  const selectedLabel = selectedOption?.label || (selectedValues && !isArrayValue && selectedValues !== '' ? String(selectedValues) : undefined)
 
   const hidePlaceholder = showSelected || open
 

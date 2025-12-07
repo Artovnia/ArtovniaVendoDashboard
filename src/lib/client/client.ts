@@ -451,10 +451,24 @@ export const fetchQuery = async (
           };
         }
 
-        return { response, data: errorData };
+        // Throw error for all other error responses
+        const error: any = new Error(errorData.message || `Request failed with status ${response.status}`);
+        error.response = response;
+        error.body = errorData;
+        error.status = response.status;
+        throw error;
       } catch (e) {
-        // Not JSON, return text data
-        return { response, data };
+        // If it's already an error we threw, re-throw it
+        if (e instanceof Error && (e as any).response) {
+          throw e;
+        }
+        
+        // Not JSON, throw error with text data
+        const error: any = new Error(data || `Request failed with status ${response.status}`);
+        error.response = response;
+        error.body = { message: data };
+        error.status = response.status;
+        throw error;
       }
     }
 
@@ -486,6 +500,12 @@ export const fetchQuery = async (
       return result;
     }
   } catch (error: unknown) {
+    // If this is an HTTP error (has response property), re-throw it
+    // These are business logic errors from the API, not network errors
+    if (error instanceof Error && (error as any).response) {
+      throw error;
+    }
+
     console.error(`Network error on ${method} ${url}:`, error);
 
     const errorStr = String(error);

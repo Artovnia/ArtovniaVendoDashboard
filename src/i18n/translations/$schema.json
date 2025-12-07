@@ -2498,7 +2498,8 @@
         "errors",
         "inventory",
         "variants",
-        "successToast"
+        "successToast",
+        "toasts"
       ],
       "additionalProperties": false
     },
@@ -3459,9 +3460,12 @@
               "properties": {
                 "header": {
                   "type": "string"
+                },
+                "description": {
+                  "type": "string"
                 }
               },
-              "required": ["header"],
+              "required": ["header", "description"],
               "additionalProperties": false
             }
           },

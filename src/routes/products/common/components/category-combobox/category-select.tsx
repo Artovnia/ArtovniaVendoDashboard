@@ -191,6 +191,14 @@ export const CategorySelect = forwardRef<
 
   const showLevelUp = !searchValue && level.length > 0;
 
+  // Get the selected category label for display
+  const selectedCategory = useMemo(() => {
+    if (!value || value.length === 0 || !allCategories) return null;
+    const category = allCategories.find(cat => cat.id === value[0]);
+    
+    return category;
+  }, [value, allCategories]);
+
   const [focusedIndex, setFocusedIndex] =
     useState<number>(-1);
 
@@ -284,7 +292,7 @@ export const CategorySelect = forwardRef<
     >
       <Select.Trigger
         className={clx(
-          'relative flex cursor-pointer items-center mt-2 gap-x-2 overflow-hidden px-2',
+          'relative flex cursor-pointer items-center mt-2 gap-x-2 overflow-hidden',
           'h-8 w-full rounded-lg',
           'bg-ui-bg-field transition-fg shadow-borders-base',
           'has-[input:focus]:shadow-borders-interactive-with-active',
@@ -301,8 +309,18 @@ export const CategorySelect = forwardRef<
           } as CSSProperties
         }
       >
-        <Select.Value aria-label={value[0]} />
-        <Select.Icon className='ml-auto'>
+        <div className="flex-1 overflow-hidden pl-2">
+          {selectedCategory ? (
+            <Text size="small" leading="compact" className="truncate text-left">
+              {selectedCategory.name}
+            </Text>
+          ) : (
+            <Text size="small" leading="compact" className="text-ui-fg-muted text-left">
+             ...
+            </Text>
+          )}
+        </div>
+        <Select.Icon className='mr-2'>
           <TrianglesMini className='text-ui-fg-muted' />
         </Select.Icon>
       </Select.Trigger>

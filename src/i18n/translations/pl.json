@@ -399,7 +399,9 @@
   "sales_channels": {
     "availableIn": "Dostępne w <0>{{x}}</0> z <1>{{y}}</1> kanałów sprzedaży"
   },
+   "deleteWarning": "Zamierzasz usunąć produkt {{title}}. Ta akcja nie może zostać cofnięta.",
   "products": {
+ 
     "domain": "Produkty",
     "list": {
       "noRecordsMessage": "Utwórz swój pierwszy produkt, aby rozpocząć sprzedaż."
@@ -472,6 +474,7 @@
         "stock_location": "Lokalizacja Magazynowa",
         "stock_quantity": "Ilość w Magazynie"
       },
+      
       "variants": {
         "empty": {
           "heading": "Brak wariantów",
@@ -544,7 +547,7 @@
         "description": "Import danych może potrwać chwilę. Powiadomimy Cię, gdy będzie gotowy."
       }
     },
-    "deleteWarning": "Zamierzasz usunąć produkt {{title}}. Ta akcja nie może zostać cofnięta.",
+    
     "fields": {
       "title": {
         "label": "Tytuł"
@@ -675,17 +678,7 @@
         }
       }
     },
-    "toasts": {
-      "delete": {
-        "success": {
-          "header": "Produkt usunięty",
-          "description": "{{title}} został pomyślnie usunięty."
-        },
-        "error": {
-          "header": "Nie udało się usunąć produktu"
-        }
-      }
-    },
+   
     "shippingProfile": {
       "header": "Profil wysyłki",
       "currentlyAssigned": "Obecnie przypisany",
@@ -869,6 +862,18 @@
         "action": "Dodaj media"
       },
       "successToast": "Media zostały pomyślnie zaktualizowane."
+    },
+     "toasts": {
+      "delete": {
+        "success": {
+          "header": "Produkt usunięty",
+          "description": "{{title}} został pomyślnie usunięty."
+        },
+        "error": {
+          "header": "Nie udało się usunąć produktu",
+          "description": "Wystąpił błąd podczas usuwania produktu."
+        }
+      }
     },
     "colors": {
       "header": "Kolory",
