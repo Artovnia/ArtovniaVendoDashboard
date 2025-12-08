@@ -43,7 +43,7 @@ const SUPPORTED_DOCUMENT_FORMATS = {
 };
 
 // File size limits (in bytes)
-const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB per file (practical limit for web uploads)
+const MAX_FILE_SIZE = 30 * 1024 * 1024; // 30MB per file (Vercel image optimization limit is 10MB)
 const MAX_TOTAL_SIZE = 200 * 1024 * 1024; // 200MB total for all files
 const MAX_DOCUMENT_SIZE = 10 * 1024 * 1024; // 10MB for documents
 

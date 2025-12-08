@@ -849,7 +849,7 @@
       "recommendations": {
         "title": "Recommendations",
         "format": "Recommended format: WebP (supports JPEG, PNG, GIF, BMP, TIFF, SVG)",
-        "maxSize": "Maximum file size: 50MB per file",
+        "maxSize": "Maximum file size: 30MB per file",
         "totalSize": "Maximum total size: 200MB"
       },
       "uploadImagesLabel": "Upload images",
