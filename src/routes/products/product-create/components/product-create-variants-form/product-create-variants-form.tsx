@@ -173,17 +173,19 @@ const useColumns = ({
           return <DataGrid.TextCell context={context} />;
         },
       }),
-      columnHelper.column({
-        id: 'sku',
-        name: headers.sku,
-        header: headers.sku,
-        field: (context) =>
-          `variants.${context.row.original.originalIndex}.sku`,
-        type: 'text',
-        cell: (context) => {
-          return <DataGrid.TextCell context={context} />;
-        },
-      }),
+      // SKU column - hidden from UI but still functional for form submission
+      // The SKU field is auto-generated and submitted with the form data
+      // columnHelper.column({
+      //   id: 'sku',
+      //   name: headers.sku,
+      //   header: headers.sku,
+      //   field: (context) =>
+      //     `variants.${context.row.original.originalIndex}.sku`,
+      //   type: 'text',
+      //   cell: (context) => {
+      //     return <DataGrid.TextCell context={context} />;
+      //   },
+      // }),
       // EAN column - commented out
       // columnHelper.column({
       //   id: 'ean',
