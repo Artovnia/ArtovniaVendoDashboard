@@ -78,6 +78,8 @@ export const CreateProductVariantForm = ({
       manage_inventory: false,
       allow_backorder: false,
       inventory_kit: false,
+      stock_quantity: 0,
+      stock_location_id: '',
       options: {},
     },
     resolver: zodResolver(CreateProductVariantSchema),
@@ -242,40 +244,53 @@ export const CreateProductVariantForm = ({
   };
 
   const handleSubmit = form.handleSubmit(async (data) => {
-    const { sku, title } = data;
+    const { sku, title, manage_inventory, allow_backorder, stock_quantity, stock_location_id } = data;
+
+    // ✅ Generate SKU if not provided (same logic as product creation)
+    const generatedSku = sku || `${title.substring(0, 3).toUpperCase()}-${Date.now().toString().substring(9)}`;
+
+    // ✅ Build variant payload with form data (no hardcoded values)
+    const variantPayload: any = {
+      title,
+      sku: generatedSku,
+      allow_backorder: allow_backorder ?? false,
+      manage_inventory: manage_inventory ?? false,
+      options: data.options,
+      prices: Object.entries(data.prices ?? {})
+        .map(([currencyOrRegion, value]) => {
+          if (value === '' || value === undefined) {
+            return undefined;
+          }
+
+          const amount = castNumber(value);
+          const ret: AdminCreateProductVariantPrice = {
+            currency_code: currencyOrRegion.startsWith('reg_')
+              ? regionsCurrencyMap[currencyOrRegion]
+              : currencyOrRegion,
+            amount: amount,
+          };
+
+          if (currencyOrRegion.startsWith('reg_')) {
+            ret.rules = { region_id: currencyOrRegion };
+          }
+
+          return ret;
+        })
+        .filter((price): price is AdminCreateProductVariantPrice => price !== undefined),
+    };
+
+    // ✅ CRITICAL: Always add metadata with stock data for backend processing
+    // Backend needs this to create inventory items and set stock levels
+    variantPayload.metadata = {
+      stock_location_id: stock_location_id || undefined,
+      stock_quantity: manage_inventory ? (stock_quantity || 0) : 0,
+    };
 
     await mutateAsync(
-      {
-        title,
-        sku: sku || undefined,
-        allow_backorder: false,
-        manage_inventory: true,
-        options: data.options,
-        prices: Object.entries(data.prices ?? {})
-          .map(([currencyOrRegion, value]) => {
-            if (value === '' || value === undefined) {
-              return undefined;
-            }
-
-            const ret: AdminCreateProductVariantPrice = {};
-            const amount = castNumber(value);
-
-            if (currencyOrRegion.startsWith('reg_')) {
-              ret.rules = { region_id: currencyOrRegion };
-              ret.currency_code =
-                regionsCurrencyMap[currencyOrRegion];
-            } else {
-              ret.currency_code = currencyOrRegion;
-            }
-
-            ret.amount = amount;
-
-            return ret;
-          })
-          .filter(Boolean),
-      },
+      variantPayload,
       {
         onSuccess: () => {
+          toast.success(t('products.variant.create.successToast', 'Variant created successfully'));
           handleSuccess();
         },
         onError: (error) => {

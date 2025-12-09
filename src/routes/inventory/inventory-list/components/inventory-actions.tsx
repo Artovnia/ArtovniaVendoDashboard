@@ -3,7 +3,7 @@ import { PencilSquare, Trash } from "@medusajs/icons"
 import { ActionMenu } from "../../../../components/common/action-menu"
 import { InventoryItemDTO } from "@medusajs/types"
 import { useDeleteInventoryItem } from "../../../../hooks/api/inventory"
-import { usePrompt } from "@medusajs/ui"
+import { usePrompt, toast } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
 
 export const InventoryActions = ({ item }: { item: InventoryItemDTO }) => {
@@ -23,7 +23,17 @@ export const InventoryActions = ({ item }: { item: InventoryItemDTO }) => {
       return
     }
 
-    await mutateAsync()
+    try {
+      await mutateAsync()
+      toast.success(t("inventory.deleteSuccess"))
+    } catch (error: any) {
+      // Check if error is about inventory levels
+      if (error.message?.includes("inventory level")) {
+        toast.error(t("inventory.deleteErrorHasLevels"))
+      } else {
+        toast.error(error.message || t("inventory.deleteError"))
+      }
+    }
   }
 
   return (

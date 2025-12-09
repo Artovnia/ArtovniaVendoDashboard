@@ -457,10 +457,12 @@
         "fillAllRequiredFields": "Proszę wypełnić wszystkie wymagane pola przed kontynuowaniem",
         "priceRequired": "Cena jest wymagana dla wszystkich wariantów",
         "stockLocationRequired": "Lokalizacja magazynowa jest wymagana",
+        
         "stockQuantityRequired": "Ilość w magazynie jest wymagana (może być 0)",
         "stockQuantityRequiredWhenManaged": "Ilość w magazynie musi wynosić co najmniej 1 przy zarządzaniu zapasami"
       },
       "stockLocationHint": "Ta lokalizacja będzie używana dla wszystkich wariantów produktu",
+      "stockLocation": "Lokalizacja magazynowa",
       "variantHeaders": {
         "options": "Opcje",
         "title": "Tytuł",
@@ -1039,7 +1041,10 @@
     "locationLevels": "Lokalizacje",
     "associatedVariants": "Powiązane warianty",
     "manageLocations": "Zarządzaj lokalizacjami",
-    "deleteWarning": "Zamierzasz usunąć element magazynowy. Tej akcji nie można cofnąć.",
+    "deleteWarning": "Zamierzasz usunąć element magazynowy wariantu. Tej akcji nie można cofnąć.",
+    "deleteSuccess": "Element magazynowy został pomyślnie usunięty",
+    "deleteError": "Nie udało się usunąć elementu magazynowego",
+    "deleteErrorHasLevels": "Nie można usunąć elementu magazynowego - posiada poziomy zapasów. Najpierw usuń wszystkie poziomy zapasów.",
     "editItemDetails": "Edytuj szczegóły elementu",
     "create": {
       "title": "Utwórz element magazynowy",
@@ -3143,6 +3148,11 @@
     "inventoryItems": "Elementy zapasów",
     "inventoryItem": "Pozycja inwentarza",
     "requiredQuantity": "Wymagana ilość",
+    "stockQuantity": "Ilość w magazynie",
+    "stockQuantityHint": "Początkowa ilość zapasów dla tej lokalizacji",
+    "noOptionsTitle": "Nie znaleziono opcji produktu",
+    "noOptionsDescription": "Ten produkt nie ma zdefiniowanych opcji. Musisz utworzyć co najmniej jedną opcję (np. Rozmiar, Kolor) przed utworzeniem wariantów.",
+    "goToOptionsManagement": "Przejdź do zarządzania opcjami →",
     "description": "Opis",
     "email": "E-mail",
     "password": "Hasło",

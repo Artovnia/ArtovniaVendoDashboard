@@ -26,7 +26,7 @@ export const inventoryItemLevelsQueryKeys =
   queryKeysFactory(INVENTORY_ITEM_LEVELS_QUERY_KEY);
 
 export const useInventoryItems = (
-  query?: HttpTypes.AdminInventoryItemParams,
+  query?: HttpTypes.AdminInventoryItemsParams,
   options?: Omit<
     UseQueryOptions<
       HttpTypes.AdminInventoryItemListResponse,
@@ -148,13 +148,19 @@ export const useDeleteInventoryItem = (
   >
 ) => {
   return useMutation({
-    mutationFn: () => sdk.admin.inventoryItem.delete(id),
+    mutationFn: () =>
+      fetchQuery(`/vendor/inventory-items/${id}`, {
+        method: 'DELETE',
+      }),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
         queryKey: inventoryItemsQueryKeys.lists(),
       });
       queryClient.invalidateQueries({
         queryKey: inventoryItemsQueryKeys.detail(id),
+      });
+      queryClient.invalidateQueries({
+        queryKey: variantsQueryKeys.lists(),
       });
       options?.onSuccess?.(data, variables, context);
     },

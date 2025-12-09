@@ -1687,6 +1687,9 @@
             "stockLocationHint": {
               "type": "string"
             },
+            "stockLocation": {
+              "type": "string"
+            },
             "variantHeaders": {
               "type": "object",
               "properties": {
@@ -4013,6 +4016,15 @@
           "type": "string"
         },
         "deleteWarning": {
+          "type": "string"
+        },
+        "deleteSuccess": {
+          "type": "string"
+        },
+        "deleteError": {
+          "type": "string"
+        },
+        "deleteErrorHasLevels": {
           "type": "string"
         },
         "editItemDetails": {
@@ -11792,6 +11804,21 @@
           "type": "string"
         },
         "requiredQuantity": {
+          "type": "string"
+        },
+        "stockQuantity": {
+          "type": "string"
+        },
+        "stockQuantityHint": {
+          "type": "string"
+        },
+        "noOptionsTitle": {
+          "type": "string"
+        },
+        "noOptionsDescription": {
+          "type": "string"
+        },
+        "goToOptionsManagement": {
           "type": "string"
         },
         "description": {

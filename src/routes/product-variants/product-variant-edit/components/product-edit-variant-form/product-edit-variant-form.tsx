@@ -1,7 +1,7 @@
 // product-edit-variant-form.tsx
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button, Divider, Heading, Input, Switch, toast } from "@medusajs/ui"
-import { useForm } from "react-hook-form"
+import { useForm, useWatch } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { z } from "zod"
 import { useMemo } from "react"
@@ -14,6 +14,7 @@ import { RouteDrawer, useRouteModal } from "../../../../../components/modals"
 import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
 import { useUpdateProductVariant } from "../../../../../hooks/api/products"
 import { useProductVariantAttributes, useUpdateProductVariantAttributes } from "../../../../../hooks/api/product-variant-additional-attributes"
+import { useStockLocations } from "../../../../../hooks/api/stock-locations"
 import {
   transformNullableFormData,
   transformNullableFormNumber,
@@ -34,6 +35,8 @@ const ProductEditVariantSchema = z.object({
   barcode: z.string().optional(),
   manage_inventory: z.boolean(),
   allow_backorder: z.boolean(),
+  stock_quantity: z.number().optional(),
+  stock_location_id: z.string().optional(),
   weight: optionalInt,
   height: optionalInt,
   width: optionalInt,
@@ -55,6 +58,10 @@ export const ProductEditVariantForm = ({
   // Fetch variant attributes
   const { data: variantAttributesData, isLoading: isAttributesLoading } = useProductVariantAttributes(product.id, variant.id)
   const updateVariantAttributes = useUpdateProductVariantAttributes(product.id, variant.id)
+  
+  // Fetch stock locations
+  const { stock_locations } = useStockLocations({ limit: 100 })
+  const defaultLocation = stock_locations?.find((loc: any) => loc.is_default) || stock_locations?.[0]
 
   // Memoize default options to prevent unnecessary re-renders
   const defaultOptions = useMemo(() => {
@@ -89,6 +96,8 @@ export const ProductEditVariantForm = ({
       barcode: variant.barcode || "",
       manage_inventory: variant.manage_inventory || false,
       allow_backorder: variant.allow_backorder || false,
+      stock_quantity: 0,
+      stock_location_id: defaultLocation?.id || "",
       weight: variant.weight || "",
       height: variant.height || "",
       width: variant.width || "",
@@ -101,6 +110,15 @@ export const ProductEditVariantForm = ({
     },
     resolver: zodResolver(ProductEditVariantSchema),
   })
+  
+  // Watch manage_inventory to show/hide stock fields
+  const manageInventory = useWatch({
+    control: form.control,
+    name: 'manage_inventory',
+  })
+  
+  // Track if manage_inventory was just enabled
+  const wasManagingInventory = variant.manage_inventory || false
 
   // REMOVED THE PROBLEMATIC useEffect
 
@@ -110,7 +128,7 @@ export const ProductEditVariantForm = ({
   )
 
   const onSubmit = form.handleSubmit(async (values) => {
-    const { title, origin_country, material, sku, ean, upc, barcode, hs_code, mid_code, allow_backorder, manage_inventory, options, weight, height, width, length, variant_attributes } = values
+    const { title, origin_country, material, sku, ean, upc, barcode, hs_code, mid_code, allow_backorder, manage_inventory, options, weight, height, width, length, variant_attributes, stock_quantity, stock_location_id } = values
 
     const nullableData = transformNullableFormData({
       material,
@@ -124,6 +142,9 @@ export const ProductEditVariantForm = ({
     })
 
     try {
+      // ✅ Check if inventory management was just enabled
+      const inventoryJustEnabled = !wasManagingInventory && manage_inventory
+      
       // Step 1: Update general variant info
       await mutateAsync({
         weight: transformNullableFormNumber(weight),
@@ -135,6 +156,14 @@ export const ProductEditVariantForm = ({
         manage_inventory,
         options,
         ...nullableData,
+        // ✅ Add metadata for inventory creation if just enabled
+        ...(inventoryJustEnabled && {
+          metadata: {
+            stock_location_id: stock_location_id || defaultLocation?.id,
+            stock_quantity: stock_quantity || 0,
+            create_inventory_item: true, // Flag for backend
+          }
+        })
       })
 
       // Step 2: Process variant attributes if they exist
@@ -322,7 +351,13 @@ export const ProductEditVariantForm = ({
                         <Form.Control>
                           <Switch
                             checked={value}
-                            onCheckedChange={(checked) => onChange(!!checked)}
+                            onCheckedChange={(checked) => {
+                              onChange(!!checked)
+                              // Auto-select default location when enabling
+                              if (checked && defaultLocation) {
+                                form.setValue('stock_location_id', defaultLocation.id)
+                              }
+                            }}
                             {...field}
                           />
                         </Form.Control>
@@ -336,6 +371,68 @@ export const ProductEditVariantForm = ({
                 )
               }}
             />
+            
+            {/* ✅ Show stock fields only when manage_inventory is enabled AND it was just enabled */}
+            {manageInventory && !wasManagingInventory && (
+              <>
+                <Form.Field
+                  control={form.control}
+                  name="stock_quantity"
+                  render={({ field }) => {
+                    return (
+                      <Form.Item>
+                        <Form.Label>
+                          {t("fields.stockQuantity")}
+                        </Form.Label>
+                        <Form.Control>
+                          <Input
+                            {...field}
+                            type="number"
+                            min="0"
+                            placeholder="0"
+                            onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                          />
+                        </Form.Control>
+                        <Form.Hint>
+                          {t("fields.stockQuantityHint")}
+                        </Form.Hint>
+                        <Form.ErrorMessage />
+                      </Form.Item>
+                    )
+                  }}
+                />
+                
+                <Form.Field
+                  control={form.control}
+                  name="stock_location_id"
+                  render={({ field: { value, onChange, ...field } }) => {
+                    return (
+                      <Form.Item>
+                        <Form.Label>
+                          {t("fields.stockLocation", "Stock Location")}
+                        </Form.Label>
+                        <Form.Control>
+                          <Combobox
+                            value={value || defaultLocation?.id}
+                            onChange={onChange}
+                            {...field}
+                            options={(stock_locations || []).map((loc: any) => ({
+                              label: `${loc.name}${loc.is_default ? ' (Default)' : ''}`,
+                              value: loc.id,
+                            }))}
+                          />
+                        </Form.Control>
+                        <Form.Hint>
+                          {t("fields.stockLocationHint", "Where this stock will be stored")}
+                        </Form.Hint>
+                        <Form.ErrorMessage />
+                      </Form.Item>
+                    )
+                  }}
+                />
+              </>
+            )}
+            
             <Form.Field
               control={form.control}
               name="allow_backorder"

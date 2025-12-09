@@ -9,6 +9,9 @@ export const CreateProductVariantSchema = z.object({
   allow_backorder: z.boolean().optional(),
   inventory_kit: z.boolean().optional(),
   options: z.record(z.string()),
+  // Stock management fields
+  stock_quantity: z.number().optional(),
+  stock_location_id: z.string().optional(),
   prices: zod
     .record(zod.string(), zod.string().or(zod.number()).optional())
     .optional(),
@@ -28,6 +31,8 @@ export const CreateVariantDetailsSchema = CreateProductVariantSchema.pick({
   manage_inventory: true,
   allow_backorder: true,
   inventory_kit: true,
+  stock_quantity: true,
+  stock_location_id: true,
   options: true,
 })
 

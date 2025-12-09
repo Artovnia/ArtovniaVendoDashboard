@@ -446,10 +446,12 @@
         "fillAllRequiredFields": "Please fill all required fields before proceeding",
         "priceRequired": "Price is required for all variants",
         "stockLocationRequired": "Stock location is required",
+        
         "stockQuantityRequired": "Stock quantity is required (can be 0)",
         "stockQuantityRequiredWhenManaged": "Stock quantity must be at least 1 when managing inventory"
       },
       "stockLocationHint": "This location will be used for all product variants",
+      "stockLocation": "Stock location",
       "variantHeaders": {
         "options": "Options",
         "title": "Title",
@@ -1072,7 +1074,10 @@
     "locationLevels": "Locations",
     "associatedVariants": "Associated variants",
     "manageLocations": "Manage locations",
-    "deleteWarning": "You are about to delete an inventory item. This action cannot be undone.",
+    "deleteWarning": "You are about to delete an inventory item of a variant. This action cannot be undone.",
+    "deleteSuccess": "Inventory item deleted successfully",
+    "deleteError": "Failed to delete inventory item",
+    "deleteErrorHasLevels": "Cannot delete inventory item - it has inventory levels. Please remove all stock levels first.",
     "editItemDetails": "Edit item details",
     "create": {
       "title": "Create Inventory Item",
@@ -3275,6 +3280,11 @@
     "inventoryItems": "Inventory items",
     "inventoryItem": "Inventory item",
     "requiredQuantity": "Required quantity",
+    "stockQuantity": "Stock Quantity",
+    "stockQuantityHint": "Initial stock quantity for this location",
+    "noOptionsTitle": "No Product Options Found",
+    "noOptionsDescription": "This product has no options defined. You must create at least one option (e.g., Size, Color) before creating variants.",
+    "goToOptionsManagement": "Go to Options Management →",
     "description": "Description",
     "email": "Email",
     "password": "Password",
