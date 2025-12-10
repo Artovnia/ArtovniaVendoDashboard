@@ -33,19 +33,6 @@ export const Dashboard = () => {
   const reviewsToReply =
     reviews?.filter((review: any) => !review.seller_note).length || 0
 
-  // Debug logging to verify counts
-  if (orders && orders.length > 0) {
-    console.log('📊 Dashboard Orders Debug:', {
-      totalOrders: orders.length,
-      notFulfilled: notFulfilledOrders,
-      fulfilled: fulfilledOrders,
-      statusBreakdown: orders.reduce((acc, order) => {
-        acc[order.fulfillment_status] = (acc[order.fulfillment_status] || 0) + 1
-        return acc
-      }, {} as Record<string, number>)
-    })
-  }
-
   if (!isClient) return null
 
   if (isPending || isPendingOrders || isPendingReviews) {
@@ -64,14 +51,14 @@ export const Dashboard = () => {
     !onboarding?.products ||
     !onboarding?.locations_shipping ||
     !onboarding?.store_information
-    // !onboarding?.stripe_connect
+    // !onboarding?.stripe_connection
   )
     return (
       <DashboardOnboarding
         products={onboarding?.products}
         locations_shipping={onboarding?.locations_shipping}
         store_information={onboarding?.store_information}
-        stripe_connect={onboarding?.stripe_connect}
+        stripe_connection={onboarding?.stripe_connection}
       />
     )
 

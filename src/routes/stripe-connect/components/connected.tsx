@@ -1,9 +1,11 @@
-import { CheckCircleSolid, ExclamationCircle, ClockSolid, ExclamationCircleSolid, CurrencyDollar } from '@medusajs/icons';
+import { CheckCircleSolid, ExclamationCircle, ClockSolid, ExclamationCircleSolid, CurrencyDollar, ArrowRight } from '@medusajs/icons';
 import { Button, Text, Container } from '@medusajs/ui';
 import { useCreateStripeOnboarding, useStripeAccount } from '../../../hooks/api';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { StatusCell } from '../../../components/table/table-cells/common/status-cell';
+import { useOnboardingContext } from '../../../providers/onboarding-provider';
 
 // TypeScript interfaces for better type safety
 interface StripeRequirements {
@@ -64,8 +66,10 @@ interface ConnectedProps {
 
 export const Connected = ({ status }: ConnectedProps) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { mutateAsync, isPending } = useCreateStripeOnboarding();
   const { payout_account } = useStripeAccount() as { payout_account?: PayoutAccount };
+  const { isOnboarding } = useOnboardingContext();
   const [error, setError] = useState<string | null>(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
 
@@ -297,12 +301,12 @@ export const Connected = ({ status }: ConnectedProps) => {
           <div className='w-full mb-6'>
             {/* Disabled Reason */}
             {isBlocked && (
-              <div className='p-4 border border-ui-border-error rounded-lg bg-ui-bg-error mb-4'>
+              <div className='mb-4 p-4 bg-ui-bg-error-subtle rounded-lg border border-ui-border-error'>
                 <Text size='small' weight='plus' className='text-ui-fg-error mb-2'>
                   {t('stripeConnect.requirements.accountBlocked')}:
                 </Text>
                 <Text size='small' className='text-ui-fg-error'>
-                  {getRequirementDescription(payout_account.data.requirements.disabled_reason)}
+                  {getRequirementDescription(payout_account.data.requirements.disabled_reason || 'unknown')}
                 </Text>
               </div>
             )}
@@ -435,26 +439,40 @@ export const Connected = ({ status }: ConnectedProps) => {
         )}
 
         {statusConfig.showDashboardLink && (
-          <div className='flex gap-3'>
-            <Button
-              variant='secondary'
-              onClick={handleOnboarding}
-              className='flex-1'
-            >
-              {t('stripeConnect.actions.manageAccount')}
-            </Button>
-            <a
-              href={`https://dashboard.stripe.com/${isTestMode ? 'test/' : ''}connect/accounts/${payout_account?.reference_id || ''}`}
-              target='_blank'
-              rel='noopener noreferrer'
-              className='flex-1'
-            >
-              <Button variant='secondary' className='w-full'>
-                <CurrencyDollar className='mr-2' />
-                {t('stripeConnect.actions.viewDashboard')}
+          <>
+            {/* Only show Next Step button during onboarding */}
+            {isOnboarding && (
+              <Button
+                variant='primary'
+                onClick={() => navigate('/onboarding')}
+                size='large'
+                className='w-full'
+              >
+                {t('stripeConnect.actions.nextStep')}
+                <ArrowRight className='ml-2' />
               </Button>
-            </a>
-          </div>
+            )}
+            <div className='flex gap-3'>
+              <Button
+                variant='secondary'
+                onClick={handleOnboarding}
+                className='flex-1'
+              >
+                {t('stripeConnect.actions.manageAccount')}
+              </Button>
+              <a
+                href={`https://dashboard.stripe.com/${isTestMode ? 'test/' : ''}connect/accounts/${payout_account?.reference_id || ''}`}
+                target='_blank'
+                rel='noopener noreferrer'
+                className='flex-1'
+              >
+                <Button variant='secondary' className='w-full'>
+                  <CurrencyDollar className='mr-2' />
+                  {t('stripeConnect.actions.viewDashboard')}
+                </Button>
+              </a>
+            </div>
+          </>
         )}
         
         {statusConfig.showSupportLink && (

@@ -1,7 +1,7 @@
 import { useLoaderData, useNavigate } from "react-router-dom"
 import { Button } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
-import { ArrowUturnLeft } from "@medusajs/icons"
+import { ArrowRight } from "@medusajs/icons"
 
 import { useStore } from "../../../hooks/api/store.tsx"
 import { StoreGeneralSection } from "./components/store-general-section/index.ts"
@@ -12,6 +12,7 @@ import { SingleColumnPage } from "../../../components/layout/pages/index.ts"
 import { useDashboardExtension } from "../../../extensions/index.ts"
 import { CompanySection } from "./components/company-section/company-section.tsx"
 import { useMe } from "../../../hooks/api/users.tsx"
+import { useOnboardingContext } from "../../../providers/onboarding-provider"
 
 export const StoreDetail = () => {
   const initialData = useLoaderData() as Awaited<ReturnType<typeof storeLoader>>
@@ -23,6 +24,7 @@ export const StoreDetail = () => {
   })
 
   const { seller, isPending: sellerPending, isError: sellerError } = useMe()
+  const { isOnboarding } = useOnboardingContext()
 
   const { getWidgets } = useDashboardExtension()
 
@@ -46,16 +48,20 @@ export const StoreDetail = () => {
       <StoreGeneralSection seller={seller} />
       <CompanySection seller={seller} />
       
-      {/* Back to Dashboard Button */}
-      <div className="flex justify-center mt-6 mb-4">
-        <Button
-          variant="primary"
-          onClick={() => navigate("/dashboard")}
-        >
-          <ArrowUturnLeft className="mr-2" />
-          {t("store.backToDashboard")}
-        </Button>
-      </div>
+      {/* Back to Onboarding Wizard Button - Only show during onboarding */}
+      {isOnboarding && (
+        <div className="flex justify-center mt-6 mb-4">
+          <Button
+            variant="primary"
+            onClick={() => navigate("/onboarding")}
+            size="large"
+          >
+             {t("store.backToDashboard")}
+            <ArrowRight className="mr-2" />
+          
+          </Button>
+        </div>
+      )}
     </SingleColumnPage>
   )
 }

@@ -352,7 +352,7 @@
     "defaultTitle": "Wystąpił błąd",
     "defaultMessage": "Wystąpił nieoczekiwany błąd podczas renderowania tej strony.",
     "noMatchMessage": "Strona, której szukasz, nie istnieje.",
-    "backToDashboard": "Powrót do pulpitu"
+    "backToDashboard": "Następny krok"
   },
   "addresses": {
     "shippingAddress": {
@@ -1194,7 +1194,7 @@
     "domain": "Sklep",
     "manageYourStoresDetails": "Zarządzaj szczegółami swojego sklepu",
     "editStore": "Edytuj sklep",
-    "backToDashboard": "Wróć do panelu głównego",
+    "backToDashboard": "Następny krok",
     "defaultCurrency": "Domyślna waluta",
     "defaultRegion": "Domyślny region",
     "defaultSalesChannel": "Domyślny kanał sprzedaży",
@@ -3556,16 +3556,40 @@
     "onboarding": {
       "welcome": "Witamy w Artovnia, Twojej platformie sztuki i rękodzieła",
       "description": "Proszę uzupełnić te kroki, aby rozpocząć sprzedaż w",
+      "wizard": {
+        "title": "Konfiguracja sklepu",
+        "heading": "Witaj w Artovnia!",
+        "description": "Przejdź przez 4 proste kroki, aby rozpocząć sprzedaż"
+      },
       "steps": {
         "storeInfo": "Uzupełnij informacje o sklepie",
         "locationsShipping": "Skonfiguruj lokalizacje i wysyłkę",
         "stripeConnect": "Skonfiguruj Stripe Connect do płatności",
         "addProducts": "Dodaj produkty i rozpocznij sprzedaż"
       },
+      "stepDescriptions": {
+        "storeInfo": "Podaj podstawowe informacje o swoim sklepie",
+        "locationsShipping": "Skonfiguruj lokalizacje i metody wysyłki",
+        "stripeConnect": "Połącz konto Stripe, aby otrzymywać płatności",
+        "addProducts": "Dodaj swoje pierwsze produkty do sprzedaży"
+      },
+      "progress": {
+        "stepCounter": "Krok {{current}} z {{total}}",
+        "disabledMessage": "Ukończ poprzedni krok, aby odblokować"
+      },
+      "help": {
+        "text": "Potrzebujesz pomocy? Skontaktuj się z nami:"
+      },
       "buttons": {
         "manage": "Zarządzaj",
+        "edit": "Edytuj",
         "setup": "Ustaw",
         "add": "Dodaj"
+      },
+      "complete": {
+        "title": "Gratulacje!",
+        "description": "Twój sklep jest gotowy do sprzedaży. Możesz teraz zarządzać swoimi produktami i zamówieniami.",
+        "button": "Przejdź do panelu"
       }
     },
     "actions": "Akcje",
@@ -4157,7 +4181,8 @@
       "continueOnboarding": "Dokończ rejestrację",
       "manageAccount": "Zarządzaj kontem",
       "viewDashboard": "Panel Stripe",
-      "contactSupport": "Skontaktuj się z obsługą"
+      "contactSupport": "Skontaktuj się z obsługą",
+      "nextStep": "Następny krok"
     },
     "requirements": {
       "error": "Błąd",
@@ -4605,7 +4630,7 @@
       "hide_details": "Ukryj szczegóły",
       "view_locations": "Zobacz lokalizacje",
       "view_profiles": "Zobacz profile",
-      "back_to_dashboard": "Wróć do panelu głównego",
+      "back_to_dashboard": "Następny krok",
       "location_config": {
         "title": "Konfiguracja lokalizacji",
         "use_default": "Użyj domyślnej lokalizacji",

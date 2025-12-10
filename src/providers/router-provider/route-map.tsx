@@ -23,6 +23,11 @@ export const RouteMap: RouteObject[] = [
     errorElement: <ErrorBoundary />,
     children: [
       {
+        path: '/onboarding',
+        errorElement: <ErrorBoundary />,
+        lazy: () => import('../../routes/onboarding'),
+      },
+      {
         element: <MainLayout />,
         children: [
           {

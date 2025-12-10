@@ -3,6 +3,8 @@ import { Pencil } from "@medusajs/icons"
 import { useTranslation } from "react-i18next"
 import { StoreVendor } from "../../../../../types/user"
 import { ActionMenu } from "../../../../../components/common/action-menu"
+// import { OnboardingIndicator } from "../../../../../components/common/onboarding-indicator"
+import { OnboardingIndicatorSimple as OnboardingIndicator } from "../../../../../components/common/onboarding-indicator/onboarding-indicator-simple"
 
 export const CompanySection = ({ seller }: { seller: StoreVendor }) => {
   const { t } = useTranslation()
@@ -16,19 +18,22 @@ export const CompanySection = ({ seller }: { seller: StoreVendor }) => {
             {t("store.company.description")}
           </Text>
         </div>
-        <ActionMenu
-          groups={[
-            {
-              actions: [
-                {
-                  icon: <Pencil />,
-                  label: t("store.company.actions.edit"),
-                  to: "edit-company",
-                },
-              ],
-            },
-          ]}
-        />
+        {/* Animated indicator guides user to edit company address during onboarding */}
+        <OnboardingIndicator stepId="store_company_edit" position="left" editRoute="edit-company">
+          <ActionMenu
+            groups={[
+              {
+                actions: [
+                  {
+                    icon: <Pencil />,
+                    label: t("store.company.actions.edit"),
+                    to: "edit-company",
+                  },
+                ],
+              },
+            ]}
+          />
+        </OnboardingIndicator>
       </div>
       <div className="text-ui-fg-subtle grid grid-cols-2 px-6 py-4">
         <Text size="small" leading="compact" weight="plus">

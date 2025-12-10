@@ -339,7 +339,6 @@ export const ProductCreateForm = ({
           // Destructure to remove fields that shouldn't be sent to backend
           const { stock_quantity, stock_location_id, manage_inventory, allow_backorder, ...cleanVariant } = variant;
           
-          console.log(`📦 Variant ${index} - manage_inventory from form:`, manage_inventory, 'will send:', manage_inventory ?? false);
           
           return {
             ...cleanVariant,

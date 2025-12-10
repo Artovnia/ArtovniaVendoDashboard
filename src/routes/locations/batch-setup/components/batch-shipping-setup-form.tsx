@@ -181,7 +181,8 @@ export const BatchShippingSetupForm = () => {
 
         {/* Actions */}
         <div className="flex gap-3">
-          <Button
+          {/* ⚠️ ONBOARDING: Commented out during onboarding - vendors should proceed to next step */}
+          {/* <Button
             variant="secondary"
             onClick={() => navigate("/settings/locations")}
           >
@@ -192,9 +193,10 @@ export const BatchShippingSetupForm = () => {
             onClick={() => navigate("/settings/locations/shipping-profiles")}
           >
             {t("shipping.batch_setup.view_profiles")}
-          </Button>
+          </Button> */}
           <Button
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("/onboarding")}
+            className="w-full"
           >
             {t("shipping.batch_setup.back_to_dashboard")}
           </Button>
@@ -369,6 +371,7 @@ export const BatchShippingSetupForm = () => {
             <p className="text-xs text-ui-fg-subtle">
               {t("shipping.batch_setup.location_config.location_name_hint")}
             </p>
+            
           </div>
 
           <div className="grid gap-2">

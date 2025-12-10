@@ -343,7 +343,7 @@
     "defaultTitle": "An error occurred",
     "defaultMessage": "An unexpected error occurred while rendering this page.",
     "noMatchMessage": "The page you are looking for does not exist.",
-    "backToDashboard": "Back to dashboard"
+    "backToDashboard": "Next step"
   },
   "addresses": {
     "shippingAddress": {
@@ -2746,7 +2746,7 @@
     "domain": "Store",
     "manageYourStoresDetails": "Manage your store's details",
     "editStore": "Edit store",
-    "backToDashboard": "Back to Dashboard",
+    "backToDashboard": "Next step",
     "fields": {
       "photo": "Photo"
     },
@@ -3690,16 +3690,40 @@
     "onboarding": {
       "welcome": "Welcome to Artovnia, Your Art and Crafts Marketplace",
       "description": "Please complete these steps to start selling in",
+      "wizard": {
+        "title": "Store Setup",
+        "heading": "Welcome to Artovnia!",
+        "description": "Complete these 4 simple steps to start selling"
+      },
       "steps": {
         "storeInfo": "Complete the store information",
         "locationsShipping": "Setup Locations & Shipping",
         "stripeConnect": "Setup Stripe Connect for payments",
         "addProducts": "Add products and start selling"
       },
+      "stepDescriptions": {
+        "storeInfo": "Provide basic information about your store",
+        "locationsShipping": "Configure locations and shipping methods",
+        "stripeConnect": "Connect your Stripe account to receive payments",
+        "addProducts": "Add your first products for sale"
+      },
+      "progress": {
+        "stepCounter": "Step {{current}} of {{total}}",
+        "disabledMessage": "Complete the previous step to unlock"
+      },
+      "help": {
+        "text": "Need help? Contact us:"
+      },
       "buttons": {
         "manage": "Manage",
+        "edit": "Edit",
         "setup": "Setup",
         "add": "Add"
+      },
+      "complete": {
+        "title": "Congratulations!",
+        "description": "Your store is ready to sell. You can now manage your products and orders.",
+        "button": "Go to Dashboard"
       }
     },
     "actions": "Actions",
@@ -4264,7 +4288,8 @@
       "continueOnboarding": "Complete Registration",
       "manageAccount": "Manage Account",
       "viewDashboard": "Stripe Dashboard",
-      "contactSupport": "Contact Support"
+      "contactSupport": "Contact Support",
+      "nextStep": "Next Step"
     },
     "requirements": {
       "error": "Error",
@@ -4460,7 +4485,7 @@
       "hide_details": "Hide details",
       "view_locations": "View locations",
       "view_profiles": "View profiles",
-      "back_to_dashboard": "Back to Dashboard",
+      "back_to_dashboard": "Next step",
       "location_config": {
         "title": "Location configuration",
         "use_default": "Use default location",

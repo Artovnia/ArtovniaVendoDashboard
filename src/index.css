@@ -280,3 +280,112 @@ button.ui-button[data-variant="secondary"]:hover,
 
 /* Calendar styling is now done via classNames prop in calendar.tsx */
 /* See CALENDAR_COLOR_GUIDE.md for customization instructions */
+
+/* ============================================ */
+/* ONBOARDING ANIMATIONS */
+/* ============================================ */
+
+/* Horizontal bounce animation for arrow indicators */
+@keyframes bounce-horizontal {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(8px);
+  }
+}
+
+.animate-bounce-horizontal {
+  animation: bounce-horizontal 1s ease-in-out infinite;
+}
+
+/* Blur overlay for sidebar during onboarding */
+.onboarding-blur-overlay {
+  position: relative;
+}
+
+.onboarding-blur-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(4px);
+  background-color: rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+  z-index: 40;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.dark .onboarding-blur-overlay::after {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Pulse ring animation for highlighted elements */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 1;
+  }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+
+/* ============================================ */
+/* MODERN ONBOARDING INDICATOR */
+/* ============================================ */
+
+/* Pulse animation for the indicator dot */
+@keyframes indicator-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+}
+
+/* Ripple animation for the outer rings */
+@keyframes indicator-ripple {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+/* Smooth highlight ring around element */
+@keyframes indicator-ring-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(59, 130, 246, 0);
+  }
+}
+
+.onboarding-indicator-dot {
+  animation: indicator-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.onboarding-indicator-ripple {
+  animation: indicator-ripple 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.onboarding-indicator-ring {
+  animation: indicator-ring-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

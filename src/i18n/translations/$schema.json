@@ -13427,6 +13427,22 @@
             "description": {
               "type": "string"
             },
+            "wizard": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "heading": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                }
+              },
+              "required": ["title", "heading", "description"],
+              "additionalProperties": false
+            },
             "steps": {
               "type": "object",
               "properties": {
@@ -13446,10 +13462,55 @@
               "required": ["storeInfo", "locationsShipping", "stripeConnect", "addProducts"],
               "additionalProperties": false
             },
+            "stepDescriptions": {
+              "type": "object",
+              "properties": {
+                "storeInfo": {
+                  "type": "string"
+                },
+                "locationsShipping": {
+                  "type": "string"
+                },
+                "stripeConnect": {
+                  "type": "string"
+                },
+                "addProducts": {
+                  "type": "string"
+                }
+              },
+              "required": ["storeInfo", "locationsShipping", "stripeConnect", "addProducts"],
+              "additionalProperties": false
+            },
+            "progress": {
+              "type": "object",
+              "properties": {
+                "stepCounter": {
+                  "type": "string"
+                },
+                "disabledMessage": {
+                  "type": "string"
+                }
+              },
+              "required": ["stepCounter", "disabledMessage"],
+              "additionalProperties": false
+            },
+            "help": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "string"
+                }
+              },
+              "required": ["text"],
+              "additionalProperties": false
+            },
             "buttons": {
               "type": "object",
               "properties": {
                 "manage": {
+                  "type": "string"
+                },
+                "edit": {
                   "type": "string"
                 },
                 "setup": {
@@ -13459,11 +13520,27 @@
                   "type": "string"
                 }
               },
-              "required": ["manage", "setup", "add"],
+              "required": ["manage", "edit", "setup", "add"],
+              "additionalProperties": false
+            },
+            "complete": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "button": {
+                  "type": "string"
+                }
+              },
+              "required": ["title", "description", "button"],
               "additionalProperties": false
             }
           },
-          "required": ["welcome", "description", "steps", "buttons"],
+          "required": ["welcome", "description", "wizard", "steps", "stepDescriptions", "progress", "help", "buttons", "complete"],
           "additionalProperties": false
         },
         "actions": {
@@ -15429,6 +15506,9 @@
               "type": "string"
             },
             "contactSupport": {
+              "type": "string"
+            },
+            "nextStep": {
               "type": "string"
             }
           },

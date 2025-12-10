@@ -8,14 +8,14 @@ type DashboardProps = {
   products: boolean;
   locations_shipping: boolean;
   store_information: boolean;
-  stripe_connect: boolean;
+  stripe_connection: boolean;
 };
 
 export const DashboardOnboarding = ({
   products,
   locations_shipping,
   store_information,
-  stripe_connect,
+  stripe_connection,
 }: DashboardProps) => {
   const { mutateAsync } = useUpdateOnboarding();
   const { t } = useTranslation();
@@ -50,7 +50,7 @@ export const DashboardOnboarding = ({
         />
         <OnboardingRow
           label={t('dashboard.onboarding.steps.stripeConnect')}
-          state={stripe_connect}
+          state={stripe_connection}
           link='/stripe-connect'
           buttonLabel={t('dashboard.onboarding.buttons.setup')}
           disabled={!locations_shipping}
@@ -60,7 +60,7 @@ export const DashboardOnboarding = ({
           state={products}
           link='/products/create'
           buttonLabel={t('dashboard.onboarding.buttons.add')}
-          disabled={!stripe_connect}
+          disabled={!stripe_connection}
         />
       </div>
     </Container>

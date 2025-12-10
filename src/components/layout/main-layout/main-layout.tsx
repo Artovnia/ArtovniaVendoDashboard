@@ -20,6 +20,7 @@ import {
 import { Divider, Text, clx } from '@medusajs/ui';
 import { Collapsible as RadixCollapsible } from 'radix-ui';
 import { useTranslation } from 'react-i18next';
+import { useEffect } from 'react';
 
 import { Skeleton } from '../../common/skeleton';
 import { INavItem, NavItem } from '../../layout/nav-item';
@@ -33,6 +34,7 @@ import { useSearch } from '../../../providers/search-provider';
 import { NotificationBadge } from '../../common/notification-badge';
 import { UserMenu } from '../user-menu';
 import { StripeIcon } from '../../../assets/icons/Stripe';
+import { useOnboardingContext } from '../../../providers/onboarding-provider';
 
 export const MainLayout = () => {
   return (
@@ -43,8 +45,21 @@ export const MainLayout = () => {
 };
 
 const MainSidebar = () => {
+  const { isOnboarding, isStepRoute } = useOnboardingContext()
+  const location = useLocation()
+  
+  // Apply blur overlay when on onboarding step routes (not on /onboarding wizard itself)
+  // Exclude product create page since it's a full-page form, not sidebar navigation
+  const isProductCreatePage = location.pathname.startsWith('/products/create')
+  const shouldBlur = isOnboarding && isStepRoute(location.pathname) && location.pathname !== '/onboarding' && !isProductCreatePage
+
+  
+  
   return (
-    <aside className='flex flex-1 flex-col justify-between overflow-y-auto'>
+    <aside className={clx(
+      'flex flex-1 flex-col justify-between overflow-y-auto',
+      shouldBlur && 'onboarding-blur-overlay'
+    )}>
       <div className='flex flex-1 flex-col'>
         <div className='bg-ui-bg-subtle sticky top-0'>
           <Header />

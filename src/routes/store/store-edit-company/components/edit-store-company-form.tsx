@@ -13,11 +13,11 @@ import { Button, Input, toast } from '@medusajs/ui';
 import { useUpdateMe } from '../../../../hooks/api';
 
 const EditStoreSchema = z.object({
-  address_line: z.string().optional(),
-  postal_code: z.string().optional(),
-  city: z.string().optional(),
-  country_code: z.string().optional(),
-  tax_id: z.string().optional(),
+  address_line: z.string().min(1, 'Address is required'),
+  postal_code: z.string().min(1, 'Postal code is required'),
+  city: z.string().min(1, 'City is required'),
+  country_code: z.string().min(1, 'Country is required'),
+  tax_id: z.string().optional(), // Tax ID remains optional
 });
 
 export const EditStoreCompanyForm = ({
@@ -71,9 +71,11 @@ export const EditStoreCompanyForm = ({
               control={form.control}
               render={({ field }) => (
                 <Form.Item>
-                  <Form.Label>{t('store.company.fields.address')}</Form.Label>
+                  <Form.Label>
+                    {t('store.company.fields.address')} <span className="text-ui-fg-error">*</span>
+                  </Form.Label>
                   <Form.Control>
-                    <Input {...field} />
+                    <Input {...field} placeholder="ul. Przykładowa 123" />
                   </Form.Control>
                   <Form.ErrorMessage />
                 </Form.Item>
@@ -84,9 +86,11 @@ export const EditStoreCompanyForm = ({
               control={form.control}
               render={({ field }) => (
                 <Form.Item>
-                  <Form.Label>{t('store.company.fields.postalCode')}</Form.Label>
+                  <Form.Label>
+                    {t('store.company.fields.postalCode')} <span className="text-ui-fg-error">*</span>
+                  </Form.Label>
                   <Form.Control>
-                    <Input {...field} />
+                    <Input {...field} placeholder="00-000" />
                   </Form.Control>
                   <Form.ErrorMessage />
                 </Form.Item>
@@ -97,9 +101,11 @@ export const EditStoreCompanyForm = ({
               control={form.control}
               render={({ field }) => (
                 <Form.Item>
-                  <Form.Label>{t('store.company.fields.city')}</Form.Label>
+                  <Form.Label>
+                    {t('store.company.fields.city')} <span className="text-ui-fg-error">*</span>
+                  </Form.Label>
                   <Form.Control>
-                    <Input {...field} />
+                    <Input {...field} placeholder="Warszawa" />
                   </Form.Control>
                   <Form.ErrorMessage />
                 </Form.Item>
@@ -110,9 +116,11 @@ export const EditStoreCompanyForm = ({
               control={form.control}
               render={({ field }) => (
                 <Form.Item>
-                  <Form.Label>{t('store.company.fields.country')}</Form.Label>
+                  <Form.Label>
+                    {t('store.company.fields.country')} <span className="text-ui-fg-error">*</span>
+                  </Form.Label>
                   <Form.Control>
-                    <Input {...field} />
+                    <Input {...field} placeholder="PL" />
                   </Form.Control>
                   <Form.ErrorMessage />
                 </Form.Item>

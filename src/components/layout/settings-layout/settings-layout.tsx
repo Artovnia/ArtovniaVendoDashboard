@@ -20,6 +20,7 @@ import { Shell } from '../shell';
 
 import { useDashboardExtension } from '../../../extensions';
 import { UserMenu } from '../user-menu';
+import { useOnboardingContext } from '../../../providers/onboarding-provider';
 
 export const SettingsLayout = () => {
   return (
@@ -98,6 +99,8 @@ const getSafeFromValue = (from: string) => {
 
 const SettingsSidebar = () => {
   const { getMenu } = useDashboardExtension();
+  const { isOnboarding, isStepRoute } = useOnboardingContext();
+  const location = useLocation();
 
   const routes = useSettingRoutes();
   const developerRoutes = useDeveloperRoutes();
@@ -106,8 +109,18 @@ const SettingsSidebar = () => {
 
   const { t } = useTranslation();
 
+  // Apply blur overlay when on onboarding step routes (not on /onboarding wizard itself)
+  // Exclude product create page since it's a full-page form, not sidebar navigation
+  const isProductCreatePage = location.pathname.startsWith('/products/create');
+  const shouldBlur = isOnboarding && isStepRoute(location.pathname) && location.pathname !== '/onboarding' && !isProductCreatePage;
+  
+
+
   return (
-    <aside className='relative flex flex-1 flex-col justify-between overflow-y-auto'>
+    <aside className={clx(
+      'relative flex flex-1 flex-col justify-between overflow-y-auto',
+      shouldBlur && 'onboarding-blur-overlay'
+    )}>
       <div className='bg-ui-bg-subtle sticky top-0'>
         <Header />
         <div className='flex items-center justify-center px-3'>
