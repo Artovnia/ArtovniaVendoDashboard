@@ -120,13 +120,13 @@ export const OnboardingWizard = () => {
       <div className='flex min-h-screen items-center justify-center bg-ui-bg-subtle relative'>
         {/* Top Bar with Language Switcher and Logout */}
         <div className='absolute top-0 left-0 right-0 z-10 bg-ui-bg-base border-b border-ui-border-base'>
-          <div className='max-w-5xl mx-auto px-4 py-3 flex items-center justify-between'>
+          <div className='max-w-5xl mx-auto px-2 sm:px-4 py-2 sm:py-3 flex items-center justify-between gap-2'>
             <div className='flex items-center gap-2'>
-              <Text size='small' weight='plus' className='text-ui-fg-subtle'>
+              <Text size='small' weight='plus' className='text-ui-fg-subtle hidden sm:block'>
                 {t('dashboard.onboarding.wizard.title', 'Konfiguracja sklepu')}
               </Text>
             </div>
-            <div className='flex items-center gap-4'>
+            <div className='flex items-center gap-2 sm:gap-4'>
               <LanguageSwitcher />
               <Button
                 variant='transparent'
@@ -134,14 +134,14 @@ export const OnboardingWizard = () => {
                 onClick={handleLogout}
                 className='text-ui-fg-subtle hover:text-ui-fg-base'
               >
-                <ArrowRightOnRectangle className='mr-2' />
-                {t('app.menus.actions.logout', 'Wyloguj')}
+                <ArrowRightOnRectangle className='sm:mr-2' />
+                <span className='hidden sm:inline'>{t('app.menus.actions.logout', 'Wyloguj')}</span>
               </Button>
             </div>
           </div>
         </div>
 
-        <Container className='max-w-2xl p-8'>
+        <Container className='max-w-2xl p-4 sm:p-8'>
           <div className='text-center'>
             <CheckCircleSolid className='mx-auto h-16 w-16 text-ui-fg-interactive mb-4' />
             <Heading level='h1' className='mb-2'>
@@ -163,13 +163,13 @@ export const OnboardingWizard = () => {
     <div className='flex min-h-screen bg-ui-bg-subtle relative'>
       {/* Top Bar with Language Switcher and Logout */}
       <div className='absolute top-0 left-0 right-0 z-10 bg-ui-bg-base border-b border-ui-border-base'>
-        <div className='max-w-5xl mx-auto px-4 py-3 flex items-center justify-between'>
+        <div className='max-w-5xl mx-auto px-2 sm:px-4 py-2 sm:py-3 flex items-center justify-between gap-2'>
           <div className='flex items-center gap-2'>
-            <Text size='small' weight='plus' className='text-ui-fg-subtle'>
+            <Text size='small' weight='plus' className='text-ui-fg-subtle hidden sm:block'>
               {t('dashboard.onboarding.wizard.title', 'Konfiguracja sklepu')}
             </Text>
           </div>
-          <div className='flex items-center gap-4'>
+          <div className='flex items-center gap-2 sm:gap-4'>
             <LanguageSwitcher />
             <Button
               variant='transparent'
@@ -177,32 +177,32 @@ export const OnboardingWizard = () => {
               onClick={handleLogout}
               className='text-ui-fg-subtle hover:text-ui-fg-base'
             >
-              <ArrowRightOnRectangle className='mr-2' />
-              {t('app.menus.actions.logout', 'Wyloguj')}
+              <ArrowRightOnRectangle className='sm:mr-2' />
+              <span className='hidden sm:inline'>{t('app.menus.actions.logout', 'Wyloguj')}</span>
             </Button>
           </div>
         </div>
       </div>
 
-      <div className='w-full max-w-5xl mx-auto py-8 px-4 pt-20'>
+      <div className='w-full max-w-5xl mx-auto py-4 sm:py-8 px-2 sm:px-4 pt-16 sm:pt-20'>
         {/* Header */}
-        <div className='mb-8 text-center'>
-          <Heading level='h1' className='mb-2'>
+        <div className='mb-4 sm:mb-8 text-center px-2'>
+          <Heading level='h1' className='mb-2 text-xl sm:text-2xl md:text-3xl'>
             {t('dashboard.onboarding.wizard.heading', 'Witaj w Artovnia!')}
           </Heading>
-          <Text className='text-ui-fg-subtle'>
+          <Text className='text-ui-fg-subtle text-sm sm:text-base'>
             {t('dashboard.onboarding.wizard.description', 'Przejdź przez 4 proste kroki, aby rozpocząć sprzedaż')}
           </Text>
         </div>
 
         {/* Progress Indicator */}
-        <div className='mb-8'>
-          <div className='flex items-center justify-center gap-2 mb-4'>
+        <div className='mb-4 sm:mb-8 px-2'>
+          <div className='flex items-center justify-center gap-1 sm:gap-2 mb-3 sm:mb-4 overflow-x-auto pb-2'>
             {steps.map((step, index) => (
-              <div key={step.key} className='flex items-center'>
+              <div key={step.key} className='flex items-center flex-shrink-0'>
                 <div
                   className={`
-                    w-10 h-10 rounded-full flex items-center justify-center font-semibold
+                    w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-semibold text-xs sm:text-base
                     ${step.completed 
                       ? 'bg-ui-fg-interactive text-white' 
                       : index === currentStep 
@@ -216,7 +216,7 @@ export const OnboardingWizard = () => {
                 {index < steps.length - 1 && (
                   <div 
                     className={`
-                      w-16 h-0.5 mx-2
+                      w-8 sm:w-16 h-0.5 mx-1 sm:mx-2
                       ${step.completed ? 'bg-ui-fg-interactive' : 'bg-ui-border-base'}
                     `}
                   />
@@ -224,7 +224,7 @@ export const OnboardingWizard = () => {
               </div>
             ))}
           </div>
-          <div className='text-center text-sm text-ui-fg-subtle'>
+          <div className='text-center text-xs sm:text-sm text-ui-fg-subtle'>
             {t('dashboard.onboarding.progress.stepCounter', { current: currentStep + 1, total: steps.length })}
           </div>
         </div>
@@ -235,30 +235,30 @@ export const OnboardingWizard = () => {
             <div
               key={step.key}
               className={`
-                p-6 transition-all
+                p-3 sm:p-6 transition-all
                 ${index === currentStep ? 'bg-ui-bg-highlight' : ''}
                 ${step.disabled ? 'opacity-50' : ''}
               `}
             >
-              <div className='flex items-start justify-between gap-4'>
+              <div className='flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4'>
                 <div className='flex-1'>
-                  <div className='flex items-center gap-3 mb-2'>
+                  <div className='flex items-center gap-2 sm:gap-3 mb-2'>
                     {step.completed ? (
-                      <CheckCircleSolid className='h-6 w-6 text-ui-fg-interactive' />
+                      <CheckCircleSolid className='h-5 w-5 sm:h-6 sm:w-6 text-ui-fg-interactive flex-shrink-0' />
                     ) : step.disabled ? (
-                      <XCircle className='h-6 w-6 text-ui-fg-muted' />
+                      <XCircle className='h-5 w-5 sm:h-6 sm:w-6 text-ui-fg-muted flex-shrink-0' />
                     ) : (
-                      <div className='h-6 w-6 rounded-full border-2 border-ui-fg-interactive' />
+                      <div className='h-5 w-5 sm:h-6 sm:w-6 rounded-full border-2 border-ui-fg-interactive flex-shrink-0' />
                     )}
-                    <Heading level='h3' className='text-lg'>
+                    <Heading level='h3' className='text-base sm:text-lg'>
                       {step.title}
                     </Heading>
                   </div>
-                  <Text className='text-ui-fg-subtle text-sm ml-9'>
+                  <Text className='text-ui-fg-subtle text-xs sm:text-sm ml-7 sm:ml-9'>
                     {step.description}
                   </Text>
                   {step.disabled && (
-                    <Text className='text-ui-fg-error text-xs ml-9 mt-1'>
+                    <Text className='text-ui-fg-error text-xs ml-7 sm:ml-9 mt-1'>
                       {t('dashboard.onboarding.progress.disabledMessage')}
                     </Text>
                   )}
@@ -268,6 +268,7 @@ export const OnboardingWizard = () => {
                   size='base'
                   disabled={step.disabled}
                   onClick={() => handleStepClick(step.route, step.disabled || false)}
+                  className='w-full sm:w-auto'
                 >
                   {step.buttonLabel}
                 </Button>
@@ -277,9 +278,9 @@ export const OnboardingWizard = () => {
         </Container>
 
         {/* Help Text */}
-        <div className='mt-6 text-center'>
-          <Text className='text-ui-fg-subtle text-sm'>
-            {t('dashboard.onboarding.help.text')} <a href='mailto:sayuri.platform@gmail.com' className='text-ui-fg-interactive hover:underline'>sayuri.platform@gmail.com</a>
+        <div className='mt-4 sm:mt-6 text-center px-2'>
+          <Text className='text-ui-fg-subtle text-xs sm:text-sm break-words'>
+            {t('dashboard.onboarding.help.text')} <a href='mailto:sayuri.platform@gmail.com' className='text-ui-fg-interactive hover:underline break-all'>sayuri.platform@gmail.com</a>
           </Text>
         </div>
       </div>
