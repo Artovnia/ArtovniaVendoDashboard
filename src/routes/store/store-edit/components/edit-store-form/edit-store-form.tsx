@@ -169,9 +169,9 @@ export const EditStoreForm = ({
     <RouteDrawer.Form form={form}>
       <KeyboundForm
         onSubmit={handleSubmit}
-        className='flex h-full flex-col'
+        className='flex h-full flex-col overflow-hidden'
       >
-        <RouteDrawer.Body>
+        <RouteDrawer.Body className='flex-1 overflow-y-auto'>
           <div className='flex flex-col gap-y-8'>
             <Form.Field
               name='media'
