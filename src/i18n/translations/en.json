@@ -4528,5 +4528,30 @@
       },
       "default_location_name": "Poland"
     }
+  },
+  "passwordChange": {
+    "domain": "Change Password",
+    "title": "Change Password",
+    "subtitle": "Update your account password",
+    "currentPassword": "Current Password",
+    "currentPasswordPlaceholder": "Enter your current password",
+    "newPassword": "New Password",
+    "newPasswordPlaceholder": "Enter your new password (min. 8 characters)",
+    "confirmPassword": "Confirm New Password",
+    "confirmPasswordPlaceholder": "Confirm your new password",
+    "passwordHint": "Password must be at least 8 characters long",
+    "cancel": "Cancel",
+    "submit": "Change Password",
+    "toast": {
+      "success": "Password changed successfully",
+      "error": "Failed to change password"
+    },
+    "validation": {
+      "currentPasswordRequired": "Current password is required",
+      "newPasswordRequired": "New password is required",
+      "newPasswordMinLength": "Password must be at least 8 characters",
+      "confirmPasswordRequired": "Please confirm your password",
+      "passwordMismatch": "Passwords do not match"
+    }
   }
 }

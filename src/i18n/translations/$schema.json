@@ -16174,6 +16174,47 @@
       "required": ["batch_setup"],
       "additionalProperties": false
     },
+    "passwordChange": {
+      "type": "object",
+      "properties": {
+        "domain": {"type": "string"},
+        "title": {"type": "string"},
+        "subtitle": {"type": "string"},
+        "currentPassword": {"type": "string"},
+        "currentPasswordPlaceholder": {"type": "string"},
+        "newPassword": {"type": "string"},
+        "newPasswordPlaceholder": {"type": "string"},
+        "confirmPassword": {"type": "string"},
+        "confirmPasswordPlaceholder": {"type": "string"},
+        "passwordHint": {"type": "string"},
+        "cancel": {"type": "string"},
+        "submit": {"type": "string"},
+        "toast": {
+          "type": "object",
+          "properties": {
+            "success": {"type": "string"},
+            "error": {"type": "string"}
+          },
+          "required": ["success", "error"],
+          "additionalProperties": false
+        },
+        "validation": {
+          "type": "object",
+          "properties": {
+            "currentPasswordRequired": {"type": "string"},
+            "newPasswordRequired": {"type": "string"},
+            "newPasswordMinLength": {"type": "string"},
+            "confirmPasswordRequired": {"type": "string"},
+            "passwordMismatch": {"type": "string"}
+          },
+          "required": ["currentPasswordRequired", "newPasswordRequired", "newPasswordMinLength", "confirmPasswordRequired", "passwordMismatch"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["domain", "title", "subtitle", "currentPassword", "currentPasswordPlaceholder", "newPassword", "newPasswordPlaceholder", "confirmPassword", "confirmPasswordPlaceholder", "passwordHint", "cancel", "submit", "toast", "validation"],
+      "additionalProperties": false
+    }
+  },
   "required": [
     "$schema",
     "general",
@@ -16264,7 +16305,8 @@
     "platformPromotions",
     "stripeConnect",
     "tickets",
-    "shipping"
+    "shipping",
+    "passwordChange"
   ],
   "additionalProperties": false
 }

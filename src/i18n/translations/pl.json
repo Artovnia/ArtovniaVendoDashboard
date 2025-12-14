@@ -4673,5 +4673,30 @@
       },
       "default_location_name": "Polska"
     }
+  },
+  "passwordChange": {
+    "domain": "Zmiana hasła",
+    "title": "Zmiana hasła",
+    "subtitle": "Zaktualizuj hasło do swojego konta",
+    "currentPassword": "Obecne hasło",
+    "currentPasswordPlaceholder": "Wprowadź obecne hasło",
+    "newPassword": "Nowe hasło",
+    "newPasswordPlaceholder": "Wprowadź nowe hasło (min. 8 znaków)",
+    "confirmPassword": "Potwierdź nowe hasło",
+    "confirmPasswordPlaceholder": "Potwierdź nowe hasło",
+    "passwordHint": "Hasło musi mieć co najmniej 8 znaków",
+    "cancel": "Anuluj",
+    "submit": "Zmień hasło",
+    "toast": {
+      "success": "Hasło zostało pomyślnie zmienione",
+      "error": "Nie udało się zmienić hasła"
+    },
+    "validation": {
+      "currentPasswordRequired": "Obecne hasło jest wymagane",
+      "newPasswordRequired": "Nowe hasło jest wymagane",
+      "newPasswordMinLength": "Hasło musi mieć co najmniej 8 znaków",
+      "confirmPasswordRequired": "Proszę potwierdzić hasło",
+      "passwordMismatch": "Hasła nie są zgodne"
+    }
   }
 }

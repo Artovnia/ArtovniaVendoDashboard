@@ -80,6 +80,10 @@ const useMyAccountRoutes = (): INavItem[] => {
         label: t('profile.domain'),
         to: '/settings/profile',
       },
+      {
+        label: t('passwordChange.domain'),
+        to: '/settings/change-password',
+      },
     ],
     [t]
   );

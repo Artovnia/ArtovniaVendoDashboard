@@ -1605,6 +1605,15 @@ export const RouteMap: RouteObject[] = [
             ],
           },
           {
+            path: 'change-password',
+            errorElement: <ErrorBoundary />,
+            lazy: () =>
+              import('../../routes/settings/change-password'),
+            handle: {
+              breadcrumb: () => t('passwordChange.domain'),
+            },
+          },
+          {
             path: 'regions',
             errorElement: <ErrorBoundary />,
             element: <Outlet />,

@@ -170,6 +170,20 @@ export const CategorySelect = forwardRef<
   }
 
   const handleSelect = (option: string) => {
+    // Check if this category has children - if so, navigate instead of selecting
+    const category = options.find(opt => opt.value === option);
+    
+    if (category?.has_children) {
+      // Parent category: navigate into it
+      setLevel([
+        ...level,
+        { id: option, label: category.label },
+      ]);
+      innerRef.current?.focus();
+      return;
+    }
+    
+    // Leaf category: allow selection
     if (value.includes(option)) {
       onChange([]);
     } else {
@@ -256,7 +270,20 @@ export const CategorySelect = forwardRef<
           ? focusedIndex - 1
           : focusedIndex;
 
-        handleSelect(options[index].value);
+        // Only allow selection of leaf categories (no children)
+        if (!options[index]?.has_children) {
+          handleSelect(options[index].value);
+        } else {
+          // If it has children, navigate into it instead
+          setLevel([
+            ...level,
+            {
+              id: options[index].value,
+              label: options[index].label,
+            },
+          ]);
+          setFocusedIndex(0);
+        }
       }
     },
     [
@@ -367,9 +394,8 @@ export const CategorySelect = forwardRef<
                   key={option.value}
                   className='grid grid-cols-[1fr_auto] items-center gap-2'
                 >
-                  <SelectItem
-                    value={option.value}
-                  >
+                  {option.has_children ? (
+                    // Parent category: Don't wrap in SelectItem to prevent Radix selection
                     <button
                       data-active={
                         showLevelUp
@@ -380,9 +406,20 @@ export const CategorySelect = forwardRef<
                       role='option'
                       className={clx(
                         'grid h-full w-full appearance-none grid-cols-[20px_1fr] items-center gap-2 overflow-hidden rounded-md px-2 py-1.5 text-left outline-none',
-                        'data-[active=true]:bg-ui-bg-field-hover'
+                        'data-[active=true]:bg-ui-bg-field-hover',
+                        'cursor-pointer'
                       )}
-                      onClick={() => handleSelect(option.value)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        // Parent category: navigate into it (open next level)
+                        setLevel([
+                          ...level,
+                          { id: option.value, label: option.label },
+                        ]);
+                        innerRef.current?.focus();
+                      }}
                       onMouseEnter={() =>
                         setFocusedIndex(
                           showLevelUp ? index + 1 : index
@@ -392,9 +429,7 @@ export const CategorySelect = forwardRef<
                       tabIndex={-1}
                     >
                       <div className='flex size-5 items-center justify-center'>
-                        {value.includes(option.value) && (
-                          <Check className='size-4' />
-                        )}
+                        {/* Parent categories cannot be selected, so no check icon */}
                       </div>
                       <Text
                         as='span'
@@ -405,7 +440,53 @@ export const CategorySelect = forwardRef<
                         {option.label}
                       </Text>
                     </button>
-                  </SelectItem>
+                  ) : (
+                    // Leaf category: Wrap in SelectItem to allow Radix selection
+                    <SelectItem value={option.value}>
+                      <button
+                        data-active={
+                          showLevelUp
+                            ? focusedIndex === index + 1
+                            : focusedIndex === index
+                        }
+                        type='button'
+                        role='option'
+                        className={clx(
+                          'grid h-full w-full appearance-none grid-cols-[20px_1fr] items-center gap-2 overflow-hidden rounded-md px-2 py-1.5 text-left outline-none',
+                          'data-[active=true]:bg-ui-bg-field-hover',
+                          'cursor-pointer'
+                        )}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          
+                          // Leaf category: allow selection
+                          handleSelect(option.value);
+                        }}
+                        onMouseEnter={() =>
+                          setFocusedIndex(
+                            showLevelUp ? index + 1 : index
+                          )
+                        }
+                        onMouseLeave={() => setFocusedIndex(-1)}
+                        tabIndex={-1}
+                      >
+                        <div className='flex size-5 items-center justify-center'>
+                          {value.includes(option.value) && (
+                            <Check className='size-4' />
+                          )}
+                        </div>
+                        <Text
+                          as='span'
+                          size='small'
+                          leading='compact'
+                          className='w-full truncate'
+                        >
+                          {option.label}
+                        </Text>
+                      </button>
+                    </SelectItem>
+                  )}
                   {option.has_children && !searchValue && (
                     <button
                       className={clx(

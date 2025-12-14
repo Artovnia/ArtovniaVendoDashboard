@@ -123,3 +123,38 @@ export const useUpdateProviderForEmailPass = (
     ...options,
   });
 };
+
+export const useChangePassword = (
+  options?: UseMutationOptions<
+    { success: boolean; message: string },
+    FetchError,
+    { current_password: string; new_password: string }
+  >
+) => {
+  return useMutation({
+    mutationFn: async (payload) => {
+      const bearer = window.localStorage.getItem('medusa_auth_token') || '';
+      
+      const response = await fetch('/vendor/auth/change-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${bearer}`,
+        },
+        credentials: 'include',
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to change password');
+      }
+
+      return response.json();
+    },
+    onSuccess: async (data, variables, context) => {
+      options?.onSuccess?.(data, variables, context);
+    },
+    ...options,
+  });
+};

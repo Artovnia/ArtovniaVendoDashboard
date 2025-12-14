@@ -188,6 +188,18 @@ export const CategoryCombobox = forwardRef<
         e.preventDefault();
         e.stopPropagation();
 
+        // Check if this category has children - if so, navigate instead of selecting
+        if (option.has_children) {
+          // Parent category: navigate into it (open next level)
+          setLevel([
+            ...level,
+            { id: option.value, label: option.label },
+          ]);
+          innerRef.current?.focus();
+          return;
+        }
+
+        // Leaf category: allow selection
         if (isSelected(value, option.value)) {
           onChange(value.filter((v) => v !== option.value));
         } else {
@@ -197,7 +209,7 @@ export const CategoryCombobox = forwardRef<
         innerRef.current?.focus();
       };
     },
-    [value, onChange]
+    [value, onChange, level]
   );
 
   function handleOpenChange(open: boolean) {
@@ -286,7 +298,21 @@ export const CategoryCombobox = forwardRef<
           ? focusedIndex - 1
           : focusedIndex;
 
-        handleSelect(options[index])(e as any);
+        // Check if category has children - navigate or select accordingly
+        if (options[index]?.has_children) {
+          // Parent category: navigate into it instead of selecting
+          setLevel([
+            ...level,
+            {
+              id: options[index].value,
+              label: options[index].label,
+            },
+          ]);
+          setFocusedIndex(0);
+        } else {
+          // Leaf category: allow selection
+          handleSelect(options[index])(e as any);
+        }
       }
     },
     [
