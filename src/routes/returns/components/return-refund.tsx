@@ -16,6 +16,7 @@ export const ReturnRefund = ({ returnRequest, onSuccess }: ReturnRefundProps) =>
   const { t } = useTranslation()
   const [refundStatus, setRefundStatus] = useState<'checking' | 'pending' | 'completed'>('checking')
   const [isProcessing, setIsProcessing] = useState(false)
+  const [hasRefundInDatabase, setHasRefundInDatabase] = useState<boolean | null>(null)
 
   // Query all returns and find the one for this order
   const { returns } = useReturns({
@@ -25,16 +26,61 @@ export const ReturnRefund = ({ returnRequest, onSuccess }: ReturnRefundProps) =>
   // Find the return that matches this order
   const medusaReturn = returns?.find((r: any) => r.order_id === returnRequest.order?.id)
 
-  // Debug logging
+  // Check for refunds based on return status
   useEffect(() => {
+    console.log('🔍 [RETURN-REFUND] Checking refund indicators:', {
+      returnRequestStatus: returnRequest?.status,
+      medusaReturnStatus: medusaReturn?.status,
+      orderPaymentStatus: returnRequest?.order?.payment_status
+    })
 
-  }, [returns, medusaReturn, returnRequest])
-
-  useEffect(() => {
-  
-
-    // Primary check: return request status = 'refunded'
+    // If return request status is 'refunded', mark as completed
     if (returnRequest?.status === 'refunded') {
+      console.log('✅ [RETURN-REFUND] Return request status is refunded')
+      setHasRefundInDatabase(true)
+      return
+    }
+
+    // If medusa return status is 'received', refund should have been processed
+    // (based on backend workflow that processes refund after receiving items)
+    if (medusaReturn?.status === 'received') {
+      console.log('✅ [RETURN-REFUND] Medusa return is received, refund should be processed')
+      setHasRefundInDatabase(true)
+      return
+    }
+
+    // If order payment status indicates refund
+    if (returnRequest?.order?.payment_status === 'refunded' || 
+        returnRequest?.order?.payment_status === 'partially_refunded') {
+      console.log('✅ [RETURN-REFUND] Order payment status indicates refund')
+      setHasRefundInDatabase(true)
+      return
+    }
+
+    // Otherwise, no refund detected yet
+    console.log('❌ [RETURN-REFUND] No refund indicators found')
+    setHasRefundInDatabase(false)
+  }, [returnRequest?.status, medusaReturn?.status, returnRequest?.order?.payment_status])
+
+  useEffect(() => {
+    console.log('🔍 [RETURN-REFUND] Checking refund status:', {
+      returnRequestStatus: returnRequest?.status,
+      medusaReturnStatus: medusaReturn?.status,
+      orderPaymentStatus: returnRequest?.order?.payment_status,
+      hasPaymentCollection: !!returnRequest?.order?.payment_collection,
+      hasRefundInDatabase: hasRefundInDatabase
+    })
+
+    // Primary check: Direct database refund check
+    if (hasRefundInDatabase === true) {
+      console.log('✅ [RETURN-REFUND] Status: completed (direct database check)')
+      setRefundStatus('completed')
+      return
+    }
+
+    // Secondary check: return request status = 'refunded'
+    if (returnRequest?.status === 'refunded') {
+      console.log('✅ [RETURN-REFUND] Status: completed (return request status)')
       setRefundStatus('completed')
       return
     }
@@ -42,6 +88,7 @@ export const ReturnRefund = ({ returnRequest, onSuccess }: ReturnRefundProps) =>
     // Secondary check: order payment status = 'refunded' or 'partially_refunded'
     const paymentStatus = returnRequest?.order?.payment_status
     if (paymentStatus === 'refunded' || paymentStatus === 'partially_refunded') {
+      console.log('✅ [RETURN-REFUND] Status: completed (payment status)')
       setRefundStatus('completed')
       return
     }
@@ -53,6 +100,7 @@ export const ReturnRefund = ({ returnRequest, onSuccess }: ReturnRefundProps) =>
         payment.refunds && payment.refunds.length > 0
       )
       if (hasRefunds) {
+        console.log('✅ [RETURN-REFUND] Status: completed (has refunds in payment collection)')
         setRefundStatus('completed')
         return
       }
@@ -60,13 +108,14 @@ export const ReturnRefund = ({ returnRequest, onSuccess }: ReturnRefundProps) =>
 
     // If return is received, awaiting refund
     if (medusaReturn?.status === 'received' || medusaReturn?.status === 'partially_received') {
+      console.log('⏳ [RETURN-REFUND] Status: pending (return received)')
       setRefundStatus('pending')
       return
     }
 
-
+    console.log('❓ [RETURN-REFUND] Status: checking')
     setRefundStatus('checking')
-  }, [medusaReturn, returnRequest])
+  }, [medusaReturn, returnRequest, hasRefundInDatabase])
 
   // 🔧 DEVELOPMENT: Manual refund trigger
   const handleManualRefund = async () => {

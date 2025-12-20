@@ -1266,9 +1266,19 @@
     "exchange": "Wymiana",
     "return": "Zwrot",
     "cancelWarning": "Masz zamiar anulować zamówienie {{id}}. Tej akcji nie można cofnąć.",
+    "orderCanceled": "Zamówienie zostało pomyślnie anulowane",
     "onDateFromSalesChannel": "{{date}} z {{salesChannel}}",
     "list": {
       "noRecordsMessage": "Twoje zamówienia pojawią się tutaj."
+    },
+    "status": {
+      "not_paid": "Nieopłacone",
+      "pending": "Oczekujące",
+      "completed": "Zakończone",
+      "draft": "Szkic",
+      "archived": "Zarchiwizowane",
+      "canceled": "Anulowane",
+      "requires_action": "Wymaga działania"
     },
     "summary": {
       "requestReturn": "Złóż wniosek o zwrot",
