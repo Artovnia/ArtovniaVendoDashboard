@@ -17,10 +17,17 @@ export const OnboardingIndicatorSimple = ({
   position?: 'top' | 'right' | 'bottom' | 'left'
   editRoute?: string // e.g., 'edit' or 'edit-company'
 }) => {
-  const { isOnboarding, hasInteractedWithStep, markStepInteracted } = useOnboardingContext()
+  const context = useOnboardingContext()
   const location = useLocation()
-  const previousPathRef = useRef(location.pathname)
   const wasOnEditPageRef = useRef(false)
+
+  // Safety check: If context is not available, just render children without indicator
+  if (!context) {
+    console.warn('OnboardingIndicatorSimple: Context not available, rendering children only')
+    return <>{children}</>
+  }
+
+  const { isOnboarding, hasInteractedWithStep, markStepInteracted } = context
 
   // Check if we're on THIS indicator's specific edit page (for marking as interacted)
   const isOnThisEditPage = editRoute ? location.pathname.includes(`/${editRoute}`) : location.pathname.includes('/edit')
@@ -31,8 +38,6 @@ export const OnboardingIndicatorSimple = ({
 
   // Mark as interacted when user returns from THIS indicator's edit page
   useEffect(() => {
-    const currentPath = location.pathname
-    const previousPath = previousPathRef.current
     const wasOnThisEditPage = wasOnEditPageRef.current
     
     // If we were on THIS edit page and now we're back on parent page, mark as interacted
@@ -41,7 +46,6 @@ export const OnboardingIndicatorSimple = ({
     }
     
     // Update refs
-    previousPathRef.current = currentPath
     wasOnEditPageRef.current = isOnThisEditPage
   }, [location.pathname, isOnThisEditPage, showIndicator, stepId, markStepInteracted, editRoute])
 

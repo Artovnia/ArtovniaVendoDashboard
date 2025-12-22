@@ -701,8 +701,8 @@ const CostBreakdown = ({
         }
         value={getLocaleAmount(
           automaticTaxesOn
-            ? order.shipping_total
-            : order.shipping_subtotal,
+            ? (order.shipping_methods || []).reduce((sum, sm) => sum + (sm.total || 0), 0)
+            : (order.shipping_methods || []).reduce((sum, sm) => sum + (sm.subtotal || 0), 0),
           order.currency_code
         )}
       />

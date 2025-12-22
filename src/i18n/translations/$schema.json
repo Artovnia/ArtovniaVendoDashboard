@@ -16214,6 +16214,25 @@
       "required": ["domain", "title", "subtitle", "currentPassword", "currentPasswordPlaceholder", "newPassword", "newPasswordPlaceholder", "confirmPassword", "confirmPasswordPlaceholder", "passwordHint", "cancel", "submit", "toast", "validation"],
       "additionalProperties": false
     },
+    "parcelSelector": {
+      "type": "object",
+      "properties": {
+        "title": {"type": "string"},
+        "selectHint": {"type": "string"},
+        "noItems": {"type": "string"},
+        "parcelNumber": {"type": "string"},
+        "item": {"type": "string"},
+        "items": {"type": "string"},
+        "capacity": {"type": "string"},
+        "exceedsCapacity": {"type": "string"},
+        "quantity": {"type": "string"},
+        "shippingProfile": {"type": "string"},
+        "totalCapacity": {"type": "string"},
+        "selectAtLeastOne": {"type": "string"}
+      },
+      "required": ["title", "selectHint", "noItems", "parcelNumber", "item", "items", "capacity", "exceedsCapacity", "quantity", "shippingProfile", "totalCapacity", "selectAtLeastOne"],
+      "additionalProperties": false
+    },
   
   "required": [
     "$schema",
@@ -16306,7 +16325,8 @@
     "stripeConnect",
     "tickets",
     "shipping",
-    "passwordChange"
+    "passwordChange",
+    "parcelSelector"
   ],
   "additionalProperties": false
 }

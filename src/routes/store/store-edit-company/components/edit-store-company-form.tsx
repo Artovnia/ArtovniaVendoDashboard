@@ -28,13 +28,24 @@ export const EditStoreCompanyForm = ({
   const { handleSuccess } = useRouteModal();
   const { t } = useTranslation();
 
+  // Safety check: Prevent crash if seller data is incomplete
+  if (!seller) {
+    return (
+      <RouteDrawer.Body className='flex-1 overflow-y-auto'>
+        <div className='flex items-center justify-center p-8'>
+          <p className='text-ui-fg-subtle'>{t('store.company.edit.noData', 'Ładowanie danych...')}</p>
+        </div>
+      </RouteDrawer.Body>
+    )
+  }
+
   const form = useForm<z.infer<typeof EditStoreSchema>>({
     defaultValues: {
-      address_line: seller.address_line || '',
-      postal_code: seller.postal_code || '',
-      city: seller.city || '',
-      country_code: seller.country_code || '',
-      tax_id: seller.tax_id || '',
+      address_line: seller?.address_line || '',
+      postal_code: seller?.postal_code || '',
+      city: seller?.city || '',
+      country_code: seller?.country_code || '',
+      tax_id: seller?.tax_id || '',
     },
     resolver: zodResolver(EditStoreSchema),
   });

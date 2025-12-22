@@ -4553,5 +4553,19 @@
       "confirmPasswordRequired": "Please confirm your password",
       "passwordMismatch": "Passwords do not match"
     }
+  },
+  "parcelSelector": {
+    "title": "Parcels to Fulfill ({count})",
+    "selectHint": "Select parcels to fulfill now",
+    "noItems": "No unfulfilled items available for fulfillment",
+    "parcelNumber": "Parcel {number}",
+    "item": "item",
+    "items": "items",
+    "capacity": "Capacity: {current} / {max}",
+    "exceedsCapacity": "⚠️ Exceeds capacity",
+    "quantity": "Quantity",
+    "shippingProfile": "Shipping Profile: {name}",
+    "totalCapacity": "Total Capacity: {capacity} {unit}",
+    "selectAtLeastOne": "Select at least one parcel to fulfill"
   }
 }

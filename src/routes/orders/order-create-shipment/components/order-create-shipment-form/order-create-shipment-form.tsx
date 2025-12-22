@@ -41,8 +41,7 @@ export function OrderCreateShipmentForm({
   const form = useForm<zod.infer<typeof CreateShipmentSchema>>({
     defaultValues: {
       send_notification: !order.no_notification,
-      labels: [{ tracking_number: "" }],
-      shipping_carrier: "",
+      labels: [{ tracking_number: "", carrier: "" }],
       invoice_url: "",
       invoice_name: "",
     },
@@ -55,32 +54,32 @@ export function OrderCreateShipmentForm({
   })
 
   const handleFileUpload = async (
-  event: React.ChangeEvent<HTMLInputElement>
-) => {
-  const file = event.target.files?.[0]
-  if (!file) return
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0]
+    if (!file) return
 
-  setIsUploading(true)
+    setIsUploading(true)
 
-  try {
-    // Just pass the file, no need for order/fulfillment IDs
-    const data = await uploadInvoiceQuery(file)
+    try {
+      // Just pass the file, no need for order/fulfillment IDs
+      const data = await uploadInvoiceQuery(file)
 
-    setUploadedInvoice({ url: data.url, name: data.name })
-    form.setValue("invoice_url", data.url)
-    form.setValue("invoice_name", data.name)
-    toast.success(t("orders.shipment.invoiceUploadSuccess"))
-  } catch (error) {
-    console.error("Upload error:", error)
-    const errorMessage =
-      error instanceof Error
-        ? error.message
-        : "An error occurred while uploading the invoice"
-    toast.error(errorMessage)
-  } finally {
-    setIsUploading(false)
+      setUploadedInvoice({ url: data.url, name: data.name })
+      form.setValue("invoice_url", data.url)
+      form.setValue("invoice_name", data.name)
+      toast.success(t("orders.shipment.invoiceUploadSuccess"))
+    } catch (error) {
+      console.error("Upload error:", error)
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "An error occurred while uploading the invoice"
+      toast.error(errorMessage)
+    } finally {
+      setIsUploading(false)
+    }
   }
-}
 
   const handleRemoveInvoice = () => {
     setUploadedInvoice(null)
@@ -105,7 +104,7 @@ export function OrderCreateShipmentForm({
             tracking_url: "#",
             label_url: "#",
           })),
-        shipping_carrier: data.shipping_carrier,
+        shipping_carrier: data.labels[0]?.carrier || "",
         invoice_url: data.invoice_url || undefined,
         invoice_name: data.invoice_name || undefined,
       },
@@ -149,73 +148,72 @@ export function OrderCreateShipmentForm({
                   </Heading>
 
                   {labels.map((label, index) => (
-                    <Form.Field
-                      key={label.id}
-                      control={form.control}
-                      name={`labels.${index}.tracking_number`}
-                      render={({ field }) => {
-                        return (
-                          <Form.Item className="mb-4">
-                            <div className="flex items-center justify-between">
-                              {index === 0 && (
-                                <Form.Label>
-                                  {t("orders.shipment.trackingNumber")}
-                                </Form.Label>
-                              )}
-                              {index > 0 && (
-                                <Button
-                                  type="button"
-                                  size="small"
-                                  variant="secondary"
-                                  onClick={() => remove(index)}
-                                >
-                                  {t("actions.remove")}
-                                </Button>
-                              )}
-                            </div>
-                            <Form.Control>
-                              <Input {...field} placeholder="123-456-789" />
-                            </Form.Control>
-                            <Form.ErrorMessage />
-                          </Form.Item>
-                        )
-                      }}
-                    />
+                    <div key={label.id} className="mb-6 p-4 border rounded-lg">
+                      <div className="flex items-center justify-between mb-3">
+                        <Heading level="h4" className="text-sm">
+                          {t("orders.shipment.parcelLabel")} {index + 1}
+                        </Heading>
+                        {index > 0 && (
+                          <Button
+                            type="button"
+                            size="small"
+                            variant="secondary"
+                            onClick={() => remove(index)}
+                          >
+                            {t("actions.remove")}
+                          </Button>
+                        )}
+                      </div>
+                      
+                      <Form.Field
+                        control={form.control}
+                        name={`labels.${index}.tracking_number`}
+                        render={({ field }) => {
+                          return (
+                            <Form.Item className="mb-3">
+                              <Form.Label>
+                                {t("orders.shipment.trackingNumber")}
+                              </Form.Label>
+                              <Form.Control>
+                                <Input {...field} placeholder="123-456-789" />
+                              </Form.Control>
+                              <Form.ErrorMessage />
+                            </Form.Item>
+                          )
+                        }}
+                      />
+                      
+                      <Form.Field
+                        control={form.control}
+                        name={`labels.${index}.carrier`}
+                        render={({ field }) => {
+                          return (
+                            <Form.Item>
+                              <Form.Label>
+                                {t("orders.shipment.shippingCarrier")}
+                              </Form.Label>
+                              <Form.Control>
+                                <Input
+                                  {...field}
+                                  placeholder={t("orders.shipment.shippingCarrierPlaceholder")}
+                                />
+                              </Form.Control>
+                              <Form.ErrorMessage />
+                            </Form.Item>
+                          )
+                        }}
+                      />
+                    </div>
                   ))}
 
                   <Button
                     type="button"
-                    onClick={() => append({ tracking_number: "" })}
+                    onClick={() => append({ tracking_number: "", carrier: "" })}
                     className="self-end"
                     variant="secondary"
                   >
                     {t("orders.shipment.addTracking")}
                   </Button>
-                </div>
-
-                <div className="mt-8 pt-8 border-t">
-                  <Form.Field
-                    control={form.control}
-                    name="shipping_carrier"
-                    render={({ field }) => {
-                      return (
-                        <Form.Item>
-                          <Form.Label>
-                            {t("orders.shipment.shippingCarrier")}
-                          </Form.Label>
-                          <Form.Control>
-                            <Input
-                              {...field}
-                              placeholder={t(
-                                "orders.shipment.shippingCarrierPlaceholder"
-                              )}
-                            />
-                          </Form.Control>
-                          <Form.ErrorMessage />
-                        </Form.Item>
-                      )
-                    }}
-                  />
                 </div>
 
                 <div className="mt-8 pt-8 border-t">

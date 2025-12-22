@@ -4708,5 +4708,19 @@
       "confirmPasswordRequired": "Proszę potwierdzić hasło",
       "passwordMismatch": "Hasła nie są zgodne"
     }
+  },
+  "parcelSelector": {
+    "title": "Paczki do wysyłki ({count})",
+    "selectHint": "Wybierz paczki do wysłania teraz",
+    "noItems": "Brak przedmiotów do wysyłki",
+    "parcelNumber": "Paczka {number}",
+    "item": "przedmiot",
+    "items": "przedmiotów",
+    "capacity": "Pojemność: {current} / {max}",
+    "exceedsCapacity": "⚠️ Przekracza pojemność",
+    "quantity": "Ilość",
+    "shippingProfile": "Profil wysyłki: {name}",
+    "totalCapacity": "Całkowita pojemność: {capacity} {unit}",
+    "selectAtLeastOne": "Wybierz co najmniej jedną paczkę do wysłania"
   }
 }
