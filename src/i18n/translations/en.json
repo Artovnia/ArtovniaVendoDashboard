@@ -628,10 +628,12 @@
         "ean": "EAN",
         "barcode": "Barcode",
         "manage_inventory": "Manage Inventory",
+        "manage_inventory_description": "Enable this to track inventory levels for this variant. Required when setting stock quantity.",
         "allow_backorder": "Allow Backorder",
         "price": "Price",
         "stock_location": "Stock Location",
-        "stock_quantity": "Stock Quantity"
+        "stock_quantity": "Stock Quantity",
+        "inventory_auto_enabled": "Inventory management has been automatically enabled because you entered a stock quantity."
       },
       "errors": {
         "variants": "Please select at least one variant.",

@@ -23,8 +23,6 @@ import {
   useReservationItems,
   useShippingOptions,
 } from "../../../../../hooks/api"
-import { ParcelSelector } from "./parcel-selector"
-import { fetchQuery } from "../../../../../lib/client"
 
 type OrderCreateFulfillmentFormProps = {
   order: AdminOrder
@@ -65,11 +63,6 @@ export function OrderCreateFulfillmentForm({
     )
   )
 
-  const [parcels, setParcels] = useState<any[]>([])
-  const [isLoadingParcels, setIsLoadingParcels] = useState(false)
-  const [selectedParcels, setSelectedParcels] = useState<number[]>([])
-  const [useParcels, setUseParcels] = useState(false)
-
   const form = useForm<zod.infer<typeof CreateFulfillmentSchema>>({
     defaultValues: {
       quantity: fulfillableItems.reduce(
@@ -80,8 +73,6 @@ export function OrderCreateFulfillmentForm({
         {} as Record<string, number>
       ),
       send_notification: true,
-      selected_parcels: [],
-      use_parcels: false,
     },
     resolver: zodResolver(CreateFulfillmentSchema),
   })
@@ -105,55 +96,19 @@ export function OrderCreateFulfillmentForm({
     control: form.control,
   })
 
-  // Fetch parcel calculation when location is selected
-  useEffect(() => {
-    const fetchParcels = async () => {
-      if (!selectedLocationId || !order.id) return
+  const handleSubmit = form.handleSubmit(async (data) => {
+    const selectedShippingOption = shipping_options.find(
+      (o) => o?.id === shippingOptionId
+    )
 
-      setIsLoadingParcels(true)
-      try {
-        const data = await fetchQuery(`/vendor/orders/${order.id}/parcels`, {
-          method: 'GET'
-        })
-        
-        if (data.parcels && data.parcels.length > 0) {
-          setParcels(data.parcels)
-          // Auto-enable parcel mode if multiple shipping methods
-          if (data.parcels.length > 1 || order.shipping_methods?.length > 1) {
-            setUseParcels(true)
-            form.setValue('use_parcels', true)
-            // Select all parcels by default
-            const allParcelNumbers = data.parcels.map((p: any) => p.parcel_number)
-            setSelectedParcels(allParcelNumbers)
-            form.setValue('selected_parcels', allParcelNumbers)
-          } else {
-            // Single parcel - select it by default
-            setSelectedParcels([1])
-            form.setValue('selected_parcels', [1])
-          }
-        }
-      } catch (error: any) {
-        console.error('Error fetching parcels:', error)
-        toast.error('Failed to calculate parcels')
-      } finally {
-        setIsLoadingParcels(false)
-      }
+    if (!selectedShippingOption) {
+      form.setError("shipping_option_id", {
+        type: "manual",
+        message: t("orders.fulfillment.error.noShippingOption"),
+      })
+      return
     }
 
-    fetchParcels()
-  }, [selectedLocationId, order.id])
-
-  const handleParcelToggle = (parcelNumber: number) => {
-    setSelectedParcels(prev => {
-      const newSelection = prev.includes(parcelNumber)
-        ? prev.filter(n => n !== parcelNumber)
-        : [...prev, parcelNumber]
-      form.setValue('selected_parcels', newSelection)
-      return newSelection
-    })
-  }
-
-  const handleSubmit = form.handleSubmit(async (data) => {
     if (!selectedLocationId) {
       form.setError("location_id", {
         type: "manual",
@@ -162,121 +117,62 @@ export function OrderCreateFulfillmentForm({
       return
     }
 
+    const selectedShippingProfileId =
+      selectedShippingOption?.shipping_profile_id
+
+    const itemShippingProfileMap = order.items.reduce(
+      (acc, item) => {
+        acc[item.id] = item.variant?.product?.shipping_profile?.id ?? null
+        return acc
+      },
+      {} as Record<string, string | null>
+    )
+
+    // Get all items with quantities greater than 0
+    const itemsToFulfill = Object.entries(data.quantity)
+      .filter(
+        ([id, value]) => 
+          // Ensure value is greater than 0
+          (value && value > 0) && 
+          // Either match shipping profile or don't filter by profile if none selected
+          (!selectedShippingProfileId || itemShippingProfileMap[id] === selectedShippingProfileId)
+      )
+      .map(([id, quantity]) => ({
+        id,
+        quantity,
+      }));
+
+    // Check if we have items to fulfill
+    if (itemsToFulfill.length === 0) {
+      form.setError("root", {
+        type: "manual",
+        message: t("orders.fulfillment.error.noItems"),
+      });
+      return;
+    }
+
+    // Format payload to match backend validator requirements
+    // Backend only accepts: items, requires_shipping, location_id
+    const payload = {
+      location_id: selectedLocationId,
+      requires_shipping: true,
+      items: itemsToFulfill,
+      // These fields are used for UI but not sent to backend
+      // shipping_option_id and no_notification are not accepted by the backend
+    }
+
     try {
-      // Multi-parcel mode
-      if (useParcels && parcels.length > 0) {
-        if (selectedParcels.length === 0) {
-          form.setError("root", {
-            type: "manual",
-            message: "Please select at least one parcel to fulfill",
-          })
-          return
-        }
-
-        // Get selected parcels
-        const parcelsToFulfill = parcels.filter(p => 
-          selectedParcels.includes(p.parcel_number)
-        )
-
-        // Create fulfillment for each selected parcel
-        for (const parcel of parcelsToFulfill) {
-          console.log('[Fulfillment] Creating fulfillment for parcel:', {
-            parcel_number: parcel.parcel_number,
-            shipping_method_id: parcel.shipping_method_id,
-            shipping_profile: parcel.shipping_profile,
-            items: parcel.items.map((i: any) => ({
-              item_id: i.item_id,
-              quantity: i.quantity,
-              profile_name: i.profile_name
-            }))
-          })
-
-          // Find the actual order items to check their shipping profiles
-          const orderItems = parcel.items.map((item: any) => {
-            const orderItem = order.items.find((oi: any) => oi.id === item.item_id)
-            console.log('[Fulfillment] Order item:', {
-              id: orderItem?.id,
-              product_id: orderItem?.product_id,
-              shipping_profile_id: orderItem?.variant?.product?.shipping_profile?.id
-            })
-            return orderItem
-          })
-
-          const payload = {
-            location_id: selectedLocationId,
-            requires_shipping: true,
-            items: parcel.items.map((item: any) => ({
-              id: item.item_id,
-              quantity: item.quantity,
-            })),
-          }
-
-          await createOrderFulfillment(payload)
-        }
-
-        toast.success(
-          selectedParcels.length === 1
-            ? t("orders.fulfillment.toast.created")
-            : `Created ${selectedParcels.length} fulfillments`
-        )
-        handleSuccess(`/orders/${order.id}`)
-        return
-      }
-
-      // Legacy single-parcel mode (backwards compatibility)
-      const selectedShippingOption = shipping_options.find(
-        (o) => o?.id === shippingOptionId
-      )
-
-      if (!selectedShippingOption) {
-        form.setError("shipping_option_id", {
-          type: "manual",
-          message: t("orders.fulfillment.error.noShippingOption"),
-        })
-        return
-      }
-
-      const selectedShippingProfileId =
-        selectedShippingOption?.shipping_profile_id
-
-      const itemShippingProfileMap = order.items.reduce(
-        (acc, item) => {
-          acc[item.id] = item.variant?.product?.shipping_profile?.id ?? null
-          return acc
-        },
-        {} as Record<string, string | null>
-      )
-
-      const itemsToFulfill = Object.entries(data.quantity)
-        .filter(
-          ([id, value]) => 
-            (value && value > 0) && 
-            (!selectedShippingProfileId || itemShippingProfileMap[id] === selectedShippingProfileId)
-        )
-        .map(([id, quantity]) => ({
-          id,
-          quantity,
-        }))
-
-      if (itemsToFulfill.length === 0) {
-        form.setError("root", {
-          type: "manual",
-          message: t("orders.fulfillment.error.noItems"),
-        })
-        return
-      }
-
-      const payload = {
-        location_id: selectedLocationId,
-        requires_shipping: true,
-        items: itemsToFulfill,
-      }
+      // Debug logs to help identify the issue
+      console.log('Fulfillment payload:', JSON.stringify(payload, null, 2));
+      console.log('Selected shipping option:', selectedShippingOption);
+      console.log('Items to fulfill:', itemsToFulfill);
       
       await createOrderFulfillment(payload)
+
       toast.success(t("orders.fulfillment.toast.created"))
       handleSuccess(`/orders/${order.id}`)
     } catch (e: any) {
-      console.error('Fulfillment creation error:', e)
+      console.error('Fulfillment creation error:', e);
       toast.error(e.message || 'An error occurred during fulfillment creation')
     }
   })
@@ -398,143 +294,114 @@ export function OrderCreateFulfillmentForm({
                   />
                 </div>
 
-                {/* Multi-parcel mode */}
-                {useParcels && parcels.length > 0 ? (
-                  <div className="py-8">
-                    {isLoadingParcels ? (
-                      <div className="flex items-center justify-center py-8">
-                        <span className="text-ui-fg-subtle">Loading parcels...</span>
-                      </div>
-                    ) : (
-                      <ParcelSelector
-                        parcels={parcels}
-                        selectedParcels={selectedParcels}
-                        onParcelToggle={handleParcelToggle}
-                        currencyCode={order.currency_code}
-                      />
-                    )}
-                    {form.formState.errors.root && (
-                      <Alert
-                        variant="error"
-                        dismissible={false}
-                        className="mt-4 flex items-center"
-                      >
-                        {form.formState.errors.root.message}
-                      </Alert>
-                    )}
-                  </div>
-                ) : (
-                  <>
-                    {/* Legacy single-parcel mode */}
-                    <div className="py-8">
-                      <Form.Field
-                        control={form.control}
-                        name="shipping_option_id"
-                        render={({ field: { onChange, ref, ...field } }) => {
-                          return (
-                            <Form.Item>
-                              <div className="flex flex-col gap-2 xl:flex-row xl:items-center">
-                                <div className="flex-1">
-                                  <Form.Label>
-                                    {t("fields.shippingMethod")}
-                                  </Form.Label>
-                                  <Form.Hint>
-                                    {t("orders.fulfillment.methodDescription")}
-                                  </Form.Hint>
-                                </div>
-                                <div className="flex-1">
-                                  <Form.Control>
-                                    <Select
-                                      onValueChange={onChange}
-                                      {...field}
-                                      disabled={!selectedLocationId}
-                                    >
-                                      <Select.Trigger
-                                        className="bg-ui-bg-base"
-                                        ref={ref}
-                                      >
-                                        {isShippingOptionsLoading ? (
-                                          <span className="text-right">
-                                            {t("labels.loading")}
-                                            ...
-                                          </span>
-                                        ) : (
-                                          <Select.Value />
-                                        )}
-                                      </Select.Trigger>
-                                      <Select.Content>
-                                        {filteredShippingOptions.map((o) => (
-                                          <Select.Item key={o?.id} value={o?.id}>
-                                            {o?.name}
-                                          </Select.Item>
-                                        ))}
-                                      </Select.Content>
-                                    </Select>
-                                  </Form.Control>
-                                </div>
-                              </div>
-                              <Form.ErrorMessage />
-                            </Form.Item>
-                          )
-                        }}
-                      />
+                <div className="py-8">
+                  <Form.Field
+                    control={form.control}
+                    name="shipping_option_id"
+                    render={({ field: { onChange, ref, ...field } }) => {
+                      return (
+                        <Form.Item>
+                          <div className="flex flex-col gap-2 xl:flex-row xl:items-center">
+                            <div className="flex-1">
+                              <Form.Label>
+                                {t("fields.shippingMethod")}
+                              </Form.Label>
+                              <Form.Hint>
+                                {t("orders.fulfillment.methodDescription")}
+                              </Form.Hint>
+                            </div>
+                            <div className="flex-1">
+                              <Form.Control>
+                                <Select
+                                  onValueChange={onChange}
+                                  {...field}
+                                  disabled={!selectedLocationId}
+                                >
+                                  <Select.Trigger
+                                    className="bg-ui-bg-base"
+                                    ref={ref}
+                                  >
+                                    {isShippingOptionsLoading ? (
+                                      <span className="text-right">
+                                        {t("labels.loading")}
+                                        ...
+                                      </span>
+                                    ) : (
+                                      <Select.Value />
+                                    )}
+                                  </Select.Trigger>
+                                  <Select.Content>
+                                    {filteredShippingOptions.map((o) => (
+                                      <Select.Item key={o?.id} value={o?.id}>
+                                        {o?.name}
+                                      </Select.Item>
+                                    ))}
+                                  </Select.Content>
+                                </Select>
+                              </Form.Control>
+                            </div>
+                          </div>
+                          <Form.ErrorMessage />
+                        </Form.Item>
+                      )
+                    }}
+                  />
 
-                      {differentOptionSelected && (
-                        <Alert className="mt-4 p-4" variant="warning">
-                          <span className="-mt-[3px] block font-medium">
-                            {t("labels.beaware")}
-                          </span>
-                          <span className="text-ui-fg-muted">
-                            {t("orders.fulfillment.differentOptionSelected")}
-                          </span>
-                        </Alert>
-                      )}
-                    </div>
-                    <div>
-                      <Form.Item className="mt-8">
-                        <Form.Label>
-                          {t("orders.fulfillment.itemsToFulfill")}
-                        </Form.Label>
-                        <Form.Hint>
-                          {t("orders.fulfillment.itemsToFulfillDesc")}
-                        </Form.Hint>
+                  {differentOptionSelected && (
+                    <Alert className="mt-4 p-4" variant="warning">
+                      <span className="-mt-[3px] block font-medium">
+                        {t("labels.beaware")}
+                      </span>
+                      <span className="text-ui-fg-muted">
+                        {t("orders.fulfillment.differentOptionSelected")}
+                      </span>
+                    </Alert>
+                  )}
+                </div>
+                <div>
+                  <Form.Item className="mt-8">
+                    <Form.Label>
+                      {t("orders.fulfillment.itemsToFulfill")}
+                    </Form.Label>
+                    <Form.Hint>
+                      {t("orders.fulfillment.itemsToFulfillDesc")}
+                    </Form.Hint>
 
-                        <div className="flex flex-col gap-y-1">
-                          {fulfillableItems.map((item) => {
-                            const isShippingProfileMatching =
-                              shipping_options.find(
-                                (o) => o?.id === shippingOptionId
-                              )?.shipping_profile_id ===
-                              item.variant?.product?.shipping_profile?.id
-                            return (
-                              <OrderCreateFulfillmentItem
-                                key={item.id}
-                                form={form}
-                                item={item}
-                                locationId={selectedLocationId}
-                                currencyCode={order.currency_code}
-                                onItemRemove={() => {}}
-                                disabled={!isShippingProfileMatching}
-                                itemReservedQuantitiesMap={
-                                  itemReservedQuantitiesMap
-                                }
-                              />
-                            )
-                          })}
-                        </div>
-                      </Form.Item>
-                      {form.formState.errors.root && (
-                        <Alert
-                          variant="error"
-                          dismissible={false}
-                          className="flex items-center"
-                        >
-                          {form.formState.errors.root.message}
-                        </Alert>
-                      )}
+                    <div className="flex flex-col gap-y-1">
+                      {fulfillableItems.map((item) => {
+                        const isShippingProfileMatching =
+                          shipping_options.find(
+                            (o) => o?.id === shippingOptionId
+                          )?.shipping_profile_id ===
+                          item.variant?.product?.shipping_profile?.id
+                        return (
+                          <OrderCreateFulfillmentItem
+                            key={item.id}
+                            form={form}
+                            item={item}
+                            locationId={selectedLocationId}
+                            currencyCode={order.currency_code}
+                            onItemRemove={() => {}}
+                            disabled={!isShippingProfileMatching}
+                            itemReservedQuantitiesMap={
+                              itemReservedQuantitiesMap
+                            }
+                          />
+                        )
+                      })}
                     </div>
-                  </>
-                )}
+                  </Form.Item>
+                  {form.formState.errors.root && (
+                    <Alert
+                      variant="error"
+                      dismissible={false}
+                      className="flex items-center"
+                      // classNameInner="flex justify-between flex-1 items-center"
+                    >
+                      {form.formState.errors.root.message}
+                    </Alert>
+                  )}
+                </div>
 
                 <div className="mt-8 pt-8 ">
                   <Form.Field
@@ -581,11 +448,9 @@ export function OrderCreateFulfillmentForm({
               size="small"
               type="submit"
               isLoading={isMutating}
-              disabled={useParcels ? selectedParcels.length === 0 : !shippingOptionId}
+              disabled={!shippingOptionId}
             >
-              {useParcels && selectedParcels.length > 1
-                ? `Fulfill ${selectedParcels.length} Parcels`
-                : t("orders.fulfillment.create")}
+              {t("orders.fulfillment.create")}
             </Button>
           </div>
         </RouteFocusModal.Footer>

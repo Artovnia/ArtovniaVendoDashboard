@@ -5,4 +5,5 @@ export { DataGridReadonlyCell as DataGridReadOnlyCell } from "./data-grid-readon
 export { DataGridRoot, type DataGridRootProps } from "./data-grid-root"
 export { DataGridSelectCell } from "./data-grid-select-cell"
 export { DataGridSkeleton } from "./data-grid-skeleton"
+export { DataGridStockQuantityCell } from "./data-grid-stock-quantity-cell"
 export { DataGridTextCell } from "./data-grid-text-cell"

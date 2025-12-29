@@ -74,9 +74,7 @@ export const CreateShippingOptionDetailsForm = ({
       // Look for manual provider first, otherwise use the first available provider
       const manualProvider = fulfillment_providers.find(p => p.id.includes('manual'));
       form.setValue('provider_id', manualProvider?.id || fulfillment_providers[0].id);
-      
-      // Log available providers for debugging
-      console.log('Available providers:', fulfillment_providers.map(p => p.id));
+    
     }
   }, [fulfillment_providers, form, selectedProviderId]);
 

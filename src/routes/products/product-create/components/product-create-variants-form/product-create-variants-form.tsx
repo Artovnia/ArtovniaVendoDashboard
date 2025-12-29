@@ -211,6 +211,18 @@ const useColumns = ({
       //   },
       // }),
 
+      
+      columnHelper.column({
+        id: 'allow_backorder',
+        name: headers.allow_backorder,
+        header: headers.allow_backorder,
+        field: (context) =>
+          `variants.${context.row.original.originalIndex}.allow_backorder`,
+        type: 'boolean',
+        cell: (context) => {
+          return <DataGrid.BooleanCell context={context} />;
+        },
+      }),
       columnHelper.column({
         id: 'manage_inventory',
         name: headers.manage_inventory,
@@ -232,18 +244,7 @@ const useColumns = ({
           return <DataGrid.BooleanCell context={context} />;
         },
       }),
-      columnHelper.column({
-        id: 'allow_backorder',
-        name: headers.allow_backorder,
-        header: headers.allow_backorder,
-        field: (context) =>
-          `variants.${context.row.original.originalIndex}.allow_backorder`,
-        type: 'boolean',
-        cell: (context) => {
-          return <DataGrid.BooleanCell context={context} />;
-        },
-      }),
-      // Stock Quantity column - moved before price
+      // Stock Quantity column 
       columnHelper.column({
         id: 'stock_quantity',
         name: headers.stock_quantity,
@@ -253,8 +254,9 @@ const useColumns = ({
         type: 'number',
         cell: (context) => {
           return (
-            <DataGrid.NumberCell
+            <DataGrid.StockQuantityCell
               context={context}
+              variantIndex={context.row.original.originalIndex}
               min={0}
               placeholder="0"
             />

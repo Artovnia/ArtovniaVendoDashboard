@@ -8,6 +8,7 @@ import {
   DataGridRoot,
   DataGridSelectCell,
   DataGridSkeleton,
+  DataGridStockQuantityCell,
   DataGridTextCell,
   type DataGridRootProps,
 } from "./components"
@@ -40,4 +41,5 @@ export const DataGrid = Object.assign(_DataGrid, {
   CurrencyCell: DataGridCurrencyCell,
   ReadonlyCell: DataGridReadOnlyCell,
   SelectCell: DataGridSelectCell,
+  StockQuantityCell: DataGridStockQuantityCell,
 })

@@ -474,7 +474,8 @@
         "allow_backorder": "Pozwól na zamówienia wsteczne",
         "price": "Cena",
         "stock_location": "Lokalizacja Magazynowa",
-        "stock_quantity": "Ilość w Magazynie"
+        "stock_quantity": "Ilość w Magazynie",
+        "inventory_auto_enabled": "Zarządzanie zapasami zostało automatycznie włączone, ponieważ wprowadzono ilość w magazynie."
       },
       
       "variants": {

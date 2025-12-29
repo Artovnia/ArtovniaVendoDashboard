@@ -57,8 +57,16 @@ const getPermutations = (
   })
 }
 
-const getVariantName = (options: Record<string, string>) => {
-  return Object.values(options).join(" / ")
+const getVariantName = (options: Record<string, string>, productTitle?: string) => {
+  const optionValues = Object.values(options).join(" / ")
+  
+  // If product title is provided and variant has meaningful options (not default)
+  if (productTitle && optionValues && optionValues !== "Default option value") {
+    return `${productTitle} - ${optionValues}`
+  }
+  
+  // For default variant or when no product title, return just option values or product title
+  return optionValues || productTitle || "Default variant"
 }
 
 export const ProductCreateVariantsSection = ({
@@ -94,65 +102,38 @@ export const ProductCreateVariantsSection = ({
     defaultValue: [],
   })
 
+  // Watch product title for syncing with default variant
+  const productTitle = useWatch({
+    control: form.control,
+    name: "title",
+    defaultValue: "",
+  })
+
   // Update default variant title when product title changes (only if variants are NOT enabled)
-  // Using form.watch() instead of useWatch for immediate, synchronous updates
+  // Using useEffect with useWatch for reliable, consistent updates
   useEffect(() => {
-    const subscription = form.watch((value, { name, type }) => {
-      // Only react to title field changes
-      if (name !== 'title') {
-        return;
+    // Only sync if:
+    // 1. Variants are NOT enabled (single default variant mode)
+    // 2. There's exactly one variant
+    // 3. It's marked as default
+    // 4. Product title has a value
+    if (!watchedAreVariantsEnabled && watchedVariants.length === 1 && watchedVariants[0]?.is_default && productTitle) {
+      const currentVariantTitle = watchedVariants[0].title || "";
+      
+      // Only sync if variant title is empty, default, or already matches product title
+      // This prevents overwriting user's manual edits
+      const isDefaultOrEmpty = !currentVariantTitle || currentVariantTitle === "Default variant";
+      const matchesProductTitle = currentVariantTitle === productTitle;
+      
+      if (isDefaultOrEmpty || matchesProductTitle) {
+        form.setValue("variants.0.title", productTitle, { 
+          shouldDirty: false, 
+          shouldValidate: false,
+          shouldTouch: false 
+        });
       }
-
-      const productTitle = value.title || "";
-      const variantsEnabled = value.enable_variants;
-      const currentVariants = value.variants || [];
-
-      // Check if variants array is empty or not initialized
-      if (currentVariants.length === 0) {
-        return;
-      }
-
-      // Only sync if:
-      // 1. Variants are NOT enabled (single default variant mode)
-      // 2. There's exactly one variant
-      // 3. It's marked as default
-      // 4. Product title has a value
-      if (!variantsEnabled && currentVariants.length === 1 && currentVariants[0]?.is_default && productTitle) {
-        const currentVariant = currentVariants[0];
-        const currentVariantTitle = currentVariant.title || "";
-        
-        // Track if user has manually edited the variant title
-        // We consider it manually edited if:
-        // 1. It's not empty/default AND
-        // 2. It's different from the current product title AND
-        // 3. It's not a substring of the product title (user might have typed partial title then switched tabs)
-        const isDefaultValue = !currentVariantTitle || currentVariantTitle === "Default variant";
-        const matchesProductTitle = currentVariantTitle === productTitle;
-        
-        // If it's a default value or matches product title, always sync
-        // This ensures real-time syncing as user types
-        if (isDefaultValue || matchesProductTitle) {
-          form.setValue("variants.0.title", productTitle, { 
-            shouldDirty: false, 
-            shouldValidate: false,
-            shouldTouch: false 
-          });
-        }
-        // If variant title is different, check if it's a partial match (user is still typing)
-        else if (productTitle.startsWith(currentVariantTitle) || currentVariantTitle.startsWith(productTitle)) {
-          // Likely user is still typing - sync to latest value
-          form.setValue("variants.0.title", productTitle, { 
-            shouldDirty: false, 
-            shouldValidate: false,
-            shouldTouch: false 
-          });
-        }
-        // Otherwise, user has manually edited - don't sync
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [form])
+    }
+  }, [productTitle, watchedAreVariantsEnabled, watchedVariants, form])
 
   const showInvalidOptionsMessage = !!form.formState.errors.options?.length
   const showInvalidVariantsMessage =
@@ -174,13 +155,16 @@ export const ProductCreateVariantsSection = ({
       )
     }
 
+    // Get product title for variant naming
+    const productTitle = form.getValues("title") || ""
+
     const newVariants = oldVariants.reduce((variants, variant) => {
       const match = findMatchingPermutation(variant.options)
 
       if (match) {
         variants.push({
           ...variant,
-          title: getVariantName(match),
+          title: getVariantName(match, productTitle),
           options: match,
         })
       }
@@ -197,7 +181,7 @@ export const ProductCreateVariantsSection = ({
 
     unusedPermutations.forEach((permutation) => {
       newVariants.push({
-        title: getVariantName(permutation),
+        title: getVariantName(permutation, productTitle),
         options: permutation,
         should_create: hasUserSelectedVariants ? false : true,
         variant_rank: newVariants.length,
@@ -228,13 +212,16 @@ export const ProductCreateVariantsSection = ({
       )
     }
 
+    // Get product title for variant naming
+    const productTitle = form.getValues("title") || ""
+
     const newVariants = oldVariants.reduce((variants, variant) => {
       const match = findMatchingPermutation(variant.options)
 
       if (match) {
         variants.push({
           ...variant,
-          title: getVariantName(match),
+          title: getVariantName(match, productTitle),
           options: match,
         })
       }
@@ -251,7 +238,7 @@ export const ProductCreateVariantsSection = ({
 
     unusedPermutations.forEach((permutation) => {
       newVariants.push({
-        title: getVariantName(permutation),
+        title: getVariantName(permutation, productTitle),
         options: permutation,
         should_create: false,
         variant_rank: newVariants.length,
@@ -322,7 +309,10 @@ export const ProductCreateVariantsSection = ({
 
   const createDefaultOptionAndVariant = () => {
     // Get the product title from the form to use as variant name
-    const productTitle = form.getValues("title") || "Default variant"
+    const productTitle = form.getValues("title") || ""
+    const defaultOptions = {
+      "Default option": "Default option value",
+    }
     
     form.setValue("options", [
       {
@@ -334,12 +324,10 @@ export const ProductCreateVariantsSection = ({
       "variants",
       decorateVariantsWithDefaultValues([
         {
-          title: productTitle, // Use product name instead of "Default variant"
+          title: getVariantName(defaultOptions, productTitle), // Use consistent naming function
           should_create: true,
           variant_rank: 0,
-          options: {
-            "Default option": "Default option value",
-          },
+          options: defaultOptions,
           inventory: [{ inventory_item_id: "", required_quantity: "" }],
           is_default: true,
         },
