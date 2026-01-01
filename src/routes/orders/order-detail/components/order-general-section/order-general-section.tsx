@@ -17,6 +17,7 @@ import {
   getCanceledOrderStatus,
   getOrderFulfillmentStatus,
   getOrderPaymentStatus,
+  calculateActualPaymentStatus,
 } from "../../../../../lib/order-helpers"
 
 type OrderGeneralSectionProps = {
@@ -111,7 +112,10 @@ const FulfillmentBadge = ({ order }: { order: HttpTypes.AdminOrder }) => {
 const PaymentBadge = ({ order }: { order: HttpTypes.AdminOrder }) => {
   const { t } = useTranslation()
 
-  const { label, color } = getOrderPaymentStatus(t, order.payment_status)
+  // CRITICAL FIX: Calculate actual status from payment collections for split orders
+  // This ensures individual orders show correct refund status even when order.payment_status is stale
+  const actualStatus = calculateActualPaymentStatus(order)
+  const { label, color } = getOrderPaymentStatus(t, actualStatus)
 
   return (
     <StatusBadge color={color} className="text-nowrap">

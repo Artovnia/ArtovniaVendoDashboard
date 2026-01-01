@@ -5780,6 +5780,9 @@
             },
             "toastCreated": {
               "type": "string"
+            },
+            "parcelLabel": {
+              "type": "string"
             }
           },
           "required": [
@@ -5801,7 +5804,8 @@
             "invoiceFileTooLarge",
             "sendNotification",
             "sendNotificationHint",
-            "toastCreated"
+            "toastCreated",
+            "parcelLabel"
           ],
           "additionalProperties": false
         },
@@ -14152,6 +14156,13 @@
                 "vendorResponse": {
                   "type": "string"
                 },
+                "adminResponse": {
+                  "type": "string"
+                },
+                "adminReviewedOn": {
+                  "type": "string"
+                },
+               
                 "backToList": {
                   "type": "string"
                 },
@@ -14159,6 +14170,55 @@
                   "type": "string"
                 },
                 "retryAlt": {
+                  "type": "string"
+                },
+                "processRefund": {
+                  "type": "string"
+                },
+                "refundCustomer": {
+                  "type": "string"
+                },
+                "refundNote": {
+                  "type": "string"
+                },
+                "refundSuccess": {
+                  "type": "string"
+                },
+                "refundError": {
+                  "type": "string"
+                },
+                "refundConfirmTitle": {
+                  "type": "string"
+                },
+                "refundWarningTitle": {
+                  "type": "string"
+                },
+                "refundWarningMessage": {
+                  "type": "string"
+                },
+                "refundConfirmMessage": {
+                  "type": "string"
+                },
+                "refundAmount": {
+                  "type": "string"
+                },
+                "refundProcessNote": {
+                  "type": "string"
+                },
+                "confirmRefund": {
+                  "type": "string"
+                },
+                "refundPendingTitle": {
+                  "type": "string"
+                },
+                "refundPendingMessage": {
+                  "type": "string"
+                },
+              
+                "refundSuccessTitle": {
+                  "type": "string"
+                },
+                "refundSuccessMessage": {
                   "type": "string"
                 },
                 "backToReturns": {

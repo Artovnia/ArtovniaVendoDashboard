@@ -31,24 +31,63 @@ import { useStockLocation } from '../../../../../hooks/api/stock-locations';
 import { formatProvider } from '../../../../../lib/format-provider';
 import { getLocaleAmount } from '../../../../../lib/money-amount-helpers';
 import { FulfillmentSetType } from '../../../../locations/common/constants';
+import { fetchQuery } from '../../../../../lib/client/client';
+import { queryClient } from '../../../../../lib/query-client';
+import { ordersQueryKeys } from '../../../../../hooks/api/orders';
 
 type OrderFulfillmentSectionProps = {
   order: AdminOrder;
+};
+
+// Group fulfillments created within 5 seconds of each other (from same fulfillment action)
+const groupFulfillments = (fulfillments: AdminOrderFulfillment[]) => {
+  if (fulfillments.length === 0) return [];
+
+  // Sort by creation time
+  const sorted = [...fulfillments].sort(
+    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+  );
+
+  const groups: AdminOrderFulfillment[][] = [];
+  let currentGroup: AdminOrderFulfillment[] = [sorted[0]];
+
+  for (let i = 1; i < sorted.length; i++) {
+    const current = sorted[i];
+    const previous = sorted[i - 1];
+    
+    const timeDiff = 
+      new Date(current.created_at).getTime() - 
+      new Date(previous.created_at).getTime();
+
+    // If created within 5 seconds, consider it part of the same group
+    if (timeDiff <= 5000) {
+      currentGroup.push(current);
+    } else {
+      groups.push(currentGroup);
+      currentGroup = [current];
+    }
+  }
+  
+  // Push the last group
+  groups.push(currentGroup);
+  
+  return groups;
 };
 
 export const OrderFulfillmentSection = ({
   order,
 }: OrderFulfillmentSectionProps) => {
   const fulfillments = order.fulfillments || [];
+  const fulfillmentGroups = groupFulfillments(fulfillments);
 
   return (
     <div className='flex flex-col gap-y-3'>
       <UnfulfilledItemBreakdown order={order} />
-      {fulfillments.map((f, index) => (
-        <Fulfillment
-          key={f.id}
+      {fulfillmentGroups.map((group, index) => (
+        <FulfillmentGroup
+          key={group[0].id}
           index={index}
-          fulfillment={f}
+          fulfillments={group}
           order={order}
         />
       ))}
@@ -226,12 +265,12 @@ const UnfulfilledItemDisplay = ({
   );
 };
 
-const Fulfillment = ({
-  fulfillment,
+const FulfillmentGroup = ({
+  fulfillments,
   order,
   index,
 }: {
-  fulfillment: AdminOrderFulfillment;
+  fulfillments: AdminOrderFulfillment[];
   order: AdminOrder;
   index: number;
 }) => {
@@ -239,59 +278,60 @@ const Fulfillment = ({
   const prompt = usePrompt();
   const navigate = useNavigate();
 
-  const showLocation = !!fulfillment.location_id;
+  // Use the first fulfillment as the "primary" for shared properties
+  const primaryFulfillment = fulfillments[0];
+  const showLocation = !!primaryFulfillment.location_id;
 
   const isPickUpFulfillment =
-    fulfillment.shipping_option?.service_zone
+    primaryFulfillment.shipping_option?.service_zone
       .fulfillment_set.type === FulfillmentSetType.Pickup;
 
   const { stock_location, isError, error } =
-    useStockLocation(fulfillment.location_id!, undefined, {
+    useStockLocation(primaryFulfillment.location_id!, undefined, {
       enabled: showLocation,
     });
 
-  let statusText = fulfillment.requires_shipping
+  // Determine group status - all fulfillments must have same status for simplicity
+  // If any differ, show the most "advanced" status
+  let statusText = primaryFulfillment.requires_shipping
     ? isPickUpFulfillment
       ? 'Awaiting pickup'
       : 'Awaiting shipping'
     : 'Awaiting delivery';
   let statusColor: 'blue' | 'green' | 'red' = 'blue';
-  let statusTimestamp = fulfillment.created_at;
+  let statusTimestamp = primaryFulfillment.created_at;
 
-  if (fulfillment.canceled_at) {
+  const allCanceled = fulfillments.every(f => f.canceled_at);
+  const allDelivered = fulfillments.every(f => f.delivered_at);
+  const allShipped = fulfillments.every(f => f.shipped_at);
+  const anyCanceled = fulfillments.some(f => f.canceled_at);
+  const anyShipped = fulfillments.some(f => f.shipped_at);
+
+  if (allCanceled) {
     statusText = 'Canceled';
     statusColor = 'red';
-    statusTimestamp = fulfillment.canceled_at;
-  } else if (fulfillment.delivered_at) {
+    statusTimestamp = primaryFulfillment.canceled_at!;
+  } else if (allDelivered) {
     statusText = 'Delivered';
     statusColor = 'green';
-    statusTimestamp = fulfillment.delivered_at;
-  } else if (fulfillment.shipped_at) {
+    statusTimestamp = primaryFulfillment.delivered_at!;
+  } else if (allShipped) {
     statusText = 'Shipped';
     statusColor = 'green';
-    statusTimestamp = fulfillment.shipped_at;
+    statusTimestamp = primaryFulfillment.shipped_at!;
   }
 
-  const { mutateAsync } = useCancelOrderFulfillment(
-    order.id,
-    fulfillment.id
-  );
-  const { mutateAsync: markAsDelivered } =
-    useMarkOrderFulfillmentAsDelivered(
-      order.id,
-      fulfillment.id
-    );
-
   const showShippingButton =
-    !fulfillment.canceled_at &&
-    !fulfillment.shipped_at &&
-    !fulfillment.delivered_at &&
-    fulfillment.requires_shipping &&
+    !anyCanceled &&
+    !anyShipped &&
+    !allDelivered &&
+    primaryFulfillment.requires_shipping &&
     !isPickUpFulfillment;
 
   const showDeliveryButton =
-    !fulfillment.canceled_at && !fulfillment.delivered_at;
+    !anyCanceled && !allDelivered;
 
+  // Handle marking all fulfillments as delivered
   const handleMarkAsDelivered = async () => {
     const res = await prompt({
       title: t('general.areYouSure'),
@@ -304,25 +344,41 @@ const Fulfillment = ({
     });
 
     if (res) {
-      await markAsDelivered(undefined, {
-        onSuccess: () => {
-          toast.success(
-            t(
-              isPickUpFulfillment
-                ? 'orders.fulfillment.toast.fulfillmentPickedUp'
-                : 'orders.fulfillment.toast.fulfillmentDelivered'
-            )
+      // Mark all fulfillments in the group as delivered
+      try {
+        for (const fulfillment of fulfillments) {
+          await fetchQuery(
+            `/vendor/orders/${order.id}/fulfillments/${fulfillment.id}/mark-as-delivered`,
+            {
+              method: 'POST',
+            }
           );
-        },
-        onError: (e) => {
-          toast.error(e.message);
-        },
-      });
+        }
+        
+        // Invalidate order queries to refresh the UI
+        await queryClient.invalidateQueries({
+          queryKey: ordersQueryKeys.detail(order.id),
+        });
+        await queryClient.invalidateQueries({
+          queryKey: ordersQueryKeys.lists(),
+        });
+        
+        toast.success(
+          t(
+            isPickUpFulfillment
+              ? 'orders.fulfillment.toast.fulfillmentPickedUp'
+              : 'orders.fulfillment.toast.fulfillmentDelivered'
+          )
+        );
+      } catch (e: any) {
+        toast.error(e.message);
+      }
     }
   };
 
+  // Handle canceling all fulfillments
   const handleCancel = async () => {
-    if (fulfillment.shipped_at) {
+    if (anyShipped) {
       toast.warning(
         t('orders.fulfillment.toast.fulfillmentShipped')
       );
@@ -337,22 +393,48 @@ const Fulfillment = ({
     });
 
     if (res) {
-      await mutateAsync(undefined, {
-        onSuccess: () => {
-          toast.success(
-            t('orders.fulfillment.toast.canceled')
+      // Cancel all fulfillments in the group
+      try {
+        for (const fulfillment of fulfillments) {
+          await fetchQuery(
+            `/vendor/orders/${order.id}/fulfillments/${fulfillment.id}/cancel`,
+            {
+              method: 'POST',
+            }
           );
-        },
-        onError: (e) => {
-          toast.error(e.message);
-        },
-      });
+        }
+        
+        // Invalidate order queries to refresh the UI
+        await queryClient.invalidateQueries({
+          queryKey: ordersQueryKeys.detail(order.id),
+        });
+        await queryClient.invalidateQueries({
+          queryKey: ordersQueryKeys.lists(),
+        });
+        
+        toast.success(
+          t('orders.fulfillment.toast.canceled')
+        );
+      } catch (e: any) {
+        toast.error(e.message);
+      }
     }
+  };
+
+  // Create shipments for all fulfillments in the group
+  const handleCreateShipment = () => {
+    // Navigate to shipment creation with all fulfillment IDs
+    // The form will handle creating shipments for all of them
+    const fulfillmentIds = fulfillments.map(f => f.id).join(',');
+    navigate(`./${primaryFulfillment.id}/create-shipment?group=${fulfillmentIds}`);
   };
 
   if (isError) {
     throw error;
   }
+
+  // Collect all items from all fulfillments in the group
+  const allItems = fulfillments.flatMap(f => (f as any).items || []);
 
   return (
     <Container className='divide-y p-0'>
@@ -384,7 +466,7 @@ const Fulfillment = ({
                     label: t('actions.cancel'),
                     icon: <XCircle />,
                     onClick: handleCancel,
-                    disabled: !!fulfillment.canceled_at,
+                    disabled: anyCanceled,
                   },
                 ],
               },
@@ -397,7 +479,7 @@ const Fulfillment = ({
           {t('orders.fulfillment.itemsLabel')}
         </Text>
         <ul>
-          {fulfillment.items.map((f_item) => (
+          {allItems.map((f_item: any) => (
             <li key={f_item.line_item_id}>
               <Text size='small' leading='compact'>
                 {f_item.quantity}x {f_item.title}
@@ -435,7 +517,7 @@ const Fulfillment = ({
         </Text>
 
         <Text size='small' leading='compact'>
-          {formatProvider(fulfillment.provider_id)}
+          {formatProvider(primaryFulfillment.provider_id)}
         </Text>
       </div>
       <div className='text-ui-fg-subtle grid grid-cols-2 items-start px-6 py-4'>
@@ -443,10 +525,10 @@ const Fulfillment = ({
           {t('orders.fulfillment.trackingLabel')}
         </Text>
         <div>
-          {fulfillment.labels &&
-          fulfillment.labels.length > 0 ? (
+          {(primaryFulfillment as any).labels &&
+          (primaryFulfillment as any).labels.length > 0 ? (
             <ul>
-              {fulfillment.labels.map((tlink) => {
+              {(primaryFulfillment as any).labels.map((tlink: any) => {
                 const hasUrl =
                   tlink.url &&
                   tlink.url.length > 0 &&
@@ -506,11 +588,7 @@ const Fulfillment = ({
 
           {showShippingButton && (
             <Button
-              onClick={() =>
-                navigate(
-                  `./${fulfillment.id}/create-shipment`
-                )
-              }
+              onClick={handleCreateShipment}
               variant='secondary'
             >
               {t('orders.fulfillment.markAsShipped')}

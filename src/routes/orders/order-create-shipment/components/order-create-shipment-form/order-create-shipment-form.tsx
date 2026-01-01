@@ -15,16 +15,18 @@ import {
 import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
 import { useCreateOrderShipment } from "../../../../../hooks/api"
 import { CreateShipmentSchema } from "./constants"
-import { uploadInvoiceQuery } from "../../../../../lib/client"
+import { uploadInvoiceQuery, fetchQuery } from "../../../../../lib/client/client"
+import { queryClient } from "../../../../../lib/query-client"
+import { ordersQueryKeys } from "../../../../../hooks/api/orders"
 
 type OrderCreateFulfillmentFormProps = {
   order: AdminOrder
-  fulfillment: AdminFulfillment
+  fulfillments: AdminFulfillment[]
 }
 
 export function OrderCreateShipmentForm({
   order,
-  fulfillment,
+  fulfillments,
 }: OrderCreateFulfillmentFormProps) {
   const { t } = useTranslation()
   const { handleSuccess } = useRouteModal()
@@ -35,8 +37,10 @@ export function OrderCreateShipmentForm({
   const [isUploading, setIsUploading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  // Use the first fulfillment for the mutation hook (we'll loop through all in handleSubmit)
+  const primaryFulfillment = fulfillments[0]
   const { mutateAsync: createShipment, isPending: isMutating } =
-    useCreateOrderShipment(order.id, fulfillment?.id)
+    useCreateOrderShipment(order.id, primaryFulfillment?.id)
 
   const form = useForm<zod.infer<typeof CreateShipmentSchema>>({
     defaultValues: {
@@ -91,33 +95,50 @@ export function OrderCreateShipmentForm({
   }
 
   const handleSubmit = form.handleSubmit(async (data) => {
-    await createShipment(
-      {
-        items: fulfillment?.items?.map((i) => ({
-          id: i.line_item_id,
-          quantity: i.quantity,
-        })),
-        labels: data.labels
-          .filter((l) => !!l.tracking_number)
-          .map((l) => ({
-            tracking_number: l.tracking_number,
-            tracking_url: "#",
-            label_url: "#",
-          })),
-        shipping_carrier: data.labels[0]?.carrier || "",
-        invoice_url: data.invoice_url || undefined,
-        invoice_name: data.invoice_name || undefined,
-      },
-      {
-        onSuccess: () => {
-          toast.success(t("orders.shipment.toastCreated"))
-          handleSuccess(`/orders/${order.id}`)
-        },
-        onError: (e) => {
-          toast.error(e.message)
-        },
+    try {
+      // Create shipments for ALL fulfillments in the group
+      for (const fulfillment of fulfillments) {
+        await fetchQuery(
+          `/vendor/orders/${order.id}/fulfillments/${fulfillment.id}/shipments`,
+          {
+            method: 'POST',
+            body: {
+              items: (fulfillment as any).items?.map((i: any) => ({
+                id: i.line_item_id,
+                quantity: i.quantity,
+              })),
+              labels: data.labels
+                .filter((l) => !!l.tracking_number)
+                .map((l) => ({
+                  tracking_number: l.tracking_number,
+                  tracking_url: "#",
+                  label_url: "#",
+                })),
+              shipping_carrier: data.labels[0]?.carrier || "",
+              invoice_url: data.invoice_url || undefined,
+              invoice_name: data.invoice_name || undefined,
+            },
+          }
+        );
       }
-    )
+
+      // Invalidate order queries to refresh the UI with updated shipment status
+      await queryClient.invalidateQueries({
+        queryKey: ordersQueryKeys.detail(order.id),
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ordersQueryKeys.lists(),
+      });
+
+      toast.success(
+        fulfillments.length > 1 
+          ? `${fulfillments.length} shipments created successfully`
+          : t("orders.shipment.toastCreated")
+      );
+      handleSuccess(`/orders/${order.id}`);
+    } catch (e: any) {
+      toast.error(e.message);
+    }
   })
 
   return (
@@ -150,7 +171,7 @@ export function OrderCreateShipmentForm({
                   {labels.map((label, index) => (
                     <div key={label.id} className="mb-6 p-4 border rounded-lg">
                       <div className="flex items-center justify-between mb-3">
-                        <Heading level="h4" className="text-sm">
+                        <Heading className="text-sm">
                           {t("orders.shipment.parcelLabel")} {index + 1}
                         </Heading>
                         {index > 0 && (

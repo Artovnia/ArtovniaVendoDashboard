@@ -19,7 +19,7 @@ const getStatusBadge = (status: string, t: (key: string) => string) => {
     case "pending":
       return <Badge color="orange" size="large">{t('requests.returns.status.pending')}</Badge>
     case "approved":
-      return <Badge color="green" size="large">{t('requests.returns.status.approved')}</Badge>
+      return <Badge color="blue" size="large">{t('requests.returns.status.approved')}</Badge>
     case "refunded":
       return <Badge color="green" size="large">{t('requests.returns.status.refunded')}</Badge>
     case "escalated":
@@ -244,9 +244,22 @@ export const ReturnDetail = ({ returnId }: ReturnDetailProps) => {
               <Container className="p-6">
                 <Heading level="h2" className="mb-4">{t('requests.returns.returnDetail.vendorResponse')}</Heading>
                 <Text>{return_request.vendor_reviewer_note}</Text>
+                {return_request.vendor_review_date && (
+                  <Text className="text-sm text-ui-fg-subtle mt-2">
+                    {t('requests.returns.returnDetail.reviewedOn')}: {getFullDate({ date: new Date(return_request.vendor_review_date), includeTime: true })}
+                  </Text>
+                )}
+              </Container>
+            )}
+
+            {/* Admin Response */}
+            {return_request.admin_reviewer_note && (
+              <Container className="p-6 bg-ui-bg-subtle">
+                <Heading level="h2" className="mb-4">{t('requests.returns.returnDetail.adminResponse')}</Heading>
+                <Text>{return_request.admin_reviewer_note}</Text>
                 {return_request.admin_review_date && (
                   <Text className="text-sm text-ui-fg-subtle mt-2">
-                    {t('requests.returns.returnDetail.reviewedOn')}: {getFullDate({ date: new Date(return_request.admin_review_date), includeTime: true })}
+                    {t('requests.returns.returnDetail.adminReviewedOn')}: {getFullDate({ date: new Date(return_request.admin_review_date), includeTime: true })}
                   </Text>
                 )}
               </Container>

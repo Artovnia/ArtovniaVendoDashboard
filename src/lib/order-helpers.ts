@@ -1,4 +1,5 @@
 import { TFunction } from "i18next"
+import { HttpTypes } from "@medusajs/types"
 
 export const getCanceledOrderStatus = (
   t: TFunction<"translation">,
@@ -9,6 +10,83 @@ export const getCanceledOrderStatus = (
   }
 
   return null
+}
+
+/**
+ * Calculate actual payment status from payment collections and refunds
+ * This is critical for split orders where order.payment_status may not reflect refunds
+ */
+export const calculateActualPaymentStatus = (
+  order: HttpTypes.AdminOrder
+): string => {
+  // If no payment collections, use the order's payment_status
+  if (!order.payment_collections || order.payment_collections.length === 0) {
+    return order.payment_status || "not_paid"
+  }
+
+  let totalAmount = 0
+  let totalRefunded = 0
+  let totalCaptured = 0
+  let hasAuthorized = false
+  let hasCanceled = false
+
+  // Iterate through all payment collections
+  for (const collection of order.payment_collections) {
+    totalAmount += collection.amount || 0
+
+    // Check payments within this collection
+    if (collection.payments && collection.payments.length > 0) {
+      for (const payment of collection.payments) {
+        // Sum captured amounts
+        if (payment.captured_at) {
+          totalCaptured += payment.amount || 0
+        }
+        
+        // Check for authorized payments (authorized but not yet captured)
+        if ((payment.authorized_amount || 0) > 0 && !payment.captured_at) {
+          hasAuthorized = true
+        }
+
+        // Check for canceled payments
+        if (payment.canceled_at) {
+          hasCanceled = true
+        }
+
+        // Sum refunded amounts from this payment
+        if (payment.refunds && payment.refunds.length > 0) {
+          for (const refund of payment.refunds) {
+            totalRefunded += refund.amount || 0
+          }
+        }
+      }
+    }
+  }
+
+  // Determine status based on amounts
+  if (totalRefunded > 0) {
+    if (totalRefunded >= totalCaptured) {
+      return "refunded"
+    }
+    return "partially_refunded"
+  }
+
+  if (totalCaptured > 0) {
+    if (totalCaptured >= totalAmount) {
+      return "captured"
+    }
+    return "partially_captured"
+  }
+
+  if (hasAuthorized) {
+    return "authorized"
+  }
+
+  if (hasCanceled) {
+    return "canceled"
+  }
+
+  // Fallback to order's payment_status
+  return order.payment_status || "not_paid"
 }
 
 export const getOrderPaymentStatus = (

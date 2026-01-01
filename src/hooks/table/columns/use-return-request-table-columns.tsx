@@ -67,7 +67,7 @@ export const useReturnRequestTableColumns = () => {
             case "pending":
               return <Badge color="orange">{t("requests.returns.status.pending")}</Badge>
             case "approved":
-              return <Badge color="green">{t("requests.returns.status.approved")}</Badge>
+              return <Badge color="blue">{t("requests.returns.status.approved")}</Badge>
             case "refunded":
               return <Badge color="green">{t("requests.returns.status.refunded")}</Badge>
             case "escalated":

@@ -124,14 +124,13 @@ const useColumns = ({
   const stockLocationOptions = useMemo(
     () => {
       if (!stock_locations || stock_locations.length === 0) {
-        console.log('⚠️ No stock locations available:', { stock_locations, isLoadingLocations });
         return [];
       }
       const options = stock_locations.map((loc) => ({
         label: loc.name,
         value: loc.id,
       }));
-      console.log('✅ Stock location options prepared:', options);
+
       return options;
     },
     [stock_locations, isLoadingLocations]

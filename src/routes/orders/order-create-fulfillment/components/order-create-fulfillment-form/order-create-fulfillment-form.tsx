@@ -86,7 +86,7 @@ export function OrderCreateFulfillmentForm({
 
   const { shipping_options = [], isLoading: isShippingOptionsLoading } =
     useShippingOptions({
-      fields: "+service_zone.fulfillment_set.location.id",
+      fields: "+service_zone.fulfillment_set.location.id,+shipping_profile_id",
     })
 
   const filteredShippingOptions = shipping_options.filter((o) => o !== null)
@@ -117,25 +117,12 @@ export function OrderCreateFulfillmentForm({
       return
     }
 
-    const selectedShippingProfileId =
-      selectedShippingOption?.shipping_profile_id
-
-    const itemShippingProfileMap = order.items.reduce(
-      (acc, item) => {
-        acc[item.id] = item.variant?.product?.shipping_profile?.id ?? null
-        return acc
-      },
-      {} as Record<string, string | null>
-    )
-
     // Get all items with quantities greater than 0
     const itemsToFulfill = Object.entries(data.quantity)
       .filter(
         ([id, value]) => 
           // Ensure value is greater than 0
-          (value && value > 0) && 
-          // Either match shipping profile or don't filter by profile if none selected
-          (!selectedShippingProfileId || itemShippingProfileMap[id] === selectedShippingProfileId)
+          (value && value > 0)
       )
       .map(([id, quantity]) => ({
         id,
@@ -151,21 +138,16 @@ export function OrderCreateFulfillmentForm({
       return;
     }
 
-    // Format payload to match backend validator requirements
-    // Backend only accepts: items, requires_shipping, location_id
-    const payload = {
-      location_id: selectedLocationId,
-      requires_shipping: true,
-      items: itemsToFulfill,
-      // These fields are used for UI but not sent to backend
-      // shipping_option_id and no_notification are not accepted by the backend
-    }
-
+    // Send all items to backend - it automatically groups by shipping profile
+    // and creates separate fulfillments if needed (transparent to user)
+    
     try {
-      // Debug logs to help identify the issue
-      console.log('Fulfillment payload:', JSON.stringify(payload, null, 2));
-      console.log('Selected shipping option:', selectedShippingOption);
-      console.log('Items to fulfill:', itemsToFulfill);
+      const payload = {
+        location_id: selectedLocationId,
+        requires_shipping: true,
+        items: itemsToFulfill,
+        shipping_option_id: shippingOptionId,
+      }
       
       await createOrderFulfillment(payload)
 
@@ -368,27 +350,20 @@ export function OrderCreateFulfillmentForm({
                     </Form.Hint>
 
                     <div className="flex flex-col gap-y-1">
-                      {fulfillableItems.map((item) => {
-                        const isShippingProfileMatching =
-                          shipping_options.find(
-                            (o) => o?.id === shippingOptionId
-                          )?.shipping_profile_id ===
-                          item.variant?.product?.shipping_profile?.id
-                        return (
-                          <OrderCreateFulfillmentItem
-                            key={item.id}
-                            form={form}
-                            item={item}
-                            locationId={selectedLocationId}
-                            currencyCode={order.currency_code}
-                            onItemRemove={() => {}}
-                            disabled={!isShippingProfileMatching}
-                            itemReservedQuantitiesMap={
-                              itemReservedQuantitiesMap
-                            }
-                          />
-                        )
-                      })}
+                      {fulfillableItems.map((item) => (
+                        <OrderCreateFulfillmentItem
+                          key={item.id}
+                          form={form}
+                          item={item}
+                          locationId={selectedLocationId}
+                          currencyCode={order.currency_code}
+                          onItemRemove={() => {}}
+                          disabled={false}
+                          itemReservedQuantitiesMap={
+                            itemReservedQuantitiesMap
+                          }
+                        />
+                      ))}
                     </div>
                   </Form.Item>
                   {form.formState.errors.root && (

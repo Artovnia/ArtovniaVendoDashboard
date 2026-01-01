@@ -1546,7 +1546,8 @@
       "invoiceFileTooLarge": "File is too large. Maximum size: 10MB",
       "sendNotification": "Send notification",
       "sendNotificationHint": "Notify the customer about this shipment.",
-      "toastCreated": "Shipment created successfully."
+      "toastCreated": "Shipment created successfully.",
+      "parcelLabel": "Parcel"
     },
     "fulfillment": {
       "cancelWarning": "You are about to cancel a fulfillment. This action cannot be undone.",
@@ -3860,7 +3861,7 @@
         "pending": "Pending",
         "approved": "Approved",
         "refunded": "Refunded",
-        "escalated": "Escalated - Admin will handle it",
+        "escalated": "Escalated - Admin will decide",
         "withdrawn": "Withdrawn "
       },
       "returnDetail": {
@@ -3902,6 +3903,9 @@
         "statusUpdated": "Status updated successfully",
         "errorUpdating": "Error updating status",
         "vendorResponse": "Vendor Response",
+        "adminResponse": "Admin Response",
+        "adminReviewedOn": "Admin reviewed on",
+        "reviewedOn": "Reviewed on",
         "backToList": "Back to List",
         "confirmationAlt": "Confirmation",
         "retryAlt": "Try again",

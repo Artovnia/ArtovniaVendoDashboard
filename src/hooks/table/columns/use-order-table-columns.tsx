@@ -84,10 +84,11 @@ export const useOrderTableColumns = (
       }),
       columnHelper.accessor('payment_status', {
         header: () => <PaymentStatusHeader />,
-        cell: ({ getValue }) => {
+        cell: ({ getValue, row }) => {
           const status = getValue();
+          const order = row.original;
 
-          return <PaymentStatusCell status={status} />;
+          return <PaymentStatusCell status={status} order={order} />;
         },
       }),
       columnHelper.accessor('fulfillment_status', {

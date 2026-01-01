@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom"
+import { useParams, useSearchParams } from "react-router-dom"
 
 import { RouteFocusModal } from "../../../components/modals"
 import { useOrder } from "../../../hooks/api/orders"
@@ -6,6 +6,8 @@ import { OrderCreateShipmentForm } from "./components/order-create-shipment-form
 
 export function OrderCreateShipment() {
   const { id, f_id } = useParams()
+  const [searchParams] = useSearchParams()
+  const groupParam = searchParams.get('group')
 
   const { order, isLoading, isError, error } = useOrder(id!, {
     fields: "*fulfillments,*fulfillments.items,*fulfillments.labels",
@@ -17,12 +19,17 @@ export function OrderCreateShipment() {
 
   const ready = !isLoading && order
 
+  // If group parameter exists, get all fulfillments in the group
+  const fulfillments = groupParam
+    ? groupParam.split(',').map(fId => order?.fulfillments?.find((f: any) => f.id === fId)).filter(Boolean)
+    : [order?.fulfillments?.find((f: any) => f.id === f_id)].filter(Boolean)
+
   return (
     <RouteFocusModal>
       {ready && (
         <OrderCreateShipmentForm
           order={order}
-          fulfillment={order.fulfillments?.find((f) => f.id === f_id)}
+          fulfillments={fulfillments as any[]}
         />
       )}
     </RouteFocusModal>
