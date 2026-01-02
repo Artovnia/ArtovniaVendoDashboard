@@ -104,11 +104,11 @@ export const usePayoutTableColumns = () => {
             }
           }
           
-          const getStatusLabel = (status: string) => {
+          const getStatusLabel = (status: string): string => {
             const statusUpper = status?.toUpperCase() || 'PENDING'
             // Try to translate, fallback to status itself
-            const translationKey = `payout.status.${statusUpper.toLowerCase()}`
-            const translated = t(translationKey)
+            const translationKey = `payout.status.${statusUpper.toLowerCase()}` as const
+            const translated = t(translationKey as any)
             return translated === translationKey ? statusUpper : translated
           }
           

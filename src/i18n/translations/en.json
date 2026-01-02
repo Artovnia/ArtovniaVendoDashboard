@@ -3599,7 +3599,17 @@
       "editAddress": "Edit address",
       "editBankAccount": "Edit bank account details",
       "loading": "Loading payout account information...",
-      "setupAccount": "Setup payout account"
+      "setupAccount": "Setup payout account",
+      "commissionRule": "Commission",
+      "commissionRate": "Commission Rate",
+      "commissionType": "Type",
+      "percentage": "Percentage",
+      "flat": "Flat",
+      "includeTax": "Includes Tax",
+      "sellerSpecific": "Individual",
+      "globalRule": "Global",
+      "globalRuleDescription": "You are using the global commission rate. Contact the administrator to get an individual rate.",
+      "noCommissionRule": "No commission rule configured"
     },
     "edit": {
       "bankAccount": "Edit Bank Account",
@@ -3687,7 +3697,9 @@
     "save": "Save",
     "cancel": "Cancel",
     "processing": "Processing...",
-    "debugInfo": "Debug Info"
+    "debugInfo": "Debug Info",
+    "yes": "Yes",
+    "no": "No"
   },
   "dashboard": {
     "onboarding": {

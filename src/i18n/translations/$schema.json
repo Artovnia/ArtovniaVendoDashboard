@@ -13044,6 +13044,36 @@
             },
             "setupAccount": {
               "type": "string"
+            },
+            "commissionRule": {
+              "type": "string"
+            },
+            "commissionRate": {
+              "type": "string"
+            },
+            "commissionType": {
+              "type": "string"
+            },
+            "percentage": {
+              "type": "string"
+            },
+            "flat": {
+              "type": "string"
+            },
+            "includeTax": {
+              "type": "string"
+            },
+            "sellerSpecific": {
+              "type": "string"
+            },
+            "globalRule": {
+              "type": "string"
+            },
+            "globalRuleDescription": {
+              "type": "string"
+            },
+            "noCommissionRule": {
+              "type": "string"
             }
           },
           "required": [
@@ -13059,7 +13089,17 @@
             "editAddress",
             "editBankAccount",
             "loading",
-            "setupAccount"
+            "setupAccount",
+            "commissionRule",
+            "commissionRate",
+            "commissionType",
+            "percentage",
+            "flat",
+            "includeTax",
+            "sellerSpecific",
+            "globalRule",
+            "globalRuleDescription",
+            "noCommissionRule"
           ],
           "additionalProperties": false
         },
@@ -13422,9 +13462,15 @@
         },
         "debugInfo": {
           "type": "string"
+        },
+        "yes": {
+          "type": "string"
+        },
+        "no": {
+          "type": "string"
         }
       },
-      "required": ["loading", "save", "cancel", "processing", "debugInfo"],
+      "required": ["loading", "save", "cancel", "processing", "debugInfo", "yes", "no"],
       "additionalProperties": false
     },
     "dashboard": {

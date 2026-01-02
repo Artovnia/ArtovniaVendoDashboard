@@ -3475,7 +3475,17 @@
       "editAddress": "Edytuj adres",
       "editBankAccount": "Edytuj dane konta bankowego",
       "loading": "Pobieranie informacji o koncie wypłat...",
-      "setupAccount": "Skonfiguruj konto wypłat"
+      "setupAccount": "Skonfiguruj konto wypłat",
+      "commissionRule": "Prowizja",
+      "commissionRate": "Stawka prowizji",
+      "commissionType": "Typ",
+      "percentage": "Procentowa",
+      "flat": "Stała",
+      "includeTax": "Zawiera podatek",
+      "sellerSpecific": "Indywidualna",
+      "globalRule": "Globalna",
+      "globalRuleDescription": "Używasz globalnej stawki prowizji. Skontaktuj się z administratorem, aby uzyskać indywidualną stawkę.",
+      "noCommissionRule": "Brak skonfigurowanej prowizji"
     },
     "edit": {
       "bankAccount": "Edycja konta bankowego",
@@ -3562,7 +3572,9 @@
     "save": "Zapisz",
     "cancel": "Anuluj",
     "processing": "Przetwarzanie...",
-    "debugInfo": "Informacje debugowania"
+    "debugInfo": "Informacje debugowania",
+    "yes": "Tak",
+    "no": "Nie"
   },
   "dashboard": {
     "onboarding": {

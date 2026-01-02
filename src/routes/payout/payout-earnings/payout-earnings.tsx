@@ -11,7 +11,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { CurrencyDollar, Clock, CheckCircle, ExclamationCircle, Plus, PencilSquare } from '@medusajs/icons';
 
-import { usePayoutOverview, useOrdersWithoutPayouts, useCompletedPayouts, usePayoutStatistics } from '../../../hooks/api/payouts';
+import { usePayoutOverview, useOrdersWithoutPayouts, useCompletedPayouts, usePayoutStatistics, useCommissionRule } from '../../../hooks/api/payouts';
 import { DataTable } from '../../../components/data-table';
 import { usePayoutTableColumns } from './components/use-payout-table-columns';
 import { useOrderTableColumns } from './components/use-order-table-columns';
@@ -87,6 +87,9 @@ const PayoutEarnings: React.FC = () => {
     { time_from: from, time_to: to }
   );
 
+  // Fetch commission rule for this seller
+  const { commissionRule, isLoading: commissionLoading } = useCommissionRule();
+
   // Determine which data to show based on active tab
   let displayData, displayCount, isLoading, error;
   
@@ -115,7 +118,7 @@ const PayoutEarnings: React.FC = () => {
 
   const payoutColumns = usePayoutTableColumns();
   const orderColumns = useOrderTableColumns();
-  const columns = activeTab === 'pending' ? orderColumns : payoutColumns;
+  const columns = activeTab === 'pending' ? orderColumns : payoutColumns as any;
 
   const formatCurrency = (amount: number, currencyCode: string = 'PLN') => {
     // Based on database analysis, amounts are stored as full currency units, not cents
@@ -197,7 +200,7 @@ const PayoutEarnings: React.FC = () => {
                 {t('payout.earnings.totalEarnings')}
               </Text>
               <Text size="large" weight="plus" className="text-ui-fg-base">
-                {formatCurrency(earnings?.total_earnings || 0, earnings?.currency_code)}
+                {formatCurrency(earnings?.gross_earnings || 0, earnings?.currency_code)}
               </Text>
               <Text size="xsmall" className="text-ui-fg-subtle">
                 {t('payout.earnings.fromOrders', { count: earnings?.completed_orders_count || 0 })}
@@ -264,6 +267,81 @@ const PayoutEarnings: React.FC = () => {
             </div>
             {getAccountStatusIcon(payoutAccount?.status)}
           </div>
+        </div>
+      </div>
+
+      {/* Commission Rule Information */}
+      <div className="bg-ui-bg-base rounded-lg border border-ui-border-base mb-8">
+        <div className="px-6 py-4 border-b border-ui-border-base">
+          <div className="flex justify-between items-center">
+            <Heading level="h3">{t('payout.detail.commissionRule') || 'Prowizja'}</Heading>
+            {commissionRule?.is_seller_specific && (
+              <Badge color="blue" size="small">
+                {t('payout.detail.sellerSpecific') || 'Indywidualna'}
+              </Badge>
+            )}
+            {commissionRule && !commissionRule.is_seller_specific && (
+              <Badge color="grey" size="small">
+                {t('payout.detail.globalRule') || 'Globalna'}
+              </Badge>
+            )}
+          </div>
+        </div>
+        
+        <div className="p-6">
+          {commissionLoading ? (
+            <Text className="text-ui-fg-subtle">{t('common.loading') || 'Ładowanie...'}</Text>
+          ) : commissionRule ? (
+            <div className="space-y-4">
+              <div>
+                <Text size="small" className="text-ui-fg-subtle mb-1">
+                  {t('payout.detail.commissionRate') || 'Stawka prowizji'}
+                </Text>
+                <Text size="xlarge" weight="plus" className="text-ui-fg-base">
+                  {commissionRule.fee_value}
+                </Text>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Text size="small" className="text-ui-fg-subtle mb-1">
+                    {t('payout.detail.commissionType') || 'Typ'}
+                  </Text>
+                  <Text size="base">
+                    {commissionRule.type === 'percentage' 
+                      ? (t('payout.detail.percentage') || 'Procentowa') 
+                      : (t('payout.detail.flat') || 'Stała')}
+                  </Text>
+                </div>
+                
+                <div>
+                  <Text size="small" className="text-ui-fg-subtle mb-1">
+                    {t('payout.detail.includeTax') || 'Zawiera podatek'}
+                  </Text>
+                  <Text size="base">
+                    {commissionRule.include_tax 
+                      ? (t('common.yes') || 'Tak') 
+                      : (t('common.no') || 'Nie')}
+                  </Text>
+                </div>
+              </div>
+
+              {!commissionRule.is_seller_specific && (
+                <div className="bg-ui-bg-subtle p-4 rounded-lg mt-4">
+                  <Text size="small" className="text-ui-fg-subtle">
+                    {t('payout.detail.globalRuleDescription') || 
+                      'Używasz globalnej stawki prowizji. Skontaktuj się z administratorem, aby uzyskać indywidualną stawkę.'}
+                  </Text>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="bg-ui-bg-subtle p-4 rounded-lg">
+              <Text className="text-ui-fg-subtle">
+                {t('payout.detail.noCommissionRule') || 'Brak skonfigurowanej prowizji'}
+              </Text>
+            </div>
+          )}
         </div>
       </div>
 

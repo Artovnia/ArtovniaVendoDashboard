@@ -7,9 +7,11 @@ import {
   Text,
   Tooltip,
   Label,
+  Badge,
 } from '@medusajs/ui';
 import { useTranslation } from 'react-i18next';
 import { usePayuAccount } from '../../../hooks/api/payu';
+import { useCommissionRule } from '../../../hooks/api/payouts';
 import { PencilSquare } from '@medusajs/icons';
 
 /**
@@ -23,6 +25,9 @@ const PayoutDetail: React.FC = () => {
   
   // Fetch the payout account data with explicit refetch capability
   const { data: payoutAccount, isLoading, error, refetch } = usePayuAccount();
+  
+  // Fetch commission rule for this seller
+  const { commissionRule, isLoading: commissionLoading } = useCommissionRule();
   
   // Force a refresh when component mounts - useful after navigation
   React.useEffect(() => {
@@ -243,6 +248,69 @@ const PayoutDetail: React.FC = () => {
             <Text className="mt-1">{bankAccount?.number}</Text>
           </div>
         </div>
+      </div>
+
+      {/* Commission Rule Information */}
+      <div className="bg-ui-bg-base p-6 rounded-lg border border-ui-border-base mb-6">
+        <div className="flex justify-between items-center mb-4">
+          <Heading level="h3">{t('payout.detail.commissionRule') || 'Prowizja'}</Heading>
+          {commissionRule?.is_seller_specific && (
+            <Badge color="blue" size="small">
+              {t('payout.detail.sellerSpecific') || 'Indywidualna'}
+            </Badge>
+          )}
+          {commissionRule && !commissionRule.is_seller_specific && (
+            <Badge color="grey" size="small">
+              {t('payout.detail.globalRule') || 'Globalna'}
+            </Badge>
+          )}
+        </div>
+        
+        {commissionLoading ? (
+          <Text className="text-ui-fg-subtle">{t('common.loading') || 'Ładowanie...'}</Text>
+        ) : commissionRule ? (
+          <div className="space-y-4">
+            <div>
+              <Label>{t('payout.detail.commissionRate') || 'Stawka prowizji'}</Label>
+              <Text className="mt-1 text-lg font-semibold">{commissionRule.fee_value}</Text>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label>{t('payout.detail.commissionType') || 'Typ'}</Label>
+                <Text className="mt-1">
+                  {commissionRule.type === 'percentage' 
+                    ? (t('payout.detail.percentage') || 'Procentowa') 
+                    : (t('payout.detail.flat') || 'Stała')}
+                </Text>
+              </div>
+              
+              <div>
+                <Label>{t('payout.detail.includeTax') || 'Zawiera podatek'}</Label>
+                <Text className="mt-1">
+                  {commissionRule.include_tax 
+                    ? (t('common.yes') || 'Tak') 
+                    : (t('common.no') || 'Nie')}
+                </Text>
+              </div>
+            </div>
+
+            {!commissionRule.is_seller_specific && (
+              <div className="bg-ui-bg-subtle p-4 rounded-lg mt-4">
+                <Text className="text-sm text-ui-fg-subtle">
+                  {t('payout.detail.globalRuleDescription') || 
+                    'Używasz globalnej stawki prowizji. Skontaktuj się z administratorem, aby uzyskać indywidualną stawkę.'}
+                </Text>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="bg-ui-bg-subtle p-4 rounded-lg">
+            <Text className="text-ui-fg-subtle">
+              {t('payout.detail.noCommissionRule') || 'Brak skonfigurowanej prowizji'}
+            </Text>
+          </div>
+        )}
       </div>
     </Container>
   );

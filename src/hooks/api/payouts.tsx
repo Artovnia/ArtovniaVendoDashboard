@@ -190,16 +190,12 @@ export const useEarningsCalculation = (
 // Combined hook for payout overview
 export const usePayoutOverview = (
   query?: Record<string, any>,
-  options?: {
-    payoutAccountOptions?: Omit<UseQueryOptions<PayoutAccountResponse, FetchError, PayoutAccountResponse, QueryKey>, 'queryFn' | 'queryKey'>
-    payoutsOptions?: Omit<UseQueryOptions<PayoutsListResponse, FetchError, PayoutsListResponse, QueryKey>, 'queryFn' | 'queryKey'>
-    earningsOptions?: Omit<UseQueryOptions<EarningsData, FetchError, EarningsData, QueryKey>, 'queryFn' | 'queryKey'>
-  }
+  options?: Omit<UseQueryOptions<any, FetchError, any, QueryKey>, 'queryFn' | 'queryKey'>
 ) => {
   
-  const payoutAccount = usePayoutAccount({}, options?.payoutAccountOptions);
-  const payouts = usePayouts(query, options?.payoutsOptions);
-  const earnings = useEarningsCalculation({}, options?.earningsOptions);
+  const payoutAccount = usePayoutAccount({}, options);
+  const payouts = usePayouts(query, options);
+  const earnings = useEarningsCalculation({}, options);
   
 
   // Use backend-calculated values from earnings endpoint
@@ -355,6 +351,48 @@ export const usePayoutStatistics = (
     payouts: data?.payouts || [],
     totalEarnings: data?.totalEarnings || 0,
     totalPayouts: data?.totalPayouts || 0,
+    ...rest,
+  }
+}
+
+// Commission Rule Types
+export interface CommissionRuleData {
+  id: string
+  name: string
+  reference: string
+  reference_id: string
+  is_seller_specific: boolean
+  fee_value: string
+  type: string
+  percentage_rate?: number
+  include_tax: boolean
+}
+
+export interface CommissionRuleResponse {
+  commission_rule: CommissionRuleData | null
+}
+
+// Hook to fetch seller's commission rule
+export const useCommissionRule = (
+  options?: Omit<
+    UseQueryOptions<CommissionRuleResponse, FetchError, CommissionRuleResponse, QueryKey>,
+    "queryFn" | "queryKey"
+  >
+) => {
+  const { data, ...rest } = useQuery({
+    queryKey: ['commission_rule'],
+    queryFn: async () => {
+      const response = await fetchQuery('/vendor/commission/rule', {
+        method: 'GET'
+      })
+      
+      return response
+    },
+    ...options,
+  })
+
+  return {
+    commissionRule: data?.commission_rule || null,
     ...rest,
   }
 }
