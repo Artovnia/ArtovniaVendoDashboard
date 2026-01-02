@@ -11196,6 +11196,12 @@
         "passwordMismatch": {
           "type": "string"
         },
+        "identityClaimFailed": {
+          "type": "string"
+        },
+        "emailAlreadyExists": {
+          "type": "string"
+        },
         "toast": {
           "type": "object",
           "properties": {
@@ -11221,6 +11227,8 @@
         "invalidTokenTitle",
         "invalidTokenHint",
         "passwordMismatch",
+        "identityClaimFailed",
+        "emailAlreadyExists",
         "toast"
       ],
       "additionalProperties": false

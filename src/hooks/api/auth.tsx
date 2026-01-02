@@ -26,6 +26,17 @@ export const useSignInWithEmailPass = (
   });
 };
 
+/**
+ * Hook for vendor registration that handles the "claim existing identity" flow.
+ * 
+ * When a customer tries to register as a vendor with the same email:
+ * 1. First attempts normal registration with sdk.auth.register()
+ * 2. If "Identity with email already exists" error occurs, attempts login instead
+ * 3. If login succeeds (password matches), uses that token to create the vendor
+ * 4. If login fails (wrong password), throws appropriate error
+ * 
+ * This allows customers to become vendors using the same email/password.
+ */
 export const useSignUpWithEmailPass = (
   options?: UseMutationOptions<
     string,
@@ -40,7 +51,7 @@ export const useSignUpWithEmailPass = (
   >
 ) => {
   return useMutation({
-    mutationFn: (payload) => {
+    mutationFn: async (payload) => {
       // Prepare the registration payload with user metadata
       const registrationPayload = {
         ...payload,
@@ -50,7 +61,52 @@ export const useSignUpWithEmailPass = (
           portfolio_link: payload.portfolio_link,
         }
       };
-      return sdk.auth.register('seller', 'emailpass', registrationPayload);
+      
+      try {
+        // Step 1: Try normal registration
+        const token = await sdk.auth.register('seller', 'emailpass', registrationPayload);
+        return token;
+      } catch (error: any) {
+        // Step 2: Check if error is "Identity with email already exists"
+        const errorMessage = error?.message || error?.body?.message || '';
+        const isExistingIdentityError = 
+          errorMessage.toLowerCase().includes('identity with email already exists') ||
+          errorMessage.toLowerCase().includes('identity already exists') ||
+          (error?.status === 401 && errorMessage.toLowerCase().includes('identity'));
+        
+        if (isExistingIdentityError) {
+         
+          
+          try {
+            // Step 3: Try to login with seller actor type to claim the identity
+            // This will succeed if the password matches the existing identity
+            const loginResult = await sdk.auth.login('seller', 'emailpass', {
+              email: payload.email,
+              password: payload.password,
+            });
+            
+            
+            // Return the login token - SDK automatically stores it
+            return typeof loginResult === 'string' ? loginResult : loginResult.location || '';
+          } catch (loginError: any) {
+            // Step 4: Login failed - password doesn't match existing identity
+            const loginErrorMessage = loginError?.message || loginError?.body?.message || '';
+            
+            if (loginErrorMessage.toLowerCase().includes('invalid') || 
+                loginErrorMessage.toLowerCase().includes('password') ||
+                loginError?.status === 401) {
+              // Password doesn't match - this email belongs to someone else
+              throw new Error('An account with this email already exists. Please use a different email or contact support.');
+            }
+            
+            // Re-throw other login errors
+            throw loginError;
+          }
+        }
+        
+        // Re-throw non-identity errors
+        throw error;
+      }
     },
     onSuccess: async (_, variables) => {
       const seller = {
@@ -63,7 +119,7 @@ export const useSignUpWithEmailPass = (
           email: variables.email,
         },
       };
-      // Just call fetchQuery - our backward compatibility fix makes it work with both old and new code
+      // Create the vendor/seller record using the token from registration or login
       await fetchQuery('/vendor/sellers', {
         method: 'POST',
         body: seller,

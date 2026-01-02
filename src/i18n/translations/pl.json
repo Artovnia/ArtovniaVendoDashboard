@@ -3899,7 +3899,9 @@
       "confirmPasswordMinLength": "Potwierdzenie hasła musi mieć co najmniej 2 znaki",
       "passwordMismatch": "Hasła nie są zgodne",
       "productDescriptionRequired": "Proszę opisać co chcesz sprzedawać",
-      "invalidUrl": "Musi być prawidłowym URL lub pustym"
+      "invalidUrl": "Musi być prawidłowym URL lub pustym",
+      "emailAlreadyExists": "Konto z tym adresem email już istnieje. Użyj innego adresu email lub skontaktuj się z pomocą techniczną.",
+      "identityClaimFailed": "Nie można zarejestrować się z tym adresem email. Hasło może nie pasować do istniejącego konta."
     }
   },
   

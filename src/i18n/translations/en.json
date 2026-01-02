@@ -4024,7 +4024,9 @@
       "confirmPasswordMinLength": "Confirm password must be at least 2 characters",
       "passwordMismatch": "Passwords do not match",
       "productDescriptionRequired": "Please describe what you want to sell",
-      "invalidUrl": "Must be a valid URL or empty"
+      "invalidUrl": "Must be a valid URL or empty",
+      "emailAlreadyExists": "An account with this email already exists. Please use a different email or contact support.",
+      "identityClaimFailed": "Unable to register with this email. The password may not match the existing account."
     }
   },
   "productStatus": {
