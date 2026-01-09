@@ -11,10 +11,11 @@ import {
 import { useTranslation } from 'react-i18next';
 import { CurrencyDollar, Clock, CheckCircle, ExclamationCircle, Plus, PencilSquare } from '@medusajs/icons';
 
-import { usePayoutOverview, useOrdersWithoutPayouts, useCompletedPayouts, usePayoutStatistics, useCommissionRule } from '../../../hooks/api/payouts';
+import { usePayoutOverview, useOrdersWithoutPayouts, useCompletedPayouts, usePayoutStatistics, useCommissionRule, usePenalties } from '../../../hooks/api/payouts';
 import { DataTable } from '../../../components/data-table';
 import { usePayoutTableColumns } from './components/use-payout-table-columns';
 import { useOrderTableColumns } from './components/use-order-table-columns';
+import { usePenaltyTableColumns } from './components/use-penalty-table-columns';
 import { PayoutCharts } from './components/payout-charts';
 import { addDays, format } from 'date-fns';
 
@@ -42,6 +43,7 @@ const PayoutEarnings: React.FC = () => {
     payoutsCount: allPayoutsCount,
     earnings, 
     totalPaidOut, 
+    absoluteAvailableForPayout,
     availableForPayout, 
     isLoading: overviewLoading, 
     error: overviewError 
@@ -90,6 +92,9 @@ const PayoutEarnings: React.FC = () => {
   // Fetch commission rule for this seller
   const { commissionRule, isLoading: commissionLoading } = useCommissionRule();
 
+  // Fetch penalties for this seller
+  const { penalties, totalPending: penaltiesTotalPending, totalDeducted: penaltiesTotalDeducted, isLoading: penaltiesLoading } = usePenalties();
+
   // Determine which data to show based on active tab
   let displayData, displayCount, isLoading, error;
   
@@ -118,6 +123,7 @@ const PayoutEarnings: React.FC = () => {
 
   const payoutColumns = usePayoutTableColumns();
   const orderColumns = useOrderTableColumns();
+  const penaltyColumns = usePenaltyTableColumns();
   const columns = activeTab === 'pending' ? orderColumns : payoutColumns as any;
 
   const formatCurrency = (amount: number, currencyCode: string = 'PLN') => {
@@ -191,7 +197,7 @@ const PayoutEarnings: React.FC = () => {
       </div>
 
       {/* Overview Cards */}
-      <div className="grid grid-cols-1 gap-4 mb-8 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 mb-8 md:grid-cols-2 lg:grid-cols-3">
         {/* Total Earnings */}
         <div className="bg-ui-bg-base p-6 rounded-lg border border-ui-border-base">
           <div className="flex items-center justify-between">
@@ -210,7 +216,25 @@ const PayoutEarnings: React.FC = () => {
           </div>
         </div>
 
-        {/* Available for Payout */}
+        {/* Total Eligible for Payout (All Delivered) */}
+        <div className="bg-ui-bg-base p-6 rounded-lg border border-ui-border-base">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <Text size="small" className="text-ui-fg-subtle">
+                {t('payout.earnings.totalEligible')}
+              </Text>
+              <Text size="large" weight="plus" className="text-ui-fg-base">
+                {formatCurrency(absoluteAvailableForPayout, earnings?.currency_code)}
+              </Text>
+              <Text size="xsmall" className="text-ui-fg-subtle">
+                {earnings?.absolute_orders_count || 0} {t('payout.earnings.deliveredOrders')}
+              </Text>
+            </div>
+            <CurrencyDollar className="text-ui-fg-muted" />
+          </div>
+        </div>
+
+        {/* Available for Payout (14+ Days) */}
         <div className="bg-ui-bg-base p-6 rounded-lg border border-ui-border-base">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
@@ -221,7 +245,7 @@ const PayoutEarnings: React.FC = () => {
                 {formatCurrency(availableForPayout, earnings?.currency_code)}
               </Text>
               <Text size="xsmall" className="text-ui-fg-subtle">
-                {t('payout.earnings.readyToPayout')}
+                {t('payout.earnings.readyToPayout')} ({earnings?.pending_orders_count || 0} {t('payout.earnings.pendingDelivery')})
               </Text>
             </div>
             <Clock className="text-ui-fg-success" />
@@ -270,19 +294,20 @@ const PayoutEarnings: React.FC = () => {
         </div>
       </div>
 
+     
       {/* Commission Rule Information */}
       <div className="bg-ui-bg-base rounded-lg border border-ui-border-base mb-8">
         <div className="px-6 py-4 border-b border-ui-border-base">
           <div className="flex justify-between items-center">
-            <Heading level="h3">{t('payout.detail.commissionRule') || 'Prowizja'}</Heading>
+            <Heading level="h3">{t('payout.detail.commissionRule')}</Heading>
             {commissionRule?.is_seller_specific && (
               <Badge color="blue" size="small">
-                {t('payout.detail.sellerSpecific') || 'Indywidualna'}
+                {t('payout.detail.sellerSpecific')}
               </Badge>
             )}
             {commissionRule && !commissionRule.is_seller_specific && (
               <Badge color="grey" size="small">
-                {t('payout.detail.globalRule') || 'Globalna'}
+                {t('payout.detail.globalRule')}
               </Badge>
             )}
           </div>
@@ -290,12 +315,12 @@ const PayoutEarnings: React.FC = () => {
         
         <div className="p-6">
           {commissionLoading ? (
-            <Text className="text-ui-fg-subtle">{t('common.loading') || 'Ładowanie...'}</Text>
+            <Text className="text-ui-fg-subtle">{t('common.loading')}</Text>
           ) : commissionRule ? (
             <div className="space-y-4">
               <div>
                 <Text size="small" className="text-ui-fg-subtle mb-1">
-                  {t('payout.detail.commissionRate') || 'Stawka prowizji'}
+                  {t('payout.detail.commissionRate')}
                 </Text>
                 <Text size="xlarge" weight="plus" className="text-ui-fg-base">
                   {commissionRule.fee_value}
@@ -305,23 +330,23 @@ const PayoutEarnings: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Text size="small" className="text-ui-fg-subtle mb-1">
-                    {t('payout.detail.commissionType') || 'Typ'}
+                    {t('payout.detail.commissionType')}
                   </Text>
                   <Text size="base">
                     {commissionRule.type === 'percentage' 
-                      ? (t('payout.detail.percentage') || 'Procentowa') 
-                      : (t('payout.detail.flat') || 'Stała')}
+                      ? t('payout.detail.percentage')
+                      : t('payout.detail.flat')}
                   </Text>
                 </div>
                 
                 <div>
                   <Text size="small" className="text-ui-fg-subtle mb-1">
-                    {t('payout.detail.includeTax') || 'Zawiera podatek'}
+                    {t('payout.detail.includeTax')}
                   </Text>
                   <Text size="base">
                     {commissionRule.include_tax 
-                      ? (t('common.yes') || 'Tak') 
-                      : (t('common.no') || 'Nie')}
+                      ? t('common.yes')
+                      : t('common.no')}
                   </Text>
                 </div>
               </div>
@@ -329,8 +354,7 @@ const PayoutEarnings: React.FC = () => {
               {!commissionRule.is_seller_specific && (
                 <div className="bg-ui-bg-subtle p-4 rounded-lg mt-4">
                   <Text size="small" className="text-ui-fg-subtle">
-                    {t('payout.detail.globalRuleDescription') || 
-                      'Używasz globalnej stawki prowizji. Skontaktuj się z administratorem, aby uzyskać indywidualną stawkę.'}
+                    {t('payout.detail.globalRuleDescription')}
                   </Text>
                 </div>
               )}
@@ -338,12 +362,84 @@ const PayoutEarnings: React.FC = () => {
           ) : (
             <div className="bg-ui-bg-subtle p-4 rounded-lg">
               <Text className="text-ui-fg-subtle">
-                {t('payout.detail.noCommissionRule') || 'Brak skonfigurowanej prowizji'}
+                {t('payout.detail.noCommissionRule')}
               </Text>
             </div>
           )}
         </div>
       </div>
+
+       {/* Penalties Overview */}
+      {penalties.length > 0 && (
+        <div className="bg-ui-bg-base rounded-lg border border-ui-border-base mb-8">
+          <div className="px-6 py-4 border-b border-ui-border-base">
+            <div className="flex justify-between items-center">
+              <Heading level="h3">{t('payout.earnings.penalties.title')}</Heading>
+              <Badge color="red" size="small">
+                {t('payout.earnings.penalties.pending')}
+              </Badge>
+            </div>
+          </div>
+          
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div className="bg-ui-bg-subtle p-4 rounded-lg">
+                <Text size="small" className="text-ui-fg-subtle mb-1">
+                  {t('payout.earnings.penalties.totalPending')}
+                </Text>
+                <Text size="xlarge" weight="plus" className="text-ui-fg-error">
+                  {formatCurrency(penaltiesTotalPending, earnings?.currency_code)}
+                </Text>
+                <Text size="xsmall" className="text-ui-fg-subtle mt-1">
+                  {t('payout.earnings.penalties.willBeDeducted')}
+                </Text>
+              </div>
+              
+              <div className="bg-ui-bg-subtle p-4 rounded-lg">
+                <Text size="small" className="text-ui-fg-subtle mb-1">
+                  {t('payout.earnings.penalties.totalDeducted')}
+                </Text>
+                <Text size="xlarge" weight="plus" className="text-ui-fg-base">
+                  {formatCurrency(penaltiesTotalDeducted, earnings?.currency_code)}
+                </Text>
+                <Text size="xsmall" className="text-ui-fg-subtle mt-1">
+                  {t('payout.earnings.penalties.historicalDeductions')}
+                </Text>
+              </div>
+            </div>
+
+            {/* Penalties Table */}
+            {penalties.length > 0 && (
+              <div className="space-y-4">
+                <Text size="small" weight="plus" className="text-ui-fg-base">
+                  {t('payout.earnings.penalties.recentPenalties')}
+                </Text>
+                <DataTable
+                  data={penalties}
+                  columns={penaltyColumns}
+                  getRowId={(row) => row.id}
+                  rowCount={penalties.length}
+                  isLoading={penaltiesLoading}
+                  pageSize={5}
+                  enablePagination={false}
+                  enableSearch={false}
+                  emptyState={{
+                    empty: {
+                      heading: t('payout.earnings.penalties.noPenalties'),
+                      description: t('payout.earnings.penalties.noPenaltiesDescription'),
+                    },
+                    filtered: {
+                      heading: t('payout.earnings.penalties.noResults'),
+                      description: t('payout.earnings.penalties.tryAdjustingFilter'),
+                    }
+                  }}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
 
       {/* Payout Charts */}
       {hasPayoutAccount && (
@@ -373,15 +469,15 @@ const PayoutEarnings: React.FC = () => {
           }}>
             <Tabs.List>
               <Tabs.Trigger value="all">
-                {t('payout.tabs.all') || 'All'}
+                {t('payout.tabs.all')}
               </Tabs.Trigger>
               <Tabs.Trigger value="completed">
                 <CheckCircle className="mr-1" />
-                {t('payout.tabs.completed') || 'Completed'}
+                {t('payout.tabs.completed')}
               </Tabs.Trigger>
               <Tabs.Trigger value="pending">
                 <Clock className="mr-1" />
-                {t('payout.tabs.pending') || 'Pending'}
+                {t('payout.tabs.pending')}
               </Tabs.Trigger>
             </Tabs.List>
           </Tabs>

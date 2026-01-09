@@ -8272,6 +8272,15 @@
           "properties": {
             "details": {
               "type": "string"
+            },
+            "createPromotion": {
+              "type": "string"
+            },
+            "selectProducts": {
+              "type": "string"
+            },
+            "orderPromotionNoProducts": {
+              "type": "string"
             }
           },
           "required": ["details"],
@@ -8280,10 +8289,16 @@
         "tabs": {
           "type": "object",
           "properties": {
+            "type": {
+              "type": "string"
+            },
             "template": {
               "type": "string"
             },
             "details": {
+              "type": "string"
+            },
+            "products": {
               "type": "string"
             },
             "campaign": {
@@ -8329,6 +8344,81 @@
               },
               "required": ["tooltip"],
               "additionalProperties": false
+            },
+            "applyTo": {
+              "type": "string"
+            },
+            "applyToDescription": {
+              "type": "string"
+            },
+            "specificProducts": {
+              "type": "string"
+            },
+            "specificProductsDescription": {
+              "type": "string"
+            },
+            "productCategories": {
+              "type": "string"
+            },
+            "productCategoriesDescription": {
+              "type": "string"
+            },
+            "selectProducts": {
+              "type": "string"
+            },
+            "selectCategories": {
+              "type": "string"
+            },
+            "selected": {
+              "type": "string"
+            },
+            "searchProducts": {
+              "type": "string"
+            },
+            "searchCategories": {
+              "type": "string"
+            },
+            "searchToAddProducts": {
+              "type": "string"
+            },
+            "searchToAddCategories": {
+              "type": "string"
+            },
+            "selectAllOnPage": {
+              "type": "string"
+            },
+            "noProductsFound": {
+              "type": "string"
+            },
+            "noProducts": {
+              "type": "string"
+            },
+            "noCategories": {
+              "type": "string"
+            },
+            "appliesTo": {
+              "type": "string"
+            },
+            "products": {
+              "type": "string"
+            },
+            "categories": {
+              "type": "string"
+            },
+            "appliesToAllProducts": {
+              "type": "string"
+            },
+            "discount": {
+              "type": "string"
+            },
+            "maxQuantity": {
+              "type": "string"
+            },
+            "discountPercentage": {
+              "type": "string"
+            },
+            "selectPromotionType": {
+              "type": "string"
             },
             "conditions": {
               "type": "object",
@@ -13164,6 +13254,15 @@
             "availableForPayout": {
               "type": "string"
             },
+            "totalEligible": {
+              "type": "string"
+            },
+            "deliveredOrders": {
+              "type": "string"
+            },
+            "pendingDelivery": {
+              "type": "string"
+            },
             "totalPaidOut": {
               "type": "string"
             },
@@ -13238,6 +13337,111 @@
                 "all",
                 "completed",
                 "pending"
+              ],
+              "additionalProperties": false
+            },
+            "penalties": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "pending": {
+                  "type": "string"
+                },
+                "totalPending": {
+                  "type": "string"
+                },
+                "totalDeducted": {
+                  "type": "string"
+                },
+                "willBeDeducted": {
+                  "type": "string"
+                },
+                "historicalDeductions": {
+                  "type": "string"
+                },
+                "recentPenalties": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                },
+                "amount": {
+                  "type": "string"
+                },
+                "remaining": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "date": {
+                  "type": "string"
+                },
+                "showingRecent": {
+                  "type": "string"
+                },
+                "noPenalties": {
+                  "type": "string"
+                },
+                "noPenaltiesDescription": {
+                  "type": "string"
+                },
+                "noResults": {
+                  "type": "string"
+                },
+                "tryAdjustingFilter": {
+                  "type": "string"
+                },
+                "statusValues": {
+                  "type": "object",
+                  "properties": {
+                    "pending": {
+                      "type": "string"
+                    },
+                    "partially_deducted": {
+                      "type": "string"
+                    },
+                    "deducted": {
+                      "type": "string"
+                    },
+                    "paid": {
+                      "type": "string"
+                    },
+                    "waived": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "pending",
+                    "partially_deducted",
+                    "deducted",
+                    "paid",
+                    "waived"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "title",
+                "pending",
+                "totalPending",
+                "totalDeducted",
+                "willBeDeducted",
+                "historicalDeductions",
+                "recentPenalties",
+                "reason",
+                "amount",
+                "remaining",
+                "status",
+                "date",
+                "showingRecent",
+                "noPenalties",
+                "noPenaltiesDescription",
+                "noResults",
+                "tryAdjustingFilter",
+                "statusValues"
               ],
               "additionalProperties": false
             },
@@ -13345,6 +13549,7 @@
             "noPayoutAccount",
             "noPayoutAccountDescription",
             "tabs",
+            "penalties",
             "fields",
             "emptyStates",
             "charts"

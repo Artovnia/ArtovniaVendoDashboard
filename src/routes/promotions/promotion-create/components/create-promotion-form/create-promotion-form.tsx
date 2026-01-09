@@ -22,7 +22,7 @@ import {
   Text,
   toast,
 } from "@medusajs/ui"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useForm, useWatch } from "react-hook-form"
 import { Trans, useTranslation } from "react-i18next"
 import { z } from "zod"
@@ -38,6 +38,7 @@ import { useCreatePromotion } from "../../../../../hooks/api/promotions"
 import { getCurrencySymbol } from "../../../../../lib/data/currencies"
 import { DEFAULT_CAMPAIGN_VALUES } from "../../../../campaigns/common/constants"
 import { RulesFormField } from "../../../common/edit-rules/components/rules-form-field"
+import { PaginatedProductSelector, LightweightCategorySelector, PromotionTypeSelector } from "../../../common/simplified-selectors"
 import { AddCampaignPromotionFields } from "../../../promotion-add-campaign/components/add-campaign-promotion-form"
 import { Tab } from "./constants"
 import { CreatePromotionSchema } from "./form-schema"
@@ -47,10 +48,10 @@ const defaultValues = {
   campaign_id: undefined,
   template_id: getTemplates()[0].id!,
   campaign_choice: "none" as "none",
-  is_automatic: "false",
+  is_automatic: "true",
   code: "",
   type: "standard" as PromotionTypeValues,
-  status: "draft" as PromotionStatusValues,
+  status: "active" as PromotionStatusValues,
   rules: [],
   application_method: {
     allocation: "each" as ApplicationMethodAllocationValues,
@@ -70,8 +71,23 @@ export const CreatePromotionForm = () => {
   const [tabState, setTabState] = useState<TabState>({
     [Tab.TYPE]: "in-progress",
     [Tab.PROMOTION]: "not-started",
+    [Tab.PRODUCTS]: "not-started",
     [Tab.CAMPAIGN]: "not-started",
   })
+
+  // State for product/category selection
+  const [applyTo, setApplyTo] = useState<'products' | 'categories'>('products')
+  const [selectedProductIds, setSelectedProductIds] = useState<string[]>([])
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([])
+  
+  // Memoize callbacks to prevent unnecessary re-renders
+  const handleProductIdsChange = useCallback((ids: string[]) => {
+    setSelectedProductIds(ids)
+  }, [])
+  
+  const handleCategoryIdsChange = useCallback((ids: string[]) => {
+    setSelectedCategoryIds(ids)
+  }, [])
 
   const { t } = useTranslation()
   const { handleSuccess } = useRouteModal()
@@ -133,6 +149,22 @@ export const CreatePromotionForm = () => {
           }))
       }
 
+      // Build target rules from product/category selection
+      const targetRulesFromSelection: any[] = []
+      if (applyTo === 'products' && selectedProductIds.length > 0) {
+        targetRulesFromSelection.push({
+          operator: 'in' as PromotionRuleOperatorValues,
+          attribute: 'items.product.id',
+          values: selectedProductIds,
+        })
+      } else if (applyTo === 'categories' && selectedCategoryIds.length > 0) {
+        targetRulesFromSelection.push({
+          operator: 'in' as PromotionRuleOperatorValues,
+          attribute: 'items.product.categories.id',
+          values: selectedCategoryIds,
+        })
+      }
+
       createPromotion(
         {
           ...promotionData,
@@ -141,7 +173,7 @@ export const CreatePromotionForm = () => {
           application_method: {
             ...applicationMethodData,
             ...applicationMethodRuleData,
-            target_rules: buildRulesData(targetRulesData),
+            target_rules: [...buildRulesData(targetRulesData), ...targetRulesFromSelection],
             type: "percentage",
           },
           is_automatic: is_automatic === "true",
@@ -189,24 +221,18 @@ export const CreatePromotionForm = () => {
         }))
         setTab(tab)
         break
-      case Tab.CAMPAIGN: {
-        // const valid = await form.trigger()
-
-        // if (!valid) {
-        //   // If the promotion tab is not valid, we want to set the tab state to in-progress
-        //   // and set the tab to the promotion tab
-        //   setTabState({
-        //     [Tab.TYPE]: "completed",
-        //     [Tab.PROMOTION]: "in-progress",
-        //     [Tab.CAMPAIGN]: "not-started",
-        //   })
-        //   setTab(Tab.PROMOTION)
-        //   break
-        // }
-
+      case Tab.PRODUCTS:
         setTabState((prev) => ({
           ...prev,
           [Tab.PROMOTION]: "completed",
+          [Tab.PRODUCTS]: "in-progress",
+        }))
+        setTab(tab)
+        break
+      case Tab.CAMPAIGN: {
+        setTabState((prev) => ({
+          ...prev,
+          [Tab.PRODUCTS]: "completed",
           [Tab.CAMPAIGN]: "in-progress",
         }))
         setTab(tab)
@@ -222,11 +248,11 @@ export const CreatePromotionForm = () => {
         break
       case Tab.PROMOTION: {
         const valid =
-          !!form.getValues("code") ||
+          !!form.getValues("code") &&
           !!form.getValues("application_method.value")
 
         if (valid) {
-          handleTabChange(Tab.CAMPAIGN)
+          handleTabChange(Tab.PRODUCTS)
         }
 
         if (!form.getValues("code")) {
@@ -243,6 +269,9 @@ export const CreatePromotionForm = () => {
 
         break
       }
+      case Tab.PRODUCTS:
+        handleTabChange(Tab.CAMPAIGN)
+        break
       case Tab.CAMPAIGN:
         break
     }
@@ -386,8 +415,8 @@ export const CreatePromotionForm = () => {
         >
           <RouteFocusModal.Header>
             <div className="flex w-full items-center justify-between gap-x-4">
-              <div className="-my-2 w-full max-w-[600px] border-l">
-                <ProgressTabs.List className="grid w-full grid-cols-3">
+              <div className="-my-2 w-full max-w-[800px] border-l">
+                <ProgressTabs.List className="grid w-full grid-cols-4">
                   <ProgressTabs.Trigger
                     className="w-full"
                     value={Tab.TYPE}
@@ -402,6 +431,14 @@ export const CreatePromotionForm = () => {
                     status={tabState[Tab.PROMOTION]}
                   >
                     {t("promotions.tabs.details")}
+                  </ProgressTabs.Trigger>
+
+                  <ProgressTabs.Trigger
+                    className="w-full"
+                    value={Tab.PRODUCTS}
+                    status={tabState[Tab.PRODUCTS]}
+                  >
+                    {t("promotions.tabs.products")}
                   </ProgressTabs.Trigger>
 
                   <ProgressTabs.Trigger
@@ -652,11 +689,11 @@ export const CreatePromotionForm = () => {
                     />
                   )}
 
-                  <Divider />
+                  {/* <Divider />
 
                   <RulesFormField form={form} ruleType={"rules"} />
 
-                  <Divider />
+                  <Divider /> */}
 
                   {!currentTemplate?.hiddenFields?.includes(
                     "application_method.type"
@@ -737,11 +774,11 @@ export const CreatePromotionForm = () => {
                                     onValueChange={(value) => {
                                       onChange(value ? parseInt(value) : "")
                                     }}
-                                    code={currencyCode || "USD"}
+                                    code={currencyCode || "PLN"}
                                     symbol={
                                       currencyCode
                                         ? getCurrencySymbol(currencyCode)
-                                        : "$"
+                                        : "PLN"
                                     }
                                     value={value}
                                     // disabled={!currencyCode}
@@ -889,7 +926,7 @@ export const CreatePromotionForm = () => {
                     </>
                   )}
 
-                  {!isTargetTypeOrder && (
+                  {/* {!isTargetTypeOrder && (
                     <>
                       <Divider />
                       <RulesFormField
@@ -898,6 +935,48 @@ export const CreatePromotionForm = () => {
                         scope="application_method.target_rules"
                       />
                     </>
+                  )} */}
+                </div>
+              </div>
+            </ProgressTabs.Content>
+
+            <ProgressTabs.Content
+              value={Tab.PRODUCTS}
+              className="size-full overflow-y-auto"
+            >
+              <div className="flex size-full flex-col items-center">
+                <div className="flex w-full max-w-[720px] flex-col gap-y-8 py-16">
+                  <Heading level="h1" className="text-fg-base">
+                    {t("promotions.sections.selectProducts")}
+                  </Heading>
+
+                  {!isTargetTypeOrder && (
+                    <>
+                      <PromotionTypeSelector
+                        value={applyTo}
+                        onChange={setApplyTo}
+                      />
+
+                      {applyTo === 'products' && (
+                        <PaginatedProductSelector
+                          selectedProductIds={selectedProductIds}
+                          onChange={handleProductIdsChange}
+                        />
+                      )}
+
+                      {applyTo === 'categories' && (
+                        <LightweightCategorySelector
+                          selectedCategoryIds={selectedCategoryIds}
+                          onChange={handleCategoryIdsChange}
+                        />
+                      )}
+                    </>
+                  )}
+
+                  {isTargetTypeOrder && (
+                    <Text size="small" className="text-ui-fg-subtle">
+                      {t("promotions.sections.orderPromotionNoProducts")}
+                    </Text>
                   )}
                 </div>
               </div>

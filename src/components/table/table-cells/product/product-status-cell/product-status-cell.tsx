@@ -1,3 +1,4 @@
+import { memo } from "react"
 import { useTranslation } from "react-i18next"
 
 import { StatusCell } from "../../common/status-cell"
@@ -7,18 +8,22 @@ type ProductStatusCellProps = {
   status: HttpTypes.AdminProductStatus
 }
 
-export const ProductStatusCell = ({ status }: ProductStatusCellProps) => {
+export const ProductStatusCell = memo(({ status }: ProductStatusCellProps) => {
   const { t } = useTranslation()
 
-  const [color, text] = {
+  // Defensive: handle undefined or invalid status
+  const statusMap = {
     draft: ["grey", t("productStatus.draft")],
     proposed: ["orange", t("productStatus.proposed")],
     published: ["green", t("productStatus.published")],
     rejected: ["red", t("productStatus.rejected")],
-  }[status] as ["grey" | "orange" | "green" | "red", string]
+  } as const
+
+  const statusData = status ? statusMap[status] : statusMap.draft
+  const [color, text] = statusData || ["grey", t("productStatus.draft")]
 
   return <StatusCell color={color}>{text}</StatusCell>
-}
+}, (prevProps, nextProps) => prevProps.status === nextProps.status)
 
 export const ProductStatusHeader = () => {
   const { t } = useTranslation()

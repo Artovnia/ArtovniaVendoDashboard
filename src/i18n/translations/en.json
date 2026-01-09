@@ -2312,11 +2312,16 @@
   "promotions": {
     "domain": "Promotions",
     "sections": {
-      "details": "Promotion Details"
+      "details": "Promotion Details",
+      "createPromotion": "Create Promotion",
+      "selectProducts": "Select Products",
+      "orderPromotionNoProducts": "This promotion applies to the entire order. No product selection needed."
     },
     "tabs": {
+      "type": "Type",
       "template": "Type",
       "details": "Details",
+      "products": "Products",
       "campaign": "Campaign"
     },
     "fields": {
@@ -2330,6 +2335,41 @@
       "clearAll": "Clear all",
       "amount": {
         "tooltip": "Select the currency code to enable setting the amount"
+      },
+      "applyTo": "Apply promotion to",
+      "applyToDescription": "Choose whether this promotion applies to specific products or entire categories",
+      "specificProducts": "Specific Products",
+      "specificProductsDescription": "Select individual products for this promotion",
+      "productCategories": "Product Categories",
+      "productCategoriesDescription": "Apply to all products in selected categories",
+      "selectProducts": "Select Products",
+      "selectCategories": "Select Categories",
+      "selected": "selected",
+      "searchProducts": "Search products...",
+      "searchCategories": "Search categories...",
+      "searchToAddProducts": "Search and click to add products",
+      "searchToAddCategories": "Search and click to add categories",
+      "selectAllOnPage": "Select all on this page",
+      "noProductsFound": "No products found",
+      "noProducts": "No products available",
+      "noCategories": "No categories available",
+      "appliesTo": "Applies to",
+      "products": "products",
+      "categories": "categories",
+      "appliesToAllProducts": "This promotion applies to all products",
+      "discount": "Discount",
+      "maxQuantity": "Max Quantity",
+      "discountPercentage": "Discount Percentage",
+      "selectPromotionType": "Select Promotion Type",
+      "targetType": {
+        "items": {
+          "title": "Discount on Products",
+          "description": "Apply discount to specific products or categories"
+        },
+        "order": {
+          "title": "Discount on Entire Order",
+          "description": "Apply discount to the total order amount"
+        }
       },
       "conditions": {
         "rules": {
@@ -2484,6 +2524,10 @@
           "title": "Promotion Value",
           "description": "The percentage to discount off the amount. eg. 8%"
         }
+      },
+      "discountPercentage": {
+        "title": "Discount Percentage",
+        "description": "The percentage discount to apply (e.g., 15 for 15% off)"
       }
     },
     "deleteWarning": "You are about to delete the promotion {{code}}. This action cannot be undone.",
@@ -3628,6 +3672,9 @@
       "grossEarnings": "Gross Earnings",
       "commissionDeductions": "Commission Deductions",
       "availableForPayout": "Available for Payout",
+      "totalEligible": "Total Eligible",
+      "deliveredOrders": "delivered orders",
+      "pendingDelivery": "pending",
       "totalPaidOut": "Total Paid Out",
       "accountStatus": "Account Status",
       "payoutHistory": "Payout History",
@@ -3651,6 +3698,32 @@
         "all": "All",
         "completed": "Completed",
         "pending": "Pending"
+      },
+      "penalties": {
+        "title": "Penalties",
+        "pending": "Pending",
+        "totalPending": "Total Pending Penalties",
+        "totalDeducted": "Total Deducted Penalties",
+        "willBeDeducted": "Will be deducted from next payout",
+        "historicalDeductions": "Historical deductions",
+        "recentPenalties": "Recent Penalties",
+        "reason": "Reason",
+        "amount": "Amount",
+        "remaining": "Remaining",
+        "status": "Status",
+        "date": "Date",
+        "showingRecent": "Showing {{count}} of {{total}} penalties",
+        "noPenalties": "No penalties",
+        "noPenaltiesDescription": "You have no penalties",
+        "noResults": "No results found",
+        "tryAdjustingFilter": "Try adjusting your filter criteria",
+        "statusValues": {
+          "pending": "Pending",
+          "partially_deducted": "Partially Deducted",
+          "deducted": "Deducted",
+          "paid": "Paid",
+          "waived": "Waived"
+        }
       },
       "fields": {
         "payoutAmount": "Payout Amount",

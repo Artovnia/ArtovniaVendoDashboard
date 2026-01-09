@@ -1,3 +1,4 @@
+import { memo } from "react"
 import { useTranslation } from "react-i18next"
 
 import { Thumbnail } from "../../../../common/thumbnail"
@@ -7,7 +8,8 @@ type ProductCellProps = {
   product: Pick<HttpTypes.AdminProduct, "thumbnail" | "title">
 }
 
-export const ProductCell = ({ product }: ProductCellProps) => {
+export const ProductCell = memo(({ product }: ProductCellProps) => {
+  
   return (
     <div className="flex h-full w-full max-w-[250px] items-center gap-x-3 overflow-hidden">
       <div className="w-fit flex-shrink-0">
@@ -18,7 +20,11 @@ export const ProductCell = ({ product }: ProductCellProps) => {
       </span>
     </div>
   )
-}
+}, (prevProps, nextProps) => {
+  // Only re-render if actual data changed
+  return prevProps.product.thumbnail === nextProps.product.thumbnail &&
+         prevProps.product.title === nextProps.product.title
+})
 
 export const ProductHeader = () => {
   const { t } = useTranslation()

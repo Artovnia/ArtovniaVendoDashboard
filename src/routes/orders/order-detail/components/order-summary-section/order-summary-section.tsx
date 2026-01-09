@@ -84,17 +84,7 @@ export const OrderSummarySection = ({
     fields: '+received_at',
   });
 
-  // Debug: Log returns data
-  console.log('🔍 OrderSummarySection - Returns data:', {
-    orderId: order.id,
-    returnsCount: returns.length,
-    returns: returns.map(r => ({
-      id: r.id,
-      status: r.status,
-      order_id: r.order_id,
-      created_at: r.created_at
-    }))
-  });
+  
 
   const receivableReturns = useMemo(
     () => returns.filter((r) => !r.canceled_at),

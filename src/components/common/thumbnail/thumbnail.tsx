@@ -1,3 +1,4 @@
+import { memo } from "react"
 import { Photo } from "@medusajs/icons"
 import { clx } from "@medusajs/ui"
 
@@ -7,7 +8,8 @@ type ThumbnailProps = {
   size?: "small" | "base"
 }
 
-export const Thumbnail = ({ src, alt, size = "base" }: ThumbnailProps) => {
+export const Thumbnail = memo(({ src, alt, size = "base" }: ThumbnailProps) => {
+  
   return (
     <div
       className={clx(
@@ -23,10 +25,15 @@ export const Thumbnail = ({ src, alt, size = "base" }: ThumbnailProps) => {
           src={src}
           alt={alt}
           className="h-full w-full object-cover object-center"
+          loading="lazy"
+          decoding="async"
         />
       ) : (
         <Photo className="text-ui-fg-subtle" />
       )}
     </div>
   )
-}
+}, (prevProps, nextProps) => {
+  // Only re-render if src or size changed
+  return prevProps.src === nextProps.src && prevProps.size === nextProps.size
+})

@@ -9,7 +9,9 @@ import {
   ComponentPropsWithoutRef,
   Fragment,
   UIEvent,
+  useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -95,23 +97,23 @@ export const DataTableRoot = <TData,>({
 
   const scrollableRef = useRef<HTMLDivElement>(null);
 
-  const hasSelect = columns.find((c) => c.id === 'select');
-  const hasActions = columns.find(
-    (c) => c.id === 'actions'
-  );
+  const hasSelect = useMemo(() => columns.find((c) => c.id === 'select'), [columns]);
+  const hasActions = useMemo(() => columns.find((c) => c.id === 'actions'), [columns]);
   const hasCommandBar = commands && commands.length > 0;
 
   const rowSelection = table.getState().rowSelection;
   const { pageIndex, pageSize } =
     table.getState().pagination;
 
-  const colCount =
+  const colCount = useMemo(() =>
     columns.length -
     (hasSelect ? 1 : 0) -
-    (hasActions ? 1 : 0);
+    (hasActions ? 1 : 0),
+    [columns.length, hasSelect, hasActions]
+  );
   const colWidth = 100 / colCount;
 
-  const handleHorizontalScroll = (
+  const handleHorizontalScroll = useCallback((
     e: UIEvent<HTMLDivElement>
   ) => {
     const scrollLeft = e.currentTarget.scrollLeft;
@@ -121,15 +123,15 @@ export const DataTableRoot = <TData,>({
     } else {
       setShowStickyBorder(false);
     }
-  };
+  }, []);
 
-  const handleAction = async (
+  const handleAction = useCallback(async (
     action: BulkCommand['action']
   ) => {
     await action(rowSelection).then(() => {
       table.resetRowSelection();
     });
-  };
+  }, [rowSelection, table]);
 
   useEffect(() => {
     scrollableRef.current?.scroll({ top: 0, left: 0 });
@@ -251,7 +253,7 @@ export const DataTableRoot = <TData,>({
                     key={row.id}
                     data-selected={row.getIsSelected()}
                     className={clx(
-                      'transition-fg group/row group relative [&_td:last-of-type]:w-[1%] [&_td:last-of-type]:whitespace-nowrap',
+                      'transition-[background-color] duration-75 ease-out group/row group relative will-change-[background-color] [&_td:last-of-type]:w-[1%] [&_td:last-of-type]:whitespace-nowrap',
                       'has-[[data-row-link]:focus-visible]:bg-ui-bg-base-hover',
                       {
                         'bg-ui-bg-subtle hover:bg-ui-bg-subtle-hover':
@@ -314,7 +316,7 @@ export const DataTableRoot = <TData,>({
                           className={clx({
                             '!pl-0 !pr-0':
                               shouldRenderAsLink,
-                            "bg-ui-bg-base group-data-[selected=true]/row:bg-ui-bg-highlight group-data-[selected=true]/row:group-hover/row:bg-ui-bg-highlight-hover group-hover/row:bg-ui-bg-base-hover transition-fg group-has-[[data-row-link]:focus-visible]:bg-ui-bg-base-hover left-0 after:absolute after:inset-y-0 after:right-0 after:h-full after:w-px after:bg-transparent after:content-['']":
+                            "bg-ui-bg-base group-data-[selected=true]/row:bg-ui-bg-highlight group-data-[selected=true]/row:group-hover/row:bg-ui-bg-highlight-hover group-hover/row:bg-ui-bg-base-hover transition-[background-color] duration-75 ease-out group-has-[[data-row-link]:focus-visible]:bg-ui-bg-base-hover left-0 after:absolute after:inset-y-0 after:right-0 after:h-full after:w-px after:bg-transparent after:content-['']":
                               isStickyCell,
                             'bg-ui-bg-subtle group-hover/row:bg-ui-bg-subtle-hover':
                               isOdd && isStickyCell,

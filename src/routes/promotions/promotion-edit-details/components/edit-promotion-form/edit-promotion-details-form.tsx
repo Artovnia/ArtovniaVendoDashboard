@@ -1,15 +1,19 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { AdminPromotion } from "@medusajs/types"
-import { Button, Input, RadioGroup, Text } from "@medusajs/ui"
+import { Badge, Button, Input, RadioGroup, Text } from "@medusajs/ui"
 import { useForm } from "react-hook-form"
 import { Trans, useTranslation } from "react-i18next"
 import * as zod from "zod"
+import { useMemo, useEffect, useState } from "react"
 
 import { Form } from "../../../../../components/common/form"
+import { Thumbnail } from "../../../../../components/common/thumbnail"
 import { DeprecatedPercentageInput } from "../../../../../components/inputs/percentage-input"
 import { RouteDrawer, useRouteModal } from "../../../../../components/modals"
 import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
 import { useUpdatePromotion } from "../../../../../hooks/api/promotions"
+import { useProductCategories } from "../../../../../hooks/api/categories"
+import { fetchQuery } from "../../../../../lib/client"
 
 type EditPromotionFormProps = {
   promotion: AdminPromotion
@@ -28,6 +32,69 @@ export const EditPromotionDetailsForm = ({
 }: EditPromotionFormProps) => {
   const { t } = useTranslation()
   const { handleSuccess } = useRouteModal()
+
+  // Extract product and category IDs from target rules
+  const { productIds, categoryIds } = useMemo(() => {
+    const targetRules = promotion.application_method?.target_rules || []
+    
+    const productRule = targetRules.find(
+      (rule) => rule.attribute === 'items.product.id'
+    )
+    const categoryRule = targetRules.find(
+      (rule) => rule.attribute === 'items.product.categories.id'
+    )
+
+    // Extract string values from BasePromotionRuleValue objects
+    const extractIds = (values: any[] | undefined): string[] => {
+      if (!values) return []
+      return values.map(v => typeof v === 'string' ? v : v.value)
+    }
+
+    return {
+      productIds: extractIds(productRule?.values),
+      categoryIds: extractIds(categoryRule?.values),
+    }
+  }, [promotion])
+
+  // Fetch products individually since vendor API doesn't support id filter
+  const [products, setProducts] = useState<any[]>([])
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      if (productIds.length === 0) {
+        setProducts([])
+        return
+      }
+
+      try {
+        const productPromises = productIds.map(id =>
+          fetchQuery(`/vendor/products/${id}`, {
+            method: 'GET',
+            query: { fields: 'id,title,thumbnail' },
+          })
+        )
+        const fetchedProducts = await Promise.all(productPromises)
+        setProducts(fetchedProducts.map((p: any) => p.product))
+      } catch (error) {
+        console.error('[EditPromotionForm] Error fetching products:', error)
+        setProducts([])
+      }
+    }
+
+    fetchProducts()
+  }, [productIds])
+
+  // Fetch categories if we have category IDs
+  const { product_categories } = useProductCategories(
+    {
+      id: categoryIds.length > 0 ? categoryIds : undefined,
+      fields: 'id,name,handle',
+      limit: 100,
+    },
+    {
+      enabled: categoryIds.length > 0,
+    }
+  )
 
   const form = useForm<zod.infer<typeof EditPromotionSchema>>({
     defaultValues: {
@@ -69,6 +136,51 @@ export const EditPromotionDetailsForm = ({
         className="flex flex-1 flex-col overflow-hidden"
       >
         <RouteDrawer.Body className="flex flex-1 flex-col gap-y-8 overflow-y-auto">
+          {/* Display products/categories if any */}
+          {(products && products.length > 0) || (product_categories && product_categories.length > 0) ? (
+            <div className="flex flex-col gap-y-4">
+              <div className="border-b pb-4">
+                <Text size="small" weight="plus" className="mb-3">
+                  {t("promotions.fields.appliesTo")}
+                </Text>
+                
+                {products && products.length > 0 && (
+                  <div className="mb-4">
+                    <Text size="xsmall" className="text-ui-fg-subtle mb-2">
+                      {t("promotions.fields.products")} ({products.length})
+                    </Text>
+                    <div className="flex flex-col gap-2">
+                      {products.map((product) => (
+                        <div 
+                          key={product.id} 
+                          className="flex items-center gap-3 p-2 bg-ui-bg-subtle rounded-md"
+                        >
+                          <Thumbnail src={product.thumbnail || undefined} size="small" />
+                          <Text size="small">{product.title}</Text>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {product_categories && product_categories.length > 0 && (
+                  <div>
+                    <Text size="xsmall" className="text-ui-fg-subtle mb-2">
+                      {t("promotions.fields.categories")} ({product_categories.length})
+                    </Text>
+                    <div className="flex flex-wrap gap-2">
+                      {product_categories.map((category) => (
+                        <Badge key={category.id} size="small">
+                          {category.name}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : null}
+
           <div className="flex flex-col gap-y-8">
             <Form.Field
               control={form.control}

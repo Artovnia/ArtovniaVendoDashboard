@@ -136,16 +136,25 @@ export const useProductVariant = (
     queryFn: async () => {
     
       // Use fetchQuery with vendor endpoint instead of sdk.admin
-      return await fetchQuery(`/vendor/products/${productId}/variants/${variantId}`, {
+      const response = await fetchQuery(`/vendor/products/${productId}/variants/${variantId}`, {
         method: 'GET',
         query: query as Record<string, string>,
       });
+      
+     
+      
+      return response;
     },
     queryKey: variantsQueryKeys.detail(variantId, query),
     ...options,
   });
 
-  return { ...data, ...rest };
+  // Backend returns { variant: {...} }, so we need to extract variant
+  const variant = data?.variant;
+  
+
+
+  return { variant, ...rest };
 };
 
 export const useProductVariants = (
@@ -449,10 +458,18 @@ export const useProducts = (
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: async () => {
-      // Use only simple supported parameters
+      // CRITICAL FIX: Always request variants AND status in the initial query to avoid N+1 problem
+      const defaultFields = 'id,title,thumbnail,handle,status,variants,variants.prices';
+      const requestedFields = query?.fields || defaultFields;
+      
+      // If fields are specified with +, merge with defaults
+      const finalFields = requestedFields.startsWith('+') 
+        ? `${defaultFields}${requestedFields}`
+        : requestedFields;
+      
       const formattedQuery = { 
         ...query,
-        fields: query?.fields || 'id,title,thumbnail,handle,variants'
+        fields: finalFields
       };
       
       // Format query params to ensure all values are strings
@@ -463,72 +480,14 @@ export const useProducts = (
         }
       });
       
-      // We don't use price_list_id directly as it's not supported by the vendor API
-      // Instead, we'll handle price list prices separately in the component
-      
-      // Execute the API call
+      // Execute the API call with variants included
       const result = await fetchQuery('/vendor/products', {
         method: 'GET',
         query: queryParams,
       });
       
-      
-      
-      // Make sure we have products with variants properly initialized
+      // Ensure all products have proper structure (defensive programming)
       if (result?.products && Array.isArray(result.products)) {
-        // Collect products that need variant data
-        const productsNeedingVariants = result.products.filter(product => 
-          product.id && (!product.variants || product.variants.length === 0)
-        );
-        
-        // If we have products needing variants, fetch them in a single batch request
-        if (productsNeedingVariants.length > 0) {
-          try {
-            const productIds = productsNeedingVariants.map(p => p.id);
-            
-            // Since batch querying by ID is not supported, we need to fall back to individual requests
-            // But we'll do them in parallel to minimize performance impact
-            const batchPromises = productIds.map(productId =>
-              fetchQuery(`/vendor/products/${productId}`, {
-                method: 'GET',
-                query: {
-                  fields: 'id,variants,variants.prices'
-                }
-              }).catch(err => {
-                console.error(`Failed to fetch variants for product ${productId}:`, err);
-                return null;
-              })
-            );
-            
-            const batchResults = await Promise.all(batchPromises);
-            
-            // Map the variant data back to the original products
-            const variantMap = new Map();
-            batchResults.forEach((result: any) => {
-              if (result?.product?.variants) {
-                variantMap.set(result.product.id, result.product.variants);
-              }
-            });
-            
-            // Update products with their variants
-            productsNeedingVariants.forEach((product: any) => {
-              const variants = variantMap.get(product.id);
-              if (variants) {
-                product.variants = variants;
-              }
-            });
-          } catch (err) {
-            console.error('Failed to batch fetch variants:', err);
-            // Fallback: ensure all products have empty variants array
-            productsNeedingVariants.forEach(product => {
-              if (!product.variants) {
-                product.variants = [];
-              }
-            });
-          }
-        }
-        
-        // Ensure all products have proper structure
         result.products.forEach((product: any) => {
           // Ensure the variants array exists
           if (!product.variants) {

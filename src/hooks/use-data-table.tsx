@@ -102,11 +102,11 @@ export const useDataTable = <TData,>({
     return state
   }
 
-  const table = useReactTable({
+  const tableOptions = useMemo(() => ({
     data,
     columns,
     state: {
-      rowSelection: rowSelection, // We always pass a selection state to the table even if it's not enabled
+      rowSelection: rowSelection,
       pagination: enablePagination ? pagination : undefined,
     },
     pageCount: Math.ceil((count ?? 0) / pageSize),
@@ -126,7 +126,24 @@ export const useDataTable = <TData,>({
       : undefined,
     manualPagination: enablePagination ? true : undefined,
     meta,
-  })
+  }), [
+    data,
+    columns,
+    rowSelection,
+    enablePagination,
+    pagination,
+    count,
+    pageSize,
+    enableRowSelection,
+    getRowId,
+    getSubRows,
+    setRowSelection,
+    onPaginationChange,
+    enableExpandableRows,
+    meta,
+  ])
+
+  const table = useReactTable(tableOptions)
 
   return { table }
 }

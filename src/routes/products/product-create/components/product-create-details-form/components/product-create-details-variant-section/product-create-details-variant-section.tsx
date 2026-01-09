@@ -114,26 +114,30 @@ export const ProductCreateVariantsSection = ({
   useEffect(() => {
     // Only sync if:
     // 1. Variants are NOT enabled (single default variant mode)
-    // 2. There's exactly one variant
-    // 3. It's marked as default
-    // 4. Product title has a value
-    if (!watchedAreVariantsEnabled && watchedVariants.length === 1 && watchedVariants[0]?.is_default && productTitle) {
-      const currentVariantTitle = watchedVariants[0].title || "";
+    // 2. Product title has a value
+    if (!watchedAreVariantsEnabled && productTitle) {
+      // Get fresh variant data directly from form to avoid stale closure issues
+      const currentVariants = form.getValues("variants");
       
-      // Only sync if variant title is empty, default, or already matches product title
-      // This prevents overwriting user's manual edits
-      const isDefaultOrEmpty = !currentVariantTitle || currentVariantTitle === "Default variant";
-      const matchesProductTitle = currentVariantTitle === productTitle;
-      
-      if (isDefaultOrEmpty || matchesProductTitle) {
-        form.setValue("variants.0.title", productTitle, { 
-          shouldDirty: false, 
-          shouldValidate: false,
-          shouldTouch: false 
-        });
+      // Check if we have exactly one default variant
+      if (currentVariants && currentVariants.length === 1 && currentVariants[0]?.is_default) {
+        const currentVariantTitle = currentVariants[0].title || "";
+        
+        // Only sync if variant title is empty, default, or starts with the product title
+        // This prevents overwriting user's manual edits while allowing real-time sync
+        const isDefaultOrEmpty = !currentVariantTitle || currentVariantTitle === "Default variant";
+        const startsWithProductTitle = currentVariantTitle.startsWith(productTitle.substring(0, Math.max(1, productTitle.length - 1)));
+        
+        if (isDefaultOrEmpty || startsWithProductTitle || currentVariantTitle === productTitle) {
+          form.setValue("variants.0.title", productTitle, { 
+            shouldDirty: false, 
+            shouldValidate: false,
+            shouldTouch: false 
+          });
+        }
       }
     }
-  }, [productTitle, watchedAreVariantsEnabled, watchedVariants, form])
+  }, [productTitle, watchedAreVariantsEnabled, form])
 
   const showInvalidOptionsMessage = !!form.formState.errors.options?.length
   const showInvalidVariantsMessage =
@@ -149,9 +153,26 @@ export const ProductCreateVariantsSection = ({
     const permutations = getPermutations(newOptions)
     const oldVariants = [...watchedVariants]
 
+    // CRITICAL FIX: Create mapping of old option titles to new option titles
+    // This handles cases where user changes option title after creating variants
+    const optionTitleMapping = new Map<string, string>()
+    watchedOptions.forEach((oldOption, idx) => {
+      const newOption = newOptions[idx]
+      if (oldOption.title !== newOption.title) {
+        optionTitleMapping.set(oldOption.title, newOption.title)
+      }
+    })
+
     const findMatchingPermutation = (options: Record<string, string>) => {
+      // Update option keys to match current option titles
+      const updatedOptions: Record<string, string> = {}
+      Object.entries(options).forEach(([key, value]) => {
+        const newKey = optionTitleMapping.get(key) || key
+        updatedOptions[newKey] = value
+      })
+      
       return permutations.find((permutation) =>
-        Object.keys(options).every((key) => options[key] === permutation[key])
+        Object.keys(updatedOptions).every((key) => updatedOptions[key] === permutation[key])
       )
     }
 

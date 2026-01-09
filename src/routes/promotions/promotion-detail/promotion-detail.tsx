@@ -10,6 +10,7 @@ import {
 import { CampaignSection } from './components/campaign-section';
 import { PromotionConditionsSection } from './components/promotion-conditions-section';
 import { PromotionGeneralSection } from './components/promotion-general-section';
+import { PromotionProductsSection } from './components/promotion-products-section';
 import { promotionLoader } from './loader';
 
 export const PromotionDetail = () => {
@@ -28,11 +29,6 @@ export const PromotionDetail = () => {
   }
 
   const { rules } = usePromotionRules(id!, 'rules', query);
-  const { rules: targetRules } = usePromotionRules(
-    id!,
-    'target-rules',
-    query
-  );
   const { rules: buyRules } = usePromotionRules(
     id!,
     'buy-rules',
@@ -68,18 +64,15 @@ export const PromotionDetail = () => {
     >
       <TwoColumnPage.Main>
         <PromotionGeneralSection promotion={promotion} />
+        <PromotionProductsSection promotion={promotion} />
         <PromotionConditionsSection
           rules={rules || []}
           ruleType={'rules'}
         />
-        <PromotionConditionsSection
-          rules={targetRules || []}
-          ruleType={'target-rules'}
-        />
         {promotion.type === 'buyget' && (
           <PromotionConditionsSection
             rules={buyRules || []}
-            ruleType={'buy-rules'}
+            ruleType={'buy_rules'}
           />
         )}
       </TwoColumnPage.Main>

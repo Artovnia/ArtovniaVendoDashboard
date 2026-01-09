@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom"
 import { RouteDrawer } from "../../../../components/modals"
 import { usePromotion } from "../../../../hooks/api/promotions"
 import { EditRulesWrapper } from "./components/edit-rules-wrapper"
+import { EditTargetRulesWrapper } from "./components/edit-target-rules-wrapper"
 
 export enum RuleType {
   RULES = "rules",
@@ -52,11 +53,17 @@ export const EditRules = () => {
       </RouteDrawer.Header>
 
       {!isLoading && promotion && (
-        <EditRulesWrapper
-          promotion={promotion}
-          rules={rules}
-          ruleType={ruleType}
-        />
+        <>
+          {ruleType === RuleType.TARGET_RULES ? (
+            <EditTargetRulesWrapper promotion={promotion} />
+          ) : (
+            <EditRulesWrapper
+              promotion={promotion}
+              rules={rules}
+              ruleType={ruleType}
+            />
+          )}
+        </>
       )}
     </RouteDrawer>
   )

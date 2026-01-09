@@ -7,5 +7,6 @@ export enum View {
 export enum Tab {
   TYPE = "type",
   PROMOTION = "promotion",
+  PRODUCTS = "products",
   CAMPAIGN = "campaign",
 }

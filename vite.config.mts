@@ -68,7 +68,16 @@ export default defineConfig(({ mode }) => {
     optimizeDeps: {
       entries: [],
       // Pre-bundle these dependencies to avoid optimization during development
-      include: ['recharts', 'copy-to-clipboard', '@tanstack/react-query'],
+      include: [
+        'recharts',
+        'copy-to-clipboard',
+        '@tanstack/react-query',
+        '@tanstack/react-table',
+        '@medusajs/ui',
+        '@radix-ui/react-tooltip',
+        '@radix-ui/react-dropdown-menu',
+        'react-router-dom',
+      ],
     },
     resolve: {
       // Improve module resolution

@@ -23,8 +23,8 @@ interface DataTableProps<TData>
   noRecords?: Pick<NoResultsProps, 'title' | 'message'>;
 }
 
-// Maybe we should use the memoized version of DataTableRoot
-// const MemoizedDataTableRoot = memo(DataTableRoot) as typeof DataTableRoot
+// Memoize both DataTableRoot and DataTableQuery to prevent unnecessary re-renders
+const MemoizedDataTableRoot = memo(DataTableRoot) as typeof DataTableRoot;
 const MemoizedDataTableQuery = memo(
   DataTableQuery
 ) as typeof DataTableQuery;
@@ -94,7 +94,7 @@ export const _DataTable = <TData,>({
         filters={filters}
         prefix={prefix}
       />
-      <DataTableRoot
+      <MemoizedDataTableRoot
         table={table}
         count={count}
         columns={columns}

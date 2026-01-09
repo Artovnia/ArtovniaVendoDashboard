@@ -2294,11 +2294,16 @@
   "promotions": {
     "domain": "Promocje",
     "sections": {
-      "details": "Szczegóły promocji"
+      "details": "Szczegóły promocji",
+      "createPromotion": "Utwórz promocję",
+      "selectProducts": "Wybierz produkty",
+      "orderPromotionNoProducts": "Ta promocja dotyczy całego zamówienia. Wybór produktów nie jest wymagany."
     },
     "tabs": {
+      "type": "Typ",
       "template": "Typ",
       "details": "Bliższe dane",
+      "products": "Produkty",
       "campaign": "Kampania"
     },
     "fields": {
@@ -2313,6 +2318,31 @@
       "amount": {
         "tooltip": "Wybierz kod waluty, aby umożliwić ustawienie kwoty"
       },
+      "applyTo": "Zastosuj promocję do",
+      "applyToDescription": "Wybierz, czy ta promocja dotyczy konkretnych produktów, czy całych kategorii",
+      "specificProducts": "Konkretne produkty",
+      "specificProductsDescription": "Wybierz poszczególne produkty dla tej promocji",
+      "productCategories": "Kategorie produktów",
+      "productCategoriesDescription": "Zastosuj do wszystkich produktów w wybranych kategoriach",
+      "selectProducts": "Wybierz produkty",
+      "selectCategories": "Wybierz kategorie",
+      "selected": "wybrano",
+      "searchProducts": "Szukaj produktów...",
+      "searchCategories": "Szukaj kategorii...",
+      "searchToAddProducts": "Wyszukaj i kliknij, aby dodać produkty",
+      "searchToAddCategories": "Wyszukaj i kliknij, aby dodać kategorie",
+      "selectAllOnPage": "Zaznacz wszystkie na tej stronie",
+      "noProductsFound": "Nie znaleziono produktów",
+      "noProducts": "Brak dostępnych produktów",
+      "noCategories": "Brak dostępnych kategorii",
+      "appliesTo": "Dotyczy",
+      "products": "produkty",
+      "categories": "kategorie",
+      "appliesToAllProducts": "Ta promocja dotyczy wszystkich produktów",
+      "discount": "Zniżka",
+      "maxQuantity": "Maksymalna ilość",
+      "discountPercentage": "Procent zniżki",
+      "selectPromotionType": "Wybierz typ promocji",
       "conditions": {
         "rules": {
           "title": "Kto może skorzystać z tego kodu?",
@@ -3504,6 +3534,9 @@
       "grossEarnings": "Zarobki brutto",
       "commissionDeductions": "Potrącenia prowizyjne",
       "availableForPayout": "Dostępne do wypłaty",
+      "totalEligible": "Łącznie kwalifikujące się",
+      "deliveredOrders": "dostarczone zamówienia",
+      "pendingDelivery": "oczekujące",
       "totalPaidOut": "Całkowita wypłata",
       "accountStatus": "Status konta",
       "payoutHistory": "Historia wypłat",
@@ -3527,6 +3560,32 @@
         "all": "Wszystkie",
         "completed": "Ukończone",
         "pending": "Oczekujące"
+      },
+      "penalties": {
+        "title": "Potrącenia",
+        "pending": "Do zapłaty",
+        "totalPending": "Łączna kwota potrąceń do zapłaty",
+        "totalDeducted": "Łączna kwota potrąceń",
+        "willBeDeducted": "Zostanie potrącone z kolejnej wypłaty",
+        "historicalDeductions": "Historia potrąceń",
+        "recentPenalties": "Ostatnie potrącenia",
+        "reason": "Powód",
+        "amount": "Kwota",
+        "remaining": "Pozostało",
+        "status": "Status",
+        "date": "Data",
+        "showingRecent": "Wyświetlono {{count}} z {{total}} potrąceń",
+        "noPenalties": "Brak potrąceń",
+        "noPenaltiesDescription": "Nie masz żadnych potrąceń",
+        "noResults": "Nie znaleziono wyników",
+        "tryAdjustingFilter": "Spróbuj dostosować kryteria filtrowania",
+        "statusValues": {
+          "pending": "Oczekująca",
+          "partially_deducted": "Częściowo potrącona",
+          "deducted": "Potrącona",
+          "paid": "Opłacona",
+          "waived": "Anulowana"
+        }
       },
       "fields": {
         "payoutAmount": "Kwota wypłaty",

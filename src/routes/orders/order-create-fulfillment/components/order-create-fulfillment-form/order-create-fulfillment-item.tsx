@@ -78,21 +78,56 @@ export function OrderCreateFulfillmentItem({
       return {}
     }
 
-    const locationInventory = inventory[0]?.location_levels?.find(
+    const firstInventory = inventory[0]
+    
+
+    // Handle both possible data structures:
+    // 1. inventory[0].location_levels (nested structure)
+    // 2. inventory[0] is already location_levels array (flat structure)
+    let locationLevels: LocationLevel[] | undefined
+    
+    if (Array.isArray(firstInventory?.location_levels)) {
+      // Nested structure: inventory[0].location_levels
+     
+      locationLevels = firstInventory.location_levels
+    } else if (firstInventory && 'location_id' in firstInventory) {
+      // Flat structure: inventory[0] is already a location level
+     
+      locationLevels = [firstInventory as LocationLevel]
+    } 
+
+   
+
+    const locationInventory = locationLevels?.find(
       (inv: LocationLevel) => inv.location_id === locationId
     )
 
+
+
     if (!locationInventory) {
+     
       return {}
     }
 
     const reservedQuantityForItem = itemReservedQuantitiesMap.get(item.id) ?? 0
+    
+    // Backend may not return available_quantity field
+    const stockedQty = locationInventory.stocked_quantity ?? 0
+    const availableQty = locationInventory.available_quantity
+    
+    // If available_quantity exists, use it + reserved (since we're fulfilling this item)
+    // Otherwise, use stocked_quantity as the available (it represents total in warehouse)
+    const calculatedAvailable = availableQty !== undefined 
+      ? availableQty + reservedQuantityForItem
+      : stockedQty // Use stocked as available when available_quantity is not provided
 
-    return {
-      availableQuantity:
-        locationInventory.available_quantity + reservedQuantityForItem,
-      inStockQuantity: locationInventory.stocked_quantity,
+    const result = {
+      availableQuantity: calculatedAvailable,
+      inStockQuantity: stockedQty,
     }
+
+
+    return result
   }, [variant, locationId, itemReservedQuantitiesMap, item.id])
 
   const minValue = 0
@@ -157,11 +192,13 @@ export function OrderCreateFulfillmentItem({
                   {t("orders.fulfillment.inStock")}
                 </span>
                 <span className="text-ui-fg-subtle">
-                  {inStockQuantity || "N/A"}{" "}
-                  {inStockQuantity && (
-                    <span className="font-medium text-red-500">
-                      -{form.getValues(`quantity.${item.id}`)}
-                    </span>
+                  {inStockQuantity !== undefined ? (
+                    <>
+                      {Math.max(0, inStockQuantity - (form.getValues(`quantity.${item.id}`) || 0))}
+                      <span className="text-ui-fg-muted"> / {inStockQuantity}</span>
+                    </>
+                  ) : (
+                    "N/A"
                   )}
                 </span>
               </div>

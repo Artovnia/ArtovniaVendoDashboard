@@ -1,5 +1,6 @@
-import { Container, Heading } from '@medusajs/ui';
+import { Container, Heading, Button } from '@medusajs/ui';
 import { useTranslation } from 'react-i18next';
+import { ArrowDownTray } from '@medusajs/icons';
 
 import { _DataTable } from '../../../../../components/table/data-table/data-table';
 import { useOrders } from '../../../../../hooks/api/orders';
@@ -8,11 +9,14 @@ import { useOrderTableFilters } from '../../../../../hooks/table/filters/use-ord
 import { useOrderTableQuery } from '../../../../../hooks/table/query/use-order-table-query';
 import { useDataTable } from '../../../../../hooks/use-data-table';
 import { DEFAULT_FIELDS } from '../../const';
+import { useState } from 'react';
+import { backendUrl } from '../../../../../lib/client/client';
 
 const PAGE_SIZE = 20;
 
 export const OrderListTable = () => {
   const { t } = useTranslation();
+  const [isExporting, setIsExporting] = useState(false);
   const { raw, searchParams } = useOrderTableQuery({
     pageSize: PAGE_SIZE,
   });
@@ -38,6 +42,53 @@ export const OrderListTable = () => {
     pageSize: PAGE_SIZE,
   });
 
+  const handleExportCSV = async () => {
+    try {
+      setIsExporting(true);
+      
+      // Get auth token from localStorage (same as uploadFilesQuery)
+      const currentToken = window.localStorage.getItem('medusa_auth_token') || '';
+      
+      if (!currentToken) {
+        throw new Error('Authentication required. Please log in and try again.');
+      }
+      
+      // Call backend with proper authentication
+      const response = await fetch(`${backendUrl}/vendor/orders/export`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Accept': 'text/csv',
+          'authorization': `Bearer ${currentToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to export orders');
+      }
+
+      // Get CSV content
+      const blob = await response.blob();
+      
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `orders-export-${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      
+      // Cleanup
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Export failed:', error);
+      alert('Failed to export orders. Please try again.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   if (isError) {
     throw error;
   }
@@ -46,6 +97,15 @@ export const OrderListTable = () => {
     <Container className='divide-y p-0'>
       <div className='flex items-center justify-between px-6 py-4'>
         <Heading>{t('orders.domain')}</Heading>
+        <Button
+          variant="secondary"
+          size="small"
+          onClick={handleExportCSV}
+          disabled={isExporting || isLoading}
+        >
+          <ArrowDownTray />
+          {isExporting ? 'Eksportowanie...' : 'Eksportuj CSV'}
+        </Button>
       </div>
       <_DataTable
         columns={columns}

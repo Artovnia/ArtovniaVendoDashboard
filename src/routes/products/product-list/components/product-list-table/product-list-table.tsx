@@ -7,15 +7,12 @@ import {
   usePrompt,
 } from '@medusajs/ui';
 import { useQueryClient } from '@tanstack/react-query';
-import { keepPreviousData } from '@tanstack/react-query';
 import { createColumnHelper } from '@tanstack/react-table';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Link,
   Outlet,
-  useLoaderData,
-  // useLocation,
 } from 'react-router-dom';
 
 import { HttpTypes } from '@medusajs/types';
@@ -30,7 +27,6 @@ import { useProductTableColumns } from '../../../../../hooks/table/columns/use-p
 import { useProductTableFilters } from '../../../../../hooks/table/filters/use-product-table-filters';
 import { useProductTableQuery } from '../../../../../hooks/table/query/use-product-table-query';
 import { useDataTable } from '../../../../../hooks/use-data-table';
-import { productsLoader } from '../../loader';
 import { BulkShippingProfileSelectorModal } from '../bulk-shipping-profile-modal';
 
 const PAGE_SIZE = 20;
@@ -38,38 +34,36 @@ const PAGE_SIZE = 20;
 export const ProductListTable = () => {
   const { t } = useTranslation();
   const [showBulkModal, setShowBulkModal] = useState(false);
-  // const location = useLocation();
-
-  const initialData = useLoaderData() as Awaited<
-    ReturnType<ReturnType<typeof productsLoader>>
-  >;
 
   const { searchParams, raw } = useProductTableQuery({
     pageSize: PAGE_SIZE,
   });
   
   const { products, count, isLoading, isError, error } =
-    useProducts(
-      {
-        ...searchParams,
-        fields: '+thumbnail,+shipping_profile',
-      },
-      {
-        initialData,
-        placeholderData: keepPreviousData,
-      }
-    );
+    useProducts({
+      ...searchParams,
+      fields: '+thumbnail,+shipping_profile',
+    });
+
+  // Memoize products array to prevent new reference on every render
+  const memoizedProducts = useMemo(() => 
+    (products ?? []) as HttpTypes.AdminProduct[],
+    [products]
+  );
 
   const { filters } = useProductTableFilters();
   const columns = useColumns();
 
+  // Create stable getRowId callback
+  const getRowId = useCallback((row: HttpTypes.AdminProduct) => row.id, []);
+
   const { table } = useDataTable({
-    data: (products ?? []) as HttpTypes.AdminProduct[],
+    data: memoizedProducts,
     columns,
     count,
     enablePagination: true,
     pageSize: PAGE_SIZE,
-    getRowId: (row) => row.id,
+    getRowId,
   });
 
   if (isError) {
@@ -231,6 +225,11 @@ const ProductActions = ({
 const columnHelper =
   createColumnHelper<HttpTypes.AdminProduct>();
 
+// Define actions cell renderer outside to prevent recreation
+const renderActionsCell = ({ row }: any) => (
+  <ProductActions product={row.original} />
+);
+
 const useColumns = () => {
   const base = useProductTableColumns();
 
@@ -239,9 +238,7 @@ const useColumns = () => {
       ...base,
       columnHelper.display({
         id: 'actions',
-        cell: ({ row }) => {
-          return <ProductActions product={row.original} />;
-        },
+        cell: renderActionsCell,
       }),
     ],
     [base]

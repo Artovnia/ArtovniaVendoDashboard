@@ -16,10 +16,12 @@ import {
 const PAYOUTS_QUERY_KEY = "payouts" as const
 const PAYOUT_ACCOUNT_QUERY_KEY = "payout_account" as const
 const ORDERS_WITHOUT_PAYOUTS_QUERY_KEY = "orders_without_payouts" as const
+const PENALTIES_QUERY_KEY = "penalties" as const
 
 export const payoutsQueryKeys = queryKeysFactory(PAYOUTS_QUERY_KEY) as TQueryKey<"payouts">
 export const payoutAccountQueryKeys = queryKeysFactory(PAYOUT_ACCOUNT_QUERY_KEY) as TQueryKey<"payout_account">
 export const ordersWithoutPayoutsQueryKeys = queryKeysFactory(ORDERS_WITHOUT_PAYOUTS_QUERY_KEY) as TQueryKey<"orders_without_payouts">
+export const penaltiesQueryKeys = queryKeysFactory(PENALTIES_QUERY_KEY) as TQueryKey<"penalties">
 
 // Types based on backend models
 export interface PayoutData {
@@ -32,7 +34,7 @@ export interface PayoutData {
     failure_message?: string
     [key: string]: any
   }
-  // Status tracking fields from Migration20250831001
+ 
   status?: string // PENDING, PENDING_BATCH, BATCHED, PROCESSING, COMPLETED, FAILED
   bank_transfer_reference?: string
   processed_at?: string
@@ -82,8 +84,10 @@ export interface EarningsData {
   total_earnings: number
   pending_earnings: number
   total_paid_out: number
-  available_for_payout: number
+  absolute_available_for_payout: number // All delivered orders (no 14-day check)
+  available_for_payout: number // Orders that passed 14-day hold
   completed_orders_count: number
+  absolute_orders_count: number // Orders delivered (no 14-day check)
   pending_orders_count: number
   currency_code: string
   gross_earnings: number
@@ -202,8 +206,10 @@ export const usePayoutOverview = (
   // The /vendor/earnings endpoint now calculates:
   // - total_earnings (order value - commission)
   // - total_paid_out (sum of completed payouts)
-  // - available_for_payout (total_earnings - total_paid_out)
+  // - absolute_available_for_payout (all delivered orders, no 14-day check)
+  // - available_for_payout (orders that passed 14-day hold)
   const totalPaidOut = earnings.total_paid_out || 0;
+  const absoluteAvailableForPayout = earnings.absolute_available_for_payout || 0;
   const availableForPayout = earnings.available_for_payout || 0;
 
   const result = {
@@ -212,6 +218,7 @@ export const usePayoutOverview = (
     payoutsCount: payouts.count || 0,
     earnings: earnings,
     totalPaidOut,
+    absoluteAvailableForPayout,
     availableForPayout,
     isLoading: payoutAccount.isLoading || payouts.isLoading || earnings.isLoading,
     error: payoutAccount.error || payouts.error || earnings.error,
@@ -356,6 +363,25 @@ export const usePayoutStatistics = (
 }
 
 // Commission Rule Types
+// Penalty Types
+export interface PenaltyData {
+  id: string
+  amount: number
+  remaining_amount: number
+  currency_code: string
+  status: 'pending' | 'partially_deducted' | 'deducted' | 'paid' | 'waived'
+  reason: string
+  order_id: string
+  created_at: string
+  updated_at: string
+}
+
+export interface PenaltiesResponse {
+  penalties: PenaltyData[]
+  total_pending: number
+  total_deducted: number
+}
+
 export interface CommissionRuleData {
   id: string
   name: string
@@ -393,6 +419,44 @@ export const useCommissionRule = (
 
   return {
     commissionRule: data?.commission_rule || null,
+    ...rest,
+  }
+}
+
+// Hook to fetch penalties for vendor
+export const usePenalties = (
+  query?: { status?: string },
+  options?: Omit<
+    UseQueryOptions<PenaltiesResponse, FetchError, PenaltiesResponse, QueryKey>,
+    "queryFn" | "queryKey"
+  >
+) => {
+  const queryParams = new URLSearchParams()
+  
+  if (query) {
+    Object.entries(query).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        queryParams.append(key, String(value))
+      }
+    })
+  }
+
+  const { data, ...rest } = useQuery({
+    queryKey: penaltiesQueryKeys.list(query),
+    queryFn: async () => {
+      const response = await fetchQuery(`/vendor/payouts/penalties?${queryParams.toString()}`, {
+        method: 'GET'
+      })
+      
+      return response
+    },
+    ...options,
+  })
+
+  return {
+    penalties: data?.penalties || [],
+    totalPending: data?.total_pending || 0,
+    totalDeducted: data?.total_deducted || 0,
     ...rest,
   }
 }
