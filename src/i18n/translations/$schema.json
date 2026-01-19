@@ -16552,6 +16552,344 @@
       "required": ["title", "selectHint", "noItems", "parcelNumber", "item", "items", "capacity", "exceedsCapacity", "quantity", "shippingProfile", "totalCapacity", "selectAtLeastOne"],
       "additionalProperties": false
     },
+    "baselinker": {
+      "enabled": {"type": "string"},
+      "disabled": {"type": "string"},
+      "type": "object",
+      "properties": {
+        "domain": {"type": "string"},
+        "title": {"type": "string"},
+        "description": {"type": "string"},
+        "connect": {"type": "string"},
+        "disconnect": {"type": "string"},
+        "connected": {"type": "string"},
+        "notConnected": {"type": "string"},
+        "connectionStatus": {"type": "string"},
+        "apiToken": {"type": "string"},
+        "apiTokenPlaceholder": {"type": "string"},
+        "inventoryId": {"type": "string"},
+        "inventoryIdPlaceholder": {"type": "string"},
+        "connectionDetails": {"type": "string"},
+        "settings": {"type": "string"},
+        "productSync": {"type": "string"},
+        "productSyncDescription": {"type": "string"},
+        "stockSyncDescription": {"type": "string"},
+        "orderSyncDescription": {"type": "string"},
+        "stockSync": {"type": "string"},
+        "orderSync": {"type": "string"},
+        "autoSyncProducts": {"type": "string"},
+        "autoSyncStock": {"type": "string"},
+        "autoSyncOrders": {"type": "string"},
+        "stockSyncInterval": {"type": "string"},
+        "stockSyncDirection": {"type": "string"},
+        "toBaselinker": {"type": "string"},
+        "fromBaselinker": {"type": "string"},
+        "bidirectional": {"type": "string"},
+        "importButton": {"type": "string"},
+        "importProduct": {"type": "string"},
+        "importBulk": {"type": "string"},
+        "importAll": {"type": "string"},
+        "productId": {"type": "string"},
+        "productIdPlaceholder": {"type": "string"},
+        "batchSize": {"type": "string"},
+        "defaultCurrency": {"type": "string"},
+        "defaultStatus": {"type": "string"},
+        "strictGpsr": {"type": "string"},
+        "sync": {"type": "string"},
+        "syncStock": {"type": "string"},
+        "syncDirection": {"type": "string"},
+        "selectProducts": {"type": "string"},
+        "allProducts": {"type": "string"},
+        "specificProducts": {"type": "string"},
+        "importing": {"type": "string"},
+        "syncing": {"type": "string"},
+        "importSuccess": {"type": "string"},
+        "importError": {"type": "string"},
+        "syncSuccess": {"type": "string"},
+        "syncError": {"type": "string"},
+        "connectionSuccess": {"type": "string"},
+        "connectionError": {"type": "string"},
+        "disconnectSuccess": {"type": "string"},
+        "disconnectError": {"type": "string"},
+        "noConnection": {"type": "string"},
+        "createConnection": {"type": "string"},
+        "editConnection": {"type": "string"},
+        "deleteConnection": {"type": "string"},
+        "confirmDelete": {"type": "string"},
+        "confirmDeleteMessage": {"type": "string"},
+        "history": {"type": "string"},
+        "importHistory": {"type": "string"},
+        "syncHistory": {"type": "string"},
+        "status": {"type": "string"},
+        "totalItems": {"type": "string"},
+        "successful": {"type": "string"},
+        "failed": {"type": "string"},
+        "startedAt": {"type": "string"},
+        "completedAt": {"type": "string"},
+        "viewDetails": {"type": "string"},
+        "active": {"type": "string"},
+        "inactive": {"type": "string"},
+        "error": {"type": "string"},
+        "pending": {"type": "string"},
+        "inProgress": {"type": "string"},
+        "completed": {"type": "string"},
+        "draft": {"type": "string"},
+        "proposed": {"type": "string"},
+        "carrierMapping": {
+          "type": "object",
+          "properties": {
+            "title": {"type": "string"},
+            "description": {"type": "string"},
+            "loading": {"type": "string"},
+            "noOptions": {"type": "string"},
+            "noOptionsHint": {"type": "string"},
+            "shippingGroup": {"type": "string"},
+            "baselinkerCarrier": {"type": "string"},
+            "status": {"type": "string"},
+            "selectCarrier": {"type": "string"},
+            "optionsCount": {"type": "string"},
+            "mapped": {"type": "string"},
+            "partial": {"type": "string"},
+            "notMapped": {"type": "string"},
+            "map": {"type": "string"},
+            "confirmDeleteGroup": {"type": "string"},
+            "mappingCreated": {"type": "string"},
+            "mappingFailed": {"type": "string"},
+            "mappingDeleted": {"type": "string"},
+            "deleteFailed": {"type": "string"},
+            "howItWorks": {"type": "string"},
+            "hint1": {"type": "string"},
+            "hint2": {"type": "string"},
+            "hint3": {"type": "string"}
+          },
+          "required": ["title", "description", "loading", "noOptions", "noOptionsHint", "shippingGroup", "baselinkerCarrier", "status", "selectCarrier", "optionsCount", "mapped", "partial", "notMapped", "map", "confirmDeleteGroup", "mappingCreated", "mappingFailed", "mappingDeleted", "deleteFailed", "howItWorks", "hint1", "hint2", "hint3"],
+          "additionalProperties": false
+        },
+        "statusMapping": {
+          "type": "object",
+          "properties": {
+            "title": {"type": "string"},
+            "description": {"type": "string"},
+            "loading": {"type": "string"},
+            "noMappings": {"type": "string"},
+            "noMappingsHint": {"type": "string"},
+            "baselinkerStatus": {"type": "string"},
+            "medusaAction": {"type": "string"},
+            "addMapping": {"type": "string"},
+            "selectStatus": {"type": "string"},
+            "actions": {
+              "type": "object",
+              "properties": {
+                "none": {"type": "string"},
+                "create_fulfillment": {"type": "string"},
+                "create_shipment": {"type": "string"},
+                "mark_delivered": {"type": "string"},
+                "cancel_order": {"type": "string"}
+              },
+              "required": ["none", "create_fulfillment", "create_shipment", "mark_delivered", "cancel_order"],
+              "additionalProperties": false
+            },
+            "howItWorks": {"type": "string"},
+            "hint1": {"type": "string"},
+            "hint2": {"type": "string"},
+            "hint3": {"type": "string"},
+            "hint4": {"type": "string"}
+          },
+          "required": ["title", "description", "loading", "noMappings", "noMappingsHint", "baselinkerStatus", "medusaAction", "addMapping", "selectStatus", "actions", "howItWorks", "hint1", "hint2", "hint3", "hint4"],
+          "additionalProperties": false
+        },
+        "quickActions": {"type": "string"},
+        "quickActionsDescription": {"type": "string"},
+        "importProducts": {"type": "string"},
+        "importProductsDescription": {"type": "string"},
+        "syncToBaselinker": {"type": "string"},
+        "syncToBaselinkerDescription": {"type": "string"},
+        "syncFromBaselinker": {"type": "string"},
+        "syncFromBaselinkerDescription": {"type": "string"},
+        "pollOrders": {"type": "string"},
+        "pollOrdersDescription": {"type": "string"},
+        "poll": {"type": "string"},
+        "pollSuccess": {"type": "string"},
+        "pollError": {"type": "string"},
+        "settingsUpdated": {"type": "string"},
+        "settingsError": {"type": "string"},
+        "fulfillmentSync": {"type": "string"},
+        "fulfillmentSyncDescription": {"type": "string"},
+        "fulfillmentSyncWarning": {"type": "string"},
+        "connectedTo": {"type": "string"},
+        "notConnectedYet": {"type": "string"},
+        "confirmDisconnectTitle": {"type": "string"},
+        "apiTokenHint": {"type": "string"},
+        "inventoryIdHint": {"type": "string"},
+        "validation": {
+          "type": "object",
+          "properties": {
+            "required": {"type": "string"}
+          },
+          "required": ["required"],
+          "additionalProperties": false
+        },
+        "setup": {
+          "type": "object",
+          "properties": {
+            "title": {"type": "string"},
+            "description": {"type": "string"},
+            "tabs": {
+              "type": "object",
+              "properties": {
+                "connection": {"type": "string"},
+                "features": {"type": "string"},
+                "statusMapping": {"type": "string"},
+                "carrierMapping": {"type": "string"},
+                "complete": {"type": "string"}
+              },
+              "required": ["connection", "features", "statusMapping", "carrierMapping", "complete"],
+              "additionalProperties": false
+            },
+            "connection": {
+              "type": "object",
+              "properties": {
+                "title": {"type": "string"},
+                "description": {"type": "string"}
+              },
+              "required": ["title", "description"],
+              "additionalProperties": false
+            },
+            "features": {
+              "type": "object",
+              "properties": {
+                "title": {"type": "string"},
+                "description": {"type": "string"}
+              },
+              "required": ["title", "description"],
+              "additionalProperties": false
+            },
+            "statusMapping": {
+              "type": "object",
+              "properties": {
+                "title": {"type": "string"},
+                "description": {"type": "string"},
+                "hint": {"type": "string"},
+                "hintText": {"type": "string"}
+              },
+              "required": ["title", "description", "hint", "hintText"],
+              "additionalProperties": false
+            },
+            "carrierMapping": {
+              "type": "object",
+              "properties": {
+                "title": {"type": "string"},
+                "description": {"type": "string"}
+              },
+              "required": ["title", "description"],
+              "additionalProperties": false
+            },
+            "carrierQuestion": {
+              "type": "object",
+              "properties": {
+                "title": {"type": "string"},
+                "description": {"type": "string"},
+                "yes": {"type": "string"},
+                "no": {"type": "string"}
+              },
+              "required": ["title", "description", "yes", "no"],
+              "additionalProperties": false
+            },
+            "complete": {
+              "type": "object",
+              "properties": {
+                "title": {"type": "string"},
+                "description": {"type": "string"},
+                "nextSteps": {"type": "string"},
+                "step1": {"type": "string"},
+                "step2": {"type": "string"},
+                "step3": {"type": "string"},
+                "viewDashboard": {"type": "string"},
+                "importProducts": {"type": "string"}
+              },
+              "required": ["title", "description", "nextSteps", "step1", "step2", "step3", "viewDashboard", "importProducts"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["title", "description", "tabs", "connection", "features", "statusMapping", "carrierMapping", "carrierQuestion", "complete"],
+          "additionalProperties": false
+        },
+        "setupIncomplete": {
+          "type": "object",
+          "properties": {
+            "title": {"type": "string"},
+            "statusMapping": {"type": "string"},
+            "carrierMapping": {"type": "string"},
+            "complete": {"type": "string"}
+          },
+          "required": ["title", "statusMapping", "carrierMapping", "complete"],
+          "additionalProperties": false
+        },
+        "import": {
+          "type": "object",
+          "properties": {
+            "title": {"type": "string"},
+            "description": {"type": "string"},
+            "tabs": {
+              "type": "object",
+              "properties": {
+                "categories": {"type": "string"},
+                "products": {"type": "string"},
+                "importing": {"type": "string"}
+              },
+              "required": ["categories", "products", "importing"],
+              "additionalProperties": false
+            },
+            "loading": {"type": "string"},
+            "loadError": {"type": "string"},
+            "noCategories": {"type": "string"},
+            "skipToProducts": {"type": "string"},
+            "categoryMappingTitle": {"type": "string"},
+            "categoryMappingDescription": {"type": "string"},
+            "baselinkerCategory": {"type": "string"},
+            "products": {"type": "string"},
+            "marketplaceCategory": {"type": "string"},
+            "categoriesMapped": {"type": "string"},
+            "productsReady": {"type": "string"},
+            "selected": {"type": "string"},
+            "bulkAssignCategory": {"type": "string"},
+            "apply": {"type": "string"},
+            "searchPlaceholder": {"type": "string"},
+            "allProducts": {"type": "string"},
+            "missingCategory": {"type": "string"},
+            "missingShipping": {"type": "string"},
+            "stock": {"type": "string"},
+            "noCategory": {"type": "string"},
+            "noShipping": {"type": "string"},
+            "productsNeedCategory": {"type": "string"},
+            "productsNeedShipping": {"type": "string"},
+            "bulkCategory": {"type": "string"},
+            "bulkShipping": {"type": "string"},
+            "selectCategory": {"type": "string"},
+            "selectShippingProfile": {"type": "string"},
+            "selectShipping": {"type": "string"},
+            "confirmImport": {"type": "string"},
+            "importSelected": {"type": "string"},
+            "importing": {"type": "string"},
+            "pleaseWait": {"type": "string"},
+            "complete": {"type": "string"},
+            "successMessage": {"type": "string"},
+            "failedMessage": {"type": "string"},
+            "viewProducts": {"type": "string"},
+            "importError": {"type": "string"},
+            "selectiveTip": {"type": "string"},
+            "selectAllTip": {"type": "string"},
+            "selectedReady": {"type": "string"},
+            "selectedNeedSetup": {"type": "string"},
+            "allReady": {"type": "string"}
+          },
+          "required": ["title", "description", "tabs", "loading", "loadError", "noCategories", "skipToProducts", "categoryMappingTitle", "categoryMappingDescription", "baselinkerCategory", "products", "marketplaceCategory", "categoriesMapped", "productsReady", "selected", "bulkAssignCategory", "apply", "searchPlaceholder", "allProducts", "missingCategory", "missingShipping", "stock", "noCategory", "noShipping", "productsNeedCategory", "productsNeedShipping", "bulkCategory", "bulkShipping", "selectCategory", "selectShippingProfile", "selectShipping", "confirmImport", "importSelected", "importing", "pleaseWait", "complete", "successMessage", "failedMessage", "viewProducts", "importError", "selectiveTip", "selectAllTip", "selectedReady", "selectedNeedSetup", "allReady"],
+          "additionalProperties": false
+        }
+      },
+      "required": [ "enabled", "disabled", "domain", "title", "description", "connect", "disconnect", "connected", "notConnected", "connectionStatus", "apiToken", "apiTokenPlaceholder", "inventoryId", "inventoryIdPlaceholder", "connectionDetails", "settings", "productSync", "productSyncDescription", "stockSyncDescription", "orderSyncDescription", "stockSync", "orderSync", "autoSyncProducts", "autoSyncStock", "autoSyncOrders", "stockSyncInterval", "stockSyncDirection", "toBaselinker", "fromBaselinker", "bidirectional", "importButton", "importProduct", "importBulk", "importAll", "productId", "productIdPlaceholder", "batchSize", "defaultCurrency", "defaultStatus", "strictGpsr", "sync", "syncStock", "syncDirection", "selectProducts", "allProducts", "specificProducts", "importing", "syncing", "importSuccess", "importError", "syncSuccess", "syncError", "connectionSuccess", "connectionError", "disconnectSuccess", "disconnectError", "noConnection", "createConnection", "editConnection", "deleteConnection", "confirmDelete", "confirmDeleteMessage", "history", "importHistory", "syncHistory", "status", "totalItems", "successful", "failed", "startedAt", "completedAt", "viewDetails", "active", "inactive", "error", "pending", "inProgress", "completed", "draft", "proposed", "carrierMapping", "statusMapping", "quickActions", "quickActionsDescription", "importProducts", "importProductsDescription", "syncToBaselinker", "syncToBaselinkerDescription", "syncFromBaselinker", "syncFromBaselinkerDescription", "pollOrders", "pollOrdersDescription", "poll", "pollSuccess", "pollError", "settingsUpdated", "settingsError", "fulfillmentSync", "fulfillmentSyncDescription", "fulfillmentSyncWarning", "connectedTo", "notConnectedYet", "confirmDisconnectTitle", "apiTokenHint", "inventoryIdHint", "validation", "setup", "setupIncomplete", "import"],
+      "additionalProperties": false
+    },
   
   "required": [
     "$schema",
@@ -16645,7 +16983,8 @@
     "tickets",
     "shipping",
     "passwordChange",
-    "parcelSelector"
+    "parcelSelector",
+    "baselinker"
   ],
   "additionalProperties": false
 }

@@ -43,6 +43,7 @@ export const OrderCustomerSection = ({
       <CustomerInfo.ID data={order} />
       <CustomerInfo.Contact data={order} />
       <CustomerInfo.Company data={order} />
+      <CustomerInfo.InvoiceData data={order} />
       <CustomerInfo.Addresses data={order} />
       <ParcelMachineInfo order={order} />
     </Container>
@@ -83,8 +84,8 @@ const ParcelMachineInfo = ({ order }: { order: HttpTypes.AdminOrder }) => {
   // Extract parcel machine data from the shipping method
   const data = parcelShippingMethod.data as ShippingMethodData;
   
-  // Use display_address if available
-  const displayAddress = data.display_address;
+  // Use display_address if available (cast to string for TypeScript)
+  const displayAddress = data.display_address as string | undefined;
   
   // Extract parcel machine data as fallback
   const parcelMachine: ParcelMachineData = 

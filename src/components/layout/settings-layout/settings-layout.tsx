@@ -89,6 +89,20 @@ const useMyAccountRoutes = (): INavItem[] => {
   );
 };
 
+const useIntegrationsRoutes = (): INavItem[] => {
+  const { t } = useTranslation();
+
+  return useMemo(
+    () => [
+      {
+        label: t('baselinker.title'),
+        to: '/settings/integrations/baselinker',
+      },
+    ],
+    [t]
+  );
+};
+
 /**
  * Ensure that the `from` prop is not another settings route, to avoid
  * the user getting stuck in a navigation loop.
@@ -109,6 +123,7 @@ const SettingsSidebar = () => {
   const routes = useSettingRoutes();
   const developerRoutes = useDeveloperRoutes();
   const myAccountRoutes = useMyAccountRoutes();
+  const integrationsRoutes = useIntegrationsRoutes();
   const extensionRoutes = getMenu('settingsExtensions');
 
   const { t } = useTranslation();
@@ -150,6 +165,13 @@ const SettingsSidebar = () => {
           <RadixCollapsibleSection
             label={t('app.nav.settings.myAccount')}
             items={myAccountRoutes}
+          />
+          <div className='flex items-center justify-center px-3'>
+            <Divider variant='dashed' />
+          </div>
+          <RadixCollapsibleSection
+            label='Integrations'
+            items={integrationsRoutes}
           />
           {extensionRoutes.length > 0 && (
             <Fragment>

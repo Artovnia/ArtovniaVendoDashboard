@@ -1614,6 +1614,38 @@ export const RouteMap: RouteObject[] = [
             },
           },
           {
+            path: 'integrations',
+            errorElement: <ErrorBoundary />,
+            element: <Outlet />,
+            children: [
+              {
+                path: 'baselinker',
+                errorElement: <ErrorBoundary />,
+                handle: {
+                  breadcrumb: () => t('baselinker.domain'),
+                },
+                children: [
+                  {
+                    index: true,
+                    lazy: () =>
+                      import('../../routes/settings/integrations/baselinker'),
+                  },
+                  {
+                    path: 'import',
+                    errorElement: <ErrorBoundary />,
+                    lazy: async () => {
+                      const mod = await import('../../routes/settings/integrations/baselinker/import/page');
+                      return { Component: mod.default };
+                    },
+                    handle: {
+                      breadcrumb: () => 'Import Products',
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+          {
             path: 'regions',
             errorElement: <ErrorBoundary />,
             element: <Outlet />,

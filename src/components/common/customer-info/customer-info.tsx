@@ -57,6 +57,70 @@ const Company = ({ data }: { data: HttpTypes.AdminOrder }) => {
   )
 }
 
+// Invoice data component - displays NIP and invoice request status
+const InvoiceData = ({ data }: { data: HttpTypes.AdminOrder }) => {
+  const { t } = useTranslation()
+  
+  // Extract invoice metadata from billing_address or order metadata
+  const billingMetadata = (data.billing_address as any)?.metadata || {}
+  const orderMetadata = (data as any).metadata || {}
+  
+  const wantInvoice = billingMetadata.want_invoice === true || orderMetadata.want_invoice === true
+  const nip = billingMetadata.nip || orderMetadata.nip || ''
+  const isCompany = billingMetadata.is_company === true || orderMetadata.is_company === true || !!nip
+  
+  // If no invoice data, don't render
+  if (!wantInvoice && !nip && !isCompany) {
+    return null
+  }
+
+  return (
+    <div className="text-ui-fg-subtle grid grid-cols-2 items-start px-6 py-4">
+      <Text size="small" leading="compact" weight="plus">
+        {t("fields.invoice_data", "Dane do faktury")}
+      </Text>
+      <div className="flex flex-col gap-y-2">
+        {/* Invoice request status */}
+        <div className="flex items-center gap-x-2">
+          <Text size="small" leading="compact" className="text-ui-fg-muted">
+            {t("fields.wants_invoice", "Faktura VAT")}:
+          </Text>
+          <Text size="small" leading="compact" className={wantInvoice ? "text-ui-fg-base font-medium" : "text-ui-fg-muted"}>
+            {wantInvoice ? t("fields.yes", "Tak") : t("fields.no", "Nie")}
+          </Text>
+        </div>
+        
+        {/* NIP if provided */}
+        {nip && (
+          <div className="flex items-center gap-x-2">
+            <Text size="small" leading="compact" className="text-ui-fg-muted">
+              NIP:
+            </Text>
+            <div className="flex items-center gap-x-1">
+              <Text size="small" leading="compact" className="font-mono">
+                {nip}
+              </Text>
+              <Copy content={nip} className="text-ui-fg-muted" />
+            </div>
+          </div>
+        )}
+        
+        {/* Customer type indicator */}
+        {isCompany && (
+          <div className="flex items-center gap-x-2">
+            <Text size="small" leading="compact" className="text-ui-fg-muted">
+              {t("fields.customer_type", "Typ klienta")}:
+            </Text>
+            <Text size="small" leading="compact">
+              {t("fields.company_customer", "Firma")}
+            </Text>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 const Contact = ({ data }: { data: HttpTypes.AdminOrder }) => {
   const { t } = useTranslation()
 
@@ -182,6 +246,7 @@ export const CustomerInfo = Object.assign(
     Company,
     Contact,
     Addresses,
+    InvoiceData,
   }
 )
 

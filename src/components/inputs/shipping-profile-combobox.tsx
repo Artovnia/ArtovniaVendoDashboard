@@ -42,7 +42,7 @@ export const ShippingProfileCombobox = forwardRef<
   })
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 ">
       <Combobox
         {...props}
         ref={ref}

@@ -4,7 +4,7 @@ import {
   ColumnDefBase,
   createColumnHelper,
 } from '@tanstack/react-table';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
   DateCell,
   DateHeader,
@@ -34,6 +34,8 @@ import {
   TotalCell,
   TotalHeader,
 } from '../../../components/table/table-cells/order/total-cell';
+import { toast } from '@medusajs/ui';
+import { backendUrl } from '../../../lib/client/client';
 
 // We have to use any here, as the type of Order is so complex that it lags the TS server
 const columnHelper =
@@ -115,6 +117,63 @@ export const useOrderTableColumns = (
               total={typeof total === 'number' ? total : 0} // Ensure we have a valid number
             />
           );
+        },
+      }),
+      columnHelper.display({
+        id: 'baselinker_sync',
+        header: () => <div className="text-ui-fg-subtle">BaseLinker</div>,
+        cell: ({ row }) => {
+          const [isSyncing, setIsSyncing] = useState(false);
+          const orderId = row.original.id;
+
+          const handleSync = async (e: React.MouseEvent) => {
+            e.stopPropagation();
+            setIsSyncing(true);
+
+            try {
+              const currentToken = window.localStorage.getItem('medusa_auth_token') || '';
+              
+              const response = await fetch(`${backendUrl}/vendor/orders/${orderId}/sync-to-baselinker`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'authorization': `Bearer ${currentToken}`,
+                },
+              });
+
+              const result = await response.json();
+
+              if (result.success) {
+                if (result.already_synced) {
+                  toast.info('Already Synced', {
+                    description: `Order already synced to BaseLinker (BL #${result.bl_order_id})`,
+                  });
+                } else {
+                  toast.success('Order Synced', {
+                    description: `Successfully synced to BaseLinker (BL #${result.bl_order_id})`,
+                  });
+                }
+              } else if (result.skipped) {
+                toast.warning('Sync Skipped', {
+                  description: 'BaseLinker not enabled for this seller',
+                });
+              } else {
+                toast.error('Sync Failed', {
+                  description: result.error || 'Failed to sync order',
+                });
+              }
+            } catch (error) {
+              console.error('Sync error:', error);
+              toast.error('Sync Error', {
+                description: 'An error occurred while syncing',
+              });
+            } finally {
+              setIsSyncing(false);
+            }
+          };
+
+          
         },
       }),
     ],
