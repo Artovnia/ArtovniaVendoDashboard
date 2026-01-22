@@ -17,7 +17,7 @@ export function VariantGeneralSection({ variant }: VariantGeneralSectionProps) {
   const prompt = usePrompt()
   const navigate = useNavigate()
 
-  const hasInventoryKit = variant.inventory?.length > 1
+  const hasInventoryKit = (variant as any).inventory_items?.length > 1
 
   const { mutateAsync } = useDeleteVariant(variant.product_id!, variant.id)
 
@@ -85,13 +85,23 @@ export function VariantGeneralSection({ variant }: VariantGeneralSectionProps) {
       </div>
 
       <SectionRow title={t("fields.sku")} value={variant.sku} />
-      {variant.options?.map((o) => (
-        <SectionRow
-          key={o.id}
-          title={o.option?.title!}
-          value={<Badge size="2xsmall">{o.value}</Badge>}
-        />
-      ))}
+      
+      {/* Display variant options */}
+      {variant.options && variant.options.length > 0 && (
+        <div className="px-6 py-4 border-t border-ui-border-base">
+          <div className="text-ui-fg-subtle text-sm font-medium mb-2">
+            {t("products.create.variantHeaders.options")}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {variant.options.map((o) => (
+              <div key={o.id} className="flex items-center gap-2">
+                <span className="text-ui-fg-muted text-sm">{o.option?.title}:</span>
+                <Badge size="2xsmall">{o.value}</Badge>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </Container>
   )
 }

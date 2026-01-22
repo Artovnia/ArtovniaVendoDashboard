@@ -47,7 +47,7 @@ export const SingleColumnPage = <TData,>({
   }
 
   return (
-    <div className="flex flex-col gap-y-3">
+    <div className="flex flex-col gap-y-3 min-w-0 w-full">
       {before.map((Component, i) => {
         return <Component {...widgetProps} key={i} />
       })}

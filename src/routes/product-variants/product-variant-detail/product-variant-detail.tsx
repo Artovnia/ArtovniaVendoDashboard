@@ -3,8 +3,6 @@ import { useEffect, useState } from 'react';
 
 import { useProduct } from '../../../hooks/api/products';
 import { ProductVariantDTO } from '@medusajs/types';
-import { AdminProductVariantInventoryItemLink } from '@medusajs/medusa/dist/types/inventory';
-import { Spinner } from '@medusajs/ui';
 
 import { TwoColumnPageSkeleton } from '../../../components/common/skeleton';
 import { TwoColumnPage } from '../../../components/layout/pages';
@@ -23,17 +21,14 @@ export const ProductVariantDetail = () => {
   const [isRetrying, setIsRetrying] = useState(false);
   
   // Use a more robust query with error handling
-  const { product, isLoading, isError, error, refetch } = useProduct(
+  const { product, isLoading, isError, refetch } = useProduct(
     id!,
     {
-      fields: '*variants.inventory_items,*variants.inventory_items.inventory,*variants.inventory_items.inventory.location_levels',
+      fields: 'id,title,subtitle,description,handle,status,thumbnail,material,discountable,created_at,updated_at,deleted_at,metadata,variants,variants.id,variants.title,variants.sku,variants.inventory_quantity,variants.manage_inventory,variants.prices.*,variants.options.*,variants.options.option.*,variants.inventory_items,variants.inventory_items.inventory_item_id,variants.inventory_items.inventory,variants.inventory_items.inventory.location_levels,*categories,*tags,type_id,collection_id,*collection,*shipping_profile',
     },
     {
-      retry: 1, // Limit built-in retries
+      retry: 1,
       retryDelay: 1000,
-      onError: (err) => {
-        console.error('Error loading product variant:', err);
-      }
     }
   );
   
@@ -53,11 +48,20 @@ export const ProductVariantDetail = () => {
     }
   }, [isError, retryCount, refetch, isRetrying]);
 
+
   const variant = product?.variants
     ? product?.variants.find(
         (item) => item.id === variant_id
       )
     : null;
+
+
+  // Add product_id to variant for child components
+  const variantWithProductId = variant ? {
+    ...variant,
+    product_id: product?.id || id
+  } : null;
+
 
   const { getWidgets } = useDashboardExtension();
 
@@ -92,7 +96,7 @@ export const ProductVariantDetail = () => {
   }
   
   // Handle case where product exists but variant is not found
-  if (!variant) {
+  if (!variantWithProductId) {
     return (
       <div className="flex flex-col items-center justify-center h-full p-8">
         <h2 className="text-xl font-bold mb-4">Variant not found</h2>
@@ -111,7 +115,7 @@ export const ProductVariantDetail = () => {
 
   return (
     <TwoColumnPage
-      data={variant}
+      data={variantWithProductId}
       hasOutlet
       widgets={{
         after: getWidgets('product_variant.details.after'),
@@ -127,23 +131,24 @@ export const ProductVariantDetail = () => {
       }}
     >
       <TwoColumnPage.Main>
-        <VariantGeneralSection variant={variant} />
-        {!variant.manage_inventory ? (
+        <VariantGeneralSection variant={variantWithProductId} />
+        {!variantWithProductId.manage_inventory ? (
           <InventorySectionPlaceholder />
         ) : (
-          variant.inventory_items && (
+          variantWithProductId.inventory_items && (
             <VariantInventorySection
-              inventoryItems={variant.inventory_items.map(
+              inventoryItems={variantWithProductId.inventory_items.map(
                 (i) => {
                   // Create a properly typed variant object that matches the ExtendedInventoryItem.variant type
                   const variantForInventory = {
-                    ...(variant as unknown as ProductVariantDTO),
-                    inventory_items: variant.inventory_items || [],
-                    id: variant.id
+                    ...(variantWithProductId as unknown as ProductVariantDTO),
+                    inventory_items: variantWithProductId.inventory_items || [],
+                    id: variantWithProductId.id
                   } as ProductVariantDTO & { inventory_items: any[]; id: string };
                   
                   // Type the inventory item link with the required_quantity property
-                  type ExtendedInventoryItemLink = AdminProductVariantInventoryItemLink & {
+                  type ExtendedInventoryItemLink = {
+                    inventory_item_id?: string;
                     required_quantity?: number;
                     inventory?: any;
                   };
@@ -163,7 +168,7 @@ export const ProductVariantDetail = () => {
         )}
       </TwoColumnPage.Main>
       <TwoColumnPage.Sidebar>
-        <VariantPricesSection variant={variant} />
+        <VariantPricesSection variant={variantWithProductId} />
       </TwoColumnPage.Sidebar>
     </TwoColumnPage>
   );

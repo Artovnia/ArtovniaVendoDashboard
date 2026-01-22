@@ -83,7 +83,7 @@ export const _DataTable = <TData,>({
 
   return (
     <div
-      className={clx('divide-y', {
+      className={clx('min-w-0 w-full', {
         'flex h-full flex-col overflow-hidden':
           layout === 'fill',
       })}

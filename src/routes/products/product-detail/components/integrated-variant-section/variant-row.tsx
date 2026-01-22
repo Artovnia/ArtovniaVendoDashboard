@@ -94,7 +94,7 @@ export const VariantRow = ({ variant, productId }: VariantRowProps) => {
             let totalStocked = 0
             let totalReserved = 0
             
-            locationLevels.forEach((level) => {
+            locationLevels.forEach((level: any) => {
               totalStocked += Number(level.stocked_quantity || 0)
               totalReserved += Number(level.reserved_quantity || 0)
             })
@@ -162,6 +162,18 @@ export const VariantRow = ({ variant, productId }: VariantRowProps) => {
                 </Text>
               )}
             </div>
+            {/* Display variant options */}
+            {variant.options && variant.options.length > 0 && (
+              <div className="flex flex-wrap items-center gap-1 mt-1">
+                {variant.options.map((opt, idx) => (
+                  <span key={idx} className="text-xs">
+                    <span className="text-ui-fg-muted">{opt.option?.title || 'Option'}:</span>{' '}
+                    <span className="text-ui-fg-subtle font-medium">{opt.value}</span>
+                    {idx < (variant.options?.length || 0) - 1 && <span className="text-ui-fg-muted mx-1">·</span>}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
           
           {/* Price column - width matching header */}

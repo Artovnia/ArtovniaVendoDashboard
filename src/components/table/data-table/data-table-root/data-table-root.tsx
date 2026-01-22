@@ -11,6 +11,7 @@ import {
   UIEvent,
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -96,6 +97,81 @@ export const DataTableRoot = <TData,>({
     useState(false);
 
   const scrollableRef = useRef<HTMLDivElement>(null);
+  const stickyScrollRef = useRef<HTMLDivElement>(null);
+
+  // Sticky horizontal scrollbar state
+  const [showStickyScroll, setShowStickyScroll] = useState(false);
+  const [scrollWidth, setScrollWidth] = useState(0);
+  const [clientWidth, setClientWidth] = useState(0);
+  const [leftPosition, setLeftPosition] = useState(0);
+
+  // Check if we need to show the sticky scrollbar
+  useLayoutEffect(() => {
+    const scrollable = scrollableRef.current;
+    if (!scrollable) return;
+
+    const updateState = () => {
+      const rect = scrollable.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+
+      const hasHorizontalOverflow = scrollable.scrollWidth > scrollable.clientWidth;
+      const isBottomBelowViewport = rect.bottom > viewportHeight;
+
+      setShowStickyScroll(hasHorizontalOverflow && isBottomBelowViewport);
+      setScrollWidth(scrollable.scrollWidth);
+      setClientWidth(rect.width);
+      setLeftPosition(rect.left);
+    };
+
+    updateState();
+
+    window.addEventListener('scroll', updateState, { passive: true });
+    window.addEventListener('resize', updateState, { passive: true });
+
+    const resizeObserver = new ResizeObserver(updateState);
+    resizeObserver.observe(scrollable);
+
+    return () => {
+      window.removeEventListener('scroll', updateState);
+      window.removeEventListener('resize', updateState);
+      resizeObserver.disconnect();
+    };
+  }, []);
+
+  // Sync scroll positions between table and sticky scrollbar
+  useEffect(() => {
+    const scrollable = scrollableRef.current;
+    const stickyScroll = stickyScrollRef.current;
+    if (!scrollable || !stickyScroll) return;
+
+    let isSyncing = false;
+
+    const syncFromTable = () => {
+      if (isSyncing) return;
+      isSyncing = true;
+      stickyScroll.scrollLeft = scrollable.scrollLeft;
+      requestAnimationFrame(() => {
+        isSyncing = false;
+      });
+    };
+
+    const syncFromSticky = () => {
+      if (isSyncing) return;
+      isSyncing = true;
+      scrollable.scrollLeft = stickyScroll.scrollLeft;
+      requestAnimationFrame(() => {
+        isSyncing = false;
+      });
+    };
+
+    scrollable.addEventListener('scroll', syncFromTable, { passive: true });
+    stickyScroll.addEventListener('scroll', syncFromSticky, { passive: true });
+
+    return () => {
+      scrollable.removeEventListener('scroll', syncFromTable);
+      stickyScroll.removeEventListener('scroll', syncFromSticky);
+    };
+  }, [showStickyScroll]);
 
   const hasSelect = useMemo(() => columns.find((c) => c.id === 'select'), [columns]);
   const hasActions = useMemo(() => columns.find((c) => c.id === 'actions'), [columns]);
@@ -139,20 +215,23 @@ export const DataTableRoot = <TData,>({
 
   return (
     <div
+      ref={scrollableRef}
+      onScroll={handleHorizontalScroll}
       className={clx(
-        'flex w-full flex-col overflow-hidden',
+        'flex w-full min-w-0 flex-col',
         {
-          'flex flex-1 flex-col': layout === 'fill',
+          'flex flex-1 flex-col overflow-hidden': layout === 'fill',
+          'overflow-x-auto': layout === 'fit',
         }
       )}
+      style={{
+        WebkitOverflowScrolling: 'touch',
+      }}
     >
       <div
-        ref={scrollableRef}
-        onScroll={handleHorizontalScroll}
         className={clx('w-full', {
           'min-h-0 flex-grow overflow-auto':
             layout === 'fill',
-          'overflow-x-auto': layout === 'fit',
         })}
       >
         {!noResults ? (
@@ -220,6 +299,11 @@ export const DataTableRoot = <TData,>({
                                     showStickyBorder &&
                                     isStickyHeader &&
                                     !isSpecialHeader,
+                                  "sticky right-0 bg-ui-bg-subtle before:absolute before:inset-y-0 before:left-0 before:h-full before:w-px before:bg-transparent before:content-['']":
+                                    isActionHeader,
+                                  'before:bg-ui-border-base':
+                                    showStickyBorder &&
+                                    isActionHeader,
                                 })}
                               >
                                 {flexRender(
@@ -253,7 +337,8 @@ export const DataTableRoot = <TData,>({
                     key={row.id}
                     data-selected={row.getIsSelected()}
                     className={clx(
-                      'transition-[background-color] duration-75 ease-out group/row group relative will-change-[background-color] [&_td:last-of-type]:w-[1%] [&_td:last-of-type]:whitespace-nowrap',
+                      'group/row group relative [&_td:last-of-type]:w-[1%] [&_td:last-of-type]:whitespace-nowrap',
+                      'hover:bg-ui-bg-base-hover',
                       'has-[[data-row-link]:focus-visible]:bg-ui-bg-base-hover',
                       {
                         'bg-ui-bg-subtle hover:bg-ui-bg-subtle-hover':
@@ -261,8 +346,7 @@ export const DataTableRoot = <TData,>({
                         'cursor-pointer': !!to,
                         'bg-ui-bg-highlight hover:bg-ui-bg-highlight-hover':
                           row.getIsSelected(),
-                        '!bg-ui-bg-disabled !hover:bg-ui-bg-disabled':
-                          isRowDisabled,
+                        'bg-ui-bg-disabled': isRowDisabled,
                       }
                     )}
                   >
@@ -271,6 +355,8 @@ export const DataTableRoot = <TData,>({
                         row.getVisibleCells();
                       const isSelectCell =
                         cell.column.id === 'select';
+                      const isActionCell =
+                        cell.column.id === 'actions';
 
                       const firstCell =
                         visibleCells.findIndex(
@@ -316,17 +402,21 @@ export const DataTableRoot = <TData,>({
                           className={clx({
                             '!pl-0 !pr-0':
                               shouldRenderAsLink,
-                            "bg-ui-bg-base group-data-[selected=true]/row:bg-ui-bg-highlight group-data-[selected=true]/row:group-hover/row:bg-ui-bg-highlight-hover group-hover/row:bg-ui-bg-base-hover transition-[background-color] duration-75 ease-out group-has-[[data-row-link]:focus-visible]:bg-ui-bg-base-hover left-0 after:absolute after:inset-y-0 after:right-0 after:h-full after:w-px after:bg-transparent after:content-['']":
+                            "bg-ui-bg-base group-hover/row:bg-ui-bg-base-hover group-data-[selected=true]/row:bg-ui-bg-highlight group-data-[selected=true]/row:group-hover/row:bg-ui-bg-highlight-hover left-0 after:absolute after:inset-y-0 after:right-0 after:h-full after:w-px after:bg-transparent after:content-['']":
                               isStickyCell,
                             'bg-ui-bg-subtle group-hover/row:bg-ui-bg-subtle-hover':
-                              isOdd && isStickyCell,
+                              isOdd && (isStickyCell || isActionCell),
                             'left-[68px]': hasLeftOffset,
                             'after:bg-ui-border-base':
                               showStickyBorder &&
                               isStickyCell &&
                               !isSelectCell,
-                            '!bg-ui-bg-disabled !hover:bg-ui-bg-disabled':
-                              isRowDisabled,
+                            'bg-ui-bg-disabled': isRowDisabled,
+                            "sticky right-0 bg-ui-bg-base group-hover/row:bg-ui-bg-base-hover group-data-[selected=true]/row:bg-ui-bg-highlight group-data-[selected=true]/row:group-hover/row:bg-ui-bg-highlight-hover before:absolute before:inset-y-0 before:left-0 before:h-full before:w-px before:bg-transparent before:content-['']":
+                              isActionCell,
+                            'before:bg-ui-border-base':
+                              showStickyBorder &&
+                              isActionCell,
                           })}
                           style={{
                             paddingLeft: depthOffset
@@ -422,6 +512,20 @@ export const DataTableRoot = <TData,>({
             })}
           </CommandBar.Bar>
         </CommandBar>
+      )}
+      {/* Sticky horizontal scrollbar */}
+      {layout === 'fit' && showStickyScroll && (
+        <div
+          ref={stickyScrollRef}
+          className="fixed bottom-0 z-50 overflow-x-auto bg-ui-bg-base border-t border-ui-border-base"
+          style={{
+            left: leftPosition,
+            width: clientWidth,
+            height: 14,
+          }}
+        >
+          <div style={{ width: scrollWidth, height: 1 }} />
+        </div>
       )}
     </div>
   );

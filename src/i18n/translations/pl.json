@@ -658,7 +658,7 @@
     "attributes": "Atrybuty",
     "editAttributes": "Edytuj atrybuty",
     "editOptions": "Edytuj opcje",
-    "editPrices": "Edytuj ceny",
+    
     "discountableHint": "Jeśli odznaczone, rabaty nie będą stosowane do tego produktu.",
     "options": {
       "header": "Opcje",

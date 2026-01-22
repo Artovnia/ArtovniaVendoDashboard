@@ -33,11 +33,11 @@ export const Shell = ({ children }: PropsWithChildren) => {
           <MobileSidebarContainer>{children}</MobileSidebarContainer>
           <DesktopSidebarContainer>{children}</DesktopSidebarContainer>
         </div>
-        <div className="flex h-screen w-full flex-col overflow-auto">
+        <div className="flex h-screen w-full min-w-0 flex-col overflow-auto">
           <Topbar />
           <main
             className={clx(
-              "flex h-full w-full flex-col items-center overflow-y-auto transition-opacity delay-200 duration-200",
+              "flex h-full w-full min-w-0 flex-col items-center overflow-y-auto transition-opacity delay-200 duration-200",
               {
                 "opacity-25": loading,
               }
@@ -85,7 +85,7 @@ const NavigationBar = ({ loading }: { loading: boolean }) => {
 
 const Gutter = ({ children }: PropsWithChildren) => {
   return (
-    <div className="flex w-full max-w-[1600px] flex-col gap-y-2 p-3">
+    <div className="flex w-full min-w-0 max-w-[1600px] flex-col gap-y-2 p-3 overflow-x-hidden">
       {children}
     </div>
   )

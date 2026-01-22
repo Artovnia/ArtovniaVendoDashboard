@@ -112,14 +112,19 @@ const UnfulfilledItem = ({
       <div className='flex items-start gap-x-4'>
         <Thumbnail src={item.thumbnail} />
         <div>
-          <Text
-            size='small'
-            leading='compact'
-            weight='plus'
-            className='text-ui-fg-base'
+          <Link
+            to={`/products/${item.product_id}`}
+            className='text-ui-fg-interactive hover:text-ui-fg-interactive-hover transition-fg'
           >
-            {item.title}
-          </Text>
+            <Text
+              size='small'
+              leading='compact'
+              weight='plus'
+              className='text-ui-fg-base hover:text-ui-fg-interactive'
+            >
+              {item.title}
+            </Text>
+          </Link>
           {item.variant_sku && (
             <div className='flex items-center gap-x-1'>
               <Text size='small'>{item.variant_sku}</Text>
@@ -129,17 +134,23 @@ const UnfulfilledItem = ({
               />
             </div>
           )}
-          <Text size='small'>
-            {item.variant?.options
-              .map((o) => o.value)
-              .join(' · ')}
-          </Text>
+          {item.variant?.options && item.variant.options.length > 0 && (
+            <div className='flex flex-wrap items-center gap-1 mt-1'>
+              {item.variant.options.map((opt, idx) => (
+                <span key={idx} className='text-xs'>
+                  <span className='text-ui-fg-muted'>{opt.option?.title || 'Option'}:</span>{' '}
+                  <span className='text-ui-fg-subtle font-medium'>{opt.value}</span>
+                  {idx < (item.variant.options?.length || 0) - 1 && <span className='text-ui-fg-muted mx-1'>·</span>}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
       <div className='grid grid-cols-3 items-center gap-x-4'>
         <div className='flex items-center justify-end'>
           <Text size='small'>
-            {getLocaleAmount(item.unit_price, currencyCode)}
+            {getLocaleAmount(Number(item.unit_price), currencyCode)}
           </Text>
         </div>
         <div className='flex items-center justify-end'>
@@ -154,7 +165,7 @@ const UnfulfilledItem = ({
         <div className='flex items-center justify-end'>
           <Text size='small'>
             {getLocaleAmount(
-              item.subtotal || 0,
+              Number(item.subtotal || 0),
               currencyCode
             )}
           </Text>
@@ -248,7 +259,7 @@ const UnfulfilledItemDisplay = ({
           (item: AdminOrderLineItem) => (
             <UnfulfilledItem
               key={item.id}
-              item={item}
+              item={item as any}
               currencyCode={order.currency_code}
             />
           )
@@ -283,8 +294,8 @@ const FulfillmentGroup = ({
   const showLocation = !!primaryFulfillment.location_id;
 
   const isPickUpFulfillment =
-    primaryFulfillment.shipping_option?.service_zone
-      .fulfillment_set.type === FulfillmentSetType.Pickup;
+    (primaryFulfillment as any).shipping_option?.service_zone
+      ?.fulfillment_set?.type === FulfillmentSetType.Pickup;
 
   const { stock_location, isError, error } =
     useStockLocation(primaryFulfillment.location_id!, undefined, {
@@ -478,14 +489,42 @@ const FulfillmentGroup = ({
         <Text size='small' leading='compact' weight='plus'>
           {t('orders.fulfillment.itemsLabel')}
         </Text>
-        <ul>
-          {allItems.map((f_item: any) => (
-            <li key={f_item.line_item_id}>
-              <Text size='small' leading='compact'>
-                {f_item.quantity}x {f_item.title}
-              </Text>
-            </li>
-          ))}
+        <ul className='space-y-1'>
+          {allItems.map((f_item: any) => {
+            // Find the original order item to get product_id and variant options
+            const orderItem = order.items?.find(i => i.id === f_item.line_item_id);
+            const hasOptions = orderItem?.variant?.options && orderItem.variant.options.length > 0;
+            
+            return (
+              <li key={f_item.line_item_id}>
+                {orderItem?.product_id ? (
+                  <Link
+                    to={`/products/${orderItem.product_id}`}
+                    className='text-ui-fg-interactive hover:text-ui-fg-interactive-hover transition-fg'
+                  >
+                    <Text size='small' leading='compact'>
+                      {f_item.quantity}x {f_item.title}
+                    </Text>
+                  </Link>
+                ) : (
+                  <Text size='small' leading='compact'>
+                    {f_item.quantity}x {f_item.title}
+                  </Text>
+                )}
+                {hasOptions && orderItem.variant && (
+                  <div className='flex flex-wrap items-center gap-1 ml-6 mt-0.5'>
+                    {orderItem.variant.options?.map((opt: any, idx: number) => (
+                      <span key={idx} className='text-xs'>
+                        <span className='text-ui-fg-muted'>{opt.option?.title || 'Option'}:</span>{' '}
+                        <span className='text-ui-fg-subtle font-medium'>{opt.value}</span>
+                        {idx < (orderItem.variant.options?.length || 0) - 1 && <span className='text-ui-fg-muted mx-1'>·</span>}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </li>
+            );
+          })}
         </ul>
       </div>
       {showLocation && (

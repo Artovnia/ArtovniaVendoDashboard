@@ -62,3 +62,37 @@ export interface BulkImportResponse {
     error?: string
   }>
 }
+
+// Variant grouping types for detecting duplicate products by name
+export interface VariantGroupMember {
+  product: ProductWithAssignment
+  optionValues: Record<string, string> // e.g., { "Size": "L", "Color": "Red" }
+}
+
+export interface VariantGroup {
+  id: string // Unique group ID
+  name: string // Common product name
+  members: VariantGroupMember[]
+  options: Array<{ title: string; values: string[] }> // e.g., [{ title: "Size", values: ["S", "M", "L"] }]
+  isConfigured: boolean // Whether user has assigned option values
+  assigned_category_id: string | null
+  assigned_shipping_profile_id: string | null
+}
+
+export interface GroupedProductAssignment {
+  group_id: string
+  group_name: string
+  bl_product_ids: string[]
+  options: Array<{ title: string; values: string[] }>
+  variants: Array<{
+    bl_product_id: string
+    option_values: Record<string, string>
+    sku: string
+    price: number
+    quantity: number
+    ean?: string | null
+    images?: string[]
+  }>
+  category_id?: string
+  shipping_profile_id?: string
+}

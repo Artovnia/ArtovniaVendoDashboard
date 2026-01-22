@@ -27,6 +27,7 @@ const DEFAULT_RELATIONS = [
   "*items.variant",
   "*items.variant.product",
   "*items.variant.options",
+  "*items.variant.options.option",
   "+items.variant.manage_inventory",
   "*items.variant.inventory_items.inventory",
   "+items.variant.inventory_items.required_quantity",

@@ -725,7 +725,7 @@
     "attributes": "Attributes",
     "editAttributes": "Edit Attributes",
     "editOptions": "Edit Options",
-    "editPrices": "Edit prices",
+    
     "variant": {
       "header": "Variants",
       "empty": {

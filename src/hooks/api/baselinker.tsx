@@ -58,6 +58,24 @@ export interface ImportBulkInput {
     category_id?: string
     shipping_profile_id?: string
   }>
+  // Grouped products for variant import
+  grouped_products?: Array<{
+    group_id: string
+    group_name: string
+    bl_product_ids: string[]
+    options: Array<{ title: string; values: string[] }>
+    variants: Array<{
+      bl_product_id: string
+      option_values: Record<string, string>
+      sku: string
+      price: number
+      quantity: number
+      ean?: string | null
+      images?: string[]
+    }>
+    category_id?: string
+    shipping_profile_id?: string
+  }>
 }
 
 export interface SyncStockInput {

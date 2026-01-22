@@ -452,7 +452,7 @@ export function SetupWizard({ activeConnection, onComplete }: SetupWizardProps) 
               </Text>
             </div>
 
-            <div className="p-3 sm:p-4 bg-blue-800 border border-blue-200 rounded-lg">
+            <div className="p-3 sm:p-4  border border-blue-200 rounded-lg">
               <Text className="text-xs sm:text-sm ">
                {t('baselinker.setup.statusMapping.hint', { defaultValue: 'Tip:' })}{' '}
                 {t('baselinker.setup.statusMapping.hintText', { defaultValue: 'Map at least one status to "Create Shipment" (for when order is shipped) and one to "Mark Delivered" (for when order is delivered).' })}
