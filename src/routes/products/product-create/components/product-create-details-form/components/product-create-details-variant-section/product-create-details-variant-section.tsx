@@ -208,6 +208,13 @@ export const ProductCreateVariantsSection = ({
         variant_rank: newVariants.length,
         // NOTE - prepare inventory array here for now so we prevent rendering issue if we append the items later
         inventory: [{ inventory_item_id: "", required_quantity: "" }],
+        // Include all required default fields to prevent controlled/uncontrolled input issues
+        prices: { default: "" },
+        sku: "",
+        manage_inventory: false,
+        allow_backorder: false,
+        inventory_kit: false,
+        stock_quantity: "",
       })
     })
 
@@ -263,6 +270,14 @@ export const ProductCreateVariantsSection = ({
         options: permutation,
         should_create: false,
         variant_rank: newVariants.length,
+        // Include all required default fields to prevent controlled/uncontrolled input issues
+        inventory: [{ inventory_item_id: "", required_quantity: "" }],
+        prices: { default: "" },
+        sku: "",
+        manage_inventory: false,
+        allow_backorder: false,
+        inventory_kit: false,
+        stock_quantity: "",
       })
     })
 
@@ -390,12 +405,12 @@ export const ProductCreateVariantsSection = ({
                 return (
                   <Form.Item>
                     <div className="flex flex-col gap-y-6">
-                      <div className="flex items-start justify-between gap-x-4">
+                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-x-4">
                         <div className="flex flex-col">
                           <Form.Label>
                             {t("products.create.variants.productOptions.label")}
                           </Form.Label>
-                          <Form.Hint>
+                          <Form.Hint className="text-xs sm:text-sm">
                             {t("products.create.variants.productOptions.hint")}
                           </Form.Hint>
                         </div>
@@ -403,6 +418,7 @@ export const ProductCreateVariantsSection = ({
                           size="small"
                           variant="secondary"
                           type="button"
+                          className="w-full sm:w-auto"
                           onClick={() => {
                             options.append({
                               title: "",
@@ -423,9 +439,9 @@ export const ProductCreateVariantsSection = ({
                           return (
                             <li
                               key={option.id}
-                              className="bg-ui-bg-component shadow-elevation-card-rest grid grid-cols-[1fr_28px] items-center gap-1.5 rounded-xl p-1.5"
+                              className="bg-ui-bg-component shadow-elevation-card-rest grid grid-cols-[1fr_28px] items-start sm:items-center gap-1.5 rounded-xl p-2 sm:p-1.5"
                             >
-                              <div className="grid grid-cols-[min-content,1fr] items-center gap-1.5">
+                              <div className="grid grid-cols-1 sm:grid-cols-[min-content,1fr] items-start sm:items-center gap-2 sm:gap-1.5">
                                 <div className="flex items-center px-2 py-1.5">
                                   <Label
                                     size="xsmall"

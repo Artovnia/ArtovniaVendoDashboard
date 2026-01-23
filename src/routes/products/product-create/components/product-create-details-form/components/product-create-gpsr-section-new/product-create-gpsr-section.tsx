@@ -23,9 +23,9 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
 
   return (
     <div className="flex flex-col gap-y-6">
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
         <div className="flex-1">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Heading level="h2">{t("products.gpsr.title")}</Heading>
             {isAutoFilled && (
               <Badge size="small" color="green">
@@ -34,7 +34,7 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
               </Badge>
             )}
           </div>
-          <Text className="text-ui-fg-subtle">
+          <Text className="text-ui-fg-subtle text-sm sm:text-base">
             {t("products.gpsr.description")}
           </Text>
         </div>
@@ -44,6 +44,7 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
             variant="secondary"
             size="small"
             onClick={loadDefaults}
+            className="w-full sm:w-auto"
           >
             <SparklesSolid className="mr-1" />
             {t("products.gpsr.useSavedData", "Use saved data")}
@@ -67,7 +68,7 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
                 {t("products.gpsr.producer.name.description")}
               </Form.Hint>
               <Form.Control>
-                <Input {...field} placeholder={t("products.gpsr.producer.name.placeholder")} />
+                <Input {...field} value={field.value ?? ""} placeholder={t("products.gpsr.producer.name.placeholder")} />
               </Form.Control>
               <Form.ErrorMessage />
             </Form.Item>
@@ -88,6 +89,7 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
               <Form.Control>
                 <Textarea 
                   {...field} 
+                  value={field.value ?? ""}
                   placeholder={t("products.gpsr.producer.address.placeholder")}
                   rows={2}
                 />
@@ -111,6 +113,7 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
               <Form.Control>
                 <Input 
                   {...field} 
+                  value={field.value ?? ""}
                   placeholder={t("products.gpsr.producer.contact.placeholder")}
                 />
               </Form.Control>
@@ -136,7 +139,7 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
                 {t("products.gpsr.importer.name.description")}
               </Form.Hint>
               <Form.Control>
-                <Input {...field} placeholder={t("products.gpsr.importer.name.placeholder")} />
+                <Input {...field} value={field.value ?? ""} placeholder={t("products.gpsr.importer.name.placeholder")} />
               </Form.Control>
               <Form.ErrorMessage />
             </Form.Item>
@@ -157,6 +160,7 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
               <Form.Control>
                 <Textarea 
                   {...field} 
+                  value={field.value ?? ""}
                   placeholder={t("products.gpsr.importer.address.placeholder")}
                   rows={2}
                 />
@@ -180,6 +184,7 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
               <Form.Control>
                 <Input 
                   {...field} 
+                  value={field.value ?? ""}
                   placeholder={t("products.gpsr.importer.contact.placeholder")}
                 />
               </Form.Control>
@@ -204,6 +209,7 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
             <Form.Control>
               <Textarea 
                 {...field} 
+                value={field.value ?? ""}
                 placeholder={t("products.gpsr.instructions.placeholder")}
                 rows={4}
               />
@@ -226,6 +232,7 @@ export const ProductCreateGPSRSection = ({ form }: ProductGPSRSectionProps) => {
             <Form.Control>
               <Input 
                 {...field} 
+                value={field.value ?? ""}
                 placeholder={t("products.gpsr.certificates.placeholder")}
               />
             </Form.Control>

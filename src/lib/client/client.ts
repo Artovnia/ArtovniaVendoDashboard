@@ -372,18 +372,10 @@ export const fetchQuery = async (
   const bearer =
     (await window.localStorage.getItem('medusa_auth_token')) || '';
 
-  const params = Object.entries(query || {}).reduce(
-    (acc, [key, value], index) => {
-      if (value && value !== undefined) {
-        const queryLength = Object.values(query || {}).filter(
-          (i) => i && i !== undefined
-        ).length;
-        acc += `${key}=${value}${index + 1 <= queryLength ? '&' : ''}`;
-      }
-      return acc;
-    },
-    ''
-  );
+  const params = Object.entries(query || {})
+    .filter(([, value]) => value !== undefined && value !== null && value !== '')
+    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`)
+    .join('&');
 
   // Check if body is FormData
   const isFormData = body instanceof FormData;

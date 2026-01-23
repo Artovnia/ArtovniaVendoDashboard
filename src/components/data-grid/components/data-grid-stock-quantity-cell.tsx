@@ -63,11 +63,12 @@ const Inner = ({
     ...attributes
   } = inputProps
 
-  const [localValue, setLocalValue] = useState(value)
+  // Use empty string as fallback to prevent controlled/uncontrolled input warning
+  const [localValue, setLocalValue] = useState(value ?? "")
   const [showTooltip, setShowTooltip] = useState(false)
 
   useEffect(() => {
-    setLocalValue(value)
+    setLocalValue(value ?? "")
   }, [value])
 
   const combinedRefs = useCombinedRefs(inputRef, ref)

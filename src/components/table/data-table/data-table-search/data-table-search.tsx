@@ -36,7 +36,7 @@ export const DataTableSearch = ({
       } else {
         selectedParams.add(value)
       }
-    }, 500),
+    }, 800),
     [selectedParams]
   )
 

@@ -29,6 +29,7 @@ export const ProductCreateVariantsForm = ({
   store,
   pricePreferences,
 }: ProductCreateVariantsFormProps) => {
+  const { t } = useTranslation();
   const { setCloseOnEscape } = useRouteModal();
 
   const currencyCodes = useMemo(
@@ -75,14 +76,20 @@ export const ProductCreateVariantsForm = ({
 
   return (
     <div className='flex size-full flex-col divide-y overflow-hidden'>
-      <DataGrid
-        columns={columns}
-        data={variantData}
-        state={form}
-        onEditingChange={(editing) =>
-          setCloseOnEscape(!editing)
-        }
-      />
+      {/* Mobile hint for horizontal scrolling */}
+      <div className='block sm:hidden px-4 py-2 text-xs text-ui-fg-muted bg-ui-bg-subtle border-b'>
+        ← {t('products.create.tabs.variants_scroll_hint')} →
+      </div>
+      <div className='flex-1 overflow-x-auto'>
+        <DataGrid
+          columns={columns}
+          data={variantData}
+          state={form}
+          onEditingChange={(editing) =>
+            setCloseOnEscape(!editing)
+          }
+        />
+      </div>
     </div>
   );
 };

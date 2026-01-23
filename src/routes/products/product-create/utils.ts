@@ -114,5 +114,11 @@ export const decorateVariantsWithDefaultValues = (
     manage_inventory: variant.manage_inventory || false,
     allow_backorder: variant.allow_backorder || false,
     inventory_kit: variant.inventory_kit || false,
+    // Ensure prices object exists with default key to prevent controlled/uncontrolled issues
+    prices: variant.prices || { default: "" },
+    // Ensure stock_quantity has a default value
+    stock_quantity: variant.stock_quantity ?? "",
+    // Ensure inventory array exists
+    inventory: variant.inventory || [{ inventory_item_id: "", required_quantity: "" }],
   }))
 }

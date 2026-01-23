@@ -19,6 +19,15 @@ export interface BaseLinkerConnection {
   status: 'active' | 'inactive' | 'error'
   created_at: string
   updated_at: string
+  metadata?: {
+    gpsr_defaults?: {
+      gpsr_producer_name?: string
+      gpsr_producer_address?: string
+      gpsr_producer_contact?: string
+      gpsr_instructions?: string
+    }
+    [key: string]: any
+  }
 }
 
 export interface CreateConnectionInput {
@@ -33,6 +42,15 @@ export interface CreateConnectionInput {
   auto_sync_orders?: boolean
   stock_sync_interval_minutes?: number
   stock_sync_direction?: 'to_baselinker' | 'from_baselinker' | 'bidirectional'
+  metadata?: {
+    gpsr_defaults?: {
+      gpsr_producer_name?: string
+      gpsr_producer_address?: string
+      gpsr_producer_contact?: string
+      gpsr_instructions?: string
+    }
+    [key: string]: any
+  }
 }
 
 export interface ImportProductInput {

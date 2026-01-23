@@ -6,7 +6,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useMemo, useState, useEffect, useLayoutEffect, useRef } from 'react'
 import { ActionMenu } from '../../../../../components/common/action-menu'
 import { useDeleteVariantLazy } from '../../../../../hooks/api/products'
-import { useVariantColors, useAssignVariantColors } from '../../../../../hooks/api/colors'
+import { useVariantColors, useAssignVariantColors, Color } from '../../../../../hooks/api/colors'
 import { fetchQuery } from '../../../../../lib/client'
 
 type IntegratedVariantSectionProps = {
@@ -340,7 +340,7 @@ const VariantTableRow = ({
               <span className="text-ui-fg-muted text-xs">{t('variant.colorSection.noColors')}</span>
             ) : (
               <div className="flex flex-wrap items-center gap-2">
-                {colors.map((color) => (
+                {colors.map((color: Color) => (
                   <Tooltip key={color.id} content={color.display_name}>
                     <div className="flex items-center gap-1 bg-ui-bg-base border border-ui-border-base rounded px-2 py-1">
                       <div

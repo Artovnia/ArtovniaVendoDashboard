@@ -443,6 +443,7 @@
         "organize": "Organizacja",
         "color_scheme": "Kolory",
         "variants": "Warianty",
+        "variants_scroll_hint": "Przeciągnij w lewo/right aby zobaczyć wszystkie kolumny",
         "inventory": "Inwentarz"
       },
       "validation": {
@@ -4991,6 +4992,19 @@
         "description": "Jeśli używasz integracji z przewoźnikami (InPost, DPD itp.) w BaseLinker, powinieneś je zmapować, aby zapewnić prawidłowe śledzenie.",
         "yes": "Tak, mam przewoźników",
         "no": "Nie, pomiń ten krok"
+      },
+      "gpsr": {
+        "title": "Domyślne dane GPSR",
+        "description": "Ustaw domyślne dane dotyczące Ogólnego Rozporządzenia o Bezpieczeństwie Produktów (GPSR) dla importowanych produktów. Te informacje zostaną zastosowane do wszystkich produktów importowanych z BaseLinker.",
+        "producerName": "Nazwa producenta/wytwórcy",
+        "producerNamePlaceholder": "np. Nazwa Twojej Firmy",
+        "producerAddress": "Adres producenta/wytwórcy",
+        "producerAddressPlaceholder": "np. ul. Przykładowa 123, 00-000 Miasto, Polska",
+        "producerContact": "Kontakt do producenta (Email/Telefon)",
+        "producerContactPlaceholder": "np. kontakt@firma.pl lub +48 123 456 789",
+        "instructions": "Domyślne instrukcje bezpieczeństwa",
+        "instructionsPlaceholder": "np. Przechowywać z dala od dzieci poniżej 3 lat",
+        "hint": "Dane GPSR są wymagane dla produktów sprzedawanych w UE. Możesz nadpisać te domyślne wartości dla poszczególnych produktów po imporcie."
       },
       "complete": {
         "title": "Konfiguracja zakończona!",

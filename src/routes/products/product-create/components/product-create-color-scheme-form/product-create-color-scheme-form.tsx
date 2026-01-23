@@ -220,10 +220,10 @@ export const ProductCreateColorSchemeForm = ({
   }
 
   return (
-    <div className="p-6 space-y-8 flex flex-col items-center">
+    <div className="p-4 sm:p-6 space-y-6 sm:space-y-8 flex flex-col items-center">
       <div className="space-y-2 w-full max-w-3xl text-center">
         <Heading level="h2">{t('products.color_scheme.title')}</Heading>
-        <Text className="text-ui-fg-subtle">
+        <Text className="text-ui-fg-subtle text-sm sm:text-base">
           {t('products.color_scheme.description')}
         </Text>
       </div>
@@ -270,8 +270,8 @@ export const ProductCreateColorSchemeForm = ({
             return (
               <div key={variantId} className="p-4">
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <Text weight="plus">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
+                    <Text weight="plus" className="text-sm sm:text-base">
                       {index === 0 && !hasVariants 
                         ? t('products.color_scheme.default_variant') 
                         : t('products.color_scheme.variant_name', { name: variantTitle })}

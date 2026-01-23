@@ -96,11 +96,17 @@ export function SetupWizard({ activeConnection, onComplete }: SetupWizardProps) 
     auto_sync_stock: activeConnection?.auto_sync_stock ?? true,
     stock_sync_interval_minutes: activeConnection?.stock_sync_interval_minutes ?? 30,
     stock_sync_direction: (activeConnection?.stock_sync_direction ?? 'bidirectional') as 'to_baselinker' | 'from_baselinker' | 'bidirectional',
+    // GPSR defaults for product import
+    gpsr_producer_name: activeConnection?.metadata?.gpsr_defaults?.gpsr_producer_name ?? '',
+    gpsr_producer_address: activeConnection?.metadata?.gpsr_defaults?.gpsr_producer_address ?? '',
+    gpsr_producer_contact: activeConnection?.metadata?.gpsr_defaults?.gpsr_producer_contact ?? '',
+    gpsr_instructions: activeConnection?.metadata?.gpsr_defaults?.gpsr_instructions ?? '',
   })
 
   // Update form data when activeConnection changes
   useEffect(() => {
     if (activeConnection) {
+      const gpsrDefaults = activeConnection.metadata?.gpsr_defaults || {}
       setFormData(prev => ({
         ...prev,
         inventory_id: String(activeConnection.inventory_id),
@@ -111,6 +117,10 @@ export function SetupWizard({ activeConnection, onComplete }: SetupWizardProps) 
         auto_sync_stock: activeConnection.auto_sync_stock,
         stock_sync_interval_minutes: activeConnection.stock_sync_interval_minutes,
         stock_sync_direction: activeConnection.stock_sync_direction,
+        gpsr_producer_name: gpsrDefaults.gpsr_producer_name || '',
+        gpsr_producer_address: gpsrDefaults.gpsr_producer_address || '',
+        gpsr_producer_contact: gpsrDefaults.gpsr_producer_contact || '',
+        gpsr_instructions: gpsrDefaults.gpsr_instructions || '',
       }))
       // Update tab state to reflect existing connection
       setSetupTabState({
@@ -151,7 +161,16 @@ export function SetupWizard({ activeConnection, onComplete }: SetupWizardProps) 
         auto_sync_stock: formData.auto_sync_stock,
         stock_sync_interval_minutes: formData.stock_sync_interval_minutes,
         stock_sync_direction: formData.stock_sync_direction,
-      })
+        // Include GPSR defaults in metadata
+        metadata: {
+          gpsr_defaults: {
+            gpsr_producer_name: formData.gpsr_producer_name || undefined,
+            gpsr_producer_address: formData.gpsr_producer_address || undefined,
+            gpsr_producer_contact: formData.gpsr_producer_contact || undefined,
+            gpsr_instructions: formData.gpsr_instructions || undefined,
+          },
+        },
+      } as any)
       setConnectionCreatedInSession(true)
       toast.success(t('baselinker.connectionSuccess', { defaultValue: 'BaseLinker connected successfully' }))
       return true
@@ -172,6 +191,16 @@ export function SetupWizard({ activeConnection, onComplete }: SetupWizardProps) 
           stock_sync_enabled: formData.stock_sync_enabled,
           order_sync_enabled: formData.order_sync_enabled,
           fulfillment_sync_enabled: formData.fulfillment_sync_enabled,
+          // Include GPSR defaults in metadata when updating
+          metadata: {
+            ...activeConnection.metadata,
+            gpsr_defaults: {
+              gpsr_producer_name: formData.gpsr_producer_name || undefined,
+              gpsr_producer_address: formData.gpsr_producer_address || undefined,
+              gpsr_producer_contact: formData.gpsr_producer_contact || undefined,
+              gpsr_instructions: formData.gpsr_instructions || undefined,
+            },
+          },
         },
       })
       return true
@@ -431,6 +460,76 @@ export function SetupWizard({ activeConnection, onComplete }: SetupWizardProps) 
                     </Text>
                   </div>
                 )}
+              </div>
+            </div>
+
+            {/* GPSR Defaults Section */}
+            <div className="space-y-4">
+              <div>
+                <Heading level="h3" className="text-base sm:text-lg">
+                  {t('baselinker.setup.gpsr.title', { defaultValue: 'GPSR Defaults (Product Safety)' })}
+                </Heading>
+                <Text className="text-ui-fg-subtle mt-1 text-sm">
+                  {t('baselinker.setup.gpsr.description', { 
+                    defaultValue: 'Configure default GPSR (General Product Safety Regulation) data that will be applied to imported products. This information is required for EU compliance.' 
+                  })}
+                </Text>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 rounded-lg border border-ui-border-base p-4">
+                <div>
+                  <Label htmlFor="gpsr_producer_name" className="mb-2">
+                    {t('baselinker.setup.gpsr.producerName', { defaultValue: 'Producer/Manufacturer Name' })}
+                  </Label>
+                  <Input
+                    id="gpsr_producer_name"
+                    value={formData.gpsr_producer_name}
+                    onChange={(e) => setFormData({ ...formData, gpsr_producer_name: e.target.value })}
+                    placeholder={t('baselinker.setup.gpsr.producerNamePlaceholder', { defaultValue: 'e.g., Your Company Name' })}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="gpsr_producer_address" className="mb-2">
+                    {t('baselinker.setup.gpsr.producerAddress', { defaultValue: 'Producer/Manufacturer Address' })}
+                  </Label>
+                  <Input
+                    id="gpsr_producer_address"
+                    value={formData.gpsr_producer_address}
+                    onChange={(e) => setFormData({ ...formData, gpsr_producer_address: e.target.value })}
+                    placeholder={t('baselinker.setup.gpsr.producerAddressPlaceholder', { defaultValue: 'e.g., Street 123, 00-000 City, Poland' })}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="gpsr_producer_contact" className="mb-2">
+                    {t('baselinker.setup.gpsr.producerContact', { defaultValue: 'Producer Contact (Email/Phone)' })}
+                  </Label>
+                  <Input
+                    id="gpsr_producer_contact"
+                    value={formData.gpsr_producer_contact}
+                    onChange={(e) => setFormData({ ...formData, gpsr_producer_contact: e.target.value })}
+                    placeholder={t('baselinker.setup.gpsr.producerContactPlaceholder', { defaultValue: 'e.g., contact@company.com or +48 123 456 789' })}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="gpsr_instructions" className="mb-2">
+                    {t('baselinker.setup.gpsr.instructions', { defaultValue: 'Default Safety Instructions' })}
+                  </Label>
+                  <Input
+                    id="gpsr_instructions"
+                    value={formData.gpsr_instructions}
+                    onChange={(e) => setFormData({ ...formData, gpsr_instructions: e.target.value })}
+                    placeholder={t('baselinker.setup.gpsr.instructionsPlaceholder', { defaultValue: 'e.g., Keep away from children under 3 years' })}
+                  />
+                </div>
+              </div>
+
+              <div className="p-3 rounded-lg flex items-start gap-2 bg-ui-bg-subtle border border-ui-border-base">
+                <ExclamationCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-ui-fg-muted" />
+                <Text className="text-sm text-ui-fg-muted">
+                  {t('baselinker.setup.gpsr.hint', { 
+                    defaultValue: 'These defaults will be applied to all imported products. You can override them individually for each product after import.' 
+                  })}
+                </Text>
               </div>
             </div>
 

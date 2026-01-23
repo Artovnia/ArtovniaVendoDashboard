@@ -21,8 +21,8 @@ export const ProductCreateDetailsForm = ({ form }: ProductAttributesProps) => {
   const fields = getFormFields("product", "create", "general")
 
   return (
-    <div className="flex flex-col items-center p-16">
-      <div className="flex w-full max-w-[720px] flex-col gap-y-8">
+    <div className="flex flex-col items-center p-4 sm:p-8 md:p-16">
+      <div className="flex w-full max-w-[720px] flex-col gap-y-6 sm:gap-y-8">
         <Header />
         <div className="flex flex-col gap-y-6">
           <div className="flex flex-col gap-y-8 divide-y">
@@ -31,12 +31,12 @@ export const ProductCreateDetailsForm = ({ form }: ProductAttributesProps) => {
             <div className="pt-8">
               <ProductCreateMediaSection form={form} />
             </div>
-            <div className="pt-8">
-              <ProductCreateGPSRSection form={form} />
-            </div>
           </div>
           <Divider />
+          {/* Variant creation moved above GPSR section for better UX flow */}
           <ProductCreateVariantsSection form={form} />
+          <Divider />
+          <ProductCreateGPSRSection form={form} />
         </div>
       </div>
     </div>

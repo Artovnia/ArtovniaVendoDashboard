@@ -623,34 +623,42 @@ export const ProductCreateForm = ({
   };
   
   useEffect(() => {
-    const currentState = { ...tabState };
+    // Compute new tab state based on current tab - don't read from tabState to avoid stale closure
+    const newState: TabState = {
+      [Tab.DETAILS]: 'not-started',
+      [Tab.ORGANIZE]: 'not-started',
+      [Tab.COLOR_SCHEME]: 'not-started',
+      [Tab.VARIANTS]: 'not-started',
+      [Tab.INVENTORY]: 'not-started',
+    };
+    
     if (tab === Tab.DETAILS) {
-      currentState[Tab.DETAILS] = 'in-progress';
+      newState[Tab.DETAILS] = 'in-progress';
     }
     if (tab === Tab.ORGANIZE) {
-      currentState[Tab.DETAILS] = 'completed';
-      currentState[Tab.ORGANIZE] = 'in-progress';
+      newState[Tab.DETAILS] = 'completed';
+      newState[Tab.ORGANIZE] = 'in-progress';
     }
     if (tab === Tab.COLOR_SCHEME) {
-      currentState[Tab.DETAILS] = 'completed';
-      currentState[Tab.ORGANIZE] = 'completed';
-      currentState[Tab.COLOR_SCHEME] = 'in-progress';
+      newState[Tab.DETAILS] = 'completed';
+      newState[Tab.ORGANIZE] = 'completed';
+      newState[Tab.COLOR_SCHEME] = 'in-progress';
     }
     if (tab === Tab.VARIANTS) {
-      currentState[Tab.DETAILS] = 'completed';
-      currentState[Tab.ORGANIZE] = 'completed';
-      currentState[Tab.COLOR_SCHEME] = 'completed';
-      currentState[Tab.VARIANTS] = 'in-progress';
+      newState[Tab.DETAILS] = 'completed';
+      newState[Tab.ORGANIZE] = 'completed';
+      newState[Tab.COLOR_SCHEME] = 'completed';
+      newState[Tab.VARIANTS] = 'in-progress';
     }
     if (tab === Tab.INVENTORY) {
-      currentState[Tab.DETAILS] = 'completed';
-      currentState[Tab.ORGANIZE] = 'completed';
-      currentState[Tab.COLOR_SCHEME] = 'completed';
-      currentState[Tab.VARIANTS] = 'completed';
-      currentState[Tab.INVENTORY] = 'in-progress';
+      newState[Tab.DETAILS] = 'completed';
+      newState[Tab.ORGANIZE] = 'completed';
+      newState[Tab.COLOR_SCHEME] = 'completed';
+      newState[Tab.VARIANTS] = 'completed';
+      newState[Tab.INVENTORY] = 'in-progress';
     }
 
-    setTabState({ ...currentState });
+    setTabState(newState);
   }, [tab]);
 
   return (
@@ -719,33 +727,33 @@ export const ProductCreateForm = ({
           className='flex h-full flex-col overflow-hidden'
         >
           <RouteFocusModal.Header>
-            <div className='-my-2 w-full border-l'>
-              <ProgressTabs.List className='justify-start-start flex w-full items-center'>
+            <div className='-my-2 w-full border-l overflow-x-auto'>
+              <ProgressTabs.List className='flex w-full items-center min-w-max px-2 sm:px-0'>
                 <ProgressTabs.Trigger
                   status={tabState[Tab.DETAILS]}
                   value={Tab.DETAILS}
-                  className='max-w-[200px] truncate'
+                  className='max-w-[200px] truncate text-xs sm:text-sm px-2 sm:px-4'
                 >
                   {t('products.create.tabs.details')}
                 </ProgressTabs.Trigger>
                 <ProgressTabs.Trigger
                   status={tabState[Tab.ORGANIZE]}
                   value={Tab.ORGANIZE}
-                  className='max-w-[200px] truncate'
+                  className='max-w-[200px] truncate text-xs sm:text-sm px-2 sm:px-4'
                 >
                   {t('products.create.tabs.organize')}
                 </ProgressTabs.Trigger>
                 <ProgressTabs.Trigger
                   status={tabState[Tab.COLOR_SCHEME]}
                   value={Tab.COLOR_SCHEME}
-                  className='max-w-[200px] truncate'
+                  className='max-w-[200px] truncate text-xs sm:text-sm px-2 sm:px-4'
                 >
                   {t('products.create.tabs.color_scheme')}
                 </ProgressTabs.Trigger>
                 <ProgressTabs.Trigger
                   status={tabState[Tab.VARIANTS]}
                   value={Tab.VARIANTS}
-                  className='max-w-[200px] truncate'
+                  className='max-w-[200px] truncate text-xs sm:text-sm px-2 sm:px-4'
                 >
                   {t('products.create.tabs.variants')}
                 </ProgressTabs.Trigger>
@@ -753,7 +761,7 @@ export const ProductCreateForm = ({
                   <ProgressTabs.Trigger
                     status={tabState[Tab.INVENTORY]}
                     value={Tab.INVENTORY}
-                    className='max-w-[200px] truncate'
+                    className='max-w-[200px] truncate text-xs sm:text-sm px-2 sm:px-4'
                   >
                     {t('products.create.tabs.inventory')}
                   </ProgressTabs.Trigger>

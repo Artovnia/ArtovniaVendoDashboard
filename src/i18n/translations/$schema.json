@@ -1611,6 +1611,9 @@
                 "variants": {
                   "type": "string"
                 },
+                "variants_scroll_hint": {
+                  "type": "string"
+                },
                 "inventory": {
                   "type": "string"
                 }
@@ -1619,7 +1622,8 @@
                 "details",
                 "organize",
                 "color_scheme",
-                "variants",
+                "variants", 
+                "variants_scroll_hint",
                 "inventory"
               ],
               "additionalProperties": false
@@ -16795,6 +16799,24 @@
               "required": ["title", "description", "yes", "no"],
               "additionalProperties": false
             },
+            "gpsr": {
+              "type": "object",
+              "properties": {
+                "title": {"type": "string"},
+                "description": {"type": "string"},
+                "producerName": {"type": "string"},
+                "producerNamePlaceholder": {"type": "string"},
+                "producerAddress": {"type": "string"},
+                "producerAddressPlaceholder": {"type": "string"},
+                "producerContact": {"type": "string"},
+                "producerContactPlaceholder": {"type": "string"},
+                "instructions": {"type": "string"},
+                "instructionsPlaceholder": {"type": "string"},
+                "hint": {"type": "string"}
+              },
+              "required": ["title", "description", "producerName", "producerNamePlaceholder", "producerAddress", "producerAddressPlaceholder", "producerContact", "producerContactPlaceholder", "instructions", "instructionsPlaceholder", "hint"],
+              "additionalProperties": false
+            },
             "complete": {
               "type": "object",
               "properties": {
@@ -16811,7 +16833,7 @@
               "additionalProperties": false
             }
           },
-          "required": ["title", "description", "tabs", "connection", "features", "statusMapping", "carrierMapping", "carrierQuestion", "complete"],
+          "required": ["title", "description", "tabs", "connection", "features", "statusMapping", "carrierMapping", "carrierQuestion", "gpsr", "complete"],
           "additionalProperties": false
         },
         "setupIncomplete": {

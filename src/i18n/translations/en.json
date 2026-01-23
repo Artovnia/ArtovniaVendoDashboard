@@ -432,6 +432,7 @@
         "organize": "Organize",
         "color_scheme": "Colors",
         "variants": "Variants",
+        "variants_scroll_hint": "Drag left/right to see all columns",
         "inventory": "Inventory"
       },
       "validation": {
@@ -4851,6 +4852,19 @@
         "description": "If you use carrier integrations (InPost, DPD, etc.) in BaseLinker, you should map them to ensure proper tracking.",
         "yes": "Yes, I have carriers",
         "no": "No, skip this step"
+      },
+      "gpsr": {
+        "title": "GPSR Default Data",
+        "description": "Set default General Product Safety Regulation (GPSR) data for imported products. This information will be applied to all products imported from BaseLinker.",
+        "producerName": "Producer/Manufacturer Name",
+        "producerNamePlaceholder": "e.g., Your Company Name",
+        "producerAddress": "Producer/Manufacturer Address",
+        "producerAddressPlaceholder": "e.g., Street 123, 00-000 City, Poland",
+        "producerContact": "Producer Contact (Email/Phone)",
+        "producerContactPlaceholder": "e.g., contact@company.com or +48 123 456 789",
+        "instructions": "Default Safety Instructions",
+        "instructionsPlaceholder": "e.g., Keep away from children under 3 years",
+        "hint": "GPSR data is required for products sold in the EU. You can override these defaults on individual products after import."
       },
       "complete": {
         "title": "Setup Complete!",

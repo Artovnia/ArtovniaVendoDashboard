@@ -93,6 +93,21 @@ export function BaseLinkerImport() {
   useEffect(() => {
     selectionRef.current = selection
   }, [selection])
+  
+  // Setters that support callback syntax like React.Dispatch<SetStateAction>
+  const setSelectedGroupIds: React.Dispatch<React.SetStateAction<string[]>> = useCallback((value) => {
+    setSelection(prev => ({
+      ...prev,
+      groupIds: typeof value === 'function' ? value(prev.groupIds) : value
+    }))
+  }, [])
+  
+  const setSelectedProductIds: React.Dispatch<React.SetStateAction<string[]>> = useCallback((value) => {
+    setSelection(prev => ({
+      ...prev,
+      productIds: typeof value === 'function' ? value(prev.productIds) : value
+    }))
+  }, [])
 
   // API hooks
   const { refetch: fetchPreview, isFetching: isLoadingProducts } = useProductsPreview()
@@ -174,10 +189,13 @@ export function BaseLinkerImport() {
     
     // Create variant groups for products with duplicate names (2+ products)
     const groups: VariantGroup[] = []
+    let groupIndex = 0
     nameMap.forEach((productsWithSameName, normalizedName) => {
       if (productsWithSameName.length >= 2) {
+        // Use a combination of index, normalized name hash, and first product ID for uniqueness
+        const firstProductId = productsWithSameName[0].id
         groups.push({
-          id: `group_${normalizedName.replace(/\s+/g, '_').substring(0, 20)}_${Date.now()}`,
+          id: `group_${groupIndex}_${firstProductId}`,
           name: productsWithSameName[0].name,
           members: productsWithSameName.map((p) => ({
             product: p,
@@ -188,6 +206,7 @@ export function BaseLinkerImport() {
           assigned_category_id: null,
           assigned_shipping_profile_id: null,
         })
+        groupIndex++
       }
     })
     
@@ -314,6 +333,73 @@ export function BaseLinkerImport() {
     })
 
     try {
+      // CRITICAL VALIDATION: Check that all items have required category and shipping profile
+      const productsWithoutCategory = productsToImport.filter(p => !p.assigned_category_id)
+      const productsWithoutShipping = productsToImport.filter(p => !p.assigned_shipping_profile_id && !defaultShippingProfileId)
+      const groupsWithoutCategory = groupsToImport.filter(g => !g.assigned_category_id)
+      const groupsWithoutShipping = groupsToImport.filter(g => !g.assigned_shipping_profile_id && !defaultShippingProfileId)
+      
+      if (productsWithoutCategory.length > 0) {
+        toast.error(t('baselinker.import.missingCategoryError', { 
+          count: productsWithoutCategory.length,
+          defaultValue: `${productsWithoutCategory.length} products are missing category assignment. Please assign categories before importing.`
+        }))
+        setTab(Tab.PRODUCTS)
+        return
+      }
+      
+      if (productsWithoutShipping.length > 0) {
+        toast.error(t('baselinker.import.missingShippingError', { 
+          count: productsWithoutShipping.length,
+          defaultValue: `${productsWithoutShipping.length} products are missing shipping profile. Please assign shipping profiles before importing.`
+        }))
+        setTab(Tab.PRODUCTS)
+        return
+      }
+      
+      if (groupsWithoutCategory.length > 0) {
+        toast.error(t('baselinker.import.groupMissingCategoryError', { 
+          count: groupsWithoutCategory.length,
+          defaultValue: `${groupsWithoutCategory.length} variant groups are missing category assignment. Please assign categories before importing.`
+        }))
+        setTab(Tab.PRODUCTS)
+        return
+      }
+      
+      if (groupsWithoutShipping.length > 0) {
+        toast.error(t('baselinker.import.groupMissingShippingError', { 
+          count: groupsWithoutShipping.length,
+          defaultValue: `${groupsWithoutShipping.length} variant groups are missing shipping profile. Please assign shipping profiles before importing.`
+        }))
+        setTab(Tab.PRODUCTS)
+        return
+      }
+      
+      // Validate that groups are configured
+      const unconfiguredGroups = groupsToImport.filter(g => !g.isConfigured)
+      if (unconfiguredGroups.length > 0) {
+        toast.error(t('baselinker.import.unconfiguredGroupsError', { 
+          count: unconfiguredGroups.length,
+          defaultValue: `${unconfiguredGroups.length} variant groups are not configured. Please configure variant options before importing.`
+        }))
+        setTab(Tab.PRODUCTS)
+        return
+      }
+      
+      // Check if there's anything to import
+      if (productsToImport.length === 0 && groupsToImport.length === 0) {
+        toast.error(t('baselinker.import.nothingToImport', { 
+          defaultValue: 'No products or groups selected for import. Please select items to import.'
+        }))
+        setTab(Tab.PRODUCTS)
+        return
+      }
+      
+      console.log('[IMPORT] Validation passed:', {
+        productsCount: productsToImport.length,
+        groupsCount: groupsToImport.length,
+      })
+
       const categoryMapping: Record<string, string> = {}
       productsToImport.forEach((p) => {
         if (p.baselinker_category_id && p.assigned_category_id) {
@@ -323,8 +409,8 @@ export function BaseLinkerImport() {
 
       const productAssignments = productsToImport.map((p) => ({
         bl_product_id: p.id,
-        category_id: p.assigned_category_id || undefined,
-        shipping_profile_id: p.assigned_shipping_profile_id || undefined,
+        category_id: p.assigned_category_id!, // Now guaranteed to exist
+        shipping_profile_id: p.assigned_shipping_profile_id || defaultShippingProfileId!, // Now guaranteed
       }))
       
       const groupedAssignments = groupsToImport.map((group) => ({
@@ -341,8 +427,8 @@ export function BaseLinkerImport() {
           ean: m.product.ean,
           images: m.product.images,
         })),
-        category_id: group.assigned_category_id ?? group.members[0]?.product.assigned_category_id ?? undefined,
-        shipping_profile_id: group.assigned_shipping_profile_id ?? group.members[0]?.product.assigned_shipping_profile_id ?? undefined,
+        category_id: group.assigned_category_id!, // Now guaranteed
+        shipping_profile_id: group.assigned_shipping_profile_id || defaultShippingProfileId!, // Now guaranteed
       }))
 
       const payload = {
@@ -383,14 +469,6 @@ export function BaseLinkerImport() {
     }
   }, [products, variantGroups, ungroupedProducts, groupedProductIds, connectionId, importBulk, t])
 
-  // Selection handlers - update both state and ref
-  const handleProductSelectionChange = useCallback((productIds: string[]) => {
-    setSelection(prev => ({ ...prev, productIds }))
-  }, [])
-  
-  const handleGroupSelectionChange = useCallback((groupIds: string[]) => {
-    setSelection(prev => ({ ...prev, groupIds }))
-  }, [])
 
   // Calculate counts
   const counts = useMemo(() => {
@@ -486,7 +564,15 @@ export function BaseLinkerImport() {
           <ProgressTabs.Content className="size-full overflow-y-auto" value={Tab.CATEGORIES}>
             {isLoadingProducts || isMappingsLoading ? (
               <div className="flex h-full items-center justify-center">
-                <ArrowPath className="animate-spin text-ui-fg-muted" />
+                <svg 
+                  className="h-5 w-5 animate-spin text-ui-fg-muted" 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  fill="none" 
+                  viewBox="0 0 24 24"
+                >
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
                 <Text className="ml-2 text-ui-fg-muted">{t('baselinker.import.loading')}</Text>
               </div>
             ) : categories.length === 0 ? (
@@ -511,11 +597,11 @@ export function BaseLinkerImport() {
               setProducts={setProducts}
               counts={counts}
               selectedProductIds={selection.productIds}
-              onProductSelectionChange={handleProductSelectionChange}
+              setSelectedProductIds={setSelectedProductIds}
               variantGroups={variantGroups}
               setVariantGroups={setVariantGroups}
               selectedGroupIds={selection.groupIds}
-              onGroupSelectionChange={handleGroupSelectionChange}
+              setSelectedGroupIds={setSelectedGroupIds}
               onOpenGroupingModal={openGroupingModal}
               groupedProductIds={groupedProductIds}
             />
@@ -681,76 +767,6 @@ function CategoryMappingContent({
   )
 }
 
-// Category Mapping Content
-function CategoryMappingContent({
-  categories,
-  mappings,
-  setMappings,
-  mappedCount: _mappedCount,
-}: {
-  categories: Array<{ id: string; name: string; productCount: number }>
-  mappings: Map<string, string | null>
-  setMappings: React.Dispatch<React.SetStateAction<Map<string, string | null>>>
-  mappedCount: number
-}) {
-  const { t } = useTranslation()
-
-  const updateMapping = (blCategoryId: string, platformCategoryId: string | null) => {
-    setMappings((prev) => new Map(prev).set(blCategoryId, platformCategoryId))
-  }
-
-  return (
-    <div className="p-6">
-      <div className="mb-6">
-        <Text className="font-medium text-ui-fg-base">
-          {t('baselinker.import.categoryMappingTitle', { defaultValue: 'Map BaseLinker Categories' })}
-        </Text>
-        <Text className="text-sm text-ui-fg-subtle">
-          {t('baselinker.import.categoryMappingDescription', {
-            defaultValue: 'Connect your BaseLinker categories to marketplace categories. Products will be automatically assigned.',
-          })}
-        </Text>
-      </div>
-
-      <div className="rounded-lg border border-ui-border-base">
-        <table className="w-full">
-          <thead className="border-b border-ui-border-base bg-ui-bg-subtle">
-            <tr>
-              <th className="px-4 py-3 text-left text-sm font-medium text-ui-fg-base">
-                {t('baselinker.import.baselinkerCategory', { defaultValue: 'BaseLinker Category' })}
-              </th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-ui-fg-base w-24">
-                {t('baselinker.import.products', { defaultValue: 'Products' })}
-              </th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-ui-fg-base">
-                {t('baselinker.import.marketplaceCategory', { defaultValue: 'Marketplace Category' })}
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-ui-border-base">
-            {categories.map((cat) => (
-              <tr key={cat.id}>
-                <td className="px-4 py-3">
-                  <Text className="font-medium">{cat.name}</Text>
-                </td>
-                <td className="px-4 py-3">
-                  <Badge color="grey">{cat.productCount}</Badge>
-                </td>
-                <td className="px-4 py-3">
-                  <CategorySelect
-                    value={mappings.get(cat.id) ? [mappings.get(cat.id)!] : []}
-                    onChange={(value) => updateMapping(cat.id, value[0] || null)}
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  )
-}
-
 // Product Review Content
 function ProductReviewContent({
   products,
@@ -782,6 +798,7 @@ function ProductReviewContent({
   const [filter, setFilter] = useState<'all' | 'missing-category' | 'missing-shipping'>('all')
   const [bulkCategoryId, setBulkCategoryId] = useState<string>('')
   const [bulkShippingProfileId, setBulkShippingProfileId] = useState<string>('')
+  const [activeTab, setActiveTab] = useState<'single' | 'groups'>('single')
   
   // Use the parent's selectedProductIds instead of local state
   const selectedIds = selectedProductIds
@@ -959,8 +976,35 @@ function ProductReviewContent({
         </div>
       </div>
 
-      {/* Variant Groups as Selectable Entries */}
-      {filteredVariantGroups.length > 0 && (
+      {/* Tab Navigation - only show if both single products and groups exist */}
+      {filteredProducts.length > 0 && filteredVariantGroups.length > 0 && (
+        <div className="border-b border-ui-border-base p-2 bg-ui-bg-subtle flex gap-2">
+          <Button
+            variant={activeTab === 'single' ? 'primary' : 'secondary'}
+            size="small"
+            onClick={() => setActiveTab('single')}
+          >
+            {t('baselinker.import.standaloneProducts', { defaultValue: 'Pojedyncze produkty' })}
+            <Badge color={activeTab === 'single' ? 'green' : 'grey'} size="small" className="ml-2">
+              {filteredProducts.length}
+            </Badge>
+          </Button>
+          <Button
+            variant={activeTab === 'groups' ? 'primary' : 'secondary'}
+            size="small"
+            onClick={() => setActiveTab('groups')}
+          >
+            <SquaresPlus className="mr-1" />
+            {t('baselinker.import.variantGroups', { defaultValue: 'Grupy wariantów' })}
+            <Badge color={activeTab === 'groups' ? 'purple' : 'grey'} size="small" className="ml-2">
+              {filteredVariantGroups.length}
+            </Badge>
+          </Button>
+        </div>
+      )}
+
+      {/* Variant Groups Tab Content */}
+      {filteredVariantGroups.length > 0 && (activeTab === 'groups' || filteredProducts.length === 0) && (
         <div className="border-b border-ui-border-base p-4 bg-ui-bg-subtle-hover">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-3">
@@ -988,9 +1032,9 @@ function ProductReviewContent({
           </div>
           
           <div className="space-y-2">
-            {filteredVariantGroups.map((group) => (
+            {filteredVariantGroups.map((group, index) => (
               <div
-                key={group.id}
+                key={`group-${index}-${group.id}`}
                 className={`flex flex-col gap-3 rounded-lg border p-3 lg:flex-row lg:items-center ${
                   selectedGroupIds.includes(group.id)
                     ? 'border-ui-fg-interactive bg-ui-bg-base'
@@ -1076,8 +1120,8 @@ function ProductReviewContent({
         </div>
       )}
 
-      {/* Standalone Products List (not in variant groups) */}
-      {filteredProducts.length > 0 && (
+      {/* Standalone Products Header - only show when single tab is active or no groups exist */}
+      {filteredProducts.length > 0 && (activeTab === 'single' || filteredVariantGroups.length === 0) && (
         <div className="border-b border-ui-border-base p-4 bg-ui-bg-base">
           <div className="flex items-center gap-3 mb-3">
             <Checkbox
@@ -1096,6 +1140,8 @@ function ProductReviewContent({
         </div>
       )}
       
+      {/* Product List - only show when single tab is active or no groups exist */}
+      {filteredProducts.length > 0 && (activeTab === 'single' || filteredVariantGroups.length === 0) && (
       <div className="flex-1 overflow-y-auto p-4 lg:space-y-0">
         <div className="space-y-2 lg:space-y-0">
           {filteredProducts.map((product) => (
@@ -1192,6 +1238,7 @@ function ProductReviewContent({
           ))}
         </div>
       </div>
+      )}
 
       {/* Status Bar */}
       <div className="border-t border-ui-border-base bg-ui-bg-subtle p-4">
@@ -1261,7 +1308,26 @@ function ImportingContent({
   if (isImporting) {
     return (
       <div className="flex h-full flex-col items-center justify-center p-8">
-        <ArrowPath className="h-12 w-12 animate-spin text-ui-fg-muted" />
+        <svg 
+          className="h-12 w-12 animate-spin text-ui-fg-muted" 
+          xmlns="http://www.w3.org/2000/svg" 
+          fill="none" 
+          viewBox="0 0 24 24"
+        >
+          <circle 
+            className="opacity-25" 
+            cx="12" 
+            cy="12" 
+            r="10" 
+            stroke="currentColor" 
+            strokeWidth="4"
+          />
+          <path 
+            className="opacity-75" 
+            fill="currentColor" 
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          />
+        </svg>
         <Text className="mt-4 text-lg font-medium">
           {t('baselinker.import.importing', { defaultValue: 'Importing products...' })}
         </Text>
@@ -1275,7 +1341,14 @@ function ImportingContent({
   if (isComplete && importResult) {
     return (
       <div className="flex h-full flex-col items-center justify-center p-8">
-        <CheckCircleSolid className="h-16 w-16 text-ui-fg-interactive" />
+        <svg 
+          className="h-16 w-16 text-ui-fg-interactive" 
+          xmlns="http://www.w3.org/2000/svg" 
+          viewBox="0 0 24 24" 
+          fill="currentColor"
+        >
+          <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
+        </svg>
         <Text className="mt-4 text-2xl font-semibold text-ui-fg-base">
           {t('baselinker.import.complete', { defaultValue: 'Import Complete!' })}
         </Text>

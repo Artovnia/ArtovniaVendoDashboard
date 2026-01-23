@@ -66,10 +66,11 @@ const OuterComponent = ({
   const { value } = field
   const { onChange } = inputProps
 
-  const [localValue, setLocalValue] = useState(value)
+  // Ensure localValue has default structure to prevent controlled/uncontrolled issues
+  const [localValue, setLocalValue] = useState(value ?? { checked: false, quantity: "", disabledToggle: false })
 
   useEffect(() => {
-    setLocalValue(value)
+    setLocalValue(value ?? { checked: false, quantity: "", disabledToggle: false })
   }, [value])
 
   const handleCheckedChange = (update: boolean) => {
@@ -139,10 +140,11 @@ const Inner = ({
     ...attributes
   } = inputProps
 
-  const [localValue, setLocalValue] = useState(value)
+  // Ensure localValue has default structure to prevent controlled/uncontrolled issues
+  const [localValue, setLocalValue] = useState(value ?? { checked: false, quantity: "", disabledToggle: false })
 
   useEffect(() => {
-    setLocalValue(value)
+    setLocalValue(value ?? { checked: false, quantity: "", disabledToggle: false })
   }, [value])
 
   const combinedRefs = useCombinedRefs(inputRef, ref)

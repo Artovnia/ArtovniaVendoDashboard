@@ -493,7 +493,7 @@ const FulfillmentGroup = ({
           {allItems.map((f_item: any) => {
             // Find the original order item to get product_id and variant options
             const orderItem = order.items?.find(i => i.id === f_item.line_item_id);
-            const hasOptions = orderItem?.variant?.options && orderItem.variant.options.length > 0;
+            const hasOptions = orderItem?.variant?.options && orderItem?.variant?.options.length > 0;
             
             return (
               <li key={f_item.line_item_id}>
@@ -511,13 +511,13 @@ const FulfillmentGroup = ({
                     {f_item.quantity}x {f_item.title}
                   </Text>
                 )}
-                {hasOptions && orderItem.variant && (
+                {hasOptions && orderItem?.variant && (
                   <div className='flex flex-wrap items-center gap-1 ml-6 mt-0.5'>
                     {orderItem.variant.options?.map((opt: any, idx: number) => (
                       <span key={idx} className='text-xs'>
                         <span className='text-ui-fg-muted'>{opt.option?.title || 'Option'}:</span>{' '}
                         <span className='text-ui-fg-subtle font-medium'>{opt.value}</span>
-                        {idx < (orderItem.variant.options?.length || 0) - 1 && <span className='text-ui-fg-muted mx-1'>·</span>}
+                        {idx < (orderItem?.variant?.options?.length || 0) - 1 && <span className='text-ui-fg-muted mx-1'>·</span>}
                       </span>
                     ))}
                   </div>

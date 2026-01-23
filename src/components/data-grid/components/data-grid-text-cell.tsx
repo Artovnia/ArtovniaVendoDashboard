@@ -42,10 +42,11 @@ const Inner = ({
   const { onChange: _, onBlur, ref, value, ...rest } = field
   const { ref: inputRef, onBlur: onInputBlur, onChange, ...input } = inputProps
 
-  const [localValue, setLocalValue] = useState(value)
+  // Use empty string as fallback to prevent controlled/uncontrolled input warning
+  const [localValue, setLocalValue] = useState(value ?? "")
 
   useEffect(() => {
-    setLocalValue(value)
+    setLocalValue(value ?? "")
   }, [value])
 
   const combinedRefs = useCombinedRefs(inputRef, ref)

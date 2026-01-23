@@ -62,11 +62,22 @@ export interface DataGridRootProps<
 }
 
 const ROW_HEIGHT = 40
+const MOBILE_ROW_HEIGHT = 56 // Taller rows on mobile to accommodate wrapped text
+
+// Check if we're on mobile (viewport width <= 640px)
+const isMobileViewport = () => {
+  if (typeof window === 'undefined') return false
+  return window.innerWidth <= 640
+}
 
 const getCommonPinningStyles = <TData,>(
-  column: Column<TData>
+  column: Column<TData>,
+  isMobile: boolean
 ): CSSProperties => {
   const isPinned = column.getIsPinned()
+  
+  // Disable pinning on mobile to allow horizontal scrolling of all columns
+  const effectivelyPinned = isPinned && !isMobile
 
   /**
    * Since our border colors are semi-transparent, we need to set a custom border color
@@ -79,13 +90,13 @@ const getCommonPinningStyles = <TData,>(
   const BORDER_COLOR = isDarkMode ? "rgb(50,50,53)" : "rgb(228,228,231)"
 
   return {
-    position: isPinned ? "sticky" : "relative",
+    position: effectivelyPinned ? "sticky" : "relative",
     width: column.getSize(),
-    zIndex: isPinned ? 1 : 0,
-    borderBottom: isPinned ? `1px solid ${BORDER_COLOR}` : undefined,
-    borderRight: isPinned ? `1px solid ${BORDER_COLOR}` : undefined,
-    left: isPinned === "left" ? `${column.getStart("left")}px` : undefined,
-    right: isPinned === "right" ? `${column.getAfter("right")}px` : undefined,
+    zIndex: effectivelyPinned ? 1 : 0,
+    borderBottom: effectivelyPinned ? `1px solid ${BORDER_COLOR}` : undefined,
+    borderRight: effectivelyPinned ? `1px solid ${BORDER_COLOR}` : undefined,
+    left: effectivelyPinned && isPinned === "left" ? `${column.getStart("left")}px` : undefined,
+    right: effectivelyPinned && isPinned === "right" ? `${column.getAfter("right")}px` : undefined,
   }
 }
 
@@ -107,6 +118,19 @@ export const DataGridRoot = <
   multiColumnSelection = false,
 }: DataGridRootProps<TData, TFieldValues>) => {
   const containerRef = useRef<HTMLDivElement>(null)
+  
+  // Track mobile viewport state reactively
+  const [isMobile, setIsMobile] = useState(() => isMobileViewport())
+  
+  // Listen for viewport changes
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(isMobileViewport())
+    }
+    
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const { redo, undo, execute } = useCommandHistory()
   const {
@@ -148,8 +172,9 @@ export const DataGridRoot = <
     getSubRows,
     getCoreRowModel: getCoreRowModel(),
     defaultColumn: {
-      size: 200,
-      maxSize: 400,
+      // Use smaller column sizes on mobile for better usability
+      size: isMobile ? 120 : 200,
+      maxSize: isMobile ? 200 : 400,
     },
   })
 
@@ -164,7 +189,7 @@ export const DataGridRoot = <
 
   const rowVirtualizer = useVirtualizer({
     count: visibleRows.length,
-    estimateSize: () => ROW_HEIGHT,
+    estimateSize: () => isMobile ? MOBILE_ROW_HEIGHT : ROW_HEIGHT,
     getScrollElement: () => containerRef.current,
     overscan: 5,
     rangeExtractor: (range) => {
@@ -580,7 +605,7 @@ export const DataGridRoot = <
                   <div
                     role="row"
                     key={headerGroup.id}
-                    className="flex h-10 w-full"
+                    className={`flex w-full ${isMobile ? 'min-h-14' : 'h-10'}`}
                   >
                     {virtualPaddingLeft ? (
                       <div
@@ -613,9 +638,9 @@ export const DataGridRoot = <
                           data-column-index={vc.index}
                           style={{
                             width: header.getSize(),
-                            ...getCommonPinningStyles(header.column),
+                            ...getCommonPinningStyles(header.column, isMobile),
                           }}
-                          className="bg-ui-bg-base txt-compact-small-plus flex items-center border-b border-r px-4 py-2.5"
+                          className={`bg-ui-bg-base txt-compact-small-plus flex items-center border-b border-r px-2 sm:px-4 py-1.5 sm:py-2.5 ${isMobile ? 'text-xs whitespace-normal' : ''}`}
                         >
                           {header.isPlaceholder
                             ? null
@@ -664,6 +689,7 @@ export const DataGridRoot = <
                       virtualPaddingRight={virtualPaddingRight}
                       onDragToFillStart={onDragToFillStart}
                       multiColumnSelection={multiColumnSelection}
+                      isMobile={isMobile}
                     />
                   )
                 })}
@@ -797,6 +823,7 @@ type DataGridCellProps<TData> = {
   anchor: DataGridCoordinates | null
   onDragToFillStart: (e: React.MouseEvent<HTMLElement>) => void
   multiColumnSelection: boolean
+  isMobile: boolean
 }
 
 const DataGridCell = <TData,>({
@@ -806,6 +833,7 @@ const DataGridCell = <TData,>({
   anchor,
   onDragToFillStart,
   multiColumnSelection,
+  isMobile,
 }: DataGridCellProps<TData>) => {
   const coords: DataGridCoordinates = {
     row: rowIndex,
@@ -821,7 +849,7 @@ const DataGridCell = <TData,>({
       aria-colindex={columnIndex}
       style={{
         width: cell.column.getSize(),
-        ...getCommonPinningStyles(cell.column),
+        ...getCommonPinningStyles(cell.column, isMobile),
       }}
       data-row-index={rowIndex}
       data-column-index={columnIndex}
@@ -855,14 +883,15 @@ const DataGridCell = <TData,>({
 type DataGridRowProps<TData> = {
   row: Row<TData>
   rowIndex: number
-  virtualRow: VirtualItem<Element>
+  virtualRow: VirtualItem
   virtualPaddingLeft?: number
   virtualPaddingRight?: number
-  virtualColumns: VirtualItem<Element>[]
+  virtualColumns: VirtualItem[]
   flatColumns: Column<TData, unknown>[]
   anchor: DataGridCoordinates | null
   onDragToFillStart: (e: React.MouseEvent<HTMLElement>) => void
   multiColumnSelection: boolean
+  isMobile: boolean
 }
 
 const DataGridRow = <TData,>({
@@ -876,6 +905,7 @@ const DataGridRow = <TData,>({
   anchor,
   onDragToFillStart,
   multiColumnSelection,
+  isMobile,
 }: DataGridRowProps<TData>) => {
   const visibleCells = row.getVisibleCells()
 
@@ -886,7 +916,7 @@ const DataGridRow = <TData,>({
       style={{
         transform: `translateY(${virtualRow.start}px)`,
       }}
-      className="bg-ui-bg-subtle txt-compact-small absolute flex h-10 w-full"
+      className={`bg-ui-bg-subtle txt-compact-small absolute flex w-full ${isMobile ? 'min-h-14' : 'h-10'}`}
     >
       {virtualPaddingLeft ? (
         <div
@@ -923,6 +953,7 @@ const DataGridRow = <TData,>({
             anchor={anchor}
             onDragToFillStart={onDragToFillStart}
             multiColumnSelection={multiColumnSelection}
+            isMobile={isMobile}
           />
         )
 
