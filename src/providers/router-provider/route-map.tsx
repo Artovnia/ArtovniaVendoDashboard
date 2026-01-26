@@ -149,6 +149,14 @@ export const RouteMap: RouteObject[] = [
             },
           },
           {
+            path: 'page-builder',
+            errorElement: <ErrorBoundary />,
+            handle: {
+              breadcrumb: () => 'Kreator strony',
+            },
+            lazy: () => import('../../routes/page-builder'),
+          },
+          {
             path: 'requests',
             errorElement: <ErrorBoundary />,
             handle: {

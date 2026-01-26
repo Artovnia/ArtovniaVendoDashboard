@@ -16,6 +16,7 @@ import {
   ChatBubbleLeftRight,
   Calendar,
   Lifebuoy,
+  PencilSquare,
 } from '@medusajs/icons';
 import { Divider, Text, clx } from '@medusajs/ui';
 import { Collapsible as RadixCollapsible } from 'radix-ui';
@@ -228,7 +229,12 @@ const useCoreRoutes = (): Omit<INavItem, 'pathname'>[] => {
       label: t('navigation.holidayMode', 'Holiday Mode'),
       to: '/holiday-mode',
     },
-     {
+    {
+      icon: <PencilSquare />,
+      label: t('navigation.pageBuilder', 'Kreator strony'),
+      to: '/page-builder',
+    },
+    {
       icon: <Lifebuoy />,
       label: t('tickets.navigation.tickets', 'Support Tickets'),
       to: '/tickets',
