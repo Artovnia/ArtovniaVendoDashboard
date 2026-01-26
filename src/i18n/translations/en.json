@@ -4936,7 +4936,13 @@
       "selectAllTip": "Tip: Select specific products to import only those, or set up all products to import everything",
       "selectedReady": "{{count}} selected products ready to import",
       "selectedNeedSetup": "{{count}} of {{total}} selected products need category or shipping",
-      "allReady": "All {{count}} products ready to import"
+      "allReady": "All {{count}} products ready to import",
+      "unconfiguredGroupsError": "{{count}} selected variant groups are not configured. Please configure variant options before importing.",
+      "missingCategoryError": "{{count}} products are missing category assignment. Please assign categories before importing.",
+      "missingShippingError": "{{count}} products are missing shipping profile. Please assign shipping profiles before importing.",
+      "groupMissingCategoryError": "{{count}} variant groups are missing category assignment. Please assign categories before importing.",
+      "groupMissingShippingError": "{{count}} variant groups are missing shipping profile. Please assign shipping profiles before importing.",
+      "nothingToImport": "No products or groups selected for import. Please select items to import."
     }
   }
 }

@@ -311,6 +311,7 @@ export function BaseLinkerImport() {
     // Determine what to import based on selection
     let productsToImport: ProductWithAssignment[]
     let groupsToImport: VariantGroup[]
+    let selectedButUnconfiguredGroups: VariantGroup[] = []
     
     if (hasAnySelection) {
       // User made explicit selection - ONLY import what they selected
@@ -318,13 +319,19 @@ export function BaseLinkerImport() {
         ? products.filter((p) => currentSelection.productIds.includes(p.id) && !groupedProductIds.has(p.id))
         : []
       
-      groupsToImport = hasGroupSelection
-        ? variantGroups.filter((g) => currentSelection.groupIds.includes(g.id) && g.isConfigured)
+      // Get ALL selected groups first (including unconfigured ones for validation)
+      const allSelectedGroups = hasGroupSelection
+        ? variantGroups.filter((g) => currentSelection.groupIds.includes(g.id))
         : []
+      
+      // Separate configured from unconfigured
+      groupsToImport = allSelectedGroups.filter((g) => g.isConfigured)
+      selectedButUnconfiguredGroups = allSelectedGroups.filter((g) => !g.isConfigured)
     } else {
       // No selection = import everything
       productsToImport = ungroupedProducts
       groupsToImport = variantGroups.filter((g) => g.isConfigured)
+      selectedButUnconfiguredGroups = variantGroups.filter((g) => !g.isConfigured)
     }
     
     console.log('[IMPORT] Final decision:', {
@@ -375,12 +382,12 @@ export function BaseLinkerImport() {
         return
       }
       
-      // Validate that groups are configured
-      const unconfiguredGroups = groupsToImport.filter(g => !g.isConfigured)
-      if (unconfiguredGroups.length > 0) {
+      // Check for unconfigured groups BEFORE checking if nothing to import
+      // This ensures proper error message when groups are selected but not configured
+      if (selectedButUnconfiguredGroups.length > 0) {
         toast.error(t('baselinker.import.unconfiguredGroupsError', { 
-          count: unconfiguredGroups.length,
-          defaultValue: `${unconfiguredGroups.length} variant groups are not configured. Please configure variant options before importing.`
+          count: selectedButUnconfiguredGroups.length,
+          defaultValue: `${selectedButUnconfiguredGroups.length} wybranych grup wariantów nie jest skonfigurowanych. Skonfiguruj opcje wariantów przed importem.`
         }))
         setTab(Tab.PRODUCTS)
         return
@@ -862,24 +869,53 @@ function ProductReviewContent({
   }
 
   const applyBulkCategory = () => {
-    if (!bulkCategoryId || selectedIds.length === 0) return
-    setProducts((prev) =>
-      prev.map((p) =>
-        selectedIds.includes(p.id) ? { ...p, assigned_category_id: bulkCategoryId } : p
+    if (!bulkCategoryId) return
+    
+    if (activeTab === 'groups') {
+      // Apply to selected groups
+      if (selectedGroupIds.length === 0) return
+      setVariantGroups((prev) =>
+        prev.map((g) =>
+          selectedGroupIds.includes(g.id) ? { ...g, assigned_category_id: bulkCategoryId } : g
+        )
       )
-    )
+    } else {
+      // Apply to selected products
+      if (selectedIds.length === 0) return
+      setProducts((prev) =>
+        prev.map((p) =>
+          selectedIds.includes(p.id) ? { ...p, assigned_category_id: bulkCategoryId } : p
+        )
+      )
+    }
     setBulkCategoryId('')
   }
 
   const applyBulkShippingProfile = () => {
-    if (!bulkShippingProfileId || selectedIds.length === 0) return
-    setProducts((prev) =>
-      prev.map((p) =>
-        selectedIds.includes(p.id) ? { ...p, assigned_shipping_profile_id: bulkShippingProfileId } : p
+    if (!bulkShippingProfileId) return
+    
+    if (activeTab === 'groups') {
+      // Apply to selected groups
+      if (selectedGroupIds.length === 0) return
+      setVariantGroups((prev) =>
+        prev.map((g) =>
+          selectedGroupIds.includes(g.id) ? { ...g, assigned_shipping_profile_id: bulkShippingProfileId } : g
+        )
       )
-    )
+    } else {
+      // Apply to selected products
+      if (selectedIds.length === 0) return
+      setProducts((prev) =>
+        prev.map((p) =>
+          selectedIds.includes(p.id) ? { ...p, assigned_shipping_profile_id: bulkShippingProfileId } : p
+        )
+      )
+    }
     setBulkShippingProfileId('')
   }
+  
+  // Get current selection count based on active tab
+  const currentSelectionCount = activeTab === 'groups' ? selectedGroupIds.length : selectedIds.length
 
   return (
     <div className="flex h-full flex-col">
@@ -888,13 +924,22 @@ function ProductReviewContent({
         {/* Selection and bulk actions */}
         <div className="flex items-center gap-4">
           <Checkbox
-            checked={selectedIds.length === filteredProducts.length && filteredProducts.length > 0}
+            checked={
+              activeTab === 'groups'
+                ? selectedGroupIds.length === filteredVariantGroups.length && filteredVariantGroups.length > 0
+                : selectedIds.length === filteredProducts.length && filteredProducts.length > 0
+            }
             onCheckedChange={(checked) => {
-              setSelectedIds(checked ? filteredProducts.map((p) => p.id) : [])
+              if (activeTab === 'groups') {
+                setSelectedGroupIds(checked ? filteredVariantGroups.map((g) => g.id) : [])
+              } else {
+                setSelectedIds(checked ? filteredProducts.map((p) => p.id) : [])
+              }
             }}
           />
           <Text className="text-sm text-ui-fg-subtle min-w-[80px]">
-            {selectedIds.length} {t('baselinker.import.selected', { defaultValue: 'selected' })}
+            {currentSelectionCount} {t('baselinker.import.selected', { defaultValue: 'selected' })}
+            {activeTab === 'groups' && ' (grup)'}
           </Text>
         </div>
 
@@ -915,7 +960,7 @@ function ProductReviewContent({
               size="small"
               variant="secondary"
               onClick={applyBulkCategory}
-              disabled={!bulkCategoryId || selectedIds.length === 0}
+              disabled={!bulkCategoryId || currentSelectionCount === 0}
             >
               {t('baselinker.import.apply', { defaultValue: 'Apply' })}
             </Button>
@@ -941,7 +986,7 @@ function ProductReviewContent({
               size="small"
               variant="secondary"
               onClick={applyBulkShippingProfile}
-              disabled={!bulkShippingProfileId || selectedIds.length === 0}
+              disabled={!bulkShippingProfileId || currentSelectionCount === 0}
             >
               {t('baselinker.import.apply', { defaultValue: 'Apply' })}
             </Button>

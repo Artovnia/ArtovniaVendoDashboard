@@ -28,7 +28,16 @@ export const ProductCreateGeneralSection = ({
                 <Form.Item>
                   <Form.Label>{t("products.fields.title.label")}</Form.Label>
                   <Form.Control>
-                    <Input {...field} placeholder="Kurtka zimowa" />
+                    <Input 
+                      {...field} 
+                      placeholder="Kurtka zimowa"
+                      onChange={(e) => {
+                        const value = e.target.value
+                        // Auto-capitalize first letter
+                        const capitalized = value.charAt(0).toUpperCase() + value.slice(1)
+                        field.onChange(capitalized)
+                      }}
+                    />
                   </Form.Control>
                 </Form.Item>
               )

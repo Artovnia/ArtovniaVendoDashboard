@@ -13,6 +13,11 @@ export const normalizeProductFormValues = (
     ?.filter((media) => !media.isThumbnail)
     .map((media) => ({ url: media.url }))
 
+  // Ensure title starts with capital letter
+  const title = values.title 
+    ? values.title.charAt(0).toUpperCase() + values.title.slice(1)
+    : values.title
+
   return {
     status: values.status,
     is_giftcard: false,
@@ -33,7 +38,7 @@ export const normalizeProductFormValues = (
     mid_code: values.mid_code || undefined,
     hs_code: values.hs_code || undefined,
     thumbnail,
-    title: values.title,
+    title,
     subtitle: values.subtitle || undefined,
     description: values.description || undefined,
     discountable: values.discountable || undefined,

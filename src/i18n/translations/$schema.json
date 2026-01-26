@@ -16903,9 +16903,15 @@
             "selectAllTip": {"type": "string"},
             "selectedReady": {"type": "string"},
             "selectedNeedSetup": {"type": "string"},
-            "allReady": {"type": "string"}
+            "allReady": {"type": "string"},
+            "unconfiguredGroupsError": {"type": "string"},
+            "missingCategoryError": {"type": "string"},
+            "missingShippingError": {"type": "string"},
+            "groupMissingCategoryError": {"type": "string"},
+            "groupMissingShippingError": {"type": "string"},
+            "nothingToImport": {"type": "string"}
           },
-          "required": ["title", "description", "tabs", "loading", "loadError", "noCategories", "skipToProducts", "categoryMappingTitle", "categoryMappingDescription", "baselinkerCategory", "products", "marketplaceCategory", "categoriesMapped", "productsReady", "selected", "bulkAssignCategory", "apply", "searchPlaceholder", "allProducts", "missingCategory", "missingShipping", "stock", "noCategory", "noShipping", "productsNeedCategory", "productsNeedShipping", "bulkCategory", "bulkShipping", "selectCategory", "selectShippingProfile", "selectShipping", "confirmImport", "importSelected", "importing", "pleaseWait", "complete", "successMessage", "failedMessage", "viewProducts", "importError", "selectiveTip", "selectAllTip", "selectedReady", "selectedNeedSetup", "allReady"],
+          "required": ["title", "description", "tabs", "loading", "loadError", "noCategories", "skipToProducts", "categoryMappingTitle", "categoryMappingDescription", "baselinkerCategory", "products", "marketplaceCategory", "categoriesMapped", "productsReady", "selected", "bulkAssignCategory", "apply", "searchPlaceholder", "allProducts", "missingCategory", "missingShipping", "stock", "noCategory", "noShipping", "productsNeedCategory", "productsNeedShipping", "bulkCategory", "bulkShipping", "selectCategory", "selectShippingProfile", "selectShipping", "confirmImport", "importSelected", "importing", "pleaseWait", "complete", "successMessage", "failedMessage", "viewProducts", "importError", "selectiveTip", "selectAllTip", "selectedReady", "selectedNeedSetup", "allReady", "unconfiguredGroupsError", "missingCategoryError", "missingShippingError", "groupMissingCategoryError", "groupMissingShippingError", "nothingToImport"],
           "additionalProperties": false
         }
       },

@@ -5076,7 +5076,13 @@
       "selectAllTip": "Wskazówka: Zaznacz konkretne produkty, aby zaimportować tylko te, lub skonfiguruj wszystkie produkty, aby zaimportować wszystko",
       "selectedReady": "{{count}} zaznaczonych produktów gotowych do importu",
       "selectedNeedSetup": "{{count}} z {{total}} zaznaczonych produktów wymaga kategorii lub wysyłki",
-      "allReady": "Wszystkie {{count}} produktów gotowych do importu"
+      "allReady": "Wszystkie {{count}} produktów gotowych do importu",
+      "unconfiguredGroupsError": "{{count}} wybranych grup wariantów nie jest skonfigurowanych. Skonfiguruj opcje wariantów przed importem.",
+      "missingCategoryError": "{{count}} produktów nie ma przypisanej kategorii. Przypisz kategorie przed importem.",
+      "missingShippingError": "{{count}} produktów nie ma przypisanego profilu wysyłki. Przypisz profile wysyłki przed importem.",
+      "groupMissingCategoryError": "{{count}} grup wariantów nie ma przypisanej kategorii. Przypisz kategorie przed importem.",
+      "groupMissingShippingError": "{{count}} grup wariantów nie ma przypisanego profilu wysyłki. Przypisz profile wysyłki przed importem.",
+      "nothingToImport": "Nie wybrano produktów ani grup do importu. Wybierz elementy do importu."
     }
   }
 }
