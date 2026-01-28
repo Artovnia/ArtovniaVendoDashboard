@@ -13,6 +13,9 @@ module.exports = {
   darkMode: "class",
   theme: {
     extend: {
+      fontFamily: {
+        'instrument-serif': ['Instrument Serif', 'serif'],
+      },
       colors: {
         // Customize your dark theme colors here
         // These will override the default Medusa UI colors

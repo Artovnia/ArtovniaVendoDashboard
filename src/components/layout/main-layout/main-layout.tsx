@@ -229,10 +229,10 @@ const useCoreRoutes = (): Omit<INavItem, 'pathname'>[] => {
       label: t('navigation.holidayMode', 'Holiday Mode'),
       to: '/holiday-mode',
     },
-    {
+   {
       icon: <PencilSquare />,
-      label: t('navigation.pageBuilder', 'Kreator strony'),
-      to: '/page-builder',
+    label: t('navigation.pageBuilder', 'Kreator strony'),
+   to: '/page-builder',
     },
     {
       icon: <Lifebuoy />,

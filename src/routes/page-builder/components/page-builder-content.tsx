@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import { Button, Container, Heading, Text, toast, Switch, Label, Select, Badge } from '@medusajs/ui'
 import { Eye, EyeSlash } from '@medusajs/icons'
+import { useTranslation } from 'react-i18next'
 import { 
   useUpdateVendorPage, 
   usePublishVendorPage, 
@@ -21,6 +22,7 @@ interface PageBuilderContentProps {
 }
 
 export const PageBuilderContent = ({ page, templates }: PageBuilderContentProps) => {
+  const { t } = useTranslation()
   const { mutateAsync: updatePage, isPending: isUpdating } = useUpdateVendorPage()
   const { mutateAsync: publishPage, isPending: isPublishing } = usePublishVendorPage()
   const { mutateAsync: deletePage, isPending: isDeleting } = useDeleteVendorPage()
@@ -47,7 +49,8 @@ export const PageBuilderContent = ({ page, templates }: PageBuilderContentProps)
     'timeline',
     'team',
     'categories',
-    'behind_scenes'
+    'behind_scenes',
+    'spacer'
   ]
 
   const handleBlocksChange = useCallback((newBlocks: Block[]) => {
@@ -67,9 +70,9 @@ export const PageBuilderContent = ({ page, templates }: PageBuilderContentProps)
         settings,
       })
       setHasChanges(false)
-      toast.success('Zmiany zostały zapisane')
+      toast.success(t('pagebuilder.pageBuilder.changesSaved'))
     } catch (error) {
-      toast.error('Nie udało się zapisać zmian')
+      toast.error(t('pagebuilder.pageBuilder.saveFailed'))
       console.error('Error saving page:', error)
     }
   }
@@ -86,22 +89,22 @@ export const PageBuilderContent = ({ page, templates }: PageBuilderContentProps)
       }
       
       await publishPage(!page.is_published)
-      toast.success(page.is_published ? 'Strona została ukryta' : 'Strona została opublikowana')
+      toast.success(page.is_published ? t('pagebuilder.pageBuilder.pageHidden') : t('pagebuilder.pageBuilder.pagePublished'))
     } catch (error) {
-      toast.error('Nie udało się zmienić statusu publikacji')
+      toast.error(t('pagebuilder.pageBuilder.publishFailed'))
       console.error('Error publishing page:', error)
     }
   }
 
   const handleDelete = async () => {
-    if (!window.confirm('Czy na pewno chcesz usunąć stronę? Ta operacja jest nieodwracalna.')) {
+    if (!window.confirm(t('pagebuilder.pageBuilder.deleteConfirm'))) {
       return
     }
     try {
       await deletePage()
-      toast.success('Strona została usunięta')
+      toast.success(t('pagebuilder.pageBuilder.pageDeleted'))
     } catch (error) {
-      toast.error('Nie udało się usunąć strony')
+      toast.error(t('pagebuilder.pageBuilder.deleteFailed'))
       console.error('Error deleting page:', error)
     }
   }
@@ -126,17 +129,17 @@ export const PageBuilderContent = ({ page, templates }: PageBuilderContentProps)
       <Container className="divide-y p-0">
         <div className="flex items-center justify-between px-6 py-4">
           <div>
-            <Heading level="h1">Kreator strony</Heading>
+            <Heading level="h1">{t('pagebuilder.pageBuilder.title')}</Heading>
             <div className="flex items-center gap-2 mt-1">
               <Text className="text-ui-fg-subtle">
-                Szablon: {currentTemplate?.name_pl || page.template}
+                {t('pagebuilder.pageBuilder.template')} {currentTemplate?.name_pl || page.template}
               </Text>
               <Badge color={page.is_published ? 'green' : 'grey'} size="small">
-                {page.is_published ? 'Opublikowana' : 'Szkic'}
+                {page.is_published ? t('pagebuilder.pageBuilder.published') : t('pagebuilder.pageBuilder.draft')}
               </Badge>
               {hasChanges && (
                 <Badge color="orange" size="small">
-                  Niezapisane zmiany
+                  {t('pagebuilder.pageBuilder.unsavedChanges')}
                 </Badge>
               )}
             </div>
@@ -148,7 +151,7 @@ export const PageBuilderContent = ({ page, templates }: PageBuilderContentProps)
               onClick={() => setShowPreview(!showPreview)}
             >
               {showPreview ? <EyeSlash className="mr-1" /> : <Eye className="mr-1" />}
-              {showPreview ? 'Ukryj podgląd' : 'Pokaż podgląd'}
+              {showPreview ? t('pagebuilder.pageBuilder.hidePreview') : t('pagebuilder.pageBuilder.showPreview')}
             </Button>
             <Button
               variant="secondary"
@@ -156,7 +159,7 @@ export const PageBuilderContent = ({ page, templates }: PageBuilderContentProps)
               onClick={handleDelete}
               isLoading={isDeleting}
             >
-              Usuń
+              {t('pagebuilder.pageBuilder.delete')}
             </Button>
             <Button
               variant={page.is_published ? 'secondary' : 'primary'}
@@ -164,7 +167,7 @@ export const PageBuilderContent = ({ page, templates }: PageBuilderContentProps)
               onClick={handlePublish}
               isLoading={isPublishing}
             >
-              {page.is_published ? 'Ukryj stronę' : '🚀 Opublikuj'}
+              {page.is_published ? t('pagebuilder.pageBuilder.hidePage') : t('pagebuilder.pageBuilder.publish')}
             </Button>
             <Button
               variant="primary"
@@ -173,7 +176,7 @@ export const PageBuilderContent = ({ page, templates }: PageBuilderContentProps)
               isLoading={isUpdating}
               disabled={!hasChanges}
             >
-              Zapisz
+              {t('pagebuilder.pageBuilder.save')}
             </Button>
           </div>
         </div>
@@ -186,14 +189,14 @@ export const PageBuilderContent = ({ page, templates }: PageBuilderContentProps)
           {/* Settings */}
           <Container className="divide-y p-0">
             <div className="px-6 py-4">
-              <Heading level="h2">Ustawienia</Heading>
+              <Heading level="h2">{t('pagebuilder.settings.title')}</Heading>
             </div>
             <div className="px-6 py-4 flex flex-col gap-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <Label>Pokaż zakładkę "Historia"</Label>
+                  <Label>{t('pagebuilder.settings.showStoryTab')}</Label>
                   <Text className="text-ui-fg-subtle text-sm">
-                    Wyświetl zakładkę z Twoją historią na stronie sprzedawcy
+                    {t('pagebuilder.settings.showStoryTabDescription')}
                   </Text>
                 </div>
                 <Switch
@@ -204,9 +207,9 @@ export const PageBuilderContent = ({ page, templates }: PageBuilderContentProps)
 
               <div className="flex items-center justify-between">
                 <div>
-                  <Label>Animacje</Label>
+                  <Label>{t('pagebuilder.settings.animations')}</Label>
                   <Text className="text-ui-fg-subtle text-sm">
-                    Styl animacji elementów na stronie
+                    {t('pagebuilder.settings.animationsDescription')}
                   </Text>
                 </div>
                 <Select
@@ -214,12 +217,12 @@ export const PageBuilderContent = ({ page, templates }: PageBuilderContentProps)
                   onValueChange={(value) => handleSettingsChange('animations', value)}
                 >
                   <Select.Trigger className="w-[180px]">
-                    <Select.Value placeholder="Wybierz styl" />
+                    <Select.Value placeholder={t('pagebuilder.settings.selectStyle')} />
                   </Select.Trigger>
                   <Select.Content>
-                    <Select.Item value="none">Brak</Select.Item>
-                    <Select.Item value="subtle">Subtelne</Select.Item>
-                    <Select.Item value="expressive">Ekspresyjne</Select.Item>
+                    <Select.Item value="none">{t('pagebuilder.settings.animationNone')}</Select.Item>
+                    <Select.Item value="subtle">{t('pagebuilder.settings.animationSubtle')}</Select.Item>
+                    <Select.Item value="expressive">{t('pagebuilder.settings.animationExpressive')}</Select.Item>
                   </Select.Content>
                 </Select>
               </div>
@@ -242,7 +245,7 @@ export const PageBuilderContent = ({ page, templates }: PageBuilderContentProps)
           <div className="lg:sticky lg:top-4 lg:self-start">
             <div className="mb-2">
               <Text className="text-sm font-medium text-ui-fg-subtle">
-                📱 Podgląd na żywo
+                {t('pagebuilder.preview.livePreview')}
               </Text>
             </div>
             <LivePreview
@@ -345,6 +348,11 @@ function getDefaultBlockData(type: string): any {
         description: '',
         layout: 'masonry',
         media: [],
+      }
+    case 'spacer':
+      return {
+        type: 'spacer',
+        height: 'medium',
       }
     default:
       return { type }

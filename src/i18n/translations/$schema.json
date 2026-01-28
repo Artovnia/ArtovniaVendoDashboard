@@ -4475,14 +4475,17 @@
             "guest": {
               "type": "string"
             },
-            "registered": {
+            "behind_scenes": {
+              "type": "string"
+            },
+            "spacer": {
               "type": "string"
             },
             "groups": {
               "type": "string"
             }
           },
-          "required": ["guest", "registered", "groups"],
+          "required": ["guest", "behind_scenes", "spacer", "groups"],
           "additionalProperties": false
         },
         "registered": {
@@ -13888,7 +13891,8 @@
         "requests",
         "holidayMode",
         "payoutAccount",
-        "earnings"
+        "earnings",
+        "pageBuilder"
       ],
       "additionalProperties": false
     },
@@ -16918,6 +16922,470 @@
       "required": [ "enabled", "disabled", "domain", "title", "description", "connect", "disconnect", "connected", "notConnected", "connectionStatus", "apiToken", "apiTokenPlaceholder", "inventoryId", "inventoryIdPlaceholder", "connectionDetails", "settings", "productSync", "productSyncDescription", "stockSyncDescription", "orderSyncDescription", "stockSync", "orderSync", "autoSyncProducts", "autoSyncStock", "autoSyncOrders", "stockSyncInterval", "stockSyncDirection", "toBaselinker", "fromBaselinker", "bidirectional", "importButton", "importProduct", "importBulk", "importAll", "productId", "productIdPlaceholder", "batchSize", "defaultCurrency", "defaultStatus", "strictGpsr", "sync", "syncStock", "syncDirection", "selectProducts", "allProducts", "specificProducts", "importing", "syncing", "importSuccess", "importError", "syncSuccess", "syncError", "connectionSuccess", "connectionError", "disconnectSuccess", "disconnectError", "noConnection", "createConnection", "editConnection", "deleteConnection", "confirmDelete", "confirmDeleteMessage", "history", "importHistory", "syncHistory", "status", "totalItems", "successful", "failed", "startedAt", "completedAt", "viewDetails", "active", "inactive", "error", "pending", "inProgress", "completed", "draft", "proposed", "carrierMapping", "statusMapping", "quickActions", "quickActionsDescription", "importProducts", "importProductsDescription", "syncToBaselinker", "syncToBaselinkerDescription", "syncFromBaselinker", "syncFromBaselinkerDescription", "pollOrders", "pollOrdersDescription", "poll", "pollSuccess", "pollError", "settingsUpdated", "settingsError", "fulfillmentSync", "fulfillmentSyncDescription", "fulfillmentSyncWarning", "connectedTo", "notConnectedYet", "confirmDisconnectTitle", "apiTokenHint", "inventoryIdHint", "validation", "setup", "setupIncomplete", "import"],
       "additionalProperties": false
     },
+    "pagebuilder": {
+      "type": "object",
+      "properties": {
+        "templateSelector": {
+          "type": "object",
+          "properties": {
+            "title": {"type": "string"},
+            "description": {"type": "string"},
+            "selectTemplate": {"type": "string"},
+            "select": {"type": "string"},
+            "moreBlocks": {"type": "string"},
+            "pageCreated": {"type": "string"},
+            "pageCreationFailed": {"type": "string"}
+          },
+          "required": ["title", "description", "selectTemplate", "select", "moreBlocks", "pageCreated", "pageCreationFailed"],
+          "additionalProperties": false
+        },
+        "pageBuilder": {
+          "type": "object",
+          "properties": {
+            "title": {"type": "string"},
+            "template": {"type": "string"},
+            "published": {"type": "string"},
+            "draft": {"type": "string"},
+            "unsavedChanges": {"type": "string"},
+            "hidePreview": {"type": "string"},
+            "showPreview": {"type": "string"},
+            "delete": {"type": "string"},
+            "hidePage": {"type": "string"},
+            "publish": {"type": "string"},
+            "save": {"type": "string"},
+            "changesSaved": {"type": "string"},
+            "saveFailed": {"type": "string"},
+            "pagePublished": {"type": "string"},
+            "pageHidden": {"type": "string"},
+            "publishFailed": {"type": "string"},
+            "deleteConfirm": {"type": "string"},
+            "pageDeleted": {"type": "string"},
+            "deleteFailed": {"type": "string"}
+          },
+          "required": ["title", "template", "published", "draft", "unsavedChanges", "hidePreview", "showPreview", "delete", "hidePage", "publish", "save", "changesSaved", "saveFailed", "pagePublished", "pageHidden", "publishFailed", "deleteConfirm", "pageDeleted", "deleteFailed"],
+          "additionalProperties": false
+        },
+        "settings": {
+          "type": "object",
+          "properties": {
+            "title": {"type": "string"},
+            "showStoryTab": {"type": "string"},
+            "showStoryTabDescription": {"type": "string"},
+            "animations": {"type": "string"},
+            "animationsDescription": {"type": "string"},
+            "animationNone": {"type": "string"},
+            "animationSubtle": {"type": "string"},
+            "animationExpressive": {"type": "string"},
+            "selectStyle": {"type": "string"}
+          },
+          "required": ["title", "showStoryTab", "showStoryTabDescription", "animations", "animationsDescription", "animationNone", "animationSubtle", "animationExpressive", "selectStyle"],
+          "additionalProperties": false
+        },
+        "blocks": {
+          "type": "object",
+          "properties": {
+            "title": {"type": "string"},
+            "description": {"type": "string"},
+            "addBlock": {"type": "string"},
+            "noBlocks": {"type": "string"},
+            "hero": {"type": "string"},
+            "rich_text": {"type": "string"},
+            "richText": {"type": "string"},
+            "image_gallery": {"type": "string"},
+            "imageGallery": {"type": "string"},
+            "image_text": {"type": "string"},
+            "imageText": {"type": "string"},
+            "quote": {"type": "string"},
+            "video": {"type": "string"},
+            "process": {"type": "string"},
+            "featured_products": {"type": "string"},
+            "featuredProducts": {"type": "string"},
+            "timeline": {"type": "string"},
+            "team": {"type": "string"},
+            "categories": {"type": "string"},
+            "behindScenes": {"type": "string"}
+          },
+          "required": ["title", "description", "addBlock", "noBlocks", "hero", "rich_text", "richText", "image_gallery", "imageGallery", "image_text", "imageText", "quote", "video", "process", "featured_products", "featuredProducts", "timeline", "team", "categories", "behindScenes"],
+          "additionalProperties": false
+        },
+        "preview": {
+          "type": "object",
+          "properties": {
+            "livePreview": {"type": "string"},
+            "history": {"type": "string"},
+            "products": {"type": "string"},
+            "reviews": {"type": "string"},
+            "emptyTitle": {"type": "string"},
+            "emptyDescription": {"type": "string"},
+            "animationsNotice": {"type": "string"},
+            "animationsSelected": {"type": "string"},
+            "edited": {"type": "string"},
+            "blockCount_one": {"type": "string"},
+            "blockCount_other": {"type": "string"}
+          },
+          "required": ["livePreview", "history", "products", "reviews", "emptyTitle", "emptyDescription", "animationsNotice", "animationsSelected", "edited", "blockCount_one", "blockCount_other"],
+          "additionalProperties": false
+        },
+        "blockPreview": {
+          "type": "object",
+          "properties": {
+            "unknownBlock": {"type": "string"},
+            "bannerTitle": {"type": "string"},
+            "subtitle": {"type": "string"},
+            "textContent": {"type": "string"},
+            "addPhotos": {"type": "string"},
+            "sectionTitle": {"type": "string"},
+            "descriptionContent": {"type": "string"},
+            "enterQuote": {"type": "string"},
+            "addVideo": {"type": "string"},
+            "addSteps": {"type": "string"},
+            "addProducts": {"type": "string"},
+            "addEvents": {"type": "string"},
+            "addMembers": {"type": "string"},
+            "addCategories": {"type": "string"},
+            "addBehindScenes": {"type": "string"},
+            "photo": {"type": "string"},
+            "step": {"type": "string"},
+            "stepDescription": {"type": "string"},
+            "product": {"type": "string"},
+            "event": {"type": "string"},
+            "member": {"type": "string"},
+            "teamMember": {"type": "string"},
+            "moreMembers": {"type": "string"},
+            "category": {"type": "string"},
+            "moreEvents": {"type": "string"},
+            "moreMedia": {"type": "string"},
+            "noTitle": {"type": "string"},
+            "noContent": {"type": "string"},
+            "noQuote": {"type": "string"}
+          },
+          "required": ["unknownBlock", "bannerTitle", "subtitle", "textContent", "addPhotos", "sectionTitle", "descriptionContent", "enterQuote", "addVideo", "addSteps", "addProducts", "addEvents", "addMembers", "addCategories", "addBehindScenes", "photo", "step", "stepDescription", "product", "event", "member", "teamMember", "moreMembers", "category", "moreEvents", "moreMedia", "noTitle", "noContent", "noQuote"],
+          "additionalProperties": false
+        },
+        "blockForm": {
+          "type": "object",
+          "properties": {
+            "unknownBlock": {"type": "string"},
+            "focalPoint": {
+              "type": "object",
+              "properties": {
+                "title": {"type": "string"},
+                "description": {"type": "string"},
+                "cancel": {"type": "string"},
+                "save": {"type": "string"}
+              },
+              "required": ["title", "description", "cancel", "save"],
+              "additionalProperties": false
+            },
+            "imageUpload": {
+              "type": "object",
+              "properties": {
+                "uploading": {"type": "string"},
+                "success": {"type": "string"},
+                "uploaded": {"type": "string"},
+                "error": {"type": "string"},
+                "uploadFailed": {"type": "string"},
+                "deleted": {"type": "string"},
+                "delete": {"type": "string"},
+                "dragOrClick": {"type": "string"},
+                "change": {"type": "string"},
+                "changeImage": {"type": "string"},
+                "deleteImage": {"type": "string"}
+              },
+              "required": ["uploading", "success", "uploaded", "error", "uploadFailed", "deleted", "delete", "dragOrClick", "change", "changeImage", "deleteImage"],
+              "additionalProperties": false
+            },
+            "galleryUpload": {
+              "type": "object",
+              "properties": {
+                "title": {"type": "string"},
+                "dragToReorder": {"type": "string"},
+                "uploaded": {"type": "string"},
+                "error": {"type": "string"},
+                "uploadFailed": {"type": "string"},
+                "addPhotos": {"type": "string"},
+                "multipleHint": {"type": "string"},
+                "setFocalPoint": {"type": "string"},
+                "uploading": {"type": "string"},
+                "setFocalPointTitle": {"type": "string"}
+              },
+              "required": ["title", "dragToReorder", "uploaded", "error", "uploadFailed", "addPhotos", "multipleHint", "setFocalPoint", "uploading", "setFocalPointTitle"],
+              "additionalProperties": false
+            },
+            "hero": {
+              "type": "object",
+              "properties": {
+                "backgroundImage": {"type": "string"},
+                "roundedEdges": {"type": "string"},
+                "title": {"type": "string"},
+                "titlePlaceholder": {"type": "string"},
+                "subtitle": {"type": "string"},
+                "subtitlePlaceholder": {"type": "string"},
+                "textPosition": {"type": "string"},
+                "left": {"type": "string"},
+                "center": {"type": "string"},
+                "right": {"type": "string"},
+                "overlayOpacity": {"type": "string"}
+              },
+              "required": ["backgroundImage", "roundedEdges", "title", "titlePlaceholder", "subtitle", "subtitlePlaceholder", "textPosition", "left", "center", "right", "overlayOpacity"],
+              "additionalProperties": false
+            },
+            "richText": {
+              "type": "object",
+              "properties": {
+                "heading": {"type": "string"},
+                "headingPlaceholder": {"type": "string"},
+                "content": {"type": "string"},
+                "contentPlaceholder": {"type": "string"},
+                "alignment": {"type": "string"}
+              },
+              "required": ["heading", "headingPlaceholder", "content", "contentPlaceholder", "alignment"],
+              "additionalProperties": false
+            },
+            "imageGallery": {
+              "type": "object",
+              "properties": {
+                "layout": {"type": "string"},
+                "layoutGrid": {"type": "string"},
+                "layoutMasonry": {"type": "string"},
+                "layoutFeatured": {"type": "string"},
+                "layoutMosaic": {"type": "string"},
+                "layoutMagazine": {"type": "string"},
+                "columns": {"type": "string"},
+                "columns2": {"type": "string"},
+                "columns3": {"type": "string"},
+                "columns4": {"type": "string"},
+                "gap": {"type": "string"},
+                "gapSmall": {"type": "string"},
+                "gapMedium": {"type": "string"},
+                "gapLarge": {"type": "string"},
+                "roundedEdges": {"type": "string"}
+              },
+              "required": ["layout", "layoutGrid", "layoutMasonry", "layoutFeatured", "layoutMosaic", "layoutMagazine", "columns", "columns2", "columns3", "columns4", "gap", "gapSmall", "gapMedium", "gapLarge", "roundedEdges"],
+              "additionalProperties": false
+            },
+            "imageText": {
+              "type": "object",
+              "properties": {
+                "image": {"type": "string"},
+                "imageRatio": {"type": "string"},
+                "ratio1x1": {"type": "string"},
+                "ratio4x3": {"type": "string"},
+                "ratio16x9": {"type": "string"},
+                "roundedEdges": {"type": "string"},
+                "imagePosition": {"type": "string"},
+                "title": {"type": "string"},
+                "titlePlaceholder": {"type": "string"},
+                "content": {"type": "string"},
+                "contentPlaceholder": {"type": "string"},
+                "left": {"type": "string"},
+                "right": {"type": "string"}
+              },
+              "required": ["image", "imageRatio", "ratio1x1", "ratio4x3", "ratio16x9", "roundedEdges", "imagePosition", "title", "titlePlaceholder", "content", "contentPlaceholder", "left", "right"],
+              "additionalProperties": false
+            },
+            "quote": {
+              "type": "object",
+              "properties": {
+                "quote": {"type": "string"},
+                "quotePlaceholder": {"type": "string"},
+                "author": {"type": "string"},
+                "authorPlaceholder": {"type": "string"},
+                "authorTitle": {"type": "string"},
+                "authorTitlePlaceholder": {"type": "string"}
+              },
+              "required": ["quote", "quotePlaceholder", "author", "authorPlaceholder", "authorTitle", "authorTitlePlaceholder"],
+              "additionalProperties": false
+            },
+            "video": {
+              "type": "object",
+              "properties": {
+                "videoUrl": {"type": "string"},
+                "videoUrlPlaceholder": {"type": "string"},
+                "title": {"type": "string"},
+                "titlePlaceholder": {"type": "string"}
+              },
+              "required": ["videoUrl", "videoUrlPlaceholder", "title", "titlePlaceholder"],
+              "additionalProperties": false
+            },
+            "process": {
+              "type": "object",
+              "properties": {
+                "sectionTitle": {"type": "string"},
+                "sectionTitlePlaceholder": {"type": "string"},
+                "layout": {"type": "string"},
+                "layoutNumbered": {"type": "string"},
+                "layoutCards": {"type": "string"},
+                "layoutMinimal": {"type": "string"},
+                "roundedEdges": {"type": "string"},
+                "steps": {"type": "string"},
+                "step": {"type": "string"},
+                "remove": {"type": "string"},
+                "stepTitle": {"type": "string"},
+                "stepTitlePlaceholder": {"type": "string"},
+                "stepDescription": {"type": "string"},
+                "stepDescriptionPlaceholder": {"type": "string"},
+                "stepImage": {"type": "string"},
+                "addStep": {"type": "string"}
+              },
+              "required": ["sectionTitle", "sectionTitlePlaceholder", "layout", "layoutNumbered", "layoutCards", "layoutMinimal", "roundedEdges", "steps", "step", "remove", "stepTitle", "stepTitlePlaceholder", "stepDescription", "stepDescriptionPlaceholder", "stepImage", "addStep"],
+              "additionalProperties": false
+            },
+            "featuredProducts": {
+              "type": "object",
+              "properties": {
+                "sectionTitle": {"type": "string"},
+                "sectionTitlePlaceholder": {"type": "string"},
+                "layout": {"type": "string"},
+                "layoutClassic": {"type": "string"},
+                "layoutMinimal": {"type": "string"},
+                "layoutEditorial": {"type": "string"},
+                "layoutOverlay": {"type": "string"},
+                "layoutPolaroid": {"type": "string"},
+                "columns": {"type": "string"},
+                "roundedEdges": {"type": "string"},
+                "products": {"type": "string"},
+                "addCardsHint": {"type": "string"},
+                "product": {"type": "string"},
+                "moveUp": {"type": "string"},
+                "moveDown": {"type": "string"},
+                "productTitle": {"type": "string"},
+                "productTitlePlaceholder": {"type": "string"},
+                "price": {"type": "string"},
+                "pricePlaceholder": {"type": "string"},
+                "description": {"type": "string"},
+                "descriptionPlaceholder": {"type": "string"},
+                "productLink": {"type": "string"},
+                "productLinkPlaceholder": {"type": "string"},
+                "productImage": {"type": "string"},
+                "addProduct": {"type": "string"}
+              },
+              "required": ["sectionTitle", "sectionTitlePlaceholder", "layout", "layoutClassic", "layoutMinimal", "layoutEditorial", "layoutOverlay", "layoutPolaroid", "columns", "roundedEdges", "products", "addCardsHint", "product", "moveUp", "moveDown", "productTitle", "productTitlePlaceholder", "price", "pricePlaceholder", "description", "descriptionPlaceholder", "productLink", "productLinkPlaceholder", "productImage", "addProduct"],
+              "additionalProperties": false
+            },
+            "timeline": {
+              "type": "object",
+              "properties": {
+                "sectionTitle": {"type": "string"},
+                "sectionTitlePlaceholder": {"type": "string"},
+                "layout": {"type": "string"},
+                "layoutAlternating": {"type": "string"},
+                "layoutVertical": {"type": "string"},
+                "layoutHorizontal": {"type": "string"},
+                "badgeStyle": {"type": "string"},
+                "badgeStyleSolid": {"type": "string"},
+                "badgeStyleOutline": {"type": "string"},
+                "badgeStyleMinimal": {"type": "string"},
+                "badgeStylePill": {"type": "string"},
+                "badgeStyleRounded": {"type": "string"},
+                "roundedEdges": {"type": "string"},
+                "milestones": {"type": "string"},
+                "event": {"type": "string"},
+                "yearDate": {"type": "string"},
+                "yearPlaceholder": {"type": "string"},
+                "eventTitle": {"type": "string"},
+                "eventTitlePlaceholder": {"type": "string"},
+                "eventDescription": {"type": "string"},
+                "eventDescriptionPlaceholder": {"type": "string"},
+                "photo": {"type": "string"},
+                "addEvent": {"type": "string"}
+              },
+              "required": ["sectionTitle", "sectionTitlePlaceholder", "layout", "layoutAlternating", "layoutVertical", "layoutHorizontal", "badgeStyle", "badgeStyleSolid", "badgeStyleOutline", "badgeStyleMinimal", "badgeStylePill", "badgeStyleRounded", "roundedEdges", "milestones", "event", "yearDate", "yearPlaceholder", "eventTitle", "eventTitlePlaceholder", "eventDescription", "eventDescriptionPlaceholder", "photo", "addEvent"],
+              "additionalProperties": false
+            },
+            "team": {
+              "type": "object",
+              "properties": {
+                "sectionTitle": {"type": "string"},
+                "sectionTitlePlaceholder": {"type": "string"},
+                "sectionDescription": {"type": "string"},
+                "sectionDescriptionPlaceholder": {"type": "string"},
+                "layout": {"type": "string"},
+                "layoutCircular": {"type": "string"},
+                "layoutCards": {"type": "string"},
+                "layoutMinimal": {"type": "string"},
+                "roundedEdges": {"type": "string"},
+                "members": {"type": "string"},
+                "person": {"type": "string"},
+                "photo": {"type": "string"},
+                "name": {"type": "string"},
+                "namePlaceholder": {"type": "string"},
+                "role": {"type": "string"},
+                "rolePlaceholder": {"type": "string"},
+                "bio": {"type": "string"},
+                "bioPlaceholder": {"type": "string"},
+                "layoutArtistic": {"type": "string"},
+                "columns": {"type": "string"},
+                "roundedEdges": {"type": "string"},
+                "categories": {"type": "string"},
+                "addCardsHint": {"type": "string"},
+                "category": {"type": "string"},
+                "categoryName": {"type": "string"},
+                "categoryNamePlaceholder": {"type": "string"},
+                "categoryDescription": {"type": "string"},
+                "categoryDescriptionPlaceholder": {"type": "string"},
+                "categoryLink": {"type": "string"},
+                "categoryLinkPlaceholder": {"type": "string"},
+                "categoryImage": {"type": "string"},
+                "addCategory": {"type": "string"}
+              },
+              "required": ["sectionTitle", "sectionTitlePlaceholder", "layout", "layoutClassic", "layoutMinimal", "layoutBold", "layoutArtistic", "columns", "roundedEdges", "categories", "addCardsHint", "category", "categoryName", "categoryNamePlaceholder", "categoryDescription", "categoryDescriptionPlaceholder", "categoryLink", "categoryLinkPlaceholder", "categoryImage", "addCategory"],
+              "additionalProperties": false
+            },
+            "spacer": {
+              "type": "object",
+              "properties": {
+                "height": {"type": "string"},
+                "heightSmall": {"type": "string"},
+                "heightMedium": {"type": "string"},
+                "heightLarge": {"type": "string"},
+                "heightXlarge": {"type": "string"}
+              },
+              "required": ["height", "heightSmall", "heightMedium", "heightLarge", "heightXlarge"],
+              "additionalProperties": false
+            },
+            "behindScenes": {
+              "type": "object",
+              "properties": {
+                "sectionTitle": {"type": "string"},
+                "sectionTitlePlaceholder": {"type": "string"},
+                "sectionDescription": {"type": "string"},
+                "sectionDescriptionPlaceholder": {"type": "string"},
+                "layout": {"type": "string"},
+                "layoutMasonry": {"type": "string"},
+                "layoutGrid": {"type": "string"},
+                "layoutCarousel": {"type": "string"},
+                "caption": {"type": "string"},
+                "addMedia": {"type": "string"},
+                "mediaHint": {"type": "string"},
+                "uploading": {"type": "string"},
+                "uploaded": {"type": "string"},
+                "uploadFailed": {"type": "string"}
+              },
+              "required": ["sectionTitle", "sectionTitlePlaceholder", "sectionDescription", "sectionDescriptionPlaceholder", "layout", "layoutMasonry", "layoutGrid", "layoutCarousel", "caption", "addMedia", "mediaHint", "uploading", "uploaded", "uploadFailed"],
+              "additionalProperties": false
+            },
+            "common": {
+              "type": "object",
+              "properties": {
+                "remove": {"type": "string"},
+                "titleAlignment": {"type": "string"},
+                "titleItalic": {"type": "string"},
+                "alignmentLeft": {"type": "string"},
+                "alignmentCenter": {"type": "string"},
+                "alignmentRight": {"type": "string"}
+              },
+              "required": ["remove", "titleAlignment", "titleItalic", "alignmentLeft", "alignmentCenter", "alignmentRight"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["unknownBlock", "focalPoint", "imageUpload", "galleryUpload", "hero", "richText", "imageGallery", "imageText", "quote", "video", "process", "featuredProducts", "timeline", "team", "categories", "spacer", "behindScenes", "common"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["templateSelector", "pageBuilder", "settings", "blocks", "preview", "blockPreview", "blockForm"],
+      "additionalProperties": false
+    },
   
   "required": [
     "$schema",
@@ -16953,7 +17421,7 @@
     "stock",
     "shippingProfile",
     "colors",
-    "additionalAttributes",
+    "additionalProperties",
     "media",
     "toasts",
     "collections",
@@ -17012,7 +17480,9 @@
     "shipping",
     "passwordChange",
     "parcelSelector",
-    "baselinker"
+    "baselinker",
+    "pagebuilder"
   ],
   "additionalProperties": false
 }
+

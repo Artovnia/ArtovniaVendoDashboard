@@ -20,9 +20,9 @@ export const TemplateSelector = ({ templates }: TemplateSelectorProps) => {
   const handleSelectTemplate = async (templateKey: string) => {
     try {
       await createPage(templateKey)
-      toast.success('Strona została utworzona')
+      toast.success(t('pagebuilder.templateSelector.pageCreated'))
     } catch (error) {
-      toast.error('Nie udało się utworzyć strony')
+      toast.error(t('pagebuilder.templateSelector.pageCreationFailed'))
       console.error('Error creating page:', error)
     }
   }
@@ -34,14 +34,14 @@ export const TemplateSelector = ({ templates }: TemplateSelectorProps) => {
   return (
     <Container className="divide-y p-0">
       <div className="px-6 py-4">
-        <Heading level="h1">Kreator strony</Heading>
+        <Heading level="h1">{t('pagebuilder.templateSelector.title')}</Heading>
         <Text className="text-ui-fg-subtle mt-2">
-          Stwórz swoją unikalną stronę sprzedawcy. Wybierz szablon, który najlepiej pasuje do Twojej marki.
+          {t('pagebuilder.templateSelector.description')}
         </Text>
       </div>
 
       <div className="px-6 py-4">
-        <Heading level="h2" className="mb-4">Wybierz szablon</Heading>
+        <Heading level="h2" className="mb-4">{t('pagebuilder.templateSelector.selectTemplate')}</Heading>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {Object.entries(templates).map(([key, template]) => (
@@ -70,7 +70,7 @@ export const TemplateSelector = ({ templates }: TemplateSelectorProps) => {
                     ))}
                     {template.allowedBlocks.length > 4 && (
                       <span className="text-xs text-ui-fg-subtle">
-                        +{template.allowedBlocks.length - 4} więcej
+                        {t('pagebuilder.templateSelector.moreBlocks', { count: template.allowedBlocks.length - 4 })}
                       </span>
                     )}
                   </div>
@@ -86,7 +86,7 @@ export const TemplateSelector = ({ templates }: TemplateSelectorProps) => {
                   handleSelectTemplate(key)
                 }}
               >
-                Wybierz
+                {t('pagebuilder.templateSelector.select')}
               </Button>
             </div>
           ))}
