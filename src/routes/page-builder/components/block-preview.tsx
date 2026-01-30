@@ -31,8 +31,6 @@ export const BlockPreview = ({ block }: BlockPreviewProps) => {
       return <TeamPreview data={block.data} />
     case 'categories':
       return <CategoriesPreview data={block.data} />
-    case 'behind_scenes':
-      return <BehindScenesPreview data={block.data} />
     case 'spacer':
       return <SpacerPreview data={block.data} />
     default:
@@ -117,6 +115,58 @@ const RichTextPreview = ({ data }: { data: any }) => {
   const headingItalic = data.heading_italic || false
   const headingClasses = `text-xl font-instrument-serif text-[#3B3634] ${alignmentClasses[headingAlignment as keyof typeof alignmentClasses]} ${headingItalic ? 'italic' : ''}`
   
+  // Parse markdown to HTML for preview
+  const parseMarkdown = (text: string): string => {
+    if (!text) return ''
+    
+    let html = text
+    
+    // Headers
+    html = html.replace(/^### (.+)$/gm, '<h3 class="text-lg font-semibold mt-4 mb-2">$1</h3>')
+    html = html.replace(/^## (.+)$/gm, '<h2 class="text-xl font-semibold mt-6 mb-3">$1</h2>')
+    html = html.replace(/^# (.+)$/gm, '<h1 class="text-2xl font-bold mt-8 mb-4">$1</h1>')
+    
+    // Bold
+    html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    
+    // Italic
+    html = html.replace(/\*(.+?)\*/g, '<em>$1</em>')
+    
+    // Strikethrough
+    html = html.replace(/~~(.+?)~~/g, '<del>$1</del>')
+    
+    // Links
+    html = html.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" class="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">$1</a>')
+    
+    // Blockquotes
+    html = html.replace(/^> (.+)$/gm, '<blockquote class="border-l-4 border-gray-300 pl-4 italic my-2">$1</blockquote>')
+    
+    // Unordered lists
+    html = html.replace(/^- (.+)$/gm, '<li class="ml-4">$1</li>')
+    html = html.replace(/(<li class="ml-4">.+<\/li>\n?)+/g, '<ul class="list-disc list-inside my-2">$&</ul>')
+    
+    // Ordered lists
+    html = html.replace(/^\d+\. (.+)$/gm, '<li class="ml-4">$1</li>')
+    html = html.replace(/(<li class="ml-4">.+<\/li>\n?)+/g, (match) => {
+      // Only wrap in <ol> if not already wrapped in <ul>
+      if (match.includes('list-disc')) return match
+      return `<ol class="list-decimal list-inside my-2">${match}</ol>`
+    })
+    
+    // Paragraphs (split by double line breaks)
+    const paragraphs = html.split('\n\n')
+    html = paragraphs.map(para => {
+      // Don't wrap if already a block element
+      if (para.match(/^<(h[1-3]|ul|ol|blockquote)/)) {
+        return para
+      }
+      // Replace single line breaks with <br>
+      return `<p class="mb-4">${para.replace(/\n/g, '<br>')}</p>`
+    }).join('\n')
+    
+    return html
+  }
+  
   return (
     <div className={`p-4 bg-[#F4F0EB] rounded-lg space-y-3 ${alignmentClasses[data.alignment as keyof typeof alignmentClasses] || 'text-left'}`}>
       {data.heading && (
@@ -125,7 +175,7 @@ const RichTextPreview = ({ data }: { data: any }) => {
       {data.content ? (
         <div 
           className="prose prose-sm max-w-none text-[#3B3634]"
-          dangerouslySetInnerHTML={{ __html: data.content.replace(/\n/g, '<br/>') }}
+          dangerouslySetInnerHTML={{ __html: parseMarkdown(data.content) }}
         />
       ) : !data.heading ? (
         <p className="text-[#3B3634]/50 italic">{t('pagebuilder.blockPreview.textContent')}</p>
@@ -218,7 +268,7 @@ const ImageGalleryPreview = ({ data }: { data: any }) => {
         </div>
         {restImages.length > 0 && (
           <div className={`grid grid-cols-4 ${gapClasses[gap as keyof typeof gapClasses]}`}>
-            {restImages.slice(0, 4).map((image: any, index: number) => (
+            {restImages.map((image: any, index: number) => (
               <div key={index} className={`aspect-square overflow-hidden bg-[#F4F0EB] ${roundedEdges ? 'rounded-lg' : ''}`}>
                 <img src={image.url} alt={image.alt} className="w-full h-full object-cover" style={getFocalPointStyle(image.focal_point)} />
               </div>
@@ -1168,63 +1218,3 @@ const CategoriesPreview = ({ data }: { data: any }) => {
   )
 }
 
-// Behind the Scenes Preview
-const BehindScenesPreview = ({ data }: { data: any }) => {
-  const { t } = useTranslation()
-  const media = data.media || []
-  const titleAlignment = data.title_alignment || 'center'
-  const titleItalic = data.title_italic || false
-  
-  const titleAlignmentClasses = {
-    left: 'text-left',
-    center: 'text-center',
-    right: 'text-right'
-  }
-  
-  const titleClasses = `text-base font-instrument-serif text-[#3B3634] ${titleAlignmentClasses[titleAlignment as keyof typeof titleAlignmentClasses]} ${titleItalic ? 'italic' : ''}`
-  
-  if (media.length === 0) {
-    return (
-      <div className="p-6 bg-[#F4F0EB] rounded-lg text-center">
-        <svg className="w-12 h-12 mx-auto text-[#3B3634]/30 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-        </svg>
-        <p className="text-[#3B3634]/50 text-sm">{t('pagebuilder.blockPreview.addBehindScenes')}</p>
-      </div>
-    )
-  }
-  
-  return (
-    <div className="space-y-4">
-      {data.title && (
-        <h3 className="text-xl font-instrument-serif italic text-center text-[#3B3634]">{data.title}</h3>
-      )}
-      {data.description && (
-        <p className="text-sm text-center text-[#3B3634]/70">{data.description}</p>
-      )}
-      <div className={`grid ${data.layout === 'grid' ? 'grid-cols-3' : 'grid-cols-2 md:grid-cols-3'} gap-2`}>
-        {media.slice(0, 6).map((item: any, index: number) => (
-          <div key={index} className={`relative rounded-lg overflow-hidden ${index === 0 && data.layout === 'masonry' ? 'row-span-2' : ''}`}>
-            {item.type === 'video' ? (
-              <div className="aspect-video bg-gray-900 flex items-center justify-center">
-                <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </div>
-            ) : (
-              <img 
-                src={item.url} 
-                alt={item.caption || `Media ${index + 1}`}
-                className={`w-full object-cover ${index === 0 && data.layout === 'masonry' ? 'h-full' : 'aspect-square'}`}
-              />
-            )}
-          </div>
-        ))}
-      </div>
-      {media.length > 6 && (
-        <p className="text-center text-xs text-[#3B3634]/50">{t('pagebuilder.blockPreview.moreMedia', { count: media.length - 6 })}</p>
-      )}
-    </div>
-  )
-}
-  

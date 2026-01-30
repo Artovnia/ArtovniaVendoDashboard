@@ -6,11 +6,11 @@ interface TemplateSelectorProps {
   templates?: Record<string, TemplateDefinition>
 }
 
-const TEMPLATE_ICONS: Record<string, string> = {
-  minimal: '🎯',
-  story: '📖',
-  gallery: '🖼️',
-  artisan: '🎨',
+const TEMPLATE_KEYS: Record<string, { icon: string; nameKey: string; descKey: string }> = {
+  minimal: { icon: '🎯', nameKey: 'pagebuilder.templates.minimal.name', descKey: 'pagebuilder.templates.minimal.description' },
+  story: { icon: '📖', nameKey: 'pagebuilder.templates.story.name', descKey: 'pagebuilder.templates.story.description' },
+  gallery: { icon: '🖼️', nameKey: 'pagebuilder.templates.gallery.name', descKey: 'pagebuilder.templates.gallery.description' },
+  artisan: { icon: '🎨', nameKey: 'pagebuilder.templates.artisan.name', descKey: 'pagebuilder.templates.artisan.description' },
 }
 
 export const TemplateSelector = ({ templates }: TemplateSelectorProps) => {
@@ -51,13 +51,13 @@ export const TemplateSelector = ({ templates }: TemplateSelectorProps) => {
               onClick={() => !isPending && handleSelectTemplate(key)}
             >
               <div className="flex items-start gap-3">
-                <div className="text-3xl">{TEMPLATE_ICONS[key] || '📄'}</div>
+                <div className="text-3xl">{TEMPLATE_KEYS[key]?.icon || '📄'}</div>
                 <div className="flex-1">
                   <Heading level="h3" className="mb-1">
-                    {template.name_pl || template.name}
+                    {t(TEMPLATE_KEYS[key]?.nameKey || 'pagebuilder.templates.default.name', template.name)}
                   </Heading>
                   <Text className="text-ui-fg-subtle text-sm">
-                    {template.description_pl || template.description}
+                    {t(TEMPLATE_KEYS[key]?.descKey || 'pagebuilder.templates.default.description', template.description)}
                   </Text>
                   <div className="mt-2 flex flex-wrap gap-1">
                     {template.allowedBlocks.slice(0, 4).map((block) => (

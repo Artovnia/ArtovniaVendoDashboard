@@ -49,7 +49,6 @@ export const PageBuilderContent = ({ page, templates }: PageBuilderContentProps)
     'timeline',
     'team',
     'categories',
-    'behind_scenes',
     'spacer'
   ]
 
@@ -340,14 +339,6 @@ function getDefaultBlockData(type: string): any {
         title: '',
         category_ids: [],
         columns: 3,
-      }
-    case 'behind_scenes':
-      return {
-        type: 'behind_scenes',
-        title: '',
-        description: '',
-        layout: 'masonry',
-        media: [],
       }
     case 'spacer':
       return {

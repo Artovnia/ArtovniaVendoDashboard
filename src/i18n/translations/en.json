@@ -5013,7 +5013,7 @@
     },
     "preview": {
       "livePreview": "📱 Live preview",
-      "history": "history",
+      "history": "meet the creator",
       "products": "products",
       "reviews": "reviews",
       "emptyTitle": "Your page is empty",
@@ -5061,7 +5061,9 @@
         "title": "Set image focal point",
         "description": "Click on the image to set the point that will always be visible when cropping",
         "cancel": "Cancel",
-        "save": "Save"
+        "save": "Save",
+        "setButton": "Set Focal Point",
+        "saved": "Focal point saved successfully"
       },
       "imageUpload": {
         "uploading": "Uploading...",
@@ -5297,6 +5299,45 @@
         "alignmentLeft": "Left",
         "alignmentCenter": "Center",
         "alignmentRight": "Right"
+      },
+      "richTextEditor": {
+        "bold": "Bold",
+        "italic": "Italic",
+        "strikethrough": "Strikethrough",
+        "bulletList": "Bullet List",
+        "numberedList": "Numbered List",
+        "heading2": "Heading 2",
+        "heading3": "Heading 3",
+        "link": "Link",
+        "quote": "Quote",
+        "formattingTips": "Formatting tips:",
+        "tipBold": "**bold**",
+        "tipItalic": "*italic*",
+        "tipStrikethrough": "~~strikethrough~~",
+        "tipBulletList": "- bullet list",
+        "tipNumberedList": "1. numbered list",
+        "tipHeading": "## Heading",
+        "tipSubheading": "### Subheading",
+        "tipLink": "[link text](url)",
+        "tipQuote": "> quote"
+      }
+    },
+    "templates": {
+      "minimal": {
+        "name": "Minimal",
+        "description": "Clean and focused - perfect for product-first sellers"
+      },
+      "story": {
+        "name": "Story",
+        "description": "Share your journey - from inspiration to creation"
+      },
+      "gallery": {
+        "name": "Gallery",
+        "description": "Showcase your portfolio with stunning visual layouts"
+      },
+      "artisan": {
+        "name": "Artisan",
+        "description": "Reveal your craft - from raw materials to masterpiece"
       }
     }
   }

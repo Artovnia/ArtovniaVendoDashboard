@@ -174,7 +174,17 @@ export const ProductCreateForm = ({
       }
 
       const media = values.media || [];
-      
+      console.log('📸 [PRODUCT-CREATE] Starting product creation with media:', {
+        mediaCount: media.length,
+        mediaFiles: media.map((m, i) => ({
+          index: i,
+          isThumbnail: m.isThumbnail,
+          name: m.file?.name,
+          size: m.file?.size,
+          type: m.file?.type
+        })),
+        productTitle: values.title
+      });
       
       // Create a clean payload without direct color_assignments property
       const payload = { ...values, media: undefined };
@@ -189,42 +199,59 @@ export const ProductCreateForm = ({
       
       // Validate and upload media files
       if (media.length) {
-        
+        console.log('📤 [PRODUCT-CREATE] Starting media upload process');
         
         try {
           const thumbnailReq = media.find((m) => m.isThumbnail);
           const otherMediaReq = media.filter((m) => !m.isThumbnail);
+          
+          console.log('📤 [PRODUCT-CREATE] Media split:', {
+            thumbnailCount: thumbnailReq ? 1 : 0,
+            otherMediaCount: otherMediaReq.length
+          });
 
           const fileReqs = [];
           
           if (thumbnailReq) {
-           
+            console.log('📤 [PRODUCT-CREATE] Uploading thumbnail:', thumbnailReq.file);
             fileReqs.push(
               uploadFilesQuery([thumbnailReq]).then(
-                (r: any) =>
-                  r.files.map((f: any) => ({
+                (r: any) => {
+                  console.log('✅ [PRODUCT-CREATE] Thumbnail uploaded successfully:', r.files[0]?.url);
+                  return r.files.map((f: any) => ({
                     ...f,
                     isThumbnail: true,
-                  }))
+                  }));
+                }
               )
             );
           }
           
           if (otherMediaReq?.length) {
-           
+            console.log('📤 [PRODUCT-CREATE] Uploading other media:', otherMediaReq.length, 'files');
             fileReqs.push(
               uploadFilesQuery(otherMediaReq).then(
-                (r: any) =>
-                  r.files.map((f: any) => ({
+                (r: any) => {
+                  console.log('✅ [PRODUCT-CREATE] Other media uploaded successfully:', r.files.length, 'files');
+                  return r.files.map((f: any) => ({
                     ...f,
                     isThumbnail: false,
-                  }))
+                  }));
+                }
               )
             );
           }
 
           uploadedMedia = (await Promise.all(fileReqs)).flat();
           
+          console.log('✅ [PRODUCT-CREATE] All media uploaded:', {
+            uploadedCount: uploadedMedia.length,
+            expectedCount: media.length,
+            uploadedFiles: uploadedMedia.map(m => ({
+              url: m.url,
+              isThumbnail: m.isThumbnail
+            }))
+          });
           
           // Validate that we got all expected files
           if (uploadedMedia.length !== media.length) {
@@ -235,6 +262,13 @@ export const ProductCreateForm = ({
           
         } catch (error) {
           setIsSubmitting(false);
+          
+          console.error('❌ [PRODUCT-CREATE] Media upload failed:', {
+            error,
+            errorMessage: error instanceof Error ? error.message : 'Unknown error',
+            mediaCount: media.length,
+            uploadedCount: uploadedMedia.length
+          });
           
           if (error instanceof Error) {
             // Show detailed error message to user
@@ -304,6 +338,17 @@ export const ProductCreateForm = ({
         status: isDraftSubmission ? 'draft' : 'published',
         images: uploadedMedia,
       };
+      
+      console.log('🚀 [PRODUCT-CREATE] Sending product creation request:', {
+        title: apiPayload.title,
+        status: apiPayload.status,
+        imageCount: uploadedMedia.length,
+        images: uploadedMedia.map(m => ({
+          url: m.url,
+          isThumbnail: m.isThumbnail
+        })),
+        variantCount: variants.length
+      });
       
       await mutateAsync({
         ...apiPayload,
@@ -404,6 +449,15 @@ export const ProductCreateForm = ({
       }, {
         onSuccess: async (data: any) => {
           setIsSubmitting(false);
+          
+          console.log('✅ [PRODUCT-CREATE] Product creation response received:', {
+            productId: data.product?.id,
+            productTitle: data.product?.title,
+            status: data.status,
+            hasImages: !!data.product?.images,
+            imageCount: data.product?.images?.length || 0,
+            hasThumbnail: !!data.product?.thumbnail
+          });
           
           // Save GPSR data to localStorage FIRST (before any early returns)
           // This ensures data is saved even in approval workflow

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Block } from '../../../../hooks/api/vendor-page.tsx'
 import { FileUpload, FileType } from '../../../../components/common/file-upload/file-upload.tsx'
 import { uploadFilesQuery } from '../../../../lib/client/client.ts'
+import { RichTextEditor } from './RichTextEditor.tsx'
 
 const SUPPORTED_IMAGE_FORMATS = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
 
@@ -130,8 +131,6 @@ export const BlockForm = ({ block, onUpdate }: BlockFormProps) => {
       return <TeamBlockForm data={block.data} onChange={handleChange} onMultiChange={handleMultiChange} />
     case 'categories':
       return <CategoriesBlockForm data={block.data} onChange={handleChange} />
-    case 'behind_scenes':
-      return <BehindScenesBlockForm data={block.data} onChange={handleChange} onMultiChange={handleMultiChange} />
     case 'spacer':
       return <SpacerBlockForm data={block.data} onChange={handleChange} onMultiChange={handleMultiChange} />
     default:
@@ -145,19 +144,26 @@ interface FormProps {
   onMultiChange?: (updates: Record<string, any>) => void
 }
 
-// Reusable image upload component for blocks
+// Reusable image upload component for blocks with focal point support
 const BlockImageUpload = ({
   label,
   currentUrl,
-  onUpload
+  currentFocalPoint,
+  onUpload,
+  onFocalPointChange,
+  showFocalPoint = false
 }: {
   label: string
   currentUrl?: string
+  currentFocalPoint?: { x: number; y: number }
   onUpload: (url: string, id: string) => void
+  onFocalPointChange?: (focalPoint: { x: number; y: number }) => void
+  showFocalPoint?: boolean
 }) => {
   const { t } = useTranslation()
   const [isUploading, setIsUploading] = useState(false)
   const [previewUrl, setPreviewUrl] = useState(currentUrl || '')
+  const [showFocalPointPicker, setShowFocalPointPicker] = useState(false)
 
   const handleUpload = useCallback(async (files: FileType[]) => {
     if (!files.length) return
@@ -185,7 +191,17 @@ const BlockImageUpload = ({
   const handleDelete = () => {
     setPreviewUrl('')
     onUpload('', '')
+    if (onFocalPointChange) {
+      onFocalPointChange({ x: 50, y: 50 })
+    }
     toast.success(t('pagebuilder.blockForm.imageUpload.deleted'))
+  }
+
+  const handleFocalPointSave = (focalPoint: { x: number; y: number }) => {
+    if (onFocalPointChange) {
+      onFocalPointChange(focalPoint)
+      toast.success(t('pagebuilder.blockForm.focalPoint.saved'))
+    }
   }
 
   return (
@@ -204,9 +220,21 @@ const BlockImageUpload = ({
               ×
             </button>
           </div>
-          <Button type="button" variant="secondary" size="small" onClick={() => setPreviewUrl('')}>
-            {t('pagebuilder.blockForm.imageUpload.change')}
-          </Button>
+          <div className="flex gap-2">
+            <Button type="button" variant="secondary" size="small" onClick={() => setPreviewUrl('')}>
+              {t('pagebuilder.blockForm.imageUpload.change')}
+            </Button>
+            {showFocalPoint && onFocalPointChange && (
+              <Button 
+                type="button" 
+                variant="secondary" 
+                size="small" 
+                onClick={() => setShowFocalPointPicker(true)}
+              >
+                {currentFocalPoint ? '✓ ' : ''}{t('pagebuilder.blockForm.focalPoint.setButton')}
+              </Button>
+            )}
+          </div>
         </div>
       ) : (
         <FileUpload
@@ -217,6 +245,16 @@ const BlockImageUpload = ({
         />
       )}
       {isUploading && <p className="text-sm text-ui-fg-muted mt-2">{t('pagebuilder.blockForm.imageUpload.uploading')}</p>}
+      
+      {/* Focal Point Picker Modal */}
+      {showFocalPointPicker && previewUrl && (
+        <FocalPointPicker
+          imageUrl={previewUrl}
+          currentFocalPoint={currentFocalPoint}
+          onSave={handleFocalPointSave}
+          onClose={() => setShowFocalPointPicker(false)}
+        />
+      )}
     </div>
   )
 }
@@ -401,8 +439,13 @@ const HeroBlockForm = ({ data, onChange, onMultiChange }: FormProps) => {
     <BlockImageUpload
       label={t('pagebuilder.blockForm.hero.backgroundImage')}
       currentUrl={data.image_url}
+      currentFocalPoint={data.focal_point}
+      showFocalPoint={true}
       onUpload={(url, id) => {
         onMultiChange?.({ image_url: url, image_id: id })
+      }}
+      onFocalPointChange={(focalPoint) => {
+        onChange('focal_point', focalPoint)
       }}
     />
     <div className="flex items-center gap-2">
@@ -527,11 +570,11 @@ const RichTextBlockForm = ({ data, onChange }: FormProps) => {
     </div>
     <div>
       <Label>{t('pagebuilder.blockForm.richText.content')}</Label>
-      <Textarea
+      <RichTextEditor
         value={data.content || ''}
-        onChange={(e) => onChange('content', e.target.value)}
+        onChange={(value) => onChange('content', value)}
         placeholder={t('pagebuilder.blockForm.richText.contentPlaceholder')}
-        rows={6}
+        rows={8}
       />
     </div>
     <div>
@@ -576,22 +619,24 @@ const ImageGalleryBlockForm = ({ data, onChange }: FormProps) => {
         </Select.Content>
       </Select>
     </div>
-    <div>
-      <Label>{t('pagebuilder.blockForm.imageGallery.columns')}</Label>
-      <Select
-        value={String(data.columns || 3)}
-        onValueChange={(value) => onChange('columns', parseInt(value))}
-      >
-        <Select.Trigger>
-          <Select.Value />
-        </Select.Trigger>
-        <Select.Content>
-          <Select.Item value="2">{t('pagebuilder.blockForm.imageGallery.columns2')}</Select.Item>
-          <Select.Item value="3">{t('pagebuilder.blockForm.imageGallery.columns3')}</Select.Item>
-          <Select.Item value="4">{t('pagebuilder.blockForm.imageGallery.columns4')}</Select.Item>
-        </Select.Content>
-      </Select>
-    </div>
+    {data.layout === 'grid' && (
+      <div>
+        <Label>{t('pagebuilder.blockForm.imageGallery.columns')}</Label>
+        <Select
+          value={String(data.columns || 3)}
+          onValueChange={(value) => onChange('columns', parseInt(value))}
+        >
+          <Select.Trigger>
+            <Select.Value />
+          </Select.Trigger>
+          <Select.Content>
+            <Select.Item value="2">{t('pagebuilder.blockForm.imageGallery.columns2')}</Select.Item>
+            <Select.Item value="3">{t('pagebuilder.blockForm.imageGallery.columns3')}</Select.Item>
+            <Select.Item value="4">{t('pagebuilder.blockForm.imageGallery.columns4')}</Select.Item>
+          </Select.Content>
+        </Select>
+      </div>
+    )}
     <div>
       <Label>{t('pagebuilder.blockForm.imageGallery.gap')}</Label>
       <Select
@@ -633,7 +678,14 @@ const ImageTextBlockForm = ({ data, onChange, onMultiChange }: FormProps) => {
     <BlockImageUpload
       label={t('pagebuilder.blockForm.imageText.image')}
       currentUrl={data.image_url}
-      onUpload={(url) => onChange('image_url', url)}
+      currentFocalPoint={data.focal_point}
+      showFocalPoint={true}
+      onUpload={(url, id) => {
+        onMultiChange?.({ image_url: url, image_id: id })
+      }}
+      onFocalPointChange={(focalPoint) => {
+        onChange('focal_point', focalPoint)
+      }}
     />
     <div>
       <Label>{t('pagebuilder.blockForm.imageText.title')}</Label>
@@ -1628,159 +1680,6 @@ const CategoriesBlockForm = ({ data, onChange }: FormProps) => {
           {t('pagebuilder.blockForm.categories.addCategory')}
         </Button>
       </div>
-    </div>
-  )
-}
-
-// Behind the Scenes Block Form
-const BehindScenesBlockForm = ({ data, onChange }: FormProps) => {
-  const { t } = useTranslation()
-  const [isUploading, setIsUploading] = useState(false)
-  const media = data.media || []
-
-  const handleUpload = useCallback(async (files: FileType[]) => {
-    if (!files.length) return
-
-    setIsUploading(true)
-
-    try {
-      const result = await uploadFilesQuery(files)
-      if (result.files && result.files.length > 0) {
-        const newMedia = result.files.map((f: any) => ({
-          id: f.id || f.key,
-          url: f.url,
-          type: f.mime_type?.startsWith('video/') ? 'video' : 'image',
-          caption: ''
-        }))
-        onChange('media', [...media, ...newMedia])
-        toast.success(`Przesłano ${newMedia.length} plik(ów)`)
-      }
-    } catch (error) {
-      toast.error('Nie udało się przesłać plików')
-      console.error('Upload error:', error)
-    } finally {
-      setIsUploading(false)
-    }
-  }, [media, onChange])
-
-  const updateCaption = (index: number, caption: string) => {
-    const newMedia = [...media]
-    newMedia[index] = { ...newMedia[index], caption }
-    onChange('media', newMedia)
-  }
-
-  const removeMedia = (index: number) => {
-    const newMedia = [...media]
-    newMedia.splice(index, 1)
-    onChange('media', newMedia)
-  }
-
-  return (
-    <div className="flex flex-col gap-4">
-      <div>
-        <Label>{t('pagebuilder.blockForm.behindScenes.sectionTitle')}</Label>
-        <Input
-          value={data.title || ''}
-          onChange={(e) => onChange('title', e.target.value)}
-          placeholder={t('pagebuilder.blockForm.behindScenes.sectionTitlePlaceholder')}
-        />
-      </div>
-      <div className="flex items-center gap-2">
-        <input
-          type="checkbox"
-          id="title-italic-behind"
-          checked={data.title_italic || false}
-          onChange={(e) => onChange('title_italic', e.target.checked)}
-          className="rounded border-gray-300"
-        />
-        <Label htmlFor="title-italic-behind" className="cursor-pointer">{t('pagebuilder.blockForm.common.titleItalic')}</Label>
-      </div>
-      <div>
-        <Label>{t('pagebuilder.blockForm.common.titleAlignment')}</Label>
-        <Select
-          value={data.title_alignment || 'center'}
-          onValueChange={(value) => onChange('title_alignment', value)}
-        >
-          <Select.Trigger>
-            <Select.Value />
-          </Select.Trigger>
-          <Select.Content>
-            <Select.Item value="left">{t('pagebuilder.blockForm.common.alignmentLeft')}</Select.Item>
-            <Select.Item value="center">{t('pagebuilder.blockForm.common.alignmentCenter')}</Select.Item>
-            <Select.Item value="right">{t('pagebuilder.blockForm.common.alignmentRight')}</Select.Item>
-          </Select.Content>
-        </Select>
-      </div>
-      <div>
-        <Label>{t('pagebuilder.blockForm.behindScenes.sectionDescription')}</Label>
-        <Textarea
-          value={data.description || ''}
-          onChange={(e) => onChange('description', e.target.value)}
-          placeholder={t('pagebuilder.blockForm.behindScenes.sectionDescriptionPlaceholder')}
-          rows={2}
-        />
-      </div>
-      <div>
-        <Label>{t('pagebuilder.blockForm.behindScenes.layout')}</Label>
-        <Select
-          value={data.layout || 'masonry'}
-          onValueChange={(value) => onChange('layout', value)}
-        >
-          <Select.Trigger>
-            <Select.Value />
-          </Select.Trigger>
-          <Select.Content>
-            <Select.Item value="masonry">{t('pagebuilder.blockForm.behindScenes.layoutMasonry')}</Select.Item>
-            <Select.Item value="grid">{t('pagebuilder.blockForm.behindScenes.layoutGrid')}</Select.Item>
-            <Select.Item value="carousel">{t('pagebuilder.blockForm.behindScenes.layoutCarousel')}</Select.Item>
-          </Select.Content>
-        </Select>
-      </div>
-
-      {/* Existing media */}
-      {media.length > 0 && (
-        <div className="grid grid-cols-2 gap-3">
-          {media.map((item: any, index: number) => (
-            <div key={item.id || index} className="relative group">
-              {item.type === 'video' ? (
-                <div className="aspect-video bg-gray-900 rounded-lg flex items-center justify-center">
-                  <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </div>
-              ) : (
-                <img 
-                  src={item.url} 
-                  alt={item.caption || `Media ${index + 1}`}
-                  className="w-full aspect-square object-cover rounded-lg"
-                />
-              )}
-              <button
-                type="button"
-                onClick={() => removeMedia(index)}
-                className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                ×
-              </button>
-              <Input
-                value={item.caption || ''}
-                onChange={(e) => updateCaption(index, e.target.value)}
-                placeholder={t('pagebuilder.blockForm.behindScenes.caption')}
-                className="mt-1"
-              />
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Upload new */}
-      <FileUpload
-        label={isUploading ? t('pagebuilder.blockForm.behindScenes.uploading') : t('pagebuilder.blockForm.behindScenes.addMedia')}
-        hint={t('pagebuilder.blockForm.behindScenes.mediaHint')}
-        multiple={true}
-        formats={[...SUPPORTED_IMAGE_FORMATS, 'video/mp4', 'video/webm']}
-        onUploaded={handleUpload}
-      />
     </div>
   )
 }

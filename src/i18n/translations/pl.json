@@ -5153,7 +5153,7 @@
     },
     "preview": {
       "livePreview": "📱 Podgląd na żywo",
-      "history": "historia",
+      "history": "poznaj twórcę",
       "products": "produkty",
       "reviews": "recenzje",
       "emptyTitle": "Twoja strona jest pusta",
@@ -5201,7 +5201,9 @@
         "title": "Ustaw punkt centralny obrazu",
         "description": "Kliknij na obrazie, aby ustawić punkt, który będzie zawsze widoczny przy kadrowanie",
         "cancel": "Anuluj",
-        "save": "Zapisz"
+        "save": "Zapisz",
+        "setButton": "Ustaw punkt centralny",
+        "saved": "Punkt centralny zapisany pomyślnie"
       },
       "imageUpload": {
         "uploading": "Przesyłanie...",
@@ -5437,6 +5439,45 @@
         "alignmentLeft": "Do lewej",
         "alignmentCenter": "Do środka",
         "alignmentRight": "Do prawej"
+      },
+      "richTextEditor": {
+        "bold": "Pogrubienie",
+        "italic": "Kursywa",
+        "strikethrough": "Przekreślenie",
+        "bulletList": "Lista punktowana",
+        "numberedList": "Lista numerowana",
+        "heading2": "Nagłówek 2",
+        "heading3": "Nagłówek 3",
+        "link": "Link",
+        "quote": "Cytat",
+        "formattingTips": "Wskazówki formatowania:",
+        "tipBold": "**pogrubienie**",
+        "tipItalic": "*kursywa*",
+        "tipStrikethrough": "~~przekreślenie~~",
+        "tipBulletList": "- lista punktowana",
+        "tipNumberedList": "1. lista numerowana",
+        "tipHeading": "## Nagłówek",
+        "tipSubheading": "### Podtytuł",
+        "tipLink": "[tekst linku](url)",
+        "tipQuote": "> cytat"
+      }
+    },
+    "templates": {
+      "minimal": {
+        "name": "Minimalistyczny",
+        "description": "Czysty i skupiony - idealny dla sprzedawców stawiających na produkty"
+      },
+      "story": {
+        "name": "Historia",
+        "description": "Podziel się swoją podróżą - od inspiracji do tworzenia"
+      },
+      "gallery": {
+        "name": "Galeria",
+        "description": "Zaprezentuj swoje portfolio w oszałamiających układach wizualnych"
+      },
+      "artisan": {
+        "name": "Rzemieślnik",
+        "description": "Odkryj swoje rzemiosło - od surowców do arcydzieła"
       }
     }
   }

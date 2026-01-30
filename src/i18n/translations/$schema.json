@@ -17072,9 +17072,11 @@
                 "title": {"type": "string"},
                 "description": {"type": "string"},
                 "cancel": {"type": "string"},
-                "save": {"type": "string"}
+                "save": {"type": "string"},
+                "setButton": {"type": "string"},
+                "saved": {"type": "string"}
               },
-              "required": ["title", "description", "cancel", "save"],
+              "required": ["title", "description", "cancel", "save", "setButton", "saved"],
               "additionalProperties": false
             },
             "imageUpload": {

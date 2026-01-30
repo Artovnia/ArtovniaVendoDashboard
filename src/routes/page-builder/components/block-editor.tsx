@@ -26,7 +26,6 @@ const BLOCK_EMOJIS: Record<string, string> = {
   timeline: '📅',
   team: '👥',
   categories: '🏷️',
-  behind_scenes: '🎥',
   spacer: '📏',
 }
 
@@ -228,8 +227,6 @@ function getBlockPreview(block: Block, t: any): string {
       return `${block.data.members?.length || 0} ${t('pagebuilder.blockPreview.addMembers').toLowerCase()}`
     case 'categories':
       return `${block.data.category_ids?.length || 0} ${t('pagebuilder.blockPreview.addCategories').toLowerCase()}`
-    case 'behind_scenes':
-      return `${block.data.media?.length || 0} ${t('pagebuilder.blockPreview.addBehindScenes').toLowerCase()}`
     case 'spacer':
       const heightLabels = {
         small: t('pagebuilder.blockForm.spacer.heightSmall'),
