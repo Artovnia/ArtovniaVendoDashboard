@@ -5255,6 +5255,8 @@
         "layoutGrid": "Siatka - Klasyczny układ",
         "layoutMasonry": "Masonry - Styl Pinterest",
         "layoutFeatured": "Featured - Duży obraz + siatka",
+        "layoutSidebar": "Sidebar - Duży obraz + 4 małe",
+        "layoutPinterest": "Pinterest - Wyrównane krawędzie",
         "layoutMosaic": "Mozaika - Różne rozmiary",
         "layoutMagazine": "Magazyn - Styl redakcyjny",
         "columns": "Liczba kolumn",

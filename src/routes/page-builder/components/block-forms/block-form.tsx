@@ -614,6 +614,8 @@ const ImageGalleryBlockForm = ({ data, onChange }: FormProps) => {
           <Select.Item value="grid">{t('pagebuilder.blockForm.imageGallery.layoutGrid')}</Select.Item>
           <Select.Item value="masonry">{t('pagebuilder.blockForm.imageGallery.layoutMasonry')}</Select.Item>
           <Select.Item value="featured">{t('pagebuilder.blockForm.imageGallery.layoutFeatured')}</Select.Item>
+          <Select.Item value="sidebar">{t('pagebuilder.blockForm.imageGallery.layoutSidebar')}</Select.Item>
+          <Select.Item value="pinterest">{t('pagebuilder.blockForm.imageGallery.layoutPinterest')}</Select.Item>
           <Select.Item value="mosaic">{t('pagebuilder.blockForm.imageGallery.layoutMosaic')}</Select.Item>
           <Select.Item value="magazine">{t('pagebuilder.blockForm.imageGallery.layoutMagazine')}</Select.Item>
         </Select.Content>

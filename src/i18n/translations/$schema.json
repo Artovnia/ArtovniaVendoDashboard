@@ -17151,6 +17151,8 @@
                 "layoutGrid": {"type": "string"},
                 "layoutMasonry": {"type": "string"},
                 "layoutFeatured": {"type": "string"},
+                "layoutSidebar": {"type": "string"},
+                "layoutPinterest": {"type": "string"},
                 "layoutMosaic": {"type": "string"},
                 "layoutMagazine": {"type": "string"},
                 "columns": {"type": "string"},
@@ -17163,7 +17165,7 @@
                 "gapLarge": {"type": "string"},
                 "roundedEdges": {"type": "string"}
               },
-              "required": ["layout", "layoutGrid", "layoutMasonry", "layoutFeatured", "layoutMosaic", "layoutMagazine", "columns", "columns2", "columns3", "columns4", "gap", "gapSmall", "gapMedium", "gapLarge", "roundedEdges"],
+              "required": ["layout", "layoutGrid", "layoutMasonry", "layoutFeatured", "layoutSidebar", "layoutPinterest", "layoutMosaic", "layoutMagazine", "columns", "columns2", "columns3", "columns4", "gap", "gapSmall", "gapMedium", "gapLarge", "roundedEdges"],
               "additionalProperties": false
             },
             "imageText": {

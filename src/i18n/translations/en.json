@@ -5115,6 +5115,8 @@
         "layoutGrid": "Grid - Classic layout",
         "layoutMasonry": "Masonry - Pinterest style",
         "layoutFeatured": "Featured - Large image + grid",
+        "layoutSidebar": "Sidebar - Big image + 4 small",
+        "layoutPinterest": "Pinterest - Aligned edges",
         "layoutMosaic": "Mosaic - Various sizes",
         "layoutMagazine": "Magazine - Editorial style",
         "columns": "Number of columns",

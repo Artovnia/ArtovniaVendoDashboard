@@ -64,6 +64,12 @@ const HeroPreview = ({ data }: { data: any }) => {
   const titleClasses = `text-xl md:text-2xl font-instrument-serif text-white mb-2 ${titleAlignmentClasses[titleAlignment as keyof typeof titleAlignmentClasses]} ${titleItalic ? 'italic' : ''}`
   const subtitleClasses = `text-sm text-white/90 max-w-md ${titleAlignmentClasses[titleAlignment as keyof typeof titleAlignmentClasses]}`
   
+  // Helper to get focal point style
+  const getFocalPointStyle = () => {
+    if (!data.focal_point) return {}
+    return { objectPosition: `${data.focal_point.x}% ${data.focal_point.y}%` }
+  }
+  
   return (
     <div className={`relative w-full h-48 md:h-64 overflow-hidden bg-gradient-to-br from-gray-700 to-gray-900 ${roundedEdges ? 'rounded-lg' : ''}`}>
       {hasImage ? (
@@ -71,6 +77,7 @@ const HeroPreview = ({ data }: { data: any }) => {
           src={data.image_url}
           alt={data.title || 'Hero'}
           className="absolute inset-0 w-full h-full object-cover"
+          style={getFocalPointStyle()}
         />
       ) : (
         <div className="absolute inset-0 flex items-center justify-center text-white/30">
@@ -322,6 +329,70 @@ const ImageGalleryPreview = ({ data }: { data: any }) => {
     )
   }
   
+  // Sidebar Layout - Big image on left + smaller images on right
+  if (layout === 'sidebar') {
+    const [mainImage, ...sideImages] = images
+    
+    return (
+      <div className={`grid grid-cols-2 ${gapClasses[gap as keyof typeof gapClasses]}`}>
+        <div className={`aspect-square overflow-hidden bg-[#F4F0EB] ${roundedEdges ? 'rounded-lg' : ''}`}>
+          <img src={mainImage.url} alt={mainImage.alt} className="w-full h-full object-cover" style={getFocalPointStyle(mainImage.focal_point)} />
+        </div>
+        {sideImages.length > 0 && (
+          <div className={`grid grid-cols-2 auto-rows-fr ${gapClasses[gap as keyof typeof gapClasses]}`}>
+            {sideImages.map((image: any, index: number) => (
+              <div key={index} className={`aspect-square overflow-hidden bg-[#F4F0EB] ${roundedEdges ? 'rounded-lg' : ''}`}>
+                <img src={image.url} alt={image.alt} className="w-full h-full object-cover" style={getFocalPointStyle(image.focal_point)} />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    )
+  }
+  
+  // Pinterest Layout - Masonry with aligned top AND bottom using percentage heights
+  if (layout === 'pinterest') {
+    const columnCount = columns
+    const imageColumns: any[][] = Array.from({ length: columnCount }, () => [])
+    images.forEach((image: any, index: number) => {
+      imageColumns[index % columnCount].push(image)
+    })
+    
+    // Define percentage splits for each column (repeating pattern)
+    const heightPatterns = [
+      [35, 65],  // Column 0: top 35%, bottom 65%
+        [60, 40],  // Column 2: top 60%, bottom 40%
+        [40, 60],  // Column 1: top 40%, bottom 60%
+         [55, 45],  // Column 3: top 55%, bottom 45%
+      
+    
+     
+    ]
+    
+    return (
+      <div className={`grid ${columnCount === 2 ? 'grid-cols-2' : columnCount === 3 ? 'grid-cols-3' : 'grid-cols-4'} ${gapClasses[gap as keyof typeof gapClasses]} h-[300px]`}>
+        {imageColumns.map((columnImages, colIndex) => {
+          const pattern = heightPatterns[colIndex % heightPatterns.length]
+          
+          return (
+            <div key={colIndex} className={`flex flex-col h-full ${gapClasses[gap as keyof typeof gapClasses]}`}>
+              {columnImages.map((image, imgIndex) => {
+                const heightPercent = imgIndex < pattern.length ? pattern[imgIndex] : 50
+                
+                return (
+                  <div key={imgIndex} className={`w-full overflow-hidden bg-[#F4F0EB] ${roundedEdges ? 'rounded-lg' : ''}`} style={{ flex: `0 0 ${heightPercent}%` }}>
+                    <img src={image.url} alt={image.alt} className="w-full h-full object-cover" style={getFocalPointStyle(image.focal_point)} />
+                  </div>
+                )
+              })}
+            </div>
+          )
+        })}
+      </div>
+    )
+  }
+  
   // Default fallback
   return (
     <div className={`grid grid-cols-${columns} ${gapClasses[gap as keyof typeof gapClasses]}`}>
@@ -347,10 +418,16 @@ const ImageTextPreview = ({ data }: { data: any }) => {
     '16:9': 'aspect-video'
   }
   
+  // Helper to get focal point style
+  const getImageFocalPointStyle = () => {
+    if (!data.focal_point) return {}
+    return { objectPosition: `${data.focal_point.x}% ${data.focal_point.y}%` }
+  }
+  
   const imageElement = (
     <div className={`${ratioClasses[imageRatio as keyof typeof ratioClasses]} bg-[#F4F0EB] flex items-center justify-center overflow-hidden ${roundedEdges ? 'rounded-lg' : ''}`}>
       {hasImage ? (
-        <img src={data.image_url} alt={data.title || ''} className="w-full h-full object-cover" />
+        <img src={data.image_url} alt={data.title || ''} className="w-full h-full object-cover" style={getImageFocalPointStyle()} />
       ) : (
         <svg className="w-12 h-12 text-[#3B3634]/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
