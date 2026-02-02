@@ -143,6 +143,15 @@ export function SetupWizard({ activeConnection, onComplete }: SetupWizardProps) 
     return true
   }
 
+  // Validate GPSR fields (mandatory)
+  const validateGPSR = (): boolean => {
+    if (!formData.gpsr_producer_name || !formData.gpsr_producer_address || !formData.gpsr_producer_contact) {
+      toast.error(t('baselinker.validation.gpsrRequired', { defaultValue: 'GPSR information is mandatory. Please fill in Producer Name, Address, and Contact.' }))
+      return false
+    }
+    return true
+  }
+
   // Create connection with all collected settings (called at the end of wizard)
   const handleCreateConnection = async (): Promise<boolean> => {
     if (!formData.api_token || !formData.inventory_id) {
@@ -223,6 +232,9 @@ export function SetupWizard({ activeConnection, onComplete }: SetupWizardProps) 
       }))
       setSetupTab(SetupTab.FEATURES)
     } else if (setupTab === SetupTab.FEATURES) {
+      // Validate GPSR fields before proceeding
+      if (!validateGPSR()) return
+      
       // Create connection after Features step if it doesn't exist yet
       // This is needed because status/carrier mapping APIs require an existing connection
       if (!activeConnection) {
@@ -479,35 +491,38 @@ export function SetupWizard({ activeConnection, onComplete }: SetupWizardProps) 
               <div className="grid grid-cols-1 gap-4 rounded-lg border border-ui-border-base p-4">
                 <div>
                   <Label htmlFor="gpsr_producer_name" className="mb-2">
-                    {t('baselinker.setup.gpsr.producerName', { defaultValue: 'Producer/Manufacturer Name' })}
+                    {t('baselinker.setup.gpsr.producerName', { defaultValue: 'Producer/Manufacturer Name' })} <span className="text-red-500">*</span>
                   </Label>
                   <Input
                     id="gpsr_producer_name"
                     value={formData.gpsr_producer_name}
                     onChange={(e) => setFormData({ ...formData, gpsr_producer_name: e.target.value })}
                     placeholder={t('baselinker.setup.gpsr.producerNamePlaceholder', { defaultValue: 'e.g., Your Company Name' })}
+                    required
                   />
                 </div>
                 <div>
                   <Label htmlFor="gpsr_producer_address" className="mb-2">
-                    {t('baselinker.setup.gpsr.producerAddress', { defaultValue: 'Producer/Manufacturer Address' })}
+                    {t('baselinker.setup.gpsr.producerAddress', { defaultValue: 'Producer/Manufacturer Address' })} <span className="text-red-500">*</span>
                   </Label>
                   <Input
                     id="gpsr_producer_address"
                     value={formData.gpsr_producer_address}
                     onChange={(e) => setFormData({ ...formData, gpsr_producer_address: e.target.value })}
                     placeholder={t('baselinker.setup.gpsr.producerAddressPlaceholder', { defaultValue: 'e.g., Street 123, 00-000 City, Poland' })}
+                    required
                   />
                 </div>
                 <div>
                   <Label htmlFor="gpsr_producer_contact" className="mb-2">
-                    {t('baselinker.setup.gpsr.producerContact', { defaultValue: 'Producer Contact (Email/Phone)' })}
+                    {t('baselinker.setup.gpsr.producerContact', { defaultValue: 'Producer Contact (Email/Phone)' })} <span className="text-red-500">*</span>
                   </Label>
                   <Input
                     id="gpsr_producer_contact"
                     value={formData.gpsr_producer_contact}
                     onChange={(e) => setFormData({ ...formData, gpsr_producer_contact: e.target.value })}
                     placeholder={t('baselinker.setup.gpsr.producerContactPlaceholder', { defaultValue: 'e.g., contact@company.com or +48 123 456 789' })}
+                    required
                   />
                 </div>
                 <div>
@@ -523,13 +538,18 @@ export function SetupWizard({ activeConnection, onComplete }: SetupWizardProps) 
                 </div>
               </div>
 
-              <div className="p-3 rounded-lg flex items-start gap-2 bg-ui-bg-subtle border border-ui-border-base">
-                <ExclamationCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-ui-fg-muted" />
-                <Text className="text-sm text-ui-fg-muted">
-                  {t('baselinker.setup.gpsr.hint', { 
-                    defaultValue: 'These defaults will be applied to all imported products. You can override them individually for each product after import.' 
-                  })}
-                </Text>
+              <div className="p-3 rounded-lg flex items-start gap-2 bg-ui-bg-subtle border border-orange-200">
+                <ExclamationCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-orange-600" />
+                <div className="space-y-1">
+                  <Text className="text-sm font-medium text-orange-600">
+                    {t('baselinker.setup.gpsr.mandatory', { defaultValue: 'GPSR information is mandatory for EU compliance' })}
+                  </Text>
+                  <Text className="text-sm text-orange-600">
+                    {t('baselinker.setup.gpsr.hint', { 
+                      defaultValue: 'These defaults will be applied to all imported products. You can override them individually for each product after import.' 
+                    })}
+                  </Text>
+                </div>
               </div>
             </div>
 

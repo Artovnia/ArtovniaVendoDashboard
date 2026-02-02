@@ -127,8 +127,46 @@ export function VariantGroupingModal({
     }
   }
   
+  // Check for duplicate option value combinations
+  const getDuplicateVariants = () => {
+    const variantCombinations = new Map<string, string[]>()
+    
+    group.members.forEach((member) => {
+      const values = memberOptionValues[member.product.id] || {}
+      const optionValues = options
+        .filter((o) => o.title && values[o.title])
+        .map((o) => `${o.title}:${values[o.title]}`)
+        .sort()
+        .join('|')
+      
+      if (optionValues) {
+        if (!variantCombinations.has(optionValues)) {
+          variantCombinations.set(optionValues, [])
+        }
+        variantCombinations.get(optionValues)!.push(member.product.id)
+      }
+    })
+    
+    // Return product IDs that have duplicate combinations
+    const duplicates = new Set<string>()
+    variantCombinations.forEach((productIds) => {
+      if (productIds.length > 1) {
+        productIds.forEach((id) => duplicates.add(id))
+      }
+    })
+    
+    return duplicates
+  }
+  
+  const duplicateVariants = getDuplicateVariants()
+  
   // Save configuration
   const handleSave = () => {
+    // Check for duplicates before saving
+    if (duplicateVariants.size > 0) {
+      return // Don't save if there are duplicates
+    }
+    
     // Collect all unique values for each option from member assignments
     const finalOptions = options.map((option) => {
       const allValues = new Set<string>(option.values)
@@ -177,6 +215,7 @@ export function VariantGroupingModal({
   
   // Check if configuration is valid
   const hasValidOptions = options.some((o) => o.title && o.values.length > 0)
+  const hasDuplicates = duplicateVariants.size > 0
   
   if (!group) return null
   
@@ -331,7 +370,12 @@ export function VariantGroupingModal({
                         </Label>
                         {option.values.length > 0 ? (
                           <select
-                            className=" border border-ui-border-base rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ui-fg-interactive"
+                            className={clx(
+                              "border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2",
+                              duplicateVariants.has(member.product.id)
+                                ? "border-red-500 focus:ring-red-500 bg-ui-bg-error"
+                                : "border-ui-border-base focus:ring-ui-fg-interactive"
+                            )}
                             value={memberOptionValues[member.product.id]?.[option.title] || ''}
                             onChange={(e) => updateMemberOptionValue(member.product.id, option.title, e.target.value)}
                           >
@@ -350,11 +394,25 @@ export function VariantGroupingModal({
                             placeholder={t('baselinker.import.enterValue', { defaultValue: 'Wpisz wartość...' })}
                             value={memberOptionValues[member.product.id]?.[option.title] || ''}
                             onChange={(e) => updateMemberOptionValue(member.product.id, option.title, e.target.value)}
+                            className={clx(
+                              duplicateVariants.has(member.product.id) && "border-red-500 focus:ring-red-500 bg-ui-bg-error"
+                            )}
                           />
                         )}
                       </div>
                     ))}
                   </div>
+                  
+                  {/* Duplicate warning for this variant */}
+                  {duplicateVariants.has(member.product.id) && (
+                    <div className="mt-2 p-2 bg-ui-bg-error border border-ui-border-error rounded-lg">
+                      <Text className="text-sm text-red-600">
+                        ⚠️ {t('baselinker.import.duplicateVariantWarning', { 
+                          defaultValue: 'Ta kombinacja opcji jest już użyta w innym wariancie. Każdy wariant musi mieć unikalną kombinację wartości.' 
+                        })}
+                      </Text>
+                    </div>
+                  )}
                   
                   {/* Show message if no options defined yet */}
                   {options.filter((o) => o.title).length === 0 && (
@@ -367,6 +425,22 @@ export function VariantGroupingModal({
             </div>
           </div>
           
+          {/* Duplicate variants error */}
+          {hasDuplicates && (
+            <div className="bg-ui-bg-error rounded-lg p-4 border border-ui-border-error">
+              <Text className="font-medium text-red-600 mb-2">
+                ⚠️ {t('baselinker.import.duplicateVariantsError', { 
+                  defaultValue: 'Znaleziono duplikaty kombinacji opcji' 
+                })}
+              </Text>
+              <Text className="text-sm text-red-600">
+                {t('baselinker.import.duplicateVariantsErrorDesc', { 
+                  defaultValue: 'Każdy wariant musi mieć unikalną kombinację wartości opcji. Popraw zaznaczone warianty przed zapisaniem.' 
+                })}
+              </Text>
+            </div>
+          )}
+          
           {/* Info tip */}
           <div className="bg-ui-bg-subtle rounded-lg p-4 border border-ui-border-base">
             <Text className="font-medium text-ui-fg-base mb-2">
@@ -377,6 +451,7 @@ export function VariantGroupingModal({
               <li>{t('baselinker.import.tip2', { defaultValue: 'Każdy wariant zachowa swoją cenę, stan magazynowy i SKU' })}</li>
               <li>{t('baselinker.import.tip3', { defaultValue: 'Zdjęcia ze wszystkich produktów zostaną połączone' })}</li>
               <li>{t('baselinker.import.tip4', { defaultValue: 'Opis zostanie pobrany z pierwszego produktu w grupie' })}</li>
+              <li className="font-medium text-ui-fg-base">{t('baselinker.import.tip5', { defaultValue: 'Każdy wariant musi mieć unikalną kombinację wartości opcji' })}</li>
             </ul>
           </div>
         </FocusModal.Body>
@@ -388,7 +463,7 @@ export function VariantGroupingModal({
             </Button>
             <Button 
               onClick={handleSave} 
-              disabled={!hasValidOptions}
+              disabled={!hasValidOptions || hasDuplicates}
               className="w-full sm:w-auto"
             >
               {t('actions.save', { defaultValue: 'Zapisz konfigurację' })}

@@ -338,15 +338,15 @@ export const DataTableRoot = <TData,>({
                     data-selected={row.getIsSelected()}
                     className={clx(
                       'group/row group relative [&_td:last-of-type]:w-[1%] [&_td:last-of-type]:whitespace-nowrap',
-                      'hover:bg-ui-bg-base-hover',
-                      'has-[[data-row-link]:focus-visible]:bg-ui-bg-base-hover',
+                      'transition-colors duration-75',
                       {
-                        'bg-ui-bg-subtle hover:bg-ui-bg-subtle-hover':
-                          isOdd,
-                        'cursor-pointer': !!to,
-                        'bg-ui-bg-highlight hover:bg-ui-bg-highlight-hover':
-                          row.getIsSelected(),
+                        'bg-ui-bg-base hover:bg-ui-bg-base-hover': !isOdd && !row.getIsSelected() && !isRowDisabled,
+                        'bg-ui-bg-subtle hover:bg-ui-bg-subtle-hover': isOdd && !row.getIsSelected() && !isRowDisabled,
+                        'bg-ui-bg-highlight hover:bg-ui-bg-highlight-hover': row.getIsSelected(),
                         'bg-ui-bg-disabled': isRowDisabled,
+                        'cursor-pointer': !!to,
+                        'has-[[data-row-link]:focus-visible]:bg-ui-bg-base-hover': !isOdd && !row.getIsSelected(),
+                        'has-[[data-row-link]:focus-visible]:bg-ui-bg-subtle-hover': isOdd && !row.getIsSelected(),
                       }
                     )}
                   >
@@ -399,25 +399,24 @@ export const DataTableRoot = <TData,>({
                       return (
                         <Table.Cell
                           key={cell.id}
-                          className={clx({
-                            '!pl-0 !pr-0':
-                              shouldRenderAsLink,
-                            "bg-ui-bg-base group-hover/row:bg-ui-bg-base-hover group-data-[selected=true]/row:bg-ui-bg-highlight group-data-[selected=true]/row:group-hover/row:bg-ui-bg-highlight-hover left-0 after:absolute after:inset-y-0 after:right-0 after:h-full after:w-px after:bg-transparent after:content-['']":
-                              isStickyCell,
-                            'bg-ui-bg-subtle group-hover/row:bg-ui-bg-subtle-hover':
-                              isOdd && (isStickyCell || isActionCell),
-                            'left-[68px]': hasLeftOffset,
-                            'after:bg-ui-border-base':
-                              showStickyBorder &&
-                              isStickyCell &&
-                              !isSelectCell,
-                            'bg-ui-bg-disabled': isRowDisabled,
-                            "sticky right-0 bg-ui-bg-base group-hover/row:bg-ui-bg-base-hover group-data-[selected=true]/row:bg-ui-bg-highlight group-data-[selected=true]/row:group-hover/row:bg-ui-bg-highlight-hover before:absolute before:inset-y-0 before:left-0 before:h-full before:w-px before:bg-transparent before:content-['']":
-                              isActionCell,
-                            'before:bg-ui-border-base':
-                              showStickyBorder &&
-                              isActionCell,
-                          })}
+                          className={clx(
+                            'transition-colors duration-75',
+                            {
+                              '!pl-0 !pr-0': shouldRenderAsLink,
+                              "sticky left-0 after:absolute after:inset-y-0 after:right-0 after:h-full after:w-px after:bg-transparent after:content-['']":
+                                isStickyCell,
+                              'left-[68px]': hasLeftOffset,
+                              'after:bg-ui-border-base':
+                                showStickyBorder &&
+                                isStickyCell &&
+                                !isSelectCell,
+                              "sticky right-0 before:absolute before:inset-y-0 before:left-0 before:h-full before:w-px before:bg-transparent before:content-['']":
+                                isActionCell,
+                              'before:bg-ui-border-base':
+                                showStickyBorder &&
+                                isActionCell,
+                            }
+                          )}
                           style={{
                             paddingLeft: depthOffset
                               ? `${depthOffset}px`

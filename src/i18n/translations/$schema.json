@@ -16732,9 +16732,10 @@
         "validation": {
           "type": "object",
           "properties": {
-            "required": {"type": "string"}
+            "required": {"type": "string"},
+            "gpsrRequired": {"type": "string"}
           },
-          "required": ["required"],
+          "required": ["required", "gpsrRequired"],
           "additionalProperties": false
         },
         "setup": {
@@ -16816,9 +16817,10 @@
                 "producerContactPlaceholder": {"type": "string"},
                 "instructions": {"type": "string"},
                 "instructionsPlaceholder": {"type": "string"},
-                "hint": {"type": "string"}
+                "hint": {"type": "string"},
+                "mandatory": {"type": "string"}
               },
-              "required": ["title", "description", "producerName", "producerNamePlaceholder", "producerAddress", "producerAddressPlaceholder", "producerContact", "producerContactPlaceholder", "instructions", "instructionsPlaceholder", "hint"],
+              "required": ["title", "description", "producerName", "producerNamePlaceholder", "producerAddress", "producerAddressPlaceholder", "producerContact", "producerContactPlaceholder", "instructions", "instructionsPlaceholder", "hint", "mandatory"],
               "additionalProperties": false
             },
             "complete": {
@@ -16913,9 +16915,28 @@
             "missingShippingError": {"type": "string"},
             "groupMissingCategoryError": {"type": "string"},
             "groupMissingShippingError": {"type": "string"},
-            "nothingToImport": {"type": "string"}
+            "nothingToImport": {"type": "string"},
+            "watermarkWarning": {
+              "type": "object",
+              "properties": {
+                "title": {"type": "string"},
+                "mainWarning": {"type": "string"},
+                "requirements": {"type": "string"},
+                "requirement1": {"type": "string"},
+                "requirement2": {"type": "string"},
+                "requirement3": {"type": "string"},
+                "whatToDo": {"type": "string"},
+                "step1": {"type": "string"},
+                "step2": {"type": "string"},
+                "step3": {"type": "string"},
+                "acknowledge": {"type": "string"},
+                "proceed": {"type": "string"}
+              },
+              "required": ["title", "mainWarning", "requirements", "requirement1", "requirement2", "requirement3", "whatToDo", "step1", "step2", "step3", "acknowledge", "proceed"],
+              "additionalProperties": false
+            }
           },
-          "required": ["title", "description", "tabs", "loading", "loadError", "noCategories", "skipToProducts", "categoryMappingTitle", "categoryMappingDescription", "baselinkerCategory", "products", "marketplaceCategory", "categoriesMapped", "productsReady", "selected", "bulkAssignCategory", "apply", "searchPlaceholder", "allProducts", "missingCategory", "missingShipping", "stock", "noCategory", "noShipping", "productsNeedCategory", "productsNeedShipping", "bulkCategory", "bulkShipping", "selectCategory", "selectShippingProfile", "selectShipping", "confirmImport", "importSelected", "importing", "pleaseWait", "complete", "successMessage", "failedMessage", "viewProducts", "importError", "selectiveTip", "selectAllTip", "selectedReady", "selectedNeedSetup", "allReady", "unconfiguredGroupsError", "missingCategoryError", "missingShippingError", "groupMissingCategoryError", "groupMissingShippingError", "nothingToImport"],
+          "required": ["title", "description", "tabs", "loading", "loadError", "noCategories", "skipToProducts", "categoryMappingTitle", "categoryMappingDescription", "baselinkerCategory", "products", "marketplaceCategory", "categoriesMapped", "productsReady", "selected", "bulkAssignCategory", "apply", "searchPlaceholder", "allProducts", "missingCategory", "missingShipping", "stock", "noCategory", "noShipping", "productsNeedCategory", "productsNeedShipping", "bulkCategory", "bulkShipping", "selectCategory", "selectShippingProfile", "selectShipping", "confirmImport", "importSelected", "importing", "pleaseWait", "complete", "successMessage", "failedMessage", "viewProducts", "importError", "selectiveTip", "selectAllTip", "selectedReady", "selectedNeedSetup", "allReady", "unconfiguredGroupsError", "missingCategoryError", "missingShippingError", "groupMissingCategoryError", "groupMissingShippingError", "nothingToImport", "watermarkWarning"],
           "additionalProperties": false
         }
       },

@@ -4818,7 +4818,8 @@
     "tokenConfigured": "Configured",
     "tokenSecured": "Your API token is securely stored and encrypted",
     "validation": {
-      "required": "API Token and Inventory ID are required"
+      "required": "API Token and Inventory ID are required",
+      "gpsrRequired": "GPSR information is mandatory. Please fill in Producer Name, Address, and Contact."
     },
     "setup": {
       "title": "BaseLinker Setup",
@@ -4865,7 +4866,8 @@
         "producerContactPlaceholder": "e.g., contact@company.com or +48 123 456 789",
         "instructions": "Default Safety Instructions",
         "instructionsPlaceholder": "e.g., Keep away from children under 3 years",
-        "hint": "GPSR data is required for products sold in the EU. You can override these defaults on individual products after import."
+        "hint": "These defaults will be applied to all imported products. You can override them individually for each product after import.",
+        "mandatory": "GPSR information is mandatory for EU compliance"
       },
       "complete": {
         "title": "Setup Complete!",
@@ -4943,7 +4945,21 @@
       "missingShippingError": "{{count}} products are missing shipping profile. Please assign shipping profiles before importing.",
       "groupMissingCategoryError": "{{count}} variant groups are missing category assignment. Please assign categories before importing.",
       "groupMissingShippingError": "{{count}} variant groups are missing shipping profile. Please assign shipping profiles before importing.",
-      "nothingToImport": "No products or groups selected for import. Please select items to import."
+      "nothingToImport": "No products or groups selected for import. Please select items to import.",
+      "watermarkWarning": {
+        "title": "Important: Product Images Requirements",
+        "mainWarning": "All product images MUST be original (without watermarks) before import.",
+        "requirements": "Image Requirements:",
+        "requirement1": "Products with watermarked images will NOT be accepted by administrators",
+        "requirement2": "You must use original images from manufacturers or your own photography",
+        "requirement3": "Images can be updated in BaseLinker before import, or on the platform after import",
+        "whatToDo": "What to do:",
+        "step1": "Check your BaseLinker product images and replace any watermarked images with originals",
+        "step2": "OR: Import products now and update images later in the product editor",
+        "step3": "Products with watermarked images will be rejected during admin review",
+        "acknowledge": "I understand that only products with original, non-watermarked images will be approved by administrators",
+        "proceed": "I Understand, Proceed with Import"
+      }
     }
   },
   "pagebuilder": {

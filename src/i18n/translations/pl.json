@@ -4958,7 +4958,8 @@
     "tokenConfigured": "Skonfigurowany",
     "tokenSecured": "Twój token API jest bezpiecznie przechowywany i zaszyfrowany",
     "validation": {
-      "required": "Token API i ID magazynu są wymagane"
+      "required": "Token API i ID magazynu są wymagane",
+      "gpsrRequired": "Informacje GPSR są obowiązkowe. Proszę wypełnić Nazwę producenta, Adres i Kontakt."
     },
     "setup": {
       "title": "Konfiguracja BaseLinker",
@@ -4996,16 +4997,17 @@
       },
       "gpsr": {
         "title": "Domyślne dane GPSR",
-        "description": "Ustaw domyślne dane dotyczące Ogólnego Rozporządzenia o Bezpieczeństwie Produktów (GPSR) dla importowanych produktów. Te informacje zostaną zastosowane do wszystkich produktów importowanych z BaseLinker.",
+        "description": "Ustaw domyślne dane GPSR (General Product Safety Regulation) dla importowanych produktów. Te informacje będą stosowane do wszystkich produktów importowanych z BaseLinker.",
         "producerName": "Nazwa producenta/wytwórcy",
-        "producerNamePlaceholder": "np. Nazwa Twojej Firmy",
+        "producerNamePlaceholder": "np. Nazwa Twojej firmy",
         "producerAddress": "Adres producenta/wytwórcy",
-        "producerAddressPlaceholder": "np. ul. Przykładowa 123, 00-000 Miasto, Polska",
+        "producerAddressPlaceholder": "np. Ulica 123, 00-000 Miasto, Polska",
         "producerContact": "Kontakt do producenta (Email/Telefon)",
         "producerContactPlaceholder": "np. kontakt@firma.pl lub +48 123 456 789",
         "instructions": "Domyślne instrukcje bezpieczeństwa",
-        "instructionsPlaceholder": "np. Przechowywać z dala od dzieci poniżej 3 lat",
-        "hint": "Dane GPSR są wymagane dla produktów sprzedawanych w UE. Możesz nadpisać te domyślne wartości dla poszczególnych produktów po imporcie."
+        "instructionsPlaceholder": "np. Trzymać z dala od dzieci poniżej 3 lat",
+        "hint": "Te wartości domyślne będą stosowane do wszystkich importowanych produktów. Możesz je nadpisać indywidualnie dla każdego produktu po imporcie.",
+        "mandatory": "Informacje GPSR są obowiązkowe dla zgodności z przepisami UE"
       },
       "complete": {
         "title": "Konfiguracja zakończona!",
@@ -5083,7 +5085,21 @@
       "missingShippingError": "{{count}} produktów nie ma przypisanego profilu wysyłki. Przypisz profile wysyłki przed importem.",
       "groupMissingCategoryError": "{{count}} grup wariantów nie ma przypisanej kategorii. Przypisz kategorie przed importem.",
       "groupMissingShippingError": "{{count}} grup wariantów nie ma przypisanego profilu wysyłki. Przypisz profile wysyłki przed importem.",
-      "nothingToImport": "Nie wybrano produktów ani grup do importu. Wybierz elementy do importu."
+      "nothingToImport": "Nie wybrano produktów ani grup do importu. Wybierz elementy do importu.",
+      "watermarkWarning": {
+        "title": "Ważne: Wymagania dotyczące zdjęć produktów",
+        "mainWarning": "Wszystkie zdjęcia produktów MUSZĄ być oryginalne (bez znaków wodnych) przed importem.",
+        "requirements": "Wymagania dotyczące zdjęć:",
+        "requirement1": "Produkty ze zdjęciami ze znakami wodnymi NIE będą zaakceptowane przez administratorów",
+        "requirement2": "Musisz używać oryginalnych zdjęć od producentów lub własnej fotografii",
+        "requirement3": "Zdjęcia można zaktualizować w BaseLinker przed importem lub na platformie po imporcie",
+        "whatToDo": "Co zrobić:",
+        "step1": "Sprawdź zdjęcia produktów w BaseLinker i zamień wszystkie zdjęcia ze znakami wodnymi na oryginały",
+        "step2": "LUB: Zaimportuj produkty teraz i zaktualizuj zdjęcia później w edytorze produktów",
+        "step3": "Produkty ze zdjęciami ze znakami wodnymi zostaną odrzucone podczas weryfikacji przez administratora",
+        "acknowledge": "Rozumiem, że tylko produkty z oryginalnymi zdjęciami bez znaków wodnych zostaną zatwierdzone przez administratorów",
+        "proceed": "Rozumiem, Kontynuuj Import"
+      }
     }
   },
   "pagebuilder": {
