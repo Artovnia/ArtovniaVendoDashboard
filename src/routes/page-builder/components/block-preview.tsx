@@ -362,21 +362,18 @@ const ImageGalleryPreview = ({ data }: { data: any }) => {
     // Define percentage splits for each column (repeating pattern)
     const heightPatterns = [
       [35, 65],  // Column 0: top 35%, bottom 65%
-        [60, 40],  // Column 2: top 60%, bottom 40%
-        [40, 60],  // Column 1: top 40%, bottom 60%
-         [55, 45],  // Column 3: top 55%, bottom 45%
-      
-    
-     
+      [60, 40],  // Column 1: top 60%, bottom 40%
+      [40, 60],  // Column 2: top 40%, bottom 60%
+      [55, 45],  // Column 3: top 55%, bottom 45%
     ]
     
     return (
-      <div className={`grid ${columnCount === 2 ? 'grid-cols-2' : columnCount === 3 ? 'grid-cols-3' : 'grid-cols-4'} ${gapClasses[gap as keyof typeof gapClasses]} h-[300px]`}>
+      <div className={`grid ${columnCount === 2 ? 'grid-cols-2' : columnCount === 3 ? 'grid-cols-3' : 'grid-cols-4'} ${gapClasses[gap as keyof typeof gapClasses]} min-h-[300px]`}>
         {imageColumns.map((columnImages, colIndex) => {
           const pattern = heightPatterns[colIndex % heightPatterns.length]
           
           return (
-            <div key={colIndex} className={`flex flex-col h-full ${gapClasses[gap as keyof typeof gapClasses]}`}>
+            <div key={colIndex} className={`flex flex-col min-h-[300px] ${gapClasses[gap as keyof typeof gapClasses]}`}>
               {columnImages.map((image, imgIndex) => {
                 const heightPercent = imgIndex < pattern.length ? pattern[imgIndex] : 50
                 

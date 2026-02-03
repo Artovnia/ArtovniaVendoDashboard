@@ -122,9 +122,7 @@ export const EditProductMediaForm = ({
     setActiveId(null);
   };
 
-  const { mutateAsync, isPending } = useUpdateProduct(
-    product.id!
-  );
+  const { mutateAsync, isPending } = useUpdateProduct();
 
   const handleSubmit = form.handleSubmit(
     async ({ media }) => {
@@ -162,9 +160,10 @@ export const EditProductMediaForm = ({
         return entry;
       });
 
+      // Find explicitly marked thumbnail, or use first image as fallback
       const thumbnail = withUpdatedUrls.find(
         (m) => m.isThumbnail
-      )?.url;
+      )?.url || withUpdatedUrls[0]?.url || null;
 
       await mutateAsync(
         {
@@ -174,7 +173,7 @@ export const EditProductMediaForm = ({
             url: file.url,
             id: file.id,
           })),
-          thumbnail: thumbnail || null,
+          thumbnail: thumbnail,
         },
         {
           onSuccess: () => {
