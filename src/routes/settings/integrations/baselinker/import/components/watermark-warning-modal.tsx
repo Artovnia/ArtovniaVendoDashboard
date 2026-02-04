@@ -7,7 +7,7 @@ import {
   Text,
   FocusModal,
 } from '@medusajs/ui'
-import { ExclamationCircle } from '@medusajs/icons'
+import { ExclamationCircle, ExclamationCircleSolid } from '@medusajs/icons'
 
 interface WatermarkWarningModalProps {
   open: boolean
@@ -35,7 +35,7 @@ export function WatermarkWarningModal({ open, onClose, onConfirm }: WatermarkWar
       <FocusModal.Content>
         <FocusModal.Header>
           <div className="flex items-center gap-2 p-4">
-            <ExclamationCircle className="w-6 h-6 text-orange-500" />
+            <ExclamationCircle className="w-6 h-6 text-red-500" />
             <Heading level="h1">
               {t('baselinker.import.watermarkWarning.title', { 
                 defaultValue: 'Important: Product Images Requirements' 
@@ -46,8 +46,10 @@ export function WatermarkWarningModal({ open, onClose, onConfirm }: WatermarkWar
 
         <FocusModal.Body className="space-y-4 p-4">
           {/* Main warning */}
-          <div className="p-4 bg-ui-bg-subtle border border-orange-200 rounded-lg">
+          <div className="p-4 flex items-center  bg-ui-bg-subtle border border-red-500 rounded-lg">
+            <ExclamationCircleSolid className="w-6 h-6 text-red-500 mt-2" />
             <Text className="font-medium text-ui-fg-base">
+              
               {t('baselinker.import.watermarkWarning.mainWarning', {
                 defaultValue: 'All product images MUST be original (without watermarks) before import.'
               })}
@@ -63,7 +65,7 @@ export function WatermarkWarningModal({ open, onClose, onConfirm }: WatermarkWar
             </Text>
             <ul className="space-y-2 text-sm text-ui-fg-subtle">
               <li className="flex items-start gap-2">
-                <span className="text-orange-500 font-bold">•</span>
+                <span className="text-red-500 font-bold">•</span>
                 <Text>
                   {t('baselinker.import.watermarkWarning.requirement1', {
                     defaultValue: 'Products with watermarked images will NOT be accepted by administrators'
@@ -71,7 +73,7 @@ export function WatermarkWarningModal({ open, onClose, onConfirm }: WatermarkWar
                 </Text>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-orange-500 font-bold">•</span>
+                <span className="text-red-500 font-bold">•</span>
                 <Text>
                   {t('baselinker.import.watermarkWarning.requirement2', {
                     defaultValue: 'You must use original images from manufacturers or your own photography'
@@ -79,7 +81,7 @@ export function WatermarkWarningModal({ open, onClose, onConfirm }: WatermarkWar
                 </Text>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-orange-500 font-bold">•</span>
+                <span className="text-red-500 font-bold">•</span>
                 <Text>
                   {t('baselinker.import.watermarkWarning.requirement3', {
                     defaultValue: 'Images can be updated in BaseLinker before import, or on the platform after import'
@@ -116,7 +118,7 @@ export function WatermarkWarningModal({ open, onClose, onConfirm }: WatermarkWar
           </div>
 
           {/* Acknowledgment checkbox */}
-          <div className="flex items-start gap-3 p-4 bg-ui-bg-subtle border border-ui-border-base rounded-lg">
+          <div className="flex items-start gap-3 p-4 bg-ui-bg-subtle border border-red-500 rounded-lg">
             <Checkbox
               id="watermark-acknowledge"
               checked={acknowledged}

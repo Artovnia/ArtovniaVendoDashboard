@@ -65,7 +65,7 @@ export const TemplateSelector = ({ templates }: TemplateSelectorProps) => {
                         key={block}
                         className="text-xs bg-ui-bg-subtle px-2 py-0.5 rounded"
                       >
-                        {block.replace('_', ' ')}
+                        {t(`pagebuilder.blockNames.${block}`, block.replace('_', ' '))}
                       </span>
                     ))}
                     {template.allowedBlocks.length > 4 && (

@@ -4948,7 +4948,7 @@
       "nothingToImport": "No products or groups selected for import. Please select items to import.",
       "watermarkWarning": {
         "title": "Important: Product Images Requirements",
-        "mainWarning": "All product images MUST be original (without watermarks) before import.",
+        "mainWarning": "All product images MUST be original (without watermarks from other platforms) before import.",
         "requirements": "Image Requirements:",
         "requirement1": "Products with watermarked images will NOT be accepted by administrators",
         "requirement2": "You must use original images from manufacturers or your own photography",
@@ -4965,12 +4965,49 @@
   "pagebuilder": {
     "templateSelector": {
       "title": "Page Builder",
-      "description": "Create your unique seller page. Choose a template that best fits your brand.",
-      "selectTemplate": "Choose a template",
+      "description": "Create your unique seller page. Choose a base template that best fits your brand.",
+      "selectTemplate": "Choose base template",
       "select": "Select",
       "moreBlocks": "+{{count}} more",
       "pageCreated": "Page has been created",
       "pageCreationFailed": "Failed to create page"
+    },
+    "templates": {
+      "minimal": {
+        "name": "Minimalist",
+        "description": "Elegant and minimalist template for creators who want a simple, aesthetic showcase of their brand without excessive content."
+      },
+      "story": {
+        "name": "Story",
+        "description": "Universal template to present yourself and your brand in a simple, clear way. Perfect as an 'about me' page for most creators."
+      },
+      "gallery": {
+        "name": "Gallery",
+        "description": "Image-focused template – ideal for creators who primarily want to showcase their work, collections, and details."
+      },
+      "artisan": {
+        "name": "Behind the Scenes",
+        "description": "Template for storytelling through process – shows behind-the-scenes work, creation stages, and brand authenticity."
+      },
+      "default": {
+        "name": "Template",
+        "description": "Custom template"
+      }
+    },
+    "blockNames": {
+      "hero": "Hero Banner",
+      "hero_banner": "Hero Banner",
+      "rich_text": "Rich Text",
+      "image_gallery": "Image Gallery",
+      "image_text": "Image with Text",
+      "image_with_text": "Image with Text",
+      "photo_gallery": "Photo Gallery",
+      "quote": "Quote",
+      "featured_products": "Featured Products",
+      "team": "Team",
+      "process": "Process",
+      "timeline": "Timeline",
+      "spacer": "Spacer"
     },
     "pageBuilder": {
       "title": "Page Builder",
@@ -5338,24 +5375,6 @@
         "tipSubheading": "### Subheading",
         "tipLink": "[link text](url)",
         "tipQuote": "> quote"
-      }
-    },
-    "templates": {
-      "minimal": {
-        "name": "Minimal",
-        "description": "Clean and focused - perfect for product-first sellers"
-      },
-      "story": {
-        "name": "Story",
-        "description": "Share your journey - from inspiration to creation"
-      },
-      "gallery": {
-        "name": "Gallery",
-        "description": "Showcase your portfolio with stunning visual layouts"
-      },
-      "artisan": {
-        "name": "Artisan",
-        "description": "Reveal your craft - from raw materials to masterpiece"
       }
     }
   }

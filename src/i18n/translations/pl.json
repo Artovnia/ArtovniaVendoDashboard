@@ -5088,7 +5088,7 @@
       "nothingToImport": "Nie wybrano produktów ani grup do importu. Wybierz elementy do importu.",
       "watermarkWarning": {
         "title": "Ważne: Wymagania dotyczące zdjęć produktów",
-        "mainWarning": "Wszystkie zdjęcia produktów MUSZĄ być oryginalne (bez znaków wodnych) przed importem.",
+        "mainWarning": "Wszystkie zdjęcia produktów MUSZĄ być oryginalne (bez znaków wodnych innych portali) przed importem.",
         "requirements": "Wymagania dotyczące zdjęć:",
         "requirement1": "Produkty ze zdjęciami ze znakami wodnymi NIE będą zaakceptowane przez administratorów",
         "requirement2": "Musisz używać oryginalnych zdjęć od producentów lub własnej fotografii",
@@ -5105,12 +5105,49 @@
   "pagebuilder": {
     "templateSelector": {
       "title": "Kreator strony",
-      "description": "Stwórz swoją unikalną stronę sprzedawcy. Wybierz szablon, który najlepiej pasuje do Twojej marki.",
-      "selectTemplate": "Wybierz szablon",
+      "description": "Stwórz swoją unikalną stronę sprzedawcy. Wybierz bazowy szablon, który najlepiej pasuje do Twojej marki.",
+      "selectTemplate": "Wybierz bazowy szablon",
       "select": "Wybierz",
       "moreBlocks": "+{{count}} więcej",
       "pageCreated": "Strona została utworzona",
       "pageCreationFailed": "Nie udało się utworzyć strony"
+    },
+    "templates": {
+      "minimal": {
+        "name": "Minimalistyczny",
+        "description": "Elegancki i minimalistyczny szablon dla twórców, którzy chcą prostą, estetyczną wizytówkę swojej marki bez nadmiaru treści."
+      },
+      "story": {
+        "name": "Historia",
+        "description": "Uniwersalny szablon do przedstawienia siebie i swojej marki w prosty, przejrzysty sposób. Idealny jako strona \"o mnie\" dla większości twórców."
+      },
+      "gallery": {
+        "name": "Galeria",
+        "description": "Szablon skupiony na obrazach – idealny dla twórców, którzy chcą przede wszystkim pokazać swoje prace, kolekcje i detale."
+      },
+      "artisan": {
+        "name": "Kulisy Pracowni",
+        "description": "Szablon do opowiadania historii poprzez proces – pokazuje kulisy pracy, etapy tworzenia i autentyczność marki."
+      },
+      "default": {
+        "name": "Szablon",
+        "description": "Własny szablon"
+      }
+    },
+    "blockNames": {
+      "hero": "Baner główny",
+      "hero_banner": "Baner główny",
+      "rich_text": "Tekst sformatowany",
+      "image_gallery": "Galeria zdjęć",
+      "image_text": "Zdjęcie z tekstem",
+      "image_with_text": "Zdjęcie z tekstem",
+      "photo_gallery": "Galeria zdjęć",
+      "quote": "Cytat",
+      "featured_products": "Polecane produkty",
+      "team": "Zespół",
+      "process": "Proces",
+      "timeline": "Oś czasu",
+      "spacer": "Odstęp"
     },
     "pageBuilder": {
       "title": "Kreator strony",
@@ -5478,24 +5515,6 @@
         "tipSubheading": "### Podtytuł",
         "tipLink": "[tekst linku](url)",
         "tipQuote": "> cytat"
-      }
-    },
-    "templates": {
-      "minimal": {
-        "name": "Minimalistyczny",
-        "description": "Czysty i skupiony - idealny dla sprzedawców stawiających na produkty"
-      },
-      "story": {
-        "name": "Historia",
-        "description": "Podziel się swoją podróżą - od inspiracji do tworzenia"
-      },
-      "gallery": {
-        "name": "Galeria",
-        "description": "Zaprezentuj swoje portfolio w oszałamiających układach wizualnych"
-      },
-      "artisan": {
-        "name": "Rzemieślnik",
-        "description": "Odkryj swoje rzemiosło - od surowców do arcydzieła"
       }
     }
   }
