@@ -189,40 +189,51 @@
         "navigation": "Nawigacja"
       }
     },
-    "keyboardShortcuts": {
-      "pageShortcut": "Przejdź do",
-      "settingShortcut": "Ustawienia",
-      "commandShortcut": "Polecenia",
-      "then": "następnie",
-      "navigation": {
-        "goToOrders": "Zamówienia",
-        "goToProducts": "Produkty",
-        "goToCollections": "Kolekcje",
-        "goToCategories": "Kategorie",
-        "goToCustomers": "Klienci",
-        "goToCustomerGroups": "Grupy Klientów",
-        "goToInventory": "Zapas",
-        "goToReservations": "Rezerwacje",
-        "goToPriceLists": "Cenniki",
-        "goToPromotions": "Promocje",
-        "goToCampaigns": "Kampanie"
-      },
-      "settings": {
-        "goToSettings": "Ustawienia",
-        "goToStore": "Sklep",
-        "goToUsers": "Użytkownicy",
-        "goToRegions": "Regiony",
-        "goToTaxRegions": "Regiony Podatkowe",
-        "goToSalesChannels": "Kanały Sprzedaży",
-        "goToProductTypes": "Typy Produktów",
-        "goToLocations": "Lokalizacje",
-        "goToPublishableApiKeys": "Publiczne Klucze API",
-        "goToSecretApiKeys": "Tajne Klucze API",
-        "goToWorkflows": "Przepływy pracy",
-        "goToProfile": "Profil",
-        "goToReturnReasons": "Powody Zwrotów"
-      }
-    },
+  "keyboardShortcuts": {
+  "pageShortcut": "Przejdź do",
+  "settingShortcut": "Ustawienia",
+  "commandShortcut": "Polecenia",
+  "then": "następnie",
+  "navigation": {
+    "goToDashboard": "Panel główny",
+    "goToOrders": "Zamówienia",
+    "goToReturns": "Zwroty",
+    "goToProducts": "Produkty",
+    "goToCollections": "Kolekcje",
+    "goToCategories": "Kategorie",
+    "goToCustomers": "Klienci",
+    "goToCustomerGroups": "Grupy Klientów",
+    "goToInventory": "Zapas",
+    "goToReservations": "Rezerwacje",
+    "goToPriceLists": "Cenniki",
+    "goToPromotions": "Promocje",
+    "goToCampaigns": "Kampanie",
+    "goToPlatformPromotions": "Promocje Platformy",
+    "goToReviews": "Recenzje",
+    "goToMessages": "Wiadomości",
+    "goToRequests": "Zapytania",
+    "goToHolidayMode": "Tryb Wakacyjny",
+    "goToPageBuilder": "Kreator Stron",
+    "goToSupportTickets": "Zgłoszenia Wsparcia",
+    "goToStripeConnect": "Stripe Connect",
+    "goToEarningsPayouts": "Zarobki i Wypłaty"
+  },
+  "settings": {
+    "goToSettings": "Ustawienia",
+    "goToStore": "Sklep",
+    "goToUsers": "Użytkownicy",
+    "goToRegions": "Regiony",
+    "goToTaxRegions": "Regiony Podatkowe",
+    "goToSalesChannels": "Kanały Sprzedaży",
+    "goToProductTypes": "Typy Produktów",
+    "goToLocations": "Lokalizacje",
+    "goToPublishableApiKeys": "Publiczne Klucze API",
+    "goToSecretApiKeys": "Tajne Klucze API",
+    "goToWorkflows": "Przepływy pracy",
+    "goToProfile": "Profil",
+    "goToReturnReasons": "Powody Zwrotów"
+  }
+},
     "menus": {
       "user": {
         "documentation": "Dokumentacja",

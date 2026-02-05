@@ -1,10 +1,5 @@
 import debounceFn from 'lodash/debounce';
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,9 +13,7 @@ export const useKeybind = () => {
   const context = useContext(KeybindContext);
 
   if (!context) {
-    throw new Error(
-      'useKeybind must be used within a KeybindProvider'
-    );
+    throw new Error('useKeybind must be used within a KeybindProvider');
   }
 
   return context;
@@ -119,247 +112,220 @@ export const useGlobalShortcuts = () => {
   const globalShortcuts: Shortcut[] = [
     // Pages
     {
-      keys: {
-        Mac: ['G', 'O'],
-      },
-      label: t(
-        'app.keyboardShortcuts.navigation.goToOrders'
-      ),
+      keys: { Mac: ['G', 'D'] },
+      label: t('app.keyboardShortcuts.navigation.goToDashboard'),
+      type: 'pageShortcut',
+      to: '/dashboard',
+    },
+    {
+      keys: { Mac: ['G', 'O'] },
+      label: t('app.keyboardShortcuts.navigation.goToOrders'),
       type: 'pageShortcut',
       to: '/orders',
     },
     {
-      keys: {
-        Mac: ['G', 'P'],
-      },
-      label: t(
-        'app.keyboardShortcuts.navigation.goToProducts'
-      ),
+      keys: { Mac: ['G', 'T'] },
+      label: t('app.keyboardShortcuts.navigation.goToReturns'),
+      type: 'pageShortcut',
+      to: '/returns',
+    },
+    {
+      keys: { Mac: ['G', 'P'] },
+      label: t('app.keyboardShortcuts.navigation.goToProducts'),
       type: 'pageShortcut',
       to: '/products',
     },
     {
-      keys: {
-        Mac: ['G', 'C'],
-      },
-      label: t(
-        'app.keyboardShortcuts.navigation.goToCollections'
-      ),
+      keys: { Mac: ['G', 'C'] },
+      label: t('app.keyboardShortcuts.navigation.goToCollections'),
       type: 'pageShortcut',
       to: '/collections',
     },
     {
-      keys: {
-        Mac: ['G', 'A'],
-      },
-      label: t(
-        'app.keyboardShortcuts.navigation.goToCategories'
-      ),
+      keys: { Mac: ['G', 'A'] },
+      label: t('app.keyboardShortcuts.navigation.goToCategories'),
       type: 'pageShortcut',
       to: '/categories',
     },
     {
-      keys: {
-        Mac: ['G', 'U'],
-      },
-      label: t(
-        'app.keyboardShortcuts.navigation.goToCustomers'
-      ),
-      type: 'pageShortcut',
-      to: '/customers',
-    },
-    {
-      keys: {
-        Mac: ['G', 'G'],
-      },
-      label: t(
-        'app.keyboardShortcuts.navigation.goToCustomerGroups'
-      ),
-      type: 'pageShortcut',
-      to: '/customer-groups',
-    },
-    {
-      keys: {
-        Mac: ['G', 'I'],
-      },
-      label: t(
-        'app.keyboardShortcuts.navigation.goToInventory'
-      ),
+      keys: { Mac: ['G', 'I'] },
+      label: t('app.keyboardShortcuts.navigation.goToInventory'),
       type: 'pageShortcut',
       to: '/inventory',
     },
     {
-      keys: {
-        Mac: ['G', 'R'],
-      },
-      label: t(
-        'app.keyboardShortcuts.navigation.goToReservations'
-      ),
+      keys: { Mac: ['G', 'R'] },
+      label: t('app.keyboardShortcuts.navigation.goToReservations'),
       type: 'pageShortcut',
       to: '/reservations',
     },
     {
-      keys: {
-        Mac: ['G', 'L'],
-      },
-      label: t(
-        'app.keyboardShortcuts.navigation.goToPriceLists'
-      ),
+      keys: { Mac: ['G', 'U'] },
+      label: t('app.keyboardShortcuts.navigation.goToCustomers'),
       type: 'pageShortcut',
-      to: '/price-lists',
+      to: '/customers',
     },
     {
-      keys: {
-        Mac: ['G', 'M'],
-      },
-      label: t(
-        'app.keyboardShortcuts.navigation.goToPromotions'
-      ),
+      keys: { Mac: ['G', 'G'] },
+      label: t('app.keyboardShortcuts.navigation.goToCustomerGroups'),
+      type: 'pageShortcut',
+      to: '/customer-groups',
+    },
+    {
+      keys: { Mac: ['G', 'M'] },
+      label: t('app.keyboardShortcuts.navigation.goToPromotions'),
       type: 'pageShortcut',
       to: '/promotions',
     },
     {
-      keys: {
-        Mac: ['G', 'K'],
-      },
-      label: t(
-        'app.keyboardShortcuts.navigation.goToCampaigns'
-      ),
+      keys: { Mac: ['G', 'K'] },
+      label: t('app.keyboardShortcuts.navigation.goToCampaigns'),
       type: 'pageShortcut',
       to: '/campaigns',
     },
+    {
+      keys: { Mac: ['G', 'H'] },
+      label: t('app.keyboardShortcuts.navigation.goToPlatformPromotions'),
+      type: 'pageShortcut',
+      to: '/platform-promotions',
+    },
+    {
+      keys: { Mac: ['G', 'L'] },
+      label: t('app.keyboardShortcuts.navigation.goToPriceLists'),
+      type: 'pageShortcut',
+      to: '/price-lists',
+    },
+    {
+      keys: { Mac: ['G', 'V'] },
+      label: t('app.keyboardShortcuts.navigation.goToReviews'),
+      type: 'pageShortcut',
+      to: '/reviews',
+    },
+    {
+      keys: { Mac: ['G', 'E'] },
+      label: t('app.keyboardShortcuts.navigation.goToMessages'),
+      type: 'pageShortcut',
+      to: '/messages',
+    },
+    {
+      keys: { Mac: ['G', 'Q'] },
+      label: t('app.keyboardShortcuts.navigation.goToRequests'),
+      type: 'pageShortcut',
+      to: '/requests',
+    },
+    {
+      keys: { Mac: ['G', 'Y'] },
+      label: t('app.keyboardShortcuts.navigation.goToHolidayMode'),
+      type: 'pageShortcut',
+      to: '/holiday-mode',
+    },
+    {
+      keys: { Mac: ['G', 'B'] },
+      label: t('app.keyboardShortcuts.navigation.goToPageBuilder'),
+      type: 'pageShortcut',
+      to: '/page-builder',
+    },
+    {
+      keys: { Mac: ['G', 'S'] },
+      label: t('app.keyboardShortcuts.navigation.goToSupportTickets'),
+      type: 'pageShortcut',
+      to: '/tickets',
+    },
+    // Extensions
+    {
+      keys: { Mac: ['G', 'X'] },
+      label: t('app.keyboardShortcuts.navigation.goToStripeConnect'),
+      type: 'pageShortcut',
+      to: '/stripe-connect',
+    },
+    {
+      keys: { Mac: ['G', 'W'] },
+      label: t('app.keyboardShortcuts.navigation.goToEarningsPayouts'),
+      type: 'pageShortcut',
+      to: '/payout/earnings',
+    },
     // Settings
     {
-      keys: {
-        Mac: ['G', ','],
-      },
-      label: t(
-        'app.keyboardShortcuts.settings.goToSettings'
-      ),
+      keys: { Mac: ['G', ','] },
+      label: t('app.keyboardShortcuts.settings.goToSettings'),
       type: 'settingShortcut',
       to: '/settings',
     },
     {
-      keys: {
-        Mac: ['G', ',', 'S'],
-      },
+      keys: { Mac: ['G', ',', 'S'] },
       label: t('app.keyboardShortcuts.settings.goToStore'),
       type: 'settingShortcut',
       to: '/settings/store',
     },
     {
-      keys: {
-        Mac: ['G', ',', 'U'],
-      },
+      keys: { Mac: ['G', ',', 'U'] },
       label: t('app.keyboardShortcuts.settings.goToUsers'),
       type: 'settingShortcut',
       to: '/settings/users',
     },
     {
-      keys: {
-        Mac: ['G', ',', 'R'],
-      },
-      label: t(
-        'app.keyboardShortcuts.settings.goToRegions'
-      ),
+      keys: { Mac: ['G', ',', 'R'] },
+      label: t('app.keyboardShortcuts.settings.goToRegions'),
       type: 'settingShortcut',
       to: '/settings/regions',
     },
     {
-      keys: {
-        Mac: ['G', ',', 'T'],
-      },
-      label: t(
-        'app.keyboardShortcuts.settings.goToTaxRegions'
-      ),
+      keys: { Mac: ['G', ',', 'T'] },
+      label: t('app.keyboardShortcuts.settings.goToTaxRegions'),
       type: 'settingShortcut',
       to: '/settings/tax-regions',
     },
     {
-      keys: {
-        Mac: ['G', ',', 'A'],
-      },
-      label: t(
-        'app.keyboardShortcuts.settings.goToSalesChannels'
-      ),
+      keys: { Mac: ['G', ',', 'A'] },
+      label: t('app.keyboardShortcuts.settings.goToSalesChannels'),
       type: 'settingShortcut',
       to: '/settings/sales-channels',
     },
     {
-      keys: {
-        Mac: ['G', ',', 'P'],
-      },
-      label: t(
-        'app.keyboardShortcuts.settings.goToProductTypes'
-      ),
+      keys: { Mac: ['G', ',', 'P'] },
+      label: t('app.keyboardShortcuts.settings.goToProductTypes'),
       type: 'settingShortcut',
       to: '/settings/product-types',
     },
     {
-      keys: {
-        Mac: ['G', ',', 'L'],
-      },
-      label: t(
-        'app.keyboardShortcuts.settings.goToLocations'
-      ),
+      keys: { Mac: ['G', ',', 'L'] },
+      label: t('app.keyboardShortcuts.settings.goToLocations'),
       type: 'settingShortcut',
       to: '/settings/locations',
     },
     {
-      keys: {
-        Mac: ['G', ',', 'M'],
-      },
-      label: t(
-        'app.keyboardShortcuts.settings.goToReturnReasons'
-      ),
+      keys: { Mac: ['G', ',', 'N'] },
+      label: t('app.keyboardShortcuts.settings.goToReturnReasons'),
       type: 'settingShortcut',
       to: '/settings/return-reasons',
     },
     {
-      keys: {
-        Mac: ['G', ',', 'J'],
-      },
-      label: t(
-        'app.keyboardShortcuts.settings.goToPublishableApiKeys'
-      ),
+      keys: { Mac: ['G', ',', 'J'] },
+      label: t('app.keyboardShortcuts.settings.goToPublishableApiKeys'),
       type: 'settingShortcut',
       to: '/settings/publishable-api-keys',
     },
     {
-      keys: {
-        Mac: ['G', ',', 'K'],
-      },
-      label: t(
-        'app.keyboardShortcuts.settings.goToSecretApiKeys'
-      ),
+      keys: { Mac: ['G', ',', 'K'] },
+      label: t('app.keyboardShortcuts.settings.goToSecretApiKeys'),
       type: 'settingShortcut',
       to: '/settings/secret-api-keys',
     },
     {
-      keys: {
-        Mac: ['G', ',', 'W'],
-      },
-      label: t(
-        'app.keyboardShortcuts.settings.goToWorkflows'
-      ),
+      keys: { Mac: ['G', ',', 'W'] },
+      label: t('app.keyboardShortcuts.settings.goToWorkflows'),
       type: 'settingShortcut',
       to: '/settings/workflows',
     },
     {
-      keys: {
-        Mac: ['G', ',', 'M'],
-      },
-      label: t(
-        'app.keyboardShortcuts.settings.goToProfile'
-      ),
+      keys: { Mac: ['G', ',', 'M'] },
+      label: t('app.keyboardShortcuts.settings.goToProfile'),
       type: 'settingShortcut',
       to: '/settings/profile',
     },
     // Commands
     {
-      keys: {
-        Mac: ['B', 'Y', 'E'],
-      },
+      keys: { Mac: ['B', 'Y', 'E'] },
       label: t('actions.logout'),
       type: 'commandShortcut',
       callback: () => handleLogout(),

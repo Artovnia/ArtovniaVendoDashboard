@@ -730,144 +730,110 @@
           ],
           "additionalProperties": false
         },
-        "keyboardShortcuts": {
-          "type": "object",
-          "properties": {
-            "pageShortcut": {
-              "type": "string"
-            },
-            "settingShortcut": {
-              "type": "string"
-            },
-            "commandShortcut": {
-              "type": "string"
-            },
-            "then": {
-              "type": "string"
-            },
-            "navigation": {
-              "type": "object",
-              "properties": {
-                "goToOrders": {
-                  "type": "string"
-                },
-                "goToProducts": {
-                  "type": "string"
-                },
-                "goToCollections": {
-                  "type": "string"
-                },
-                "goToCategories": {
-                  "type": "string"
-                },
-                "goToCustomers": {
-                  "type": "string"
-                },
-                "goToCustomerGroups": {
-                  "type": "string"
-                },
-                "goToInventory": {
-                  "type": "string"
-                },
-                "goToReservations": {
-                  "type": "string"
-                },
-                "goToPriceLists": {
-                  "type": "string"
-                },
-                "goToPromotions": {
-                  "type": "string"
-                },
-                "goToCampaigns": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "goToOrders",
-                "goToProducts",
-                "goToCollections",
-                "goToCategories",
-                "goToCustomers",
-                "goToCustomerGroups",
-                "goToInventory",
-                "goToReservations",
-                "goToPriceLists",
-                "goToPromotions",
-                "goToCampaigns"
-              ],
-              "additionalProperties": false
-            },
-            "settings": {
-              "type": "object",
-              "properties": {
-                "goToSettings": {
-                  "type": "string"
-                },
-                "goToStore": {
-                  "type": "string"
-                },
-                "goToUsers": {
-                  "type": "string"
-                },
-                "goToRegions": {
-                  "type": "string"
-                },
-                "goToTaxRegions": {
-                  "type": "string"
-                },
-                "goToSalesChannels": {
-                  "type": "string"
-                },
-                "goToProductTypes": {
-                  "type": "string"
-                },
-                "goToLocations": {
-                  "type": "string"
-                },
-                "goToPublishableApiKeys": {
-                  "type": "string"
-                },
-                "goToSecretApiKeys": {
-                  "type": "string"
-                },
-                "goToWorkflows": {
-                  "type": "string"
-                },
-                "goToProfile": {
-                  "type": "string"
-                },
-                "goToReturnReasons": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "goToSettings",
-                "goToStore",
-                "goToUsers",
-                "goToRegions",
-                "goToTaxRegions",
-                "goToSalesChannels",
-                "goToProductTypes",
-                "goToLocations",
-                "goToPublishableApiKeys",
-                "goToSecretApiKeys",
-                "goToWorkflows",
-                "goToProfile",
-                "goToReturnReasons"
-              ],
-              "additionalProperties": false
-            }
-          },
-          "required": [
-            "pageShortcut",
-            "settingShortcut",
-            "commandShortcut",
-            "then",
-            "navigation",
-            "settings"
-          ],
-          "additionalProperties": false
-        },
+      "keyboardShortcuts": {
+  "type": "object",
+  "properties": {
+    "pageShortcut": { "type": "string" },
+    "settingShortcut": { "type": "string" },
+    "commandShortcut": { "type": "string" },
+    "then": { "type": "string" },
+    "navigation": {
+      "type": "object",
+      "properties": {
+        "goToDashboard": { "type": "string" },
+        "goToOrders": { "type": "string" },
+        "goToReturns": { "type": "string" },
+        "goToProducts": { "type": "string" },
+        "goToCollections": { "type": "string" },
+        "goToCategories": { "type": "string" },
+        "goToCustomers": { "type": "string" },
+        "goToCustomerGroups": { "type": "string" },
+        "goToInventory": { "type": "string" },
+        "goToReservations": { "type": "string" },
+        "goToPriceLists": { "type": "string" },
+        "goToPromotions": { "type": "string" },
+        "goToCampaigns": { "type": "string" },
+        "goToPlatformPromotions": { "type": "string" },
+        "goToReviews": { "type": "string" },
+        "goToMessages": { "type": "string" },
+        "goToRequests": { "type": "string" },
+        "goToHolidayMode": { "type": "string" },
+        "goToPageBuilder": { "type": "string" },
+        "goToSupportTickets": { "type": "string" },
+        "goToStripeConnect": { "type": "string" },
+        "goToEarningsPayouts": { "type": "string" }
+      },
+      "required": [
+        "goToDashboard",
+        "goToOrders",
+        "goToReturns",
+        "goToProducts",
+        "goToCollections",
+        "goToCategories",
+        "goToCustomers",
+        "goToCustomerGroups",
+        "goToInventory",
+        "goToReservations",
+        "goToPriceLists",
+        "goToPromotions",
+        "goToCampaigns",
+        "goToPlatformPromotions",
+        "goToReviews",
+        "goToMessages",
+        "goToRequests",
+        "goToHolidayMode",
+        "goToPageBuilder",
+        "goToSupportTickets",
+        "goToStripeConnect",
+        "goToEarningsPayouts"
+      ],
+      "additionalProperties": false
+    },
+    "settings": {
+      "type": "object",
+      "properties": {
+        "goToSettings": { "type": "string" },
+        "goToStore": { "type": "string" },
+        "goToUsers": { "type": "string" },
+        "goToRegions": { "type": "string" },
+        "goToTaxRegions": { "type": "string" },
+        "goToSalesChannels": { "type": "string" },
+        "goToProductTypes": { "type": "string" },
+        "goToLocations": { "type": "string" },
+        "goToPublishableApiKeys": { "type": "string" },
+        "goToSecretApiKeys": { "type": "string" },
+        "goToWorkflows": { "type": "string" },
+        "goToProfile": { "type": "string" },
+        "goToReturnReasons": { "type": "string" }
+      },
+      "required": [
+        "goToSettings",
+        "goToStore",
+        "goToUsers",
+        "goToRegions",
+        "goToTaxRegions",
+        "goToSalesChannels",
+        "goToProductTypes",
+        "goToLocations",
+        "goToPublishableApiKeys",
+        "goToSecretApiKeys",
+        "goToWorkflows",
+        "goToProfile",
+        "goToReturnReasons"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "pageShortcut",
+    "settingShortcut",
+    "commandShortcut",
+    "then",
+    "navigation",
+    "settings"
+  ],
+  "additionalProperties": false
+},
         "menus": {
           "type": "object",
           "properties": {

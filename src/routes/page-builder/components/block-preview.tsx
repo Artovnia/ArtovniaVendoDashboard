@@ -408,6 +408,8 @@ const ImageTextPreview = ({ data }: { data: any }) => {
   const isLeft = data.image_position === 'left'
   const roundedEdges = data.rounded_edges !== false
   const imageRatio = data.image_ratio || '4:3'
+  const titleAlignment = data.title_alignment || 'left'
+  const titleItalic = data.title_italic || false
   
   const ratioClasses = {
     '1:1': 'aspect-square',
@@ -415,10 +417,33 @@ const ImageTextPreview = ({ data }: { data: any }) => {
     '16:9': 'aspect-video'
   }
   
+  const titleAlignmentClasses = {
+    left: 'text-left',
+    center: 'text-center',
+    right: 'text-right'
+  }
+  
+  const titleClasses = `text-lg font-instrument-serif mb-2 text-[#3B3634] ${titleAlignmentClasses[titleAlignment as keyof typeof titleAlignmentClasses]} ${titleItalic ? 'italic' : ''}`
+  
   // Helper to get focal point style
   const getImageFocalPointStyle = () => {
     if (!data.focal_point) return {}
     return { objectPosition: `${data.focal_point.x}% ${data.focal_point.y}%` }
+  }
+  
+  // Parse markdown/HTML for preview (simplified version)
+  const parseContent = (text: string): string => {
+    if (!text) return ''
+    let html = text
+    // Bold
+    html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    // Italic
+    html = html.replace(/\*(.+?)\*/g, '<em>$1</em>')
+    // Links
+    html = html.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" class="text-blue-600 hover:underline">$1</a>')
+    // Line breaks
+    html = html.replace(/\n/g, '<br>')
+    return html
   }
   
   const imageElement = (
@@ -436,12 +461,15 @@ const ImageTextPreview = ({ data }: { data: any }) => {
   const textElement = (
     <div className="flex flex-col justify-center p-4">
       {data.title ? (
-        <h3 className="text-lg font-instrument-serif mb-2 text-[#3B3634]">{data.title}</h3>
+        <h3 className={titleClasses}>{data.title}</h3>
       ) : (
         <span className="text-[#3B3634]/50 italic mb-2">{t('pagebuilder.blockPreview.sectionTitle')}</span>
       )}
       {data.content ? (
-        <p className="text-sm text-[#3B3634]/80">{data.content}</p>
+        <div 
+          className="prose prose-sm max-w-none text-[#3B3634]/80"
+          dangerouslySetInnerHTML={{ __html: parseContent(data.content) }}
+        />
       ) : (
         <span className="text-[#3B3634]/40 text-sm italic">{t('pagebuilder.blockPreview.descriptionContent')}</span>
       )}
@@ -890,6 +918,11 @@ const TimelinePreview = ({ data }: { data: any }) => {
                     <span className={getBadgeClasses()}>{event.year || '????'}</span>
                     <h4 className="text-sm font-instrument-serif text-[#3B3634] mb-1">{event.title || t('pagebuilder.blockPreview.event')}</h4>
                     {event.description && <p className="text-xs text-[#3B3634]/70 line-clamp-2">{event.description}</p>}
+                    {event.image_url && (
+                      <div className={`mt-2 aspect-video overflow-hidden bg-white ${roundedEdges ? 'rounded-lg' : ''}`}>
+                        <img src={event.image_url} alt={event.title || ''} className="w-full h-full object-cover" />
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="w-1/2" />
@@ -919,6 +952,11 @@ const TimelinePreview = ({ data }: { data: any }) => {
                 <span className={getBadgeClasses()}>{event.year || '????'}</span>
                 <h4 className="text-sm font-instrument-serif text-[#3B3634] mb-1">{event.title || t('pagebuilder.blockPreview.event')}</h4>
                 {event.description && <p className="text-xs text-[#3B3634]/70 line-clamp-2">{event.description}</p>}
+                {event.image_url && (
+                  <div className={`mt-2 aspect-video overflow-hidden bg-white ${roundedEdges ? 'rounded-lg' : ''}`}>
+                    <img src={event.image_url} alt={event.title || ''} className="w-full h-full object-cover" />
+                  </div>
+                )}
               </div>
             </div>
           ))}
@@ -947,6 +985,11 @@ const TimelinePreview = ({ data }: { data: any }) => {
                   <span className={getBadgeClasses()}>{event.year || '????'}</span>
                   <h4 className="text-xs font-instrument-serif text-[#3B3634] mb-1 truncate">{event.title || t('pagebuilder.blockPreview.event')}</h4>
                   {event.description && <p className="text-xs text-[#3B3634]/70 line-clamp-1">{event.description}</p>}
+                  {event.image_url && (
+                    <div className={`mt-2 aspect-video overflow-hidden bg-white ${roundedEdges ? 'rounded-lg' : ''}`}>
+                      <img src={event.image_url} alt={event.title || ''} className="w-full h-full object-cover" />
+                    </div>
+                  )}
                 </div>
               </div>
             ))}

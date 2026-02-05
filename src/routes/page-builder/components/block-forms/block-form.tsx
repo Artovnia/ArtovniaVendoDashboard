@@ -765,18 +765,10 @@ const ImageTextBlockForm = ({ data, onChange, onMultiChange }: FormProps) => {
       </Select>
     </div>
     <div>
-      <Label>{t('pagebuilder.blockForm.imageText.title')}</Label>
-      <Input
-        value={data.title || ''}
-        onChange={(e) => onChange('title', e.target.value)}
-        placeholder={t('pagebuilder.blockForm.imageText.titlePlaceholder')}
-      />
-    </div>
-    <div>
       <Label>{t('pagebuilder.blockForm.imageText.content')}</Label>
-      <Textarea
+      <RichTextEditor
         value={data.content || ''}
-        onChange={(e) => onChange('content', e.target.value)}
+        onChange={(value) => onChange('content', value)}
         placeholder={t('pagebuilder.blockForm.imageText.contentPlaceholder')}
         rows={4}
       />
