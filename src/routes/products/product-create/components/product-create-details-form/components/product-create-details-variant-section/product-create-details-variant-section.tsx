@@ -109,32 +109,65 @@ export const ProductCreateVariantsSection = ({
     defaultValue: "",
   })
 
-  // Update default variant title when product title changes (only if variants are NOT enabled)
-  // Using useEffect with useWatch for reliable, consistent updates
+  // Update variant titles when product title changes.
+  // Handles both single default variant and multi-variant (template-applied) modes.
   useEffect(() => {
-    // Only sync if:
-    // 1. Variants are NOT enabled (single default variant mode)
-    // 2. Product title has a value
-    if (!watchedAreVariantsEnabled && productTitle) {
-      // Get fresh variant data directly from form to avoid stale closure issues
-      const currentVariants = form.getValues("variants");
-      
-      // Check if we have exactly one default variant
-      if (currentVariants && currentVariants.length === 1 && currentVariants[0]?.is_default) {
-        const currentVariantTitle = currentVariants[0].title || "";
-        
-        // Only sync if variant title is empty, default, or starts with the product title
-        // This prevents overwriting user's manual edits while allowing real-time sync
-        const isDefaultOrEmpty = !currentVariantTitle || currentVariantTitle === "Default variant";
-        const startsWithProductTitle = currentVariantTitle.startsWith(productTitle.substring(0, Math.max(1, productTitle.length - 1)));
-        
+    if (!productTitle) return
+
+    const currentVariants = form.getValues("variants")
+    if (!currentVariants || currentVariants.length === 0) return
+
+    if (!watchedAreVariantsEnabled) {
+      // Single default variant mode: sync variant title = product title
+      if (currentVariants.length === 1 && currentVariants[0]?.is_default) {
+        const currentVariantTitle = currentVariants[0].title || ""
+        const isDefaultOrEmpty = !currentVariantTitle || currentVariantTitle === "Default variant"
+        const startsWithProductTitle = currentVariantTitle.startsWith(productTitle.substring(0, Math.max(1, productTitle.length - 1)))
+
         if (isDefaultOrEmpty || startsWithProductTitle || currentVariantTitle === productTitle) {
-          form.setValue("variants.0.title", productTitle, { 
-            shouldDirty: false, 
+          form.setValue("variants.0.title", productTitle, {
+            shouldDirty: false,
             shouldValidate: false,
-            shouldTouch: false 
-          });
+            shouldTouch: false,
+          })
         }
+      }
+    } else {
+      // Multi-variant mode: update variant names that follow the "title - options" pattern
+      // This handles the case where a template is applied before the product title is set
+      let needsUpdate = false
+      const updatedVariants = currentVariants.map((variant) => {
+        const optionValues = Object.values(variant.options || {}).join(" / ")
+        if (!optionValues || optionValues === "Default option value") return variant
+
+        // Expected name pattern: "ProductTitle - OptionValues"
+        const expectedName = `${productTitle} - ${optionValues}`
+        const currentTitle = variant.title || ""
+
+        // Update if:
+        // - Title is just the option values (no product title prefix yet)
+        // - Title follows old "OldTitle - Options" pattern (contains " - " and ends with option values)
+        // - Title is empty
+        const isJustOptions = currentTitle === optionValues
+        const isEmptyOrDefault = !currentTitle || currentTitle === "Default variant"
+        const followsPattern = currentTitle.includes(" - ") && currentTitle.endsWith(optionValues)
+
+        if (isJustOptions || isEmptyOrDefault || followsPattern) {
+          if (currentTitle !== expectedName) {
+            needsUpdate = true
+            return { ...variant, title: expectedName }
+          }
+        }
+
+        return variant
+      })
+
+      if (needsUpdate) {
+        form.setValue("variants", updatedVariants, {
+          shouldDirty: false,
+          shouldValidate: false,
+          shouldTouch: false,
+        })
       }
     }
   }, [productTitle, watchedAreVariantsEnabled, form])

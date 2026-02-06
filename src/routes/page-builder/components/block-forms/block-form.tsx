@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Block } from '../../../../hooks/api/vendor-page.tsx'
 import { FileUpload, FileType } from '../../../../components/common/file-upload/file-upload.tsx'
 import { uploadFilesQuery } from '../../../../lib/client/client.ts'
-import { RichTextEditor } from './RichTextEditor.tsx'
+import { RichTextEditor } from '../../../../components/rich-text-editor'
 
 const SUPPORTED_IMAGE_FORMATS = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp']
 
@@ -574,7 +574,6 @@ const RichTextBlockForm = ({ data, onChange }: FormProps) => {
         value={data.content || ''}
         onChange={(value) => onChange('content', value)}
         placeholder={t('pagebuilder.blockForm.richText.contentPlaceholder')}
-        rows={8}
       />
     </div>
     <div>
@@ -770,7 +769,6 @@ const ImageTextBlockForm = ({ data, onChange, onMultiChange }: FormProps) => {
         value={data.content || ''}
         onChange={(value) => onChange('content', value)}
         placeholder={t('pagebuilder.blockForm.imageText.contentPlaceholder')}
-        rows={4}
       />
     </div>
   </div>

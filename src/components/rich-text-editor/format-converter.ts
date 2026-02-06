@@ -1,17 +1,26 @@
 import TurndownService from 'turndown';
 import { gfm } from 'turndown-plugin-gfm';
+import { marked } from 'marked';
 
 /**
  * Format Converter Utility
  * 
- * Converts various formatted text formats (HTML, Rich Text) to Markdown
- * for use in the RichTextEditor component.
+ * Handles conversion between HTML and Markdown for the RichTextEditor.
+ * 
+ * Architecture (as of this update):
+ * - TipTap editor stores content as **HTML** in product.description
+ * - This eliminates the lossy markdown round-trip that caused:
+ *   - Orphaned ** and _ markers
+ *   - Lost underline formatting (<u> has no markdown equivalent)
+ *   - Strikethrough rendering issues
+ *   - Aggressive cleanMarkdown() regex breaking inline formatting
+ * - For backward compatibility, all display points use descriptionToHtml()
+ *   which auto-detects whether content is HTML or legacy markdown
  * 
  * Supports:
- * - HTML (from Word, Google Docs, websites)
- * - Rich Text Format (RTF)
- * - Plain text with auto-formatting
- * - Markdown (pass-through)
+ * - HTML storage (new products)
+ * - Legacy markdown rendering (existing products)
+ * - Paste from Word, Google Docs, websites
  */
 
 export type DetectedFormat = 'html' | 'markdown' | 'plain' | 'unknown';
@@ -54,7 +63,6 @@ const createTurndownService = (): TurndownService => {
       if (!isB) return false;
       
       const style = node.getAttribute('style') || '';
-      const id = node.getAttribute('id') || '';
       const hasNormalWeight = style.includes('font-weight:normal') || style.includes('font-weight: normal');
     
       return hasNormalWeight;
@@ -383,6 +391,116 @@ export const convertToMarkdown = (text: string): ConversionResult => {
     originalLength,
     convertedLength: markdown.length,
   };
+};
+
+/**
+ * Detect whether a string is HTML content (as opposed to markdown or plain text).
+ * Used to determine how to render legacy vs new product descriptions.
+ */
+export const isHtml = (text: string): boolean => {
+  if (!text || !text.trim()) return false;
+  const trimmed = text.trim();
+  // HTML content starts with a tag or contains common block-level HTML tags
+  return /^<[a-z][^>]*>/i.test(trimmed) || 
+    /<(p|h[1-6]|ul|ol|li|blockquote|pre|div|br|strong|em|u|s|del|a|table)\b/i.test(trimmed);
+};
+
+/**
+ * Sanitize HTML from TipTap for safe storage.
+ * Removes empty trailing paragraphs and normalizes whitespace.
+ */
+export const sanitizeHtml = (html: string): string => {
+  if (!html || !html.trim()) return '';
+  
+  // TipTap uses <p></p> for empty content
+  if (html === '<p></p>' || html === '<p><br></p>') return '';
+  
+  let cleaned = html;
+  
+  // Remove trailing empty paragraphs
+  cleaned = cleaned.replace(/(<p>\s*(<br\s*\/?>)?\s*<\/p>\s*)+$/gi, '');
+  
+  // Remove leading empty paragraphs
+  cleaned = cleaned.replace(/^(\s*<p>\s*(<br\s*\/?>)?\s*<\/p>)+/gi, '');
+  
+  return cleaned.trim();
+};
+
+/**
+ * Convert a product description (HTML or legacy markdown) to safe HTML for display.
+ * This is the single unified function all display points should use.
+ * 
+ * - If content is HTML (new products): sanitize and return as-is
+ * - If content is markdown (legacy products): convert to HTML via marked
+ */
+export const descriptionToHtml = (content: string): string => {
+  if (!content || !content.trim()) return '';
+  
+  if (isHtml(content)) {
+    return sanitizeHtml(content);
+  }
+  
+  // Legacy markdown content — convert to HTML
+  try {
+    const html = marked.parse(content, { async: false, gfm: true, breaks: true }) as string;
+    return html;
+  } catch (error) {
+    console.error('Markdown to HTML conversion failed:', error);
+    return content
+      .split('\n\n')
+      .map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`)
+      .join('');
+  }
+};
+
+/**
+ * Convert Markdown string to HTML string.
+ * Used to load markdown content into the TipTap WYSIWYG editor.
+ * Also handles HTML content (passes through after sanitization).
+ */
+export const markdownToHtml = (content: string): string => {
+  if (!content || !content.trim()) return '';
+  
+  // If already HTML, return as-is (TipTap can consume it directly)
+  if (isHtml(content)) {
+    return sanitizeHtml(content);
+  }
+  
+  // Legacy markdown — convert to HTML for TipTap
+  try {
+    const html = marked.parse(content, { async: false, gfm: true, breaks: true }) as string;
+    return html;
+  } catch (error) {
+    console.error('Markdown to HTML conversion failed:', error);
+    return content
+      .split('\n\n')
+      .map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`)
+      .join('');
+  }
+};
+
+/**
+ * Convert HTML string to Markdown string.
+ * @deprecated - Kept for backward compatibility. New code should store HTML directly.
+ */
+export const htmlToMarkdown = (html: string): string => {
+  if (!html || !html.trim()) return '';
+  
+  // TipTap uses <p></p> for empty content
+  if (html === '<p></p>' || html === '<p><br></p>') return '';
+  
+  try {
+    const turndownService = createTurndownService();
+    let markdown = turndownService.turndown(html);
+    markdown = cleanMarkdown(markdown);
+    return markdown;
+  } catch (error) {
+    console.error('HTML to Markdown conversion failed:', error);
+    // Fallback: strip HTML tags
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    return tempDiv.textContent || '';
+  }
 };
 
 /**

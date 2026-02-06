@@ -11,6 +11,7 @@ import { ProductCreateGeneralSection } from "./components/product-create-details
 import { ProductCreateGPSRSection } from "./components/product-create-gpsr-section-new"
 import { ProductCreateMediaSection } from "./components/product-create-details-media-section"
 import { ProductCreateVariantsSection } from "./components/product-create-details-variant-section"
+import { TemplateSelector } from "../template-selector/template-selector"
 
 type ProductAttributesProps = {
   form: UseFormReturn<ProductCreateSchemaType>
@@ -24,6 +25,8 @@ export const ProductCreateDetailsForm = ({ form }: ProductAttributesProps) => {
     <div className="flex flex-col items-center p-4 sm:p-8 md:p-16">
       <div className="flex w-full max-w-[720px] flex-col gap-y-6 sm:gap-y-8">
         <Header />
+        <TemplateSelector form={form} />
+        <Divider />
         <div className="flex flex-col gap-y-6">
           <div className="flex flex-col gap-y-8 divide-y">
             <ProductCreateGeneralSection form={form} />

@@ -1,5 +1,13 @@
 import { useTranslation } from 'react-i18next'
 import { Block } from '../../../hooks/api/vendor-page'
+import { descriptionToHtml } from '../../../components/rich-text-editor/format-converter'
+
+// Convert content (HTML or legacy markdown) to HTML for preview display.
+// descriptionToHtml auto-detects format and handles both.
+const renderMarkdown = (text: string): string => {
+  if (!text) return '';
+  return descriptionToHtml(text);
+};
 
 interface BlockPreviewProps {
   block: Block
@@ -122,58 +130,6 @@ const RichTextPreview = ({ data }: { data: any }) => {
   const headingItalic = data.heading_italic || false
   const headingClasses = `text-xl font-instrument-serif text-[#3B3634] ${alignmentClasses[headingAlignment as keyof typeof alignmentClasses]} ${headingItalic ? 'italic' : ''}`
   
-  // Parse markdown to HTML for preview
-  const parseMarkdown = (text: string): string => {
-    if (!text) return ''
-    
-    let html = text
-    
-    // Headers
-    html = html.replace(/^### (.+)$/gm, '<h3 class="text-lg font-semibold mt-4 mb-2">$1</h3>')
-    html = html.replace(/^## (.+)$/gm, '<h2 class="text-xl font-semibold mt-6 mb-3">$1</h2>')
-    html = html.replace(/^# (.+)$/gm, '<h1 class="text-2xl font-bold mt-8 mb-4">$1</h1>')
-    
-    // Bold
-    html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    
-    // Italic
-    html = html.replace(/\*(.+?)\*/g, '<em>$1</em>')
-    
-    // Strikethrough
-    html = html.replace(/~~(.+?)~~/g, '<del>$1</del>')
-    
-    // Links
-    html = html.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" class="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">$1</a>')
-    
-    // Blockquotes
-    html = html.replace(/^> (.+)$/gm, '<blockquote class="border-l-4 border-gray-300 pl-4 italic my-2">$1</blockquote>')
-    
-    // Unordered lists
-    html = html.replace(/^- (.+)$/gm, '<li class="ml-4">$1</li>')
-    html = html.replace(/(<li class="ml-4">.+<\/li>\n?)+/g, '<ul class="list-disc list-inside my-2">$&</ul>')
-    
-    // Ordered lists
-    html = html.replace(/^\d+\. (.+)$/gm, '<li class="ml-4">$1</li>')
-    html = html.replace(/(<li class="ml-4">.+<\/li>\n?)+/g, (match) => {
-      // Only wrap in <ol> if not already wrapped in <ul>
-      if (match.includes('list-disc')) return match
-      return `<ol class="list-decimal list-inside my-2">${match}</ol>`
-    })
-    
-    // Paragraphs (split by double line breaks)
-    const paragraphs = html.split('\n\n')
-    html = paragraphs.map(para => {
-      // Don't wrap if already a block element
-      if (para.match(/^<(h[1-3]|ul|ol|blockquote)/)) {
-        return para
-      }
-      // Replace single line breaks with <br>
-      return `<p class="mb-4">${para.replace(/\n/g, '<br>')}</p>`
-    }).join('\n')
-    
-    return html
-  }
-  
   return (
     <div className={`p-4 bg-[#F4F0EB] rounded-lg space-y-3 ${alignmentClasses[data.alignment as keyof typeof alignmentClasses] || 'text-left'}`}>
       {data.heading && (
@@ -181,12 +137,37 @@ const RichTextPreview = ({ data }: { data: any }) => {
       )}
       {data.content ? (
         <div 
-          className="prose prose-sm max-w-none text-[#3B3634]"
-          dangerouslySetInnerHTML={{ __html: parseMarkdown(data.content) }}
+          className="block-preview-html max-w-none text-[#3B3634]"
+          dangerouslySetInnerHTML={{ __html: renderMarkdown(data.content) }}
         />
       ) : !data.heading ? (
         <p className="text-[#3B3634]/50 italic">{t('pagebuilder.blockPreview.textContent')}</p>
       ) : null}
+      <style>{`
+        .block-preview-html p { margin-bottom: 0.5rem; font-size: 0.875rem; line-height: 1.5; }
+        .block-preview-html strong { font-weight: 600; }
+        .block-preview-html em { font-style: italic; }
+        .block-preview-html u { text-decoration: underline; }
+        .block-preview-html s,
+        .block-preview-html del { text-decoration: line-through; color: rgba(59,54,52,0.5); }
+        .block-preview-html h1 { font-size: 1.25rem; font-weight: 700; margin: 0.75rem 0 0.5rem; }
+        .block-preview-html h2 { font-size: 1.125rem; font-weight: 700; margin: 0.75rem 0 0.5rem; }
+        .block-preview-html h3 { font-size: 1rem; font-weight: 600; margin: 0.5rem 0 0.25rem; }
+        .block-preview-html h4 { font-size: 0.875rem; font-weight: 600; margin: 0.5rem 0 0.25rem; }
+        .block-preview-html ul { list-style-type: disc; margin-left: 1.25rem; margin-bottom: 0.5rem; }
+        .block-preview-html ol { list-style-type: decimal; margin-left: 1.25rem; margin-bottom: 0.5rem; }
+        .block-preview-html li { margin-bottom: 0.125rem; font-size: 0.875rem; }
+        .block-preview-html li p { margin-bottom: 0; }
+        .block-preview-html a { color: #2563eb; text-decoration: underline; }
+        .block-preview-html a:hover { text-decoration: none; }
+        .block-preview-html code { background: rgba(59,54,52,0.1); padding: 0.1rem 0.25rem; border-radius: 0.2rem; font-size: 0.8rem; font-family: monospace; }
+        .block-preview-html pre { background: rgba(59,54,52,0.1); padding: 0.75rem; border-radius: 0.375rem; margin: 0.5rem 0; overflow-x: auto; }
+        .block-preview-html pre code { background: none; padding: 0; font-size: 0.8rem; }
+        .block-preview-html blockquote { border-left: 3px solid rgba(59,54,52,0.3); padding-left: 0.75rem; font-style: italic; margin: 0.5rem 0; color: rgba(59,54,52,0.6); }
+        .block-preview-html table { min-width: 100%; border-collapse: collapse; margin: 0.5rem 0; font-size: 0.875rem; }
+        .block-preview-html th { border: 1px solid rgba(59,54,52,0.2); padding: 0.25rem 0.5rem; text-align: left; font-weight: 600; background: rgba(59,54,52,0.05); }
+        .block-preview-html td { border: 1px solid rgba(59,54,52,0.2); padding: 0.25rem 0.5rem; }
+      `}</style>
     </div>
   )
 }
@@ -431,21 +412,6 @@ const ImageTextPreview = ({ data }: { data: any }) => {
     return { objectPosition: `${data.focal_point.x}% ${data.focal_point.y}%` }
   }
   
-  // Parse markdown/HTML for preview (simplified version)
-  const parseContent = (text: string): string => {
-    if (!text) return ''
-    let html = text
-    // Bold
-    html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    // Italic
-    html = html.replace(/\*(.+?)\*/g, '<em>$1</em>')
-    // Links
-    html = html.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" class="text-blue-600 hover:underline">$1</a>')
-    // Line breaks
-    html = html.replace(/\n/g, '<br>')
-    return html
-  }
-  
   const imageElement = (
     <div className={`${ratioClasses[imageRatio as keyof typeof ratioClasses]} bg-[#F4F0EB] flex items-center justify-center overflow-hidden ${roundedEdges ? 'rounded-lg' : ''}`}>
       {hasImage ? (
@@ -467,8 +433,8 @@ const ImageTextPreview = ({ data }: { data: any }) => {
       )}
       {data.content ? (
         <div 
-          className="prose prose-sm max-w-none text-[#3B3634]/80"
-          dangerouslySetInnerHTML={{ __html: parseContent(data.content) }}
+          className="block-preview-html max-w-none text-[#3B3634]/80"
+          dangerouslySetInnerHTML={{ __html: renderMarkdown(data.content) }}
         />
       ) : (
         <span className="text-[#3B3634]/40 text-sm italic">{t('pagebuilder.blockPreview.descriptionContent')}</span>

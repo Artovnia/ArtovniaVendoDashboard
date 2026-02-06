@@ -1,14 +1,13 @@
+import { useMemo } from "react"
 import { PencilSquare, Trash } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
 import { Container, Heading, StatusBadge, usePrompt, Text } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
-import remarkBreaks from 'remark-breaks'
 
 import { ActionMenu } from "../../../../../components/common/action-menu"
 import { SectionRow } from "../../../../../components/common/section"
+import { descriptionToHtml } from "../../../../../components/rich-text-editor/format-converter"
 import { useDashboardExtension } from "../../../../../extensions"
 import { useDeleteProduct } from "../../../../../hooks/api/products"
 
@@ -97,76 +96,11 @@ export const ProductGeneralSection = ({
         </div>
       </div>
 
-      {/* Description with formatted Markdown rendering */}
-      <div className="text-ui-fg-subtle grid w-full grid-cols-2 items-start gap-4 px-6 py-4">
-        <Text size="small" weight="plus" leading="compact">
-          {t("fields.description")}
-        </Text>
-        <div className="prose prose-sm max-w-none text-ui-fg-subtle">
-          {product.description ? (
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm, remarkBreaks]}
-              components={{
-                // Paragraphs
-                p: ({node, ...props}) => <p className="mb-2 text-sm leading-relaxed" {...props} />,
-                
-                // Inline formatting - explicit font-weight
-                strong: ({node, ...props}) => <strong className="font-semibold" style={{ fontWeight: 600 }} {...props} />,
-                b: ({node, ...props}) => <strong className="font-semibold" style={{ fontWeight: 600 }} {...props} />,
-                em: ({node, ...props}) => <em className="italic" {...props} />,
-                i: ({node, ...props}) => <em className="italic" {...props} />,
-                
-                // Headings - compact sizes for admin panel
-                h1: ({node, ...props}) => <h1 className="text-lg font-semibold mb-2 mt-3" style={{ fontWeight: 600 }} {...props} />,
-                h2: ({node, ...props}) => <h2 className="text-base font-semibold mb-2 mt-3" style={{ fontWeight: 600 }} {...props} />,
-                h3: ({node, ...props}) => <h3 className="text-sm font-semibold mb-1 mt-2" style={{ fontWeight: 600 }} {...props} />,
-                h4: ({node, ...props}) => <h4 className="text-sm font-semibold mb-1 mt-2" style={{ fontWeight: 600 }} {...props} />,
-                h5: ({node, ...props}) => <h5 className="text-xs font-semibold mb-1 mt-2" style={{ fontWeight: 600 }} {...props} />,
-                h6: ({node, ...props}) => <h6 className="text-xs font-semibold mb-1 mt-1" style={{ fontWeight: 600 }} {...props} />,
-                
-                // Lists - compact spacing
-                ul: ({node, ...props}) => <ul className="list-disc ml-4 mb-2 space-y-0.5 text-sm" {...props} />,
-                ol: ({node, ...props}) => <ol className="list-decimal ml-4 mb-2 space-y-0.5 text-sm" {...props} />,
-                li: ({node, ...props}) => <li className="text-sm leading-relaxed" {...props} />,
-                
-                // Links
-                a: ({node, ...props}) => <a className="text-ui-fg-interactive hover:underline" {...props} />,
-                
-                // Code
-                code: ({node, ...props}) => <code className="bg-ui-bg-subtle px-1 py-0.5 rounded text-xs font-mono" {...props} />,
-                
-                // Blockquotes
-                blockquote: ({node, ...props}) => (
-                  <blockquote className="border-l-2 border-ui-border-base pl-3 italic my-2 text-ui-fg-muted text-sm" {...props} />
-                ),
-                
-                // Tables - compact
-                table: ({node, ...props}) => (
-                  <div className="overflow-x-auto my-2">
-                    <table className="min-w-full border-collapse border border-ui-border-base text-sm" {...props} />
-                  </div>
-                ),
-                thead: ({node, ...props}) => <thead className="bg-ui-bg-subtle" {...props} />,
-                th: ({node, ...props}) => (
-                  <th className="border border-ui-border-base px-2 py-1 text-left font-semibold text-xs" {...props} />
-                ),
-                td: ({node, ...props}) => (
-                  <td className="border border-ui-border-base px-2 py-1 text-xs" {...props} />
-                ),
-                
-                // Strikethrough
-                del: ({node, ...props}) => <del className="text-ui-fg-muted" {...props} />,
-              }}
-            >
-              {product.description}
-            </ReactMarkdown>
-          ) : (
-            <Text size="small" leading="compact" className="text-ui-fg-muted">
-              -
-            </Text>
-          )}
-        </div>
-      </div>
+      {/* Description — renders HTML (new products) or converts legacy markdown */}
+      <ProductDescriptionRow
+        label={t("fields.description")}
+        description={product.description}
+      />
       <SectionRow title={t("fields.subtitle")} value={product.subtitle} />
       <SectionRow title={t("fields.handle")} value={`/${product.handle}`} />
       <SectionRow
@@ -177,5 +111,65 @@ export const ProductGeneralSection = ({
         return <Component key={index} data={product} />
       })}
     </Container>
+  )
+}
+
+/**
+ * Renders product description as HTML.
+ * Handles both new HTML content and legacy markdown via descriptionToHtml().
+ * Styled with inline CSS to match the vendor panel design system.
+ */
+const ProductDescriptionRow = ({
+  label,
+  description,
+}: {
+  label: string
+  description?: string | null
+}) => {
+  const html = useMemo(
+    () => (description ? descriptionToHtml(description) : ""),
+    [description]
+  )
+
+  return (
+    <div className="text-ui-fg-subtle grid w-full grid-cols-2 items-start gap-4 px-6 py-4">
+      <Text size="small" weight="plus" leading="compact">
+        {label}
+      </Text>
+      <div className="max-w-none text-ui-fg-subtle">
+        {html ? (
+          <div
+            className="vendor-description-html text-sm leading-relaxed"
+            dangerouslySetInnerHTML={{ __html: html }}
+          />
+        ) : (
+          <Text size="small" leading="compact" className="text-ui-fg-muted">
+            -
+          </Text>
+        )}
+      </div>
+      <style>{`
+        .vendor-description-html p { margin-bottom: 0.5rem; }
+        .vendor-description-html strong { font-weight: 600; }
+        .vendor-description-html em { font-style: italic; }
+        .vendor-description-html u { text-decoration: underline; }
+        .vendor-description-html s,
+        .vendor-description-html del { text-decoration: line-through; color: var(--ui-fg-muted); }
+        .vendor-description-html h1 { font-size: 1.125rem; font-weight: 600; margin: 0.75rem 0 0.5rem; }
+        .vendor-description-html h2 { font-size: 1rem; font-weight: 600; margin: 0.75rem 0 0.5rem; }
+        .vendor-description-html h3 { font-size: 0.875rem; font-weight: 600; margin: 0.5rem 0 0.25rem; }
+        .vendor-description-html h4 { font-size: 0.875rem; font-weight: 600; margin: 0.5rem 0 0.25rem; }
+        .vendor-description-html ul { list-style-type: disc; margin-left: 1rem; margin-bottom: 0.5rem; }
+        .vendor-description-html ol { list-style-type: decimal; margin-left: 1rem; margin-bottom: 0.5rem; }
+        .vendor-description-html li { margin-bottom: 0.125rem; }
+        .vendor-description-html a { color: var(--ui-fg-interactive); text-decoration: underline; }
+        .vendor-description-html a:hover { text-decoration: none; }
+        .vendor-description-html code { background: var(--ui-bg-subtle); padding: 0.1rem 0.25rem; border-radius: 0.2rem; font-size: 0.75rem; font-family: monospace; }
+        .vendor-description-html blockquote { border-left: 2px solid var(--ui-border-base); padding-left: 0.75rem; font-style: italic; margin: 0.5rem 0; color: var(--ui-fg-muted); }
+        .vendor-description-html table { min-width: 100%; border-collapse: collapse; margin: 0.5rem 0; }
+        .vendor-description-html th { border: 1px solid var(--ui-border-base); padding: 0.25rem 0.5rem; text-align: left; font-weight: 600; font-size: 0.75rem; background: var(--ui-bg-subtle); }
+        .vendor-description-html td { border: 1px solid var(--ui-border-base); padding: 0.25rem 0.5rem; font-size: 0.75rem; }
+      `}</style>
+    </div>
   )
 }

@@ -3639,6 +3639,115 @@
       "required": ["placeholder", "toolbar", "help", "label", "import"],
       "additionalProperties": false
     },
+    "productTemplates": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "type": "string"
+        },
+        "subtitle": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "createTemplate": {
+          "type": "string"
+        },
+        "editTemplate": {
+          "type": "string"
+        },
+        "deleteTemplate": {
+          "type": "string"
+        },
+        "deleteConfirm": {
+          "type": "string"
+        },
+        "deleteSuccess": {
+          "type": "string"
+        },
+        "noTemplates": {
+          "type": "string"
+        },
+        "templateName": {
+          "type": "string"
+        },
+        "templateDescription": {
+          "type": "string"
+        },
+        "templateData": {
+          "type": "string"
+        },
+        "isDefault": {
+          "type": "string"
+        },
+        "optionsCount": {
+          "type": "string"
+        },
+        "categoriesCount": {
+          "type": "string"
+        },
+        "withGpsr": {
+          "type": "string"
+        },
+        "withPrices": {
+          "type": "string"
+        },
+        "withDimensions": {
+          "type": "string"
+        },
+        "createFromProduct": {
+          "type": "string"
+        },
+        "createFromProductDescription": {
+          "type": "string"
+        },
+        "applied": {
+          "type": "string"
+        },
+        "applyError": {
+          "type": "string"
+        },
+        "saved": {
+          "type": "string"
+        },
+        "saveError": {
+          "type": "string"
+        },
+        "nameRequired": {
+          "type": "string"
+        },
+        "selectPlaceholder": {
+          "type": "string"
+        },
+        "loading": {
+          "type": "string"
+        },
+        "saveAsCurrent": {
+          "type": "string"
+        },
+        "namePlaceholder": {
+          "type": "string"
+        },
+        "default": {
+          "type": "string"
+        },
+        "noOptionsHint": {
+          "type": "string"
+        },
+        "pricePerValue": {
+          "type": "string"
+        },
+        "priceForValue": {
+          "type": "string"
+        }
+      },
+      "required": ["domain", "subtitle", "title", "description", "createTemplate", "editTemplate", "deleteTemplate", "deleteConfirm", "deleteSuccess", "noTemplates", "templateName", "templateDescription", "templateData", "isDefault", "optionsCount", "categoriesCount", "withGpsr", "withPrices", "withDimensions", "createFromProduct", "createFromProductDescription", "applied", "applyError", "saved", "saveError", "nameRequired", "selectPlaceholder", "loading", "saveAsCurrent", "namePlaceholder", "default", "noOptionsHint", "pricePerValue", "priceForValue"],
+      "additionalProperties": false
+    },
     "collections": {
       "type": "object",
       "properties": {
@@ -17415,6 +17524,7 @@
     "additionalProperties",
     "media",
     "toasts",
+    "productTemplates",
     "collections",
     "categories",
     "inventory",

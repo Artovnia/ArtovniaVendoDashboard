@@ -1203,6 +1203,36 @@ export const RouteMap: RouteObject[] = [
             ],
           },
           {
+            path: '/product-templates',
+            errorElement: <ErrorBoundary />,
+            handle: {
+              breadcrumb: () => t('productTemplates.domain'),
+            },
+            children: [
+              {
+                path: '',
+                lazy: () =>
+                  import(
+                    '../../routes/product-templates/product-template-list'
+                  ),
+              },
+              {
+                path: 'create',
+                lazy: () =>
+                  import(
+                    '../../routes/product-templates/product-template-create'
+                  ),
+              },
+              {
+                path: ':id',
+                lazy: () =>
+                  import(
+                    '../../routes/product-templates/product-template-detail'
+                  ),
+              },
+            ],
+          },
+          {
             path: '/price-lists',
             errorElement: <ErrorBoundary />,
             handle: {
