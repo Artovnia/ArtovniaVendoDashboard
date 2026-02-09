@@ -5564,5 +5564,36 @@
         "tipQuote": "> cytat"
       }
     }
+  },
+  "fbPromote": {
+    "title": "Promuj na Facebooku",
+    "menuAction": "Promuj na Facebooku",
+    "notPublished": "Ten produkt nie jest jeszcze opublikowany. Link nie będzie działał publicznie dopóki produkt nie zostanie zatwierdzony.",
+    "noImage": "Brak zdjęcia",
+    "outOfStock": "Brak w magazynie",
+    "limitedStock": "Ograniczona ilość",
+    "inStock": "Dostępne",
+    "by": "Od",
+    "ogHint": "Facebook automatycznie pobierze podgląd ze strony produktu (zdjęcie, tytuł, cenę).",
+    "chooseCaptionLabel": "Wybierz szablon tekstu",
+    "captionWorkflowHint": "Skopiuj tekst poniżej, a następnie kliknij \"Udostępnij na Facebooku\" — wklej go do posta na Facebooku.",
+    "guideTitle": "Jak udostępnić produkt na Facebooku",
+    "step1": "Wybierz szablon tekstu (możesz go edytować)",
+    "step2": "Skopiuj tekst powyżej przyciskiem \"Kopiuj tekst\"",
+    "step3": "Kliknij \"Udostępnij na Facebooku\" — w oknie Facebooka wklej skopiowany tekst do posta",
+    "step4": "Skopiuj link poniżej i wklej go do posta na Facebooku",
+    "captionLabel": "Tekst do posta",
+    "copyCaption": "Kopiuj tekst",
+    "captionPlaceholder": "Wpisz lub edytuj tekst posta...",
+    "characters": "znaków",
+    "shareUrlLabel": "Link do udostępnienia",
+    "copyLink": "Kopiuj",
+    "utmHint": "Link zawiera parametry UTM do śledzenia ruchu z Facebooka w Google Analytics.",
+    "sendMessenger": "Wyślij Messengerem",
+    "shareOnFacebook": "Udostępnij na Facebooku",
+    "linkCopied": "Link skopiowany do schowka",
+    "linkCopyFailed": "Nie udało się skopiować linku",
+    "captionCopied": "Tekst skopiowany do schowka",
+    "captionCopyFailed": "Nie udało się skopiować tekstu"
   }
 }

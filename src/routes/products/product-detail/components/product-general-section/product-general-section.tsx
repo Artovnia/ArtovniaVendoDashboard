@@ -1,5 +1,5 @@
-import { useMemo } from "react"
-import { PencilSquare, Trash } from "@medusajs/icons"
+import { useMemo, useState } from "react"
+import { PencilSquare, Trash, Facebook } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
 import { Container, Heading, StatusBadge, usePrompt, Text } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
@@ -10,6 +10,8 @@ import { SectionRow } from "../../../../../components/common/section"
 import { descriptionToHtml } from "../../../../../components/rich-text-editor/format-converter"
 import { useDashboardExtension } from "../../../../../extensions"
 import { useDeleteProduct } from "../../../../../hooks/api/products"
+import { useMe } from "../../../../../hooks/api/users"
+import { FacebookPromoteModal } from "../../../common/facebook-promote-modal"
 
 const productStatusColor = (status: string) => {
   switch (status) {
@@ -37,6 +39,8 @@ export const ProductGeneralSection = ({
   const prompt = usePrompt()
   const navigate = useNavigate()
   const { getDisplays } = useDashboardExtension()
+  const { seller } = useMe()
+  const [showFbPromote, setShowFbPromote] = useState(false)
 
   const displays = getDisplays("product", "general")
 
@@ -80,6 +84,11 @@ export const ProductGeneralSection = ({
                     to: "edit",
                     icon: <PencilSquare />,
                   },
+                  {
+                    label: t("fbPromote.menuAction", "Promuj na Facebooku"),
+                    onClick: () => setShowFbPromote(true),
+                    icon: <Facebook />,
+                  },
                 ],
               },
               {
@@ -110,6 +119,17 @@ export const ProductGeneralSection = ({
       {displays.map((Component, index) => {
         return <Component key={index} data={product} />
       })}
+
+      {/* Facebook Promote Modal */}
+      {showFbPromote && (
+        <FacebookPromoteModal
+          open={showFbPromote}
+          onClose={() => setShowFbPromote(false)}
+          productId={product.id}
+          vendorName={seller?.name}
+          vendorId={seller?.id}
+        />
+      )}
     </Container>
   )
 }

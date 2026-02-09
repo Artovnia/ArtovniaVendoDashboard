@@ -1,4 +1,4 @@
-import { PencilSquare, Trash } from '@medusajs/icons';
+import { PencilSquare, Trash, Facebook } from '@medusajs/icons';
 import {
   Button,
   Container,
@@ -27,7 +27,9 @@ import { useProductTableColumns } from '../../../../../hooks/table/columns/use-p
 import { useProductTableFilters } from '../../../../../hooks/table/filters/use-product-table-filters';
 import { useProductTableQuery } from '../../../../../hooks/table/query/use-product-table-query';
 import { useDataTable } from '../../../../../hooks/use-data-table';
+import { useMe } from '../../../../../hooks/api/users';
 import { BulkShippingProfileSelectorModal } from '../bulk-shipping-profile-modal';
+import { FacebookPromoteModal } from '../../../common/facebook-promote-modal';
 
 const PAGE_SIZE = 20;
 
@@ -139,6 +141,8 @@ const ProductActions = ({
 }) => {
   const { t } = useTranslation();
   const prompt = usePrompt();
+  const { seller } = useMe();
+  const [showFbPromote, setShowFbPromote] = useState(false);
   
   // Get the queryClient to manually invalidate and refetch after deletion
   const queryClient = useQueryClient();
@@ -197,28 +201,44 @@ const ProductActions = ({
   };
 
   return (
-    <ActionMenu
-      groups={[
-        {
-          actions: [
-            {
-              icon: <PencilSquare />,
-              label: t('actions.edit'),
-              to: `/products/${product.id}/edit`,
-            },
-          ],
-        },
-        {
-          actions: [
-            {
-              icon: <Trash />,
-              label: t('actions.delete'),
-              onClick: handleDelete,
-            },
-          ],
-        },
-      ]}
-    />
+    <>
+      <ActionMenu
+        groups={[
+          {
+            actions: [
+              {
+                icon: <PencilSquare />,
+                label: t('actions.edit'),
+                to: `/products/${product.id}/edit`,
+              },
+              {
+                icon: <Facebook />,
+                label: t('fbPromote.menuAction', 'Promuj na Facebooku'),
+                onClick: () => setShowFbPromote(true),
+              },
+            ],
+          },
+          {
+            actions: [
+              {
+                icon: <Trash />,
+                label: t('actions.delete'),
+                onClick: handleDelete,
+              },
+            ],
+          },
+        ]}
+      />
+      {showFbPromote && (
+        <FacebookPromoteModal
+          open={showFbPromote}
+          onClose={() => setShowFbPromote(false)}
+          productId={product.id}
+          vendorName={seller?.name}
+          vendorId={seller?.id}
+        />
+      )}
+    </>
   );
 };
 

@@ -458,18 +458,8 @@ export const useProducts = (
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: async () => {
-      // CRITICAL FIX: Always request variants AND status in the initial query to avoid N+1 problem
-      const defaultFields = 'id,title,thumbnail,handle,status,variants,variants.prices';
-      const requestedFields = query?.fields || defaultFields;
-      
-      // If fields are specified with +, merge with defaults
-      const finalFields = requestedFields.startsWith('+') 
-        ? `${defaultFields}${requestedFields}`
-        : requestedFields;
-      
       const formattedQuery = { 
         ...query,
-        fields: finalFields
       };
       
       // Format query params to ensure all values are strings
@@ -480,28 +470,10 @@ export const useProducts = (
         }
       });
       
-      // Execute the API call with variants included
       const result = await fetchQuery('/vendor/products', {
         method: 'GET',
         query: queryParams,
       });
-      
-      // Ensure all products have proper structure (defensive programming)
-      if (result?.products && Array.isArray(result.products)) {
-        result.products.forEach((product: any) => {
-          // Ensure the variants array exists
-          if (!product.variants) {
-            product.variants = [];
-          }
-          
-          // Ensure each variant has a prices array
-          product.variants.forEach((variant: any) => {
-            if (!variant.prices) {
-              variant.prices = [];
-            }
-          });
-        });
-      }
       
       return result;
     },

@@ -5424,5 +5424,36 @@
         "tipQuote": "> quote"
       }
     }
+  },
+  "fbPromote": {
+    "title": "Promote on Facebook",
+    "menuAction": "Promote on Facebook",
+    "notPublished": "This product is not published yet. The link won't work publicly until the product is approved.",
+    "noImage": "No image",
+    "outOfStock": "Out of stock",
+    "limitedStock": "Limited stock",
+    "inStock": "In stock",
+    "by": "By",
+    "ogHint": "Facebook will automatically fetch a preview from the product page (image, title, price).",
+    "chooseCaptionLabel": "Choose a caption template",
+    "captionWorkflowHint": "Copy the text below, then click \"Share on Facebook\" — paste it into your Facebook post.",
+    "guideTitle": "How to share a product on Facebook",
+    "step1": "Choose a caption template (you can edit it)",
+    "step2": "Copy the text above using the \"Copy caption\" button",
+    "step3": "Click \"Share on Facebook\" — paste the copied text into your Facebook post",
+    "step4": "Copy the link below and paste it into your Facebook post",
+    "captionLabel": "Post caption",
+    "copyCaption": "Copy caption",
+    "captionPlaceholder": "Type or edit your post caption...",
+    "characters": "characters",
+    "shareUrlLabel": "Share link",
+    "copyLink": "Copy",
+    "utmHint": "This link includes UTM parameters for tracking Facebook traffic in Google Analytics.",
+    "sendMessenger": "Send via Messenger",
+    "shareOnFacebook": "Share on Facebook",
+    "linkCopied": "Link copied to clipboard",
+    "linkCopyFailed": "Failed to copy link",
+    "captionCopied": "Caption copied to clipboard",
+    "captionCopyFailed": "Failed to copy caption"
   }
 }

@@ -17486,7 +17486,43 @@
       "required": ["templateSelector", "pageBuilder", "settings", "blocks", "preview", "blockPreview", "blockForm"],
       "additionalProperties": false
     },
-  
+    "fbPromote": {
+      "type": "object",
+      "properties": {
+        "title": {"type": "string"},
+        "menuAction": {"type": "string"},
+        "notPublished": {"type": "string"},
+        "noImage": {"type": "string"},
+        "outOfStock": {"type": "string"},
+        "limitedStock": {"type": "string"},
+        "inStock": {"type": "string"},
+        "by": {"type": "string"},
+        "ogHint": {"type": "string"},
+        "chooseCaptionLabel": {"type": "string"},
+        "captionWorkflowHint": {"type": "string"},
+        "guideTitle": {"type": "string"},
+        "step1": {"type": "string"},
+        "step2": {"type": "string"},
+        "step3": {"type": "string"},
+        "step4": {"type": "string"},
+        "captionLabel": {"type": "string"},
+        "copyCaption": {"type": "string"},
+        "captionPlaceholder": {"type": "string"},
+        "characters": {"type": "string"},
+        "shareUrlLabel": {"type": "string"},
+        "copyLink": {"type": "string"},
+        "utmHint": {"type": "string"},
+        "sendMessenger": {"type": "string"},
+        "shareOnFacebook": {"type": "string"},
+        "linkCopied": {"type": "string"},
+        "linkCopyFailed": {"type": "string"},
+        "captionCopied": {"type": "string"},
+        "captionCopyFailed": {"type": "string"}
+      },
+      "required": ["title", "menuAction", "notPublished", "noImage", "outOfStock", "limitedStock", "inStock", "by", "ogHint", "chooseCaptionLabel", "captionWorkflowHint", "guideTitle", "step1", "step2", "step3", "step4", "captionLabel", "copyCaption", "captionPlaceholder", "characters", "shareUrlLabel", "copyLink", "utmHint", "sendMessenger", "shareOnFacebook", "linkCopied", "linkCopyFailed", "captionCopied", "captionCopyFailed"],
+      "additionalProperties": false
+    
+  },
   "required": [
     "$schema",
     "general",
@@ -17582,7 +17618,8 @@
     "passwordChange",
     "parcelSelector",
     "baselinker",
-    "pagebuilder"
+    "pagebuilder",
+    "fbPromote"
   ],
   "additionalProperties": false
 }
