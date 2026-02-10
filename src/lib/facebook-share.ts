@@ -48,19 +48,25 @@ export const openFacebookShareDialog = (productUrl: string): void => {
 }
 
 /**
- * Open Facebook Messenger deep link to send a product link.
- * Uses the Messenger share URL — no SDK or permissions required.
- * The recipient sees the OG preview of the product page.
+ * Open Facebook Messenger to send a product link.
+ * Copies the link to clipboard first, then opens Messenger compose window.
+ * If a Facebook App ID is provided, uses the richer dialog/send endpoint.
  */
-export const openMessengerShareDialog = (
+export const openMessengerShareDialog = async (
   productUrl: string,
   fbAppId?: string
-): void => {
-  // If we have an FB App ID, use the richer dialog; otherwise use basic share
-  const messengerUrl = fbAppId
-    ? `https://www.facebook.com/dialog/send?app_id=${fbAppId}&link=${encodeURIComponent(productUrl)}&redirect_uri=${encodeURIComponent(productUrl)}`
-    : `https://www.facebook.com/msg/share/?link=${encodeURIComponent(productUrl)}`
-  window.open(messengerUrl, "_blank", "noopener,noreferrer,width=600,height=400")
+): Promise<boolean> => {
+  if (fbAppId) {
+    // With App ID: use the official dialog/send endpoint
+    const messengerUrl = `https://www.facebook.com/dialog/send?app_id=${fbAppId}&link=${encodeURIComponent(productUrl)}&redirect_uri=${encodeURIComponent(productUrl)}`
+    window.open(messengerUrl, "_blank", "noopener,noreferrer,width=600,height=400")
+    return true
+  }
+
+  // Without App ID: copy link to clipboard and open Messenger compose
+  const copied = await copyToClipboard(productUrl)
+  window.open("https://www.messenger.com/new", "_blank", "noopener,noreferrer,width=600,height=600")
+  return copied
 }
 
 /**

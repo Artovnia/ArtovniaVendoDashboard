@@ -173,9 +173,12 @@ export const FacebookPromoteModal = ({
     openFacebookShareDialog(shareUrl)
   }, [shareUrl])
 
-  const handleShareMessenger = useCallback(() => {
-    openMessengerShareDialog(shareUrl)
-  }, [shareUrl])
+  const handleShareMessenger = useCallback(async () => {
+    const copied = await openMessengerShareDialog(shareUrl)
+    if (copied) {
+      toast.success(t("fbPromote.messengerLinkCopied", "Link skopiowany — wklej go w oknie Messengera"))
+    }
+  }, [shareUrl, t])
 
   const handleCopyLink = async () => {
     const success = await copyToClipboard(shareUrl)

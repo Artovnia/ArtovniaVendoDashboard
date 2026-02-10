@@ -24,7 +24,7 @@ export interface CaptionOption {
 /**
  * Generate 3 pre-filled caption options for a product.
  * Each caption is designed for a different Facebook sharing style:
- * - story: Artist/handmade narrative
+ * - story: Personal crafting narrative
  * - offer: Price/availability focus
  * - community: Support small business appeal
  */
@@ -41,28 +41,22 @@ export const generateCaptions = (input: CaptionInput): CaptionOption[] => {
 
   const priceText = price ? `${price} ${currency}` : ""
   const materialText = material || ""
-  const stockText = isLimitedStock ? "Ograniczona ilość!" : ""
+  const stockText = isLimitedStock ? "Zostało już niewiele sztuk." : ""
 
-  // Story-based caption (handmade / artist narrative)
   const storyCaption = buildStoryCaptionPl({
     productName,
     materialText,
-    vendorName,
     categoryName,
   })
 
-  // Offer-based caption (price / limited stock)
   const offerCaption = buildOfferCaptionPl({
     productName,
     priceText,
     stockText,
-    vendorName,
   })
 
-  // Community-based caption (support small business)
   const communityCaption = buildCommunityCaptionPl({
     productName,
-    vendorName,
     categoryName,
   })
 
@@ -70,13 +64,13 @@ export const generateCaptions = (input: CaptionInput): CaptionOption[] => {
     {
       id: "story",
       label: "Artist Story",
-      labelPl: "Historia artysty",
+      labelPl: "Moja historia",
       text: storyCaption,
     },
     {
       id: "offer",
       label: "Product Offer",
-      labelPl: "Oferta produktu",
+      labelPl: "Oferta",
       text: offerCaption,
     },
     {
@@ -95,33 +89,31 @@ export const generateCaptions = (input: CaptionInput): CaptionOption[] => {
 const buildStoryCaptionPl = ({
   productName,
   materialText,
-  vendorName,
   categoryName,
 }: {
   productName: string
   materialText: string
-  vendorName?: string
   categoryName?: string | null
 }): string => {
   const parts: string[] = []
 
   if (materialText) {
     parts.push(
-      `Stworzyłem/am "${productName}" ręcznie z użyciem ${materialText}. Każdy egzemplarz jest wyjątkowy.`
+      `Właśnie skończyłam/em pracę nad „${productName}" — robione ręcznie, ${materialText}. W końcu mogę pokazać efekt 😊`
     )
   } else {
     parts.push(
-      `Stworzyłem/am "${productName}" ręcznie. Każdy egzemplarz jest wyjątkowy.`
+      `„${productName}" — zrobione własnoręcznie od początku do końca. W końcu mogę pokazać efekt 😊`
     )
   }
 
   if (categoryName) {
-    parts.push(`Kategoria: ${categoryName}`)
+    parts.push(
+      `Jeśli lubicie ${categoryName.toLowerCase()} to myślę, że Wam się spodoba.`
+    )
   }
 
-  if (vendorName) {
-    parts.push(`~ ${vendorName}, Artovnia`)
-  }
+  parts.push("Szczegóły i więcej zdjęć w linku 👇")
 
   return parts.join("\n\n")
 }
@@ -130,60 +122,56 @@ const buildOfferCaptionPl = ({
   productName,
   priceText,
   stockText,
-  vendorName,
 }: {
   productName: string
   priceText: string
   stockText: string
-  vendorName?: string
 }): string => {
   const parts: string[] = []
 
   if (priceText) {
-    parts.push(`"${productName}" — teraz dostępne za ${priceText}`)
+    parts.push(
+      `„${productName}" jest do kupienia za ${priceText} w moim sklepie na Artovnia.`
+    )
   } else {
-    parts.push(`"${productName}" — teraz dostępne na Artovnia`)
+    parts.push(
+      `„${productName}" jest już w moim sklepie na Artovnia.`
+    )
   }
 
   if (stockText) {
     parts.push(stockText)
   }
 
-  parts.push("Handmade z pasją. Zobacz szczegóły w linku poniżej.")
-
-  if (vendorName) {
-    parts.push(`Od: ${vendorName}`)
-  }
+  parts.push("Wszystko robione przeze mnie ręcznie — link niżej ✌️")
 
   return parts.join("\n\n")
 }
 
 const buildCommunityCaptionPl = ({
   productName,
-  vendorName,
   categoryName,
 }: {
   productName: string
-  vendorName?: string
   categoryName?: string | null
 }): string => {
   const parts: string[] = []
 
   parts.push(
-    `Wspieraj polskie rękodzieło! "${productName}" jest teraz dostępne na Artovnia.`
+    `Hej, mam coś nowego — „${productName}" właśnie trafiło do mojego sklepu na Artovnia.`
   )
 
   if (categoryName) {
-    parts.push(`Odkryj więcej w kategorii: ${categoryName}`)
-  }
-
-  if (vendorName) {
     parts.push(
-      `Kupując od ${vendorName}, wspierasz niezależnego artystę.`
+      `Kto szuka czegoś z kategorii ${categoryName.toLowerCase()} — zapraszam, zerknijcie 🙂`
     )
   }
 
-  parts.push("#handmade #rękodzieło #polskisztuka #artovnia")
+  parts.push(
+    `Będzie mi miło jeśli udostępnicie dalej — każde wsparcie się liczy!`
+  )
+
+  parts.push("#rękodzieło #handmade #artovnia")
 
   return parts.join("\n\n")
 }
