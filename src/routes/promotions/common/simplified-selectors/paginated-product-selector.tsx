@@ -58,7 +58,7 @@ export const PaginatedProductSelector = memo(({
   }, [products, selectedIdsSet])
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
         <Text size="small" weight="plus">
           {t('promotions.fields.selectProducts')} ({selectedProductIds.length}{' '}
@@ -69,76 +69,81 @@ export const PaginatedProductSelector = memo(({
       {isLoading ? (
         <div className="flex items-center justify-center py-8">
           <Text size="small" className="text-ui-fg-subtle">
-            {t('general.loading')}...
+            Loading...
           </Text>
         </div>
       ) : (
-        <>
-          <div className="border-ui-border-base flex flex-col divide-y rounded-lg border">
-            {products && products.length > 0 ? (
-              <>
-                <div className="bg-ui-bg-subtle flex items-center gap-3 px-4 py-2">
-                  <Checkbox
-                    checked={allCurrentPageSelected}
-                    onCheckedChange={handleToggleAll}
-                    disabled={disabled}
-                  />
-                  <Text size="xsmall" weight="plus" className="text-ui-fg-subtle">
-                    {t('promotions.fields.selectAllOnPage')}
-                  </Text>
-                </div>
+        <div className="rounded-md border border-ui-border-base overflow-hidden">
+          {products && products.length > 0 ? (
+            <>
+              <div className="bg-ui-bg-subtle flex items-center gap-3 px-3 py-2 border-b border-ui-border-base">
+                <Checkbox
+                  checked={allCurrentPageSelected}
+                  onCheckedChange={handleToggleAll}
+                  disabled={disabled}
+                />
+                <Text size="xsmall" weight="plus" className="text-ui-fg-subtle">
+                  {t('promotions.fields.selectAllOnPage')}
+                </Text>
+              </div>
 
+              <div className="flex flex-col divide-y divide-ui-border-base">
                 {products.map((product: HttpTypes.AdminProduct) => (
                   <div
                     key={product.id}
-                    className="flex items-center gap-3 px-4 py-2.5 hover:bg-ui-bg-subtle-hover transition-colors"
+                    className="flex items-center gap-3 px-3 py-2.5 bg-ui-bg-base hover:bg-ui-bg-subtle-hover transition-colors min-h-[44px]"
                   >
                     <Checkbox
                       checked={selectedIdsSet.has(product.id)}
                       onCheckedChange={() => handleToggleProduct(product.id)}
                       disabled={disabled}
                     />
-                    <Thumbnail src={product.thumbnail || undefined} />
-                    <Text size="small" weight="plus" className="flex-1">
+                    <Thumbnail src={product.thumbnail || undefined} size="small" />
+                    <Text size="small" weight="plus" className="truncate flex-1 min-w-0">
                       {product.title}
                     </Text>
                   </div>
                 ))}
-              </>
-            ) : (
-              <div className="flex items-center justify-center py-8">
-                <Text size="small" className="text-ui-fg-subtle">
-                  {t('promotions.fields.noProducts')}
-                </Text>
               </div>
-            )}
-          </div>
-
-          {totalPages > 1 && (
-            <div className="flex items-center justify-between">
-              <button
-                onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
-                disabled={currentPage === 0 || disabled}
-                className="text-ui-fg-subtle hover:text-ui-fg-base disabled:text-ui-fg-disabled text-sm transition-colors disabled:cursor-not-allowed"
-              >
-                {t('general.previous')}
-              </button>
+            </>
+          ) : (
+            <div className="flex items-center justify-center py-8">
               <Text size="small" className="text-ui-fg-subtle">
-                {t('general.page')} {currentPage + 1} {t('general.of')}{' '}
-                {totalPages}
+                {t('promotions.fields.noProducts')}
               </Text>
-              <button
-                onClick={() =>
-                  setCurrentPage((p) => Math.min(totalPages - 1, p + 1))
-                }
-                disabled={currentPage >= totalPages - 1 || disabled}
-                className="text-ui-fg-subtle hover:text-ui-fg-base disabled:text-ui-fg-disabled text-sm transition-colors disabled:cursor-not-allowed"
-              >
-                {t('general.next')}
-              </button>
             </div>
           )}
-        </>
+
+          {/* Pagination controls */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between px-3 py-2 bg-ui-bg-subtle border-t border-ui-border-base">
+              <Text size="xsmall" className="text-ui-fg-muted">
+                {currentPage * PAGE_SIZE + 1}–{Math.min((currentPage + 1) * PAGE_SIZE, count || 0)} z {count || 0}
+              </Text>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
+                  disabled={currentPage === 0 || disabled}
+                  className="px-2 py-1 text-xs rounded hover:bg-ui-bg-base-hover disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                >
+                  ‹
+                </button>
+                <Text size="xsmall" className="text-ui-fg-subtle px-1">
+                  {currentPage + 1} / {totalPages}
+                </Text>
+                <button
+                  type="button"
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages - 1, p + 1))}
+                  disabled={currentPage >= totalPages - 1 || disabled}
+                  className="px-2 py-1 text-xs rounded hover:bg-ui-bg-base-hover disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                >
+                  ›
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       )}
     </div>
   )

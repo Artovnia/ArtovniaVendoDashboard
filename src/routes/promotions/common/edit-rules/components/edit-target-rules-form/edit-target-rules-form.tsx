@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import * as zod from "zod"
 
-import { RouteDrawer } from "../../../../../../components/modals"
+import { RouteFocusModal } from "../../../../../../components/modals"
 import { KeyboundForm } from "../../../../../../components/utilities/keybound-form"
 import { PaginatedProductSelector } from "../../../simplified-selectors/paginated-product-selector"
 import { LightweightCategorySelector } from "../../../simplified-selectors/lightweight-category-selector"
@@ -72,13 +72,13 @@ export const EditTargetRulesForm = ({
   })
 
   return (
-    <RouteDrawer.Form form={form}>
+    <RouteFocusModal.Form form={form}>
       <KeyboundForm
         onSubmit={handleFormSubmit}
-        className="flex h-full flex-col"
+        className="flex flex-1 flex-col overflow-hidden"
       >
-        <RouteDrawer.Body className="flex flex-col gap-y-8">
-          <div className="flex flex-col gap-y-4">
+        <RouteFocusModal.Body className="flex flex-1 flex-col overflow-y-auto">
+          <div className="mx-auto w-full max-w-[720px] flex flex-col gap-y-4 px-4 sm:px-6 py-8">
             <div>
               <Heading level="h2" className="mb-2">
                 {t('promotions.fields.conditions.target-rules.title')}
@@ -122,22 +122,20 @@ export const EditTargetRulesForm = ({
               </div>
             </div>
           </div>
-        </RouteDrawer.Body>
+        </RouteFocusModal.Body>
 
-        <RouteDrawer.Footer>
-          <div className="flex items-center justify-end gap-x-2">
-            <RouteDrawer.Close asChild>
-              <Button size="small" variant="secondary" disabled={isSubmitting}>
-                {t("actions.cancel")}
-              </Button>
-            </RouteDrawer.Close>
-
-            <Button size="small" type="submit" isLoading={isSubmitting}>
-              {t("actions.save")}
+        <div className="flex items-center justify-end gap-x-2 border-t border-ui-border-base bg-ui-bg-base px-4 py-3">
+          <RouteFocusModal.Close asChild>
+            <Button size="small" variant="secondary" disabled={isSubmitting}>
+              {t("actions.cancel")}
             </Button>
-          </div>
-        </RouteDrawer.Footer>
+          </RouteFocusModal.Close>
+
+          <Button size="small" type="submit" isLoading={isSubmitting}>
+            {t("actions.save")}
+          </Button>
+        </div>
       </KeyboundForm>
-    </RouteDrawer.Form>
+    </RouteFocusModal.Form>
   )
 }
