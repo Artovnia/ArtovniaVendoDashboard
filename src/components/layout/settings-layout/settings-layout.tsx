@@ -173,6 +173,18 @@ const SettingsSidebar = () => {
             label='Integrations'
             items={integrationsRoutes}
           />
+          <div className='flex items-center justify-center px-3'>
+            <Divider variant='dashed' />
+          </div>
+          <RadixCollapsibleSection
+            label={t('docs.sidebarSection')}
+            items={[
+              {
+                label: t('docs.sidebarLabel'),
+                to: '/settings/documentation',
+              },
+            ]}
+          />
           {extensionRoutes.length > 0 && (
             <Fragment>
               <div className='flex items-center justify-center px-3'>

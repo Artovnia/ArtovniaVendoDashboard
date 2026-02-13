@@ -5455,5 +5455,20 @@
     "linkCopyFailed": "Failed to copy link",
     "captionCopied": "Caption copied to clipboard",
     "captionCopyFailed": "Failed to copy caption"
+  },
+  "docs": {
+    "title": "Documentation",
+    "titleBaselinker": "Baselinker Integration",
+    "titleGuide": "Artovnia Guide",
+    "description": "Guides and instructions for sellers",
+    "subtitle": "Guides and instructions for sellers",
+    "sidebarLabel": "Guides",
+    "sidebarSection": "Documentation",
+    "openNewTab": "Open in new tab",
+    "openGuide": "Open guide →",
+    "guideTitle": "Artovnia Guide",
+    "guideDescription": "Complete guide to the Artovnia platform for sellers — how to manage products, orders, and your account.",
+    "baselinkerTitle": "Baselinker Integration",
+    "baselinkerDescription": "Step-by-step instructions on how to connect your account with the Baselinker order management system."
   }
 }

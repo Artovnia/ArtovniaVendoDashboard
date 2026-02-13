@@ -5595,5 +5595,20 @@
     "linkCopyFailed": "Nie udało się skopiować linku",
     "captionCopied": "Tekst skopiowany do schowka",
     "captionCopyFailed": "Nie udało się skopiować tekstu"
+  },
+  "docs": {
+    "title": "Dokumentacja",
+    "titleBaselinker": "Integracja Baselinker",
+    "titleGuide": "Przewodnik",
+    "description": "Przewodniki i instrukcje dla sprzedawców",
+    "subtitle": "Przewodniki i instrukcje dla sprzedawców",
+    "sidebarLabel": "Przewodniki",
+    "sidebarSection": "Dokumentacja",
+    "openNewTab": "Otwórz w nowej karcie",
+    "openGuide": "Otwórz przewodnik →",
+    "guideTitle": "Przewodnik Artovnia",
+    "guideDescription": "Kompletny przewodnik po platformie Artovnia dla sprzedawców — jak zarządzać produktami, zamówieniami i kontem.",
+    "baselinkerTitle": "Integracja Baselinker",
+    "baselinkerDescription": "Instrukcja krok po kroku jak połączyć swoje konto z systemem Baselinker do zarządzania zamówieniami."
   }
 }

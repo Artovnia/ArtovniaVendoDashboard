@@ -1,4 +1,4 @@
-import { InventoryTypes } from '@medusajs/types';
+import { HttpTypes } from '@medusajs/types';
 import { Heading } from '@medusajs/ui';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
@@ -14,15 +14,18 @@ export const ReservationEdit = () => {
 
   const { reservation, isPending, isError, error } =
     useReservationItem(id!);
+
   const { inventory_item: inventoryItem } =
-    useInventoryItem(reservation?.inventory_item_id!, {
-      enabled: !!reservation,
-    });
+    useInventoryItem(
+      reservation?.inventory_item_id!,
+      { fields: '*location_levels' },
+      { enabled: !!reservation }
+    );
 
   const { stock_locations } = useStockLocations(
     {
       id: inventoryItem?.location_levels?.map(
-        (l: InventoryTypes.InventoryLevelDTO) =>
+        (l: HttpTypes.AdminInventoryLevel) =>
           l.location_id
       ),
     },
@@ -36,6 +39,7 @@ export const ReservationEdit = () => {
     reservation &&
     inventoryItem &&
     stock_locations;
+
   if (isError) {
     throw error;
   }

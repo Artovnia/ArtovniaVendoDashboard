@@ -9,7 +9,7 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 
 type UseDataTableProps<TData> = {
@@ -48,59 +48,45 @@ export const useDataTable = <TData,>({
   const offsetKey = `${prefix ? `${prefix}_` : ""}offset`
   const offset = searchParams.get(offsetKey)
 
-  const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
-    pageIndex: offset ? Math.ceil(Number(offset) / _pageSize) : 0,
-    pageSize: _pageSize,
-  })
+  // Derive pageIndex directly from URL — single source of truth, no useEffect sync needed
+  const pageIndex = offset ? Math.ceil(Number(offset) / _pageSize) : 0
+  const pageSize = _pageSize
+
   const pagination = useMemo(
-    () => ({
-      pageIndex,
-      pageSize,
-    }),
+    () => ({ pageIndex, pageSize }),
     [pageIndex, pageSize]
   )
+
   const [localRowSelection, setLocalRowSelection] = useState({})
   const rowSelection = _rowSelection?.state ?? localRowSelection
   const setRowSelection = _rowSelection?.updater ?? setLocalRowSelection
 
-  useEffect(() => {
-    if (!enablePagination) {
-      return
-    }
-
-    const index = offset ? Math.ceil(Number(offset) / _pageSize) : 0
-
-    if (index === pageIndex) {
-      return
-    }
-
-    setPagination((prev) => ({
-      ...prev,
-      pageIndex: index,
-    }))
-  }, [offset, enablePagination, _pageSize, pageIndex])
-
-  const onPaginationChange = (
-    updater: (old: PaginationState) => PaginationState
+  // Handle pagination change from react-table (button clicks)
+  // Only updates the URL; pageIndex is derived from URL on next render
+  const onPaginationChange = useCallback((
+    updaterOrValue: PaginationState | ((old: PaginationState) => PaginationState)
   ) => {
-    const state = updater(pagination)
-    const { pageIndex, pageSize } = state
-
     setSearchParams((prev) => {
-      if (!pageIndex) {
-        prev.delete(offsetKey)
-        return prev
-      }
+      const currentOffset = prev.get(offsetKey)
+      const currentPageIndex = currentOffset ? Math.ceil(Number(currentOffset) / _pageSize) : 0
+      const current: PaginationState = { pageIndex: currentPageIndex, pageSize: _pageSize }
+
+      const next =
+        typeof updaterOrValue === "function"
+          ? updaterOrValue(current)
+          : updaterOrValue
 
       const newSearch = new URLSearchParams(prev)
-      newSearch.set(offsetKey, String(pageIndex * pageSize))
+
+      if (!next.pageIndex) {
+        newSearch.delete(offsetKey)
+      } else {
+        newSearch.set(offsetKey, String(next.pageIndex * next.pageSize))
+      }
 
       return newSearch
     })
-
-    setPagination(state)
-    return state
-  }
+  }, [offsetKey, _pageSize, setSearchParams])
 
   const tableOptions = useMemo(() => ({
     data,

@@ -17521,8 +17521,28 @@
       },
       "required": ["title", "menuAction", "notPublished", "noImage", "outOfStock", "limitedStock", "inStock", "by", "ogHint", "chooseCaptionLabel", "captionWorkflowHint", "guideTitle", "step1", "step2", "step3", "step4", "captionLabel", "copyCaption", "captionPlaceholder", "characters", "shareUrlLabel", "copyLink", "utmHint", "sendMessenger", "shareOnFacebook", "linkCopied", "linkCopyFailed", "captionCopied", "captionCopyFailed"],
       "additionalProperties": false
-    
-  },
+    },
+    "docs": {
+      "type": "object",
+      "properties": {
+        "title": {"type": "string"},
+        "titleBaselinker": {"type": "string"},
+        "titleGuide": {"type": "string"},
+
+        "description": {"type": "string"},
+        "subtitle": {"type": "string"},
+        "sidebarLabel": {"type": "string"},
+        "sidebarSection": {"type": "string"},
+        "openNewTab": {"type": "string"},
+        "openGuide": {"type": "string"},
+        "guideTitle": {"type": "string"},
+        "guideDescription": {"type": "string"},
+        "baselinkerTitle": {"type": "string"},
+        "baselinkerDescription": {"type": "string"}
+      },
+      "required": ["title", "titleBaselinker", "titleGuide", "description", "subtitle", "sidebarLabel", "sidebarSection", "openNewTab", "openGuide", "guideTitle", "guideDescription", "baselinkerTitle", "baselinkerDescription"],
+      "additionalProperties": false
+    },
   "required": [
     "$schema",
     "general",
@@ -17619,7 +17639,8 @@
     "parcelSelector",
     "baselinker",
     "pagebuilder",
-    "fbPromote"
+    "fbPromote",
+    "docs"
   ],
   "additionalProperties": false
 }

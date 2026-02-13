@@ -1684,6 +1684,15 @@ export const RouteMap: RouteObject[] = [
             ],
           },
           {
+            path: 'documentation',
+            errorElement: <ErrorBoundary />,
+            lazy: () =>
+              import('../../routes/settings/documentation/documentation'),
+            handle: {
+              breadcrumb: () => t('docs.title'),
+            },
+          },
+          {
             path: 'regions',
             errorElement: <ErrorBoundary />,
             element: <Outlet />,

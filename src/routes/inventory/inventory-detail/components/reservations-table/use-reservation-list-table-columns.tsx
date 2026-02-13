@@ -11,8 +11,8 @@ import { ReservationActions } from "./reservation-actions"
  * Adds missing properties to the InventoryItemDTO type.
  */
 export interface ExtendedReservationItem extends HttpTypes.AdminReservation {
-  line_item?: { order_id: string }
-  location?: HttpTypes.AdminStockLocation
+  order?: { order_id: string; display_id: number } | null
+  location_name?: string | null
 }
 
 const columnHelper = createColumnHelper<ExtendedReservationItem>()
@@ -31,17 +31,17 @@ export const useReservationTableColumn = ({ sku }: { sku: string }) => {
           )
         },
       }),
-      columnHelper.accessor("line_item.order_id", {
+      columnHelper.accessor("order", {
         header: () => <TextHeader text={t("inventory.reservation.orderID")} />,
         cell: ({ getValue }) => {
-          const orderId = getValue()
+          const order = getValue()
 
-          if (!orderId) {
+          if (!order?.display_id) {
             return <PlaceholderCell />
           }
 
           return (
-            <TextCell text={orderId} />
+            <TextCell text={`#${order.display_id}`} />
           )
         },
       }),
@@ -59,17 +59,17 @@ export const useReservationTableColumn = ({ sku }: { sku: string }) => {
           )
         },
       }),
-      columnHelper.accessor("location.name", {
+      columnHelper.accessor("location_name", {
         header: () => <TextHeader text={t("inventory.reservation.location")} />,
         cell: ({ getValue }) => {
-          const location = getValue()
+          const locationName = getValue()
 
-          if (!location) {
+          if (!locationName) {
             return <PlaceholderCell />
           }
 
           return (
-            <TextCell text={location} />
+            <TextCell text={locationName} />
           )
         },
       }),

@@ -83,7 +83,10 @@ export const useUpdateReservationItem = (
   return useMutation({
     mutationFn: (
       payload: HttpTypes.AdminUpdateReservation
-    ) => sdk.admin.reservation.update(id, payload),
+    ) => fetchQuery(`/vendor/reservations/${id}`, {
+        method: 'POST',
+        body: payload,
+      }),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
         queryKey: reservationItemsQueryKeys.detail(id),
@@ -139,7 +142,9 @@ export const useDeleteReservationItem = (
   >
 ) => {
   return useMutation({
-    mutationFn: () => sdk.admin.reservation.delete(id),
+    mutationFn: () => fetchQuery(`/vendor/reservations/${id}`, {
+        method: 'DELETE',
+      }),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
         queryKey: reservationItemsQueryKeys.lists(),
