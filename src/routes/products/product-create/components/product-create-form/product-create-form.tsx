@@ -330,6 +330,7 @@ export const ProductCreateForm = ({
       delete (cleanPayload as any).handle_colors_via_api;
       delete (cleanPayload as any).raw_color_assignments;
       delete (cleanPayload as any).color_assignments;
+      delete (cleanPayload as any).delivery_timeframe;
       
       const apiPayload = {
         ...cleanPayload,
@@ -372,6 +373,11 @@ export const ProductCreateForm = ({
           ...(payload.metadata?.raw_color_assignments && {
             raw_color_assignments: payload.metadata.raw_color_assignments,
             handle_colors_via_api: true
+          }),
+          // Include delivery timeframe in metadata for post-creation processing
+          ...(payload.delivery_timeframe && (payload.delivery_timeframe.min_days || payload.delivery_timeframe.preset) && {
+            has_pending_delivery_timeframe: true,
+            pending_delivery_timeframe: payload.delivery_timeframe
           }),
           // Flag that this product has pending stock levels to be created
           pending_stock_levels: true,
@@ -505,7 +511,13 @@ export const ProductCreateForm = ({
                   pendingMetadata.pending_shipping_profile_id = shippingProfileId;
                 }
                 
-                if (requestId && (hasColorAssignments || shippingProfileId)) {
+                // Store delivery timeframe for post-approval processing
+                if (payload.delivery_timeframe && (payload.delivery_timeframe.min_days || payload.delivery_timeframe.preset)) {
+                  pendingMetadata.has_pending_delivery_timeframe = true;
+                  pendingMetadata.pending_delivery_timeframe = payload.delivery_timeframe;
+                }
+                
+                if (requestId && (hasColorAssignments || shippingProfileId || pendingMetadata.has_pending_delivery_timeframe)) {
                   
                   await fetchQuery(`/vendor/requests/${requestId}`, {
                     method: 'POST',
@@ -590,6 +602,28 @@ export const ProductCreateForm = ({
             
             // Shipping profile is now handled directly by backend via shipping_profile_id in payload
             
+            // Handle delivery timeframe if set
+            if (payload.delivery_timeframe && (payload.delivery_timeframe.min_days || payload.delivery_timeframe.preset)) {
+              try {
+                const timeframePayload = payload.delivery_timeframe.preset && payload.delivery_timeframe.preset !== 'custom'
+                  ? { preset: payload.delivery_timeframe.preset }
+                  : {
+                      min_days: payload.delivery_timeframe.min_days,
+                      max_days: payload.delivery_timeframe.max_days,
+                      label: payload.delivery_timeframe.label,
+                      is_custom: true,
+                    };
+                
+                await fetchQuery(`/vendor/products/delivery-timeframe/${productId}`, {
+                  method: 'POST',
+                  body: timeframePayload,
+                });
+              } catch (timeframeError) {
+                console.error('Failed to set delivery timeframe:', timeframeError);
+                // Don't show error toast - this is optional data
+              }
+            }
+            
             // Navigate to the product detail page
             handleSuccess(`../${productId}`);
             
@@ -633,6 +667,14 @@ export const ProductCreateForm = ({
     }
 
     if (!valid) {
+      // Show toast message to inform user about validation errors
+      const errorCount = Object.keys(form.formState.errors).length;
+      toast.error(
+        t('products.create.validationError'),
+        { 
+          description: t('products.create.validationErrorDescription', { count: errorCount })
+        }
+      );
       return;
     }
     

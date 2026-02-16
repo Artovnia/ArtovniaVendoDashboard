@@ -473,6 +473,8 @@
         "stockQuantityRequired": "Ilość w magazynie jest wymagana (może być 0)",
         "stockQuantityRequiredWhenManaged": "Ilość w magazynie musi wynosić co najmniej 1 przy zarządzaniu zapasami"
       },
+      "validationError": "Uzupełnij wymagane pola",
+      "validationErrorDescription": "Niektóre wymagane pola są puste lub nieprawidłowe. Przewiń w górę, aby zobaczyć podświetlone pola.",
       "stockLocationHint": "Ta lokalizacja będzie używana dla wszystkich wariantów produktu",
       "stockLocation": "Lokalizacja magazynowa",
       "variantHeaders": {
@@ -5147,6 +5149,34 @@
         "acknowledge": "Rozumiem, że tylko produkty z oryginalnymi zdjęciami bez znaków wodnych zostaną zatwierdzone przez administratorów",
         "proceed": "Rozumiem, Kontynuuj Import"
       }
+    },
+    "templates": {
+      "title": "Szablony wariantów",
+      "subtitle": "Wybierz szablon, aby szybko wypełnić opcje wariantów",
+      "new": "Nowy szablon",
+      "createTemplate": "Utwórz szablon wariantów",
+      "editTemplate": "Edytuj szablon wariantów",
+      "name": "Nazwa szablonu",
+      "namePlaceholder": "np. Rozmiary odzieży",
+      "description": "Opis (opcjonalnie)",
+      "descriptionPlaceholder": "Krótki opis szablonu...",
+      "options": "Opcje produktu",
+      "optionsHint": "Zdefiniuj opcje (np. Rozmiar, Kolor) i ich możliwe wartości.",
+      "noTemplates": "Brak szablonów wariantów",
+      "createFirst": "Utwórz szablon, aby szybko przypisywać opcje wariantów do produktów",
+      "selectPlaceholder": "Wybierz szablon...",
+      "manageAll": "Zarządzaj wszystkimi szablonami",
+      "applied": "Zastosowano szablon \"{{name}}\"",
+      "created": "Szablon utworzony",
+      "updated": "Szablon zaktualizowany",
+      "deleted": "Szablon usunięty",
+      "confirmDelete": "Czy na pewno chcesz usunąć szablon \"{{name}}\"?",
+      "saveError": "Błąd zapisywania szablonu",
+      "deleteError": "Błąd usuwania szablonu",
+      "howItWorks": "Jak to działa",
+      "tip1": "Szablony pozwalają szybko przypisać opcje wariantów do produktów",
+      "tip2": "Wybierz szablon podczas importu, aby automatycznie wypełnić opcje",
+      "tip3": "Możesz mieć wiele szablonów dla różnych typów produktów"
     }
   },
   "pagebuilder": {
@@ -5595,6 +5625,34 @@
     "linkCopyFailed": "Nie udało się skopiować linku",
     "captionCopied": "Tekst skopiowany do schowka",
     "captionCopyFailed": "Nie udało się skopiować tekstu"
+  },
+  "deliveryTimeframe": {
+    "title": "Czas realizacji",
+    "label": "Czas realizacji",
+    "hint": "Szacowany czas realizacji i wysyłki produktu",
+    "selectPlaceholder": "Wybierz czas realizacji",
+    "noTimeframe": "Nie ustawiono",
+    "preset1to3": "1-3 dni",
+    "preset3to5": "3-5 dni",
+    "preset7to14": "7-14 dni",
+    "custom": "Własny czas",
+    "minDays": "Min dni",
+    "maxDays": "Max dni",
+    "days": "dni",
+    "currentTimeframe": "Aktualny czas",
+    "customTimeframe": "Własny czas realizacji",
+    "notSet": "Nie ustawiono czasu realizacji",
+    "editTitle": "Edytuj czas realizacji",
+    "updated": "Zaktualizowano czas realizacji",
+    "updateError": "Nie udało się zaktualizować czasu realizacji",
+    "removed": "Usunięto czas realizacji",
+    "removeError": "Nie udało się usunąć czasu realizacji",
+    "bulkTitle": "Ustaw czas realizacji",
+    "bulkDescription": "Ustaw czas realizacji dla wybranych produktów",
+    "bulkSuccess": "Ustawiono czas realizacji dla {{count}} produktów",
+    "bulkError": "Nie udało się ustawić czasu realizacji",
+    "selectProducts": "Wybierz produkty do ustawienia czasu realizacji",
+    "noProductsSelected": "Nie wybrano produktów"
   },
   "docs": {
     "title": "Dokumentacja",

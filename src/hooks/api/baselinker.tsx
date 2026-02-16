@@ -567,3 +567,121 @@ export const useSyncOrderStatusToBaseLinker = () => {
     },
   })
 }
+
+// Variant Template Types
+export interface VariantTemplateOption {
+  title: string
+  values: string[]
+}
+
+export interface VariantTemplate {
+  id: string
+  connection_id: string
+  name: string
+  description: string | null
+  options: VariantTemplateOption[]
+  is_active: boolean
+  usage_count: number
+  last_used_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+// Variant Template Hooks
+export const useVariantTemplates = () => {
+  return useQuery({
+    queryKey: [...baselinkerKeys.all, 'variant-templates'],
+    queryFn: async () => {
+      const response = await sdk.client.fetch<{
+        templates: VariantTemplate[]
+      }>('/vendor/baselinker/variant-templates', {
+        method: 'GET',
+      })
+      return response.templates
+    },
+  })
+}
+
+export const useVariantTemplate = (id: string) => {
+  return useQuery({
+    queryKey: [...baselinkerKeys.all, 'variant-templates', id],
+    queryFn: async () => {
+      const response = await sdk.client.fetch<{
+        template: VariantTemplate
+      }>(`/vendor/baselinker/variant-templates/${id}`, {
+        method: 'GET',
+      })
+      return response.template
+    },
+    enabled: !!id,
+  })
+}
+
+export const useCreateVariantTemplate = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (data: {
+      name: string
+      description?: string
+      options: VariantTemplateOption[]
+    }) => {
+      const response = await sdk.client.fetch<{
+        template: VariantTemplate
+      }>('/vendor/baselinker/variant-templates', {
+        method: 'POST',
+        body: data,
+      })
+      return response.template
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [...baselinkerKeys.all, 'variant-templates'],
+      })
+    },
+  })
+}
+
+export const useUpdateVariantTemplate = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ id, ...data }: {
+      id: string
+      name?: string
+      description?: string | null
+      options?: VariantTemplateOption[]
+      is_active?: boolean
+    }) => {
+      const response = await sdk.client.fetch<{
+        template: VariantTemplate
+      }>(`/vendor/baselinker/variant-templates/${id}`, {
+        method: 'POST',
+        body: data,
+      })
+      return response.template
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: [...baselinkerKeys.all, 'variant-templates'],
+      })
+      queryClient.invalidateQueries({
+        queryKey: [...baselinkerKeys.all, 'variant-templates', variables.id],
+      })
+    },
+  })
+}
+
+export const useDeleteVariantTemplate = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (id: string) => {
+      await sdk.client.fetch(`/vendor/baselinker/variant-templates/${id}`, {
+        method: 'DELETE',
+      })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [...baselinkerKeys.all, 'variant-templates'],
+      })
+    },
+  })
+}

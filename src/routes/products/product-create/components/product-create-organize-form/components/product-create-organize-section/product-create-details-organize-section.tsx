@@ -7,6 +7,7 @@ import { Form } from '../../../../../../../components/common/form';
 import { SwitchBox } from '../../../../../../../components/common/switch-box';
 import { Combobox } from '../../../../../../../components/inputs/combobox';
 import { ShippingProfileCombobox } from '../../../../../../../components/inputs/shipping-profile-combobox';
+import { DeliveryTimeframeSelect } from '../../../../../../../components/inputs/delivery-timeframe-select';
 import { useComboboxData } from '../../../../../../../hooks/use-combobox-data';
 import { useStockLocations } from '../../../../../../../hooks/api/stock-locations';
 import {
@@ -84,6 +85,29 @@ export const ProductCreateOrganizationSection = ({
                     showWarningMessages={true}
                   />
                 </Form.Control>
+                <Form.ErrorMessage />
+              </Form.Item>
+            );
+          }}
+        />
+        <Form.Field
+          control={form.control}
+          name='delivery_timeframe'
+          render={({ field }) => {
+            return (
+              <Form.Item>
+                <Form.Label optional>
+                  {t('deliveryTimeframe.label')}
+                </Form.Label>
+                <Form.Control>
+                  <DeliveryTimeframeSelect
+                    value={field.value || undefined}
+                    onChange={(value) => field.onChange(value)}
+                  />
+                </Form.Control>
+                <Form.Hint>
+                  {t('deliveryTimeframe.hint')}
+                </Form.Hint>
                 <Form.ErrorMessage />
               </Form.Item>
             );

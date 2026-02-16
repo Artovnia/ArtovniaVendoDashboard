@@ -17013,9 +17013,42 @@
           },
           "required": ["title", "description", "tabs", "loading", "loadError", "noCategories", "skipToProducts", "categoryMappingTitle", "categoryMappingDescription", "baselinkerCategory", "products", "marketplaceCategory", "categoriesMapped", "productsReady", "selected", "bulkAssignCategory", "apply", "searchPlaceholder", "allProducts", "missingCategory", "missingShipping", "stock", "noCategory", "noShipping", "productsNeedCategory", "productsNeedShipping", "bulkCategory", "bulkShipping", "selectCategory", "selectShippingProfile", "selectShipping", "confirmImport", "importSelected", "importing", "pleaseWait", "complete", "successMessage", "failedMessage", "viewProducts", "importError", "selectiveTip", "selectAllTip", "selectedReady", "selectedNeedSetup", "allReady", "unconfiguredGroupsError", "missingCategoryError", "missingShippingError", "groupMissingCategoryError", "groupMissingShippingError", "nothingToImport", "watermarkWarning"],
           "additionalProperties": false
+        },
+        "templates": {
+          "type": "object",
+          "properties": {
+            "title": {"type": "string"},
+            "subtitle": {"type": "string"},
+            "new": {"type": "string"},
+            "createTemplate": {"type": "string"},
+            "editTemplate": {"type": "string"},
+            "name": {"type": "string"},
+            "namePlaceholder": {"type": "string"},
+            "description": {"type": "string"},
+            "descriptionPlaceholder": {"type": "string"},
+            "options": {"type": "string"},
+            "optionsHint": {"type": "string"},
+            "noTemplates": {"type": "string"},
+            "createFirst": {"type": "string"},
+            "selectPlaceholder": {"type": "string"},
+            "manageAll": {"type": "string"},
+            "applied": {"type": "string"},
+            "created": {"type": "string"},
+            "updated": {"type": "string"},
+            "deleted": {"type": "string"},
+            "confirmDelete": {"type": "string"},
+            "saveError": {"type": "string"},
+            "deleteError": {"type": "string"},
+            "howItWorks": {"type": "string"},
+            "tip1": {"type": "string"},
+            "tip2": {"type": "string"},
+            "tip3": {"type": "string"}
+          },
+          "required": ["title", "subtitle", "new", "createTemplate", "editTemplate", "name", "namePlaceholder", "description", "descriptionPlaceholder", "options", "optionsHint", "noTemplates", "createFirst", "selectPlaceholder", "manageAll", "applied", "created", "updated", "deleted", "confirmDelete", "saveError", "deleteError", "howItWorks", "tip1", "tip2", "tip3"],
+          "additionalProperties": false
         }
       },
-      "required": [ "enabled", "disabled", "domain", "title", "description", "connect", "disconnect", "connected", "notConnected", "connectionStatus", "apiToken", "apiTokenPlaceholder", "inventoryId", "inventoryIdPlaceholder", "connectionDetails", "settings", "productSync", "productSyncDescription", "stockSyncDescription", "orderSyncDescription", "stockSync", "orderSync", "autoSyncProducts", "autoSyncStock", "autoSyncOrders", "stockSyncInterval", "stockSyncDirection", "toBaselinker", "fromBaselinker", "bidirectional", "importButton", "importProduct", "importBulk", "importAll", "productId", "productIdPlaceholder", "batchSize", "defaultCurrency", "defaultStatus", "strictGpsr", "sync", "syncStock", "syncDirection", "selectProducts", "allProducts", "specificProducts", "importing", "syncing", "importSuccess", "importError", "syncSuccess", "syncError", "connectionSuccess", "connectionError", "disconnectSuccess", "disconnectError", "noConnection", "createConnection", "editConnection", "deleteConnection", "confirmDelete", "confirmDeleteMessage", "history", "importHistory", "syncHistory", "status", "totalItems", "successful", "failed", "startedAt", "completedAt", "viewDetails", "active", "inactive", "error", "pending", "inProgress", "completed", "draft", "proposed", "carrierMapping", "statusMapping", "quickActions", "quickActionsDescription", "importProducts", "importProductsDescription", "syncToBaselinker", "syncToBaselinkerDescription", "syncFromBaselinker", "syncFromBaselinkerDescription", "pollOrders", "pollOrdersDescription", "poll", "pollSuccess", "pollError", "settingsUpdated", "settingsError", "fulfillmentSync", "fulfillmentSyncDescription", "fulfillmentSyncWarning", "connectedTo", "notConnectedYet", "confirmDisconnectTitle", "apiTokenHint", "inventoryIdHint", "validation", "setup", "setupIncomplete", "import"],
+      "required": [ "enabled", "disabled", "domain", "title", "description", "connect", "disconnect", "connected", "notConnected", "connectionStatus", "apiToken", "apiTokenPlaceholder", "inventoryId", "inventoryIdPlaceholder", "connectionDetails", "settings", "productSync", "productSyncDescription", "stockSyncDescription", "orderSyncDescription", "stockSync", "orderSync", "autoSyncProducts", "autoSyncStock", "autoSyncOrders", "stockSyncInterval", "stockSyncDirection", "toBaselinker", "fromBaselinker", "bidirectional", "importButton", "importProduct", "importBulk", "importAll", "productId", "productIdPlaceholder", "batchSize", "defaultCurrency", "defaultStatus", "strictGpsr", "sync", "syncStock", "syncDirection", "selectProducts", "allProducts", "specificProducts", "importing", "syncing", "importSuccess", "importError", "syncSuccess", "syncError", "connectionSuccess", "connectionError", "disconnectSuccess", "disconnectError", "noConnection", "createConnection", "editConnection", "deleteConnection", "confirmDelete", "confirmDeleteMessage", "history", "importHistory", "syncHistory", "status", "totalItems", "successful", "failed", "startedAt", "completedAt", "viewDetails", "active", "inactive", "error", "pending", "inProgress", "completed", "draft", "proposed", "carrierMapping", "statusMapping", "quickActions", "quickActionsDescription", "importProducts", "importProductsDescription", "syncToBaselinker", "syncToBaselinkerDescription", "syncFromBaselinker", "syncFromBaselinkerDescription", "pollOrders", "pollOrdersDescription", "poll", "pollSuccess", "pollError", "settingsUpdated", "settingsError", "fulfillmentSync", "fulfillmentSyncDescription", "fulfillmentSyncWarning", "connectedTo", "notConnectedYet", "confirmDisconnectTitle", "apiTokenHint", "inventoryIdHint", "validation", "setup", "setupIncomplete", "import", "templates"],
       "additionalProperties": false
     },
     "pagebuilder": {
@@ -17522,6 +17555,39 @@
       "required": ["title", "menuAction", "notPublished", "noImage", "outOfStock", "limitedStock", "inStock", "by", "ogHint", "chooseCaptionLabel", "captionWorkflowHint", "guideTitle", "step1", "step2", "step3", "step4", "captionLabel", "copyCaption", "captionPlaceholder", "characters", "shareUrlLabel", "copyLink", "utmHint", "sendMessenger", "shareOnFacebook", "linkCopied", "linkCopyFailed", "captionCopied", "captionCopyFailed"],
       "additionalProperties": false
     },
+    "deliveryTimeframe": {
+      "type": "object",
+      "properties": {
+        "title": {"type": "string"},
+        "label": {"type": "string"},
+        "hint": {"type": "string"},
+        "selectPlaceholder": {"type": "string"},
+        "noTimeframe": {"type": "string"},
+        "preset1to3": {"type": "string"},
+        "preset3to5": {"type": "string"},
+        "preset7to14": {"type": "string"},
+        "custom": {"type": "string"},
+        "minDays": {"type": "string"},
+        "maxDays": {"type": "string"},
+        "days": {"type": "string"},
+        "currentTimeframe": {"type": "string"},
+        "customTimeframe": {"type": "string"},
+        "notSet": {"type": "string"},
+        "editTitle": {"type": "string"},
+        "updated": {"type": "string"},
+        "updateError": {"type": "string"},
+        "removed": {"type": "string"},
+        "removeError": {"type": "string"},
+        "bulkTitle": {"type": "string"},
+        "bulkDescription": {"type": "string"},
+        "bulkSuccess": {"type": "string"},
+        "bulkError": {"type": "string"},
+        "selectProducts": {"type": "string"},
+        "noProductsSelected": {"type": "string"}
+      },
+      "required": ["title", "label", "hint", "selectPlaceholder", "noTimeframe", "preset1to3", "preset3to5", "preset7to14", "custom", "minDays", "maxDays", "days", "currentTimeframe", "customTimeframe", "notSet", "editTitle", "updated", "updateError", "removed", "removeError", "bulkTitle", "bulkDescription", "bulkSuccess", "bulkError", "selectProducts", "noProductsSelected"],
+      "additionalProperties": false
+    },
     "docs": {
       "type": "object",
       "properties": {
@@ -17640,6 +17706,7 @@
     "baselinker",
     "pagebuilder",
     "fbPromote",
+    "deliveryTimeframe",
     "docs"
   ],
   "additionalProperties": false

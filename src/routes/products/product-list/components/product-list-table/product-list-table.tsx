@@ -29,6 +29,7 @@ import { useProductTableQuery } from '../../../../../hooks/table/query/use-produ
 import { useDataTable } from '../../../../../hooks/use-data-table';
 import { useMe } from '../../../../../hooks/api/users';
 import { BulkShippingProfileSelectorModal } from '../bulk-shipping-profile-modal';
+import { BulkDeliveryTimeframeModal } from '../bulk-delivery-timeframe-modal';
 import { FacebookPromoteModal } from '../../../common/facebook-promote-modal';
 
 const PAGE_SIZE = 20;
@@ -36,6 +37,7 @@ const PAGE_SIZE = 20;
 export const ProductListTable = () => {
   const { t } = useTranslation();
   const [showBulkModal, setShowBulkModal] = useState(false);
+  const [showBulkDeliveryModal, setShowBulkDeliveryModal] = useState(false);
 
   const { searchParams, raw } = useProductTableQuery({
     pageSize: PAGE_SIZE,
@@ -74,9 +76,9 @@ export const ProductListTable = () => {
 
   return (
     <Container className='divide-y p-0'>
-      <div className='flex items-center justify-between px-6 py-4'>
-        <Heading level='h2'>{t('products.domain')}</Heading>
-        <div className='flex items-center justify-center gap-x-2'>
+      <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-6 py-4'>
+        <Heading level='h2' className='text-lg sm:text-xl'>{t('products.domain')}</Heading>
+        <div className='flex flex-wrap items-center justify-start sm:justify-center gap-2'>
           {/* <Button size='small' variant='secondary' asChild>
             <Link to={`export${location.search}`}>
               {t('actions.export')}
@@ -89,10 +91,19 @@ export const ProductListTable = () => {
             size='small' 
             variant='secondary'
             onClick={() => setShowBulkModal(true)}
+            className='text-xs sm:text-sm whitespace-nowrap'
           >
             {t('products.bulk.assignShippingProfile')}
           </Button>
-          <Button size='small' variant='secondary' asChild>
+          <Button 
+            size='small' 
+            variant='secondary'
+            onClick={() => setShowBulkDeliveryModal(true)}
+            className='text-xs sm:text-sm whitespace-nowrap'
+          >
+            {t('deliveryTimeframe.bulkTitle')}
+          </Button>
+          <Button size='small' variant='secondary' asChild className='text-xs sm:text-sm'>
             <Link to='create'>{t('actions.create')}</Link>
           </Button>
         </div>
@@ -127,6 +138,12 @@ export const ProductListTable = () => {
         <BulkShippingProfileSelectorModal
           products={(products ?? []) as HttpTypes.AdminProduct[]}
           onClose={() => setShowBulkModal(false)}
+        />
+      )}
+      {showBulkDeliveryModal && (
+        <BulkDeliveryTimeframeModal
+          products={(products ?? []) as HttpTypes.AdminProduct[]}
+          onClose={() => setShowBulkDeliveryModal(false)}
         />
       )}
       <Outlet />

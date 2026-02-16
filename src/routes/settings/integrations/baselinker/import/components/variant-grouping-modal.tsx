@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Button,
@@ -14,6 +14,7 @@ import {
 } from '@medusajs/ui'
 import { XMarkMini } from '@medusajs/icons'
 import { ChipInput } from '../../../../../../components/inputs/chip-input'
+import { VariantTemplateSelector } from './variant-template-selector'
 import type { VariantGroup } from '../../../../../../types/baselinker'
 
 interface VariantGroupingModalProps {
@@ -53,6 +54,19 @@ export function VariantGroupingModal({
       setMemberOptionValues(initialValues)
     }
   }, [group])
+  
+  // Handle template selection - apply template options
+  const handleApplyTemplate = useCallback((templateOptions: Array<{ title: string; values: string[] }>) => {
+    // Replace current options with template options
+    setOptions(templateOptions.map(opt => ({ ...opt })))
+    
+    // Clear member option values since options changed
+    const clearedValues: Record<string, Record<string, string>> = {}
+    group.members.forEach((member) => {
+      clearedValues[member.product.id] = {}
+    })
+    setMemberOptionValues(clearedValues)
+  }, [group.members])
   
   // Add new option
   const addOption = () => {
@@ -234,6 +248,11 @@ export function VariantGroupingModal({
         </FocusModal.Header>
         
         <FocusModal.Body className="flex flex-col gap-y-8 p-4 md:p-6 overflow-y-auto">
+          {/* Section 0: Template Selector - quick way to populate options */}
+          <div className="border-b border-ui-border-base pb-6">
+            <VariantTemplateSelector onSelectTemplate={handleApplyTemplate} />
+          </div>
+          
           {/* Section 1: Product Options - matching product-create-details-variant-section style */}
           <div className="flex flex-col gap-y-6">
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">

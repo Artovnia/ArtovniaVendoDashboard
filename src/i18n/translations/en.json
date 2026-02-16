@@ -462,6 +462,8 @@
         "stockQuantityRequired": "Stock quantity is required (can be 0)",
         "stockQuantityRequiredWhenManaged": "Stock quantity must be at least 1 when managing inventory"
       },
+      "validationError": "Please complete required fields",
+      "validationErrorDescription": "Some required fields are missing or invalid. Please scroll up to see highlighted fields.",
       "stockLocationHint": "This location will be used for all product variants",
       "stockLocation": "Stock location",
       "variantHeaders": {
@@ -5007,6 +5009,34 @@
         "acknowledge": "I understand that only products with original, non-watermarked images will be approved by administrators",
         "proceed": "I Understand, Proceed with Import"
       }
+    },
+    "templates": {
+      "title": "Variant Templates",
+      "subtitle": "Select a template to quickly populate variant options",
+      "new": "New template",
+      "createTemplate": "Create variant template",
+      "editTemplate": "Edit variant template",
+      "name": "Template name",
+      "namePlaceholder": "e.g. Clothing sizes",
+      "description": "Description (optional)",
+      "descriptionPlaceholder": "Short template description...",
+      "options": "Product options",
+      "optionsHint": "Define options (e.g. Size, Color) and their possible values.",
+      "noTemplates": "No variant templates",
+      "createFirst": "Create a template to quickly assign variant options to products",
+      "selectPlaceholder": "Select template...",
+      "manageAll": "Manage all templates",
+      "applied": "Applied template \"{{name}}\"",
+      "created": "Template created",
+      "updated": "Template updated",
+      "deleted": "Template deleted",
+      "confirmDelete": "Are you sure you want to delete template \"{{name}}\"?",
+      "saveError": "Error saving template",
+      "deleteError": "Error deleting template",
+      "howItWorks": "How it works",
+      "tip1": "Templates allow you to quickly assign variant options to products",
+      "tip2": "Select a template during import to automatically populate options",
+      "tip3": "You can have multiple templates for different product types"
     }
   },
   "pagebuilder": {
@@ -5455,6 +5485,34 @@
     "linkCopyFailed": "Failed to copy link",
     "captionCopied": "Caption copied to clipboard",
     "captionCopyFailed": "Failed to copy caption"
+  },
+  "deliveryTimeframe": {
+    "title": "Delivery Timeframe",
+    "label": "Delivery Timeframe",
+    "hint": "Estimated time to fulfill and ship the product",
+    "selectPlaceholder": "Select delivery timeframe",
+    "noTimeframe": "No timeframe set",
+    "preset1to3": "1-3 days",
+    "preset3to5": "3-5 days",
+    "preset7to14": "7-14 days",
+    "custom": "Custom timeframe",
+    "minDays": "Min days",
+    "maxDays": "Max days",
+    "days": "days",
+    "currentTimeframe": "Current timeframe",
+    "customTimeframe": "Custom timeframe",
+    "notSet": "No delivery timeframe set",
+    "editTitle": "Edit Delivery Timeframe",
+    "updated": "Delivery timeframe updated",
+    "updateError": "Failed to update delivery timeframe",
+    "removed": "Delivery timeframe removed",
+    "removeError": "Failed to remove delivery timeframe",
+    "bulkTitle": "Set Delivery Timeframe",
+    "bulkDescription": "Set delivery timeframe for selected products",
+    "bulkSuccess": "Delivery timeframe set for {{count}} products",
+    "bulkError": "Failed to set delivery timeframe",
+    "selectProducts": "Select products to set delivery timeframe",
+    "noProductsSelected": "No products selected"
   },
   "docs": {
     "title": "Documentation",

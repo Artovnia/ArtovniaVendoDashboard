@@ -16,6 +16,7 @@ import { ProductAdditionalAttributesSection } from "./components/product-additio
 
 import { useDashboardExtension } from '../../../extensions';
 import { ProductShippingProfileSection } from './components/product-shipping-profile-section';
+import { ProductDeliveryTimeframeSection } from './components/product-delivery-timeframe-section';
 
 export const ProductDetail = () => {
   const { id } = useParams();
@@ -72,6 +73,7 @@ export const ProductDetail = () => {
           ...product,
           shipping_profile: product.shipping_profile || undefined
         }} />
+        <ProductDeliveryTimeframeSection productId={product.id} />
         <ProductColorSection productId={product.id} productTitle={product.title} />
         <ProductGPSRSection product={product} />
         <ProductOrganizationSection product={product} />

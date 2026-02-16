@@ -92,6 +92,14 @@ export const ProductCreateSchema = (t: any) => z
     media: z.array(MediaSchema).min(1, { message: t('products.create.validation.imageRequired') }),
     // Record of variant IDs to color IDs for color assignments (array of colors per variant)
     color_assignments: z.record(z.string(), z.array(z.string())).optional(),
+    // Delivery timeframe settings
+    delivery_timeframe: z.object({
+      preset: z.enum(["1-3", "3-5", "7-14", "custom"]).nullable().optional(),
+      min_days: z.number().optional(),
+      max_days: z.number().optional(),
+      label: z.string().optional(),
+      is_custom: z.boolean().optional(),
+    }).nullable().optional(),
     metadata: z.object({
       gpsr_producer_name: z.string().min(1, { message: t('products.create.validation.producerNameRequired') }),
       gpsr_producer_address: z.string().min(1, { message: t('products.create.validation.producerAddressRequired') }),
@@ -203,6 +211,7 @@ export const PRODUCT_CREATE_FORM_DEFAULTS: Partial<
   weight: "",
   width: "",
   color_assignments: {},  // Will be initialized with arrays in the form
+  delivery_timeframe: null,
   metadata: {
     gpsr_producer_name: "",
     gpsr_producer_address: "",

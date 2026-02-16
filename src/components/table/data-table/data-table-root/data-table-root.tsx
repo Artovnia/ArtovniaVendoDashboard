@@ -403,16 +403,16 @@ export const DataTableRoot = <TData,>({
                             'transition-colors duration-75',
                             {
                               '!pl-0 !pr-0': shouldRenderAsLink,
-                              "sticky left-0 after:absolute after:inset-y-0 after:right-0 after:h-full after:w-px after:bg-transparent after:content-['']":
+                              " left-0 after:absolute after:inset-y-0 after:right-0 after:h-full after:w-px after:bg-ui-bg-base after:content-['']":
                                 isStickyCell,
                               'left-[68px]': hasLeftOffset,
-                              'after:bg-ui-border-base':
+                              'after:bg-ui-bg-base':
                                 showStickyBorder &&
                                 isStickyCell &&
                                 !isSelectCell,
-                              "sticky right-0 before:absolute before:inset-y-0 before:left-0 before:h-full before:w-px before:bg-transparent before:content-['']":
+                              "sticky right-0 before:absolute before:inset-y-0 before:left-0 before:h-full before:w-px before:bg-ui-border-base before:content-['']":
                                 isActionCell,
-                              'before:bg-ui-border-base':
+                              'before:bg-ui-bg-base':
                                 showStickyBorder &&
                                 isActionCell,
                             }
@@ -434,7 +434,7 @@ export const DataTableRoot = <TData,>({
                             >
                               <div
                                 className={clx(
-                                  'flex size-full items-center pr-6',
+                                  'flex size-full items-center pr-6 bg-ui-bg-base',
                                   {
                                     'pl-6':
                                       isTabableLink &&
@@ -516,7 +516,7 @@ export const DataTableRoot = <TData,>({
       {layout === 'fit' && showStickyScroll && (
         <div
           ref={stickyScrollRef}
-          className="fixed bottom-0 z-50 overflow-x-auto bg-ui-bg-base border-t border-ui-border-base"
+          className="fixed bottom-0 z-50 overflow-x-auto bg-ui-bg-base border-t border-ui-bg-base"
           style={{
             left: leftPosition,
             width: clientWidth,
