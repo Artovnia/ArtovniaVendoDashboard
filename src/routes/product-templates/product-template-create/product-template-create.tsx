@@ -46,6 +46,9 @@ export const ProductTemplateCreate = () => {
           <Text className="text-ui-fg-subtle" size="small">
             {t("productTemplates.description")}
           </Text>
+          <Text className="text-ui-fg-muted mt-2" size="small">
+            <strong>{t("productTemplates.howItWorks")}:</strong> {t("productTemplates.howItWorksDescription")}
+          </Text>
         </div>
 
         <Container className="flex flex-col gap-y-4 p-6">

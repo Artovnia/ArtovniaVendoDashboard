@@ -20,6 +20,13 @@ export const TemplateDataEditor = ({ templateData, onChange }: TemplateDataEdito
 
   return (
     <div className="flex flex-col gap-y-4">
+      {/* Fields hint - explaining that all fields are optional */}
+      <Container className="p-4 bg-ui-bg-subtle border-ui-border-base">
+        <Text size="small" className="text-ui-fg-subtle">
+          {t("productTemplates.fieldsHint")}
+        </Text>
+      </Container>
+
       {/* Options Section */}
       <OptionsEditor
         options={templateData.options || []}

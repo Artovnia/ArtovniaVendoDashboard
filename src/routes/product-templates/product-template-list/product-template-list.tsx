@@ -40,7 +40,7 @@ export const ProductTemplateList = () => {
               {t("productTemplates.title")}
             </Heading>
             <Text className="text-ui-fg-subtle" size="small">
-              {t("productTemplates.description")}
+              {t("productTemplates.subtitle")}
             </Text>
           </div>
           <Button

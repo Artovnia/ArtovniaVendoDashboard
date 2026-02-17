@@ -3743,9 +3743,18 @@
         },
         "priceForValue": {
           "type": "string"
+        },
+        "fieldsHint": {
+          "type": "string"
+        },
+        "howItWorks": {
+          "type": "string"
+        },
+        "howItWorksDescription": {
+          "type": "string"
         }
       },
-      "required": ["domain", "subtitle", "title", "description", "createTemplate", "editTemplate", "deleteTemplate", "deleteConfirm", "deleteSuccess", "noTemplates", "templateName", "templateDescription", "templateData", "isDefault", "optionsCount", "categoriesCount", "withGpsr", "withPrices", "withDimensions", "createFromProduct", "createFromProductDescription", "applied", "applyError", "saved", "saveError", "nameRequired", "selectPlaceholder", "loading", "saveAsCurrent", "namePlaceholder", "default", "noOptionsHint", "pricePerValue", "priceForValue"],
+      "required": ["domain", "subtitle", "title", "description", "createTemplate", "editTemplate", "deleteTemplate", "deleteConfirm", "deleteSuccess", "noTemplates", "templateName", "templateDescription", "templateData", "isDefault", "optionsCount", "categoriesCount", "withGpsr", "withPrices", "withDimensions", "createFromProduct", "createFromProductDescription", "applied", "applyError", "saved", "saveError", "nameRequired", "selectPlaceholder", "loading", "saveAsCurrent", "namePlaceholder", "default", "noOptionsHint", "pricePerValue", "priceForValue", "fieldsHint", "howItWorks", "howItWorksDescription"],
       "additionalProperties": false
     },
     "collections": {
