@@ -18,6 +18,7 @@ import AvatarBox from '../../components/common/logo-box/avatar-box';
 import { useSignUpWithEmailPass } from '../../hooks/api';
 import { isFetchError } from '../../lib/is-fetch-error';
 import { useState } from 'react';
+import { useBackendHealth } from '../../hooks/use-backend-health';
 
 const RegisterSchema = (t: any) => z.object({
   name: z
@@ -38,6 +39,11 @@ const RegisterSchema = (t: any) => z.object({
 export const Register = () => {
   const [success, setSuccess] = useState(false);
   const { t } = useTranslation();
+  const { isHealthy, isChecking, refresh } = useBackendHealth({
+    checkOnMount: true,
+    autoRetry: true,
+    retryInterval: 15000,
+  });
 
   const form = useForm<z.infer<ReturnType<typeof RegisterSchema>>>({
     resolver: zodResolver(RegisterSchema(t)),
@@ -93,10 +99,23 @@ export const Register = () => {
               }
             }
 
-            form.setError('root.serverError', {
-              type: 'manual',
-              message: error.message,
-            });
+            // Check if this is a network error (backend down)
+            const isNetworkError = 
+              error.message === 'Failed to fetch' ||
+              error.message?.includes('ERR_CONNECTION_REFUSED') ||
+              error.message?.includes('NetworkError');
+            
+            if (isNetworkError) {
+              form.setError('root.serverError', {
+                type: 'manual',
+                message: t('auth.errors.serverUnavailable', 'Serwer jest obecnie niedostępny. Spróbuj ponownie później.'),
+              });
+            } else {
+              form.setError('root.serverError', {
+                type: 'manual',
+                message: error.message,
+              });
+            }
           },
           onSuccess: () => {
             setSuccess(true);
@@ -138,6 +157,9 @@ export const Register = () => {
       </div>
     );
 
+  // Show maintenance banner when backend is down
+  const showMaintenanceBanner = isHealthy === false;
+
   return (
     <div className='bg-ui-bg-subtle flex min-h-dvh w-dvw items-center justify-center relative'>
       <div className='absolute top-4 right-4 z-10'>
@@ -145,6 +167,32 @@ export const Register = () => {
       </div>
       <div className='m-4 flex w-full max-w-[280px] flex-col items-center'>
         <AvatarBox />
+        
+        {/* Maintenance Banner */}
+        {showMaintenanceBanner && (
+          <Alert
+            className='mb-4 w-full'
+            variant='warning'
+          >
+            <div className='flex flex-col gap-2'>
+              <Text size='small' weight='plus'>
+                {t('auth.maintenance.title', 'Serwer niedostępny')}
+              </Text>
+              <Text size='small' className='text-ui-fg-subtle'>
+                {t('auth.maintenance.description', 'Serwer jest obecnie w trakcie konserwacji. Rejestracja może być niemożliwa.')}
+              </Text>
+              <Button
+                variant='secondary'
+                size='small'
+                onClick={() => refresh()}
+                isLoading={isChecking}
+                className='mt-1'
+              >
+                {t('auth.maintenance.retry', 'Sprawdź ponownie')}
+              </Button>
+            </div>
+          </Alert>
+        )}
         <div className='mb-4 flex flex-col items-center'>
           <Heading>{t('auth.register.title')}</Heading>
           <Text

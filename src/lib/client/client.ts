@@ -502,6 +502,13 @@ export const fetchQuery = async (
 
     const errorStr = String(error);
 
+    // Dispatch event to notify health check system about network errors
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('backend:network-error', { 
+        detail: { url, method, error: errorStr } 
+      }));
+    }
+
     // Check for connection refused specifically (what the user is experiencing)
     if (errorStr.includes('ERR_CONNECTION_REFUSED')) {
       console.warn(

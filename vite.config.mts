@@ -56,6 +56,11 @@ export default defineConfig(({ mode }) => {
           secure: false,
           cookieDomainRewrite: 'localhost',
           withCredentials: true
+        },
+        '/health': {
+          target: BACKEND_URL,
+          changeOrigin: true,
+          secure: false,
         }
       },
       hmr: {

@@ -89,7 +89,7 @@ export const DashboardCharts = ({
 }: {
   notFulfilledOrders: number
   fulfilledOrders: number
-  reviewsToReply: any[]
+  reviewsToReply: number
 }) => {
   const { t } = useTranslation()
   const [searchParams, setSearchParams] = useSearchParams()
@@ -106,10 +106,9 @@ export const DashboardCharts = ({
     newSearchParams.set("from", format(newFrom, "yyyy-MM-dd"))
     newSearchParams.set("to", format(newTo, "yyyy-MM-dd"))
     await setSearchParams(newSearchParams)
-    refetch()
   }
 
-  const { customers, orders, totalUniqueCustomers, isPending, refetch } = useStatistics({
+  const { customers, orders, totalUniqueCustomers, isPending } = useStatistics({
     from: `${from}`,
     to: `${to}`,
   })

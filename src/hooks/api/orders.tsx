@@ -37,6 +37,15 @@ _orderKeys.lineItems = function (id: string) {
 
 export const ordersQueryKeys = _orderKeys;
 
+type VendorOrderListFilters = HttpTypes.AdminOrderFilters & {
+  fields?: string
+  q?: string
+  item_id?: string
+  status?: string | string[] | Record<string, unknown>
+  fulfillment_status?: string | string[] | Record<string, unknown>
+  payment_status?: string | string[] | Record<string, unknown>
+}
+
 export const useOrder = (
   id: string,
   query?: Record<string, any>,
@@ -120,7 +129,7 @@ export const useOrderPreview = (
 };
 
 export const useOrders = (
-  query?: HttpTypes.AdminOrderFilters,
+  query?: VendorOrderListFilters,
   options?: Omit<
     UseQueryOptions<
       HttpTypes.AdminOrderListResponse,

@@ -2603,6 +2603,10 @@ export const RouteMap: RouteObject[] = [
             lazy: () => import('../../routes/invite'),
           },
           {
+            path: '/maintenance',
+            lazy: () => import('../../routes/maintenance'),
+          },
+          {
             path: '*',
             lazy: () => import('../../routes/no-match'),
           },

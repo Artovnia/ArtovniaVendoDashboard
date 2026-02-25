@@ -50,6 +50,27 @@ type ProductCreateFormProps = {
   pricePreferences?: HttpTypes.AdminPricePreference[];
 };
 
+const DESCRIPTION_EMAIL_REGEX = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
+const DESCRIPTION_URL_REGEX = /\b(?:https?:\/\/|www\.)[^\s<]+|\b[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+\b(?:\/[^\s<]*)?/i;
+const DESCRIPTION_LINK_TAG_REGEX = /<a\s+[^>]*href\s*=\s*["'][^"']+["'][^>]*>/i;
+
+const hasBlockedDescriptionContactContent = (value?: string | null) => {
+  if (!value) {
+    return false;
+  }
+
+  const plainText = value
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&nbsp;/gi, ' ')
+    .trim();
+
+  return (
+    DESCRIPTION_EMAIL_REGEX.test(plainText) ||
+    DESCRIPTION_URL_REGEX.test(plainText) ||
+    DESCRIPTION_LINK_TAG_REGEX.test(value)
+  );
+};
+
 export const ProductCreateForm = ({
   defaultChannel,
   store,
@@ -107,6 +128,19 @@ export const ProductCreateForm = ({
     async (values, e) => {
       // Set submitting state to prevent duplicate submissions
       setIsSubmitting(true);
+
+      const descriptionValidationMessage =
+        'Description cannot contain email addresses or website links.';
+
+      if (hasBlockedDescriptionContactContent(values.description)) {
+        form.setError('description', {
+          type: 'manual',
+          message: descriptionValidationMessage,
+        });
+        toast.error(descriptionValidationMessage);
+        setIsSubmitting(false);
+        return;
+      }
       
       let isDraftSubmission = false;
       if (e?.nativeEvent instanceof SubmitEvent) {
@@ -647,7 +681,7 @@ export const ProductCreateForm = ({
     
     switch (currentTab) {
       case Tab.DETAILS:
-        valid = await form.trigger(['title', 'media', 'metadata.gpsr_producer_name', 'metadata.gpsr_producer_address', 'metadata.gpsr_producer_contact', 'metadata.gpsr_instructions'] as any);
+        valid = await form.trigger(['title', 'description', 'media', 'metadata.gpsr_producer_name', 'metadata.gpsr_producer_address', 'metadata.gpsr_producer_contact', 'metadata.gpsr_instructions'] as any);
         break;
       case Tab.ORGANIZE:
         valid = await form.trigger(['shipping_profile_id', 'categories'] as any);
@@ -795,7 +829,7 @@ export const ProductCreateForm = ({
             
             switch (tab) {
               case Tab.DETAILS:
-                valid = await form.trigger(['title', 'media', 'metadata.gpsr_producer_name', 'metadata.gpsr_producer_address', 'metadata.gpsr_producer_contact', 'metadata.gpsr_instructions'] as any);
+                valid = await form.trigger(['title', 'description', 'media', 'metadata.gpsr_producer_name', 'metadata.gpsr_producer_address', 'metadata.gpsr_producer_contact', 'metadata.gpsr_instructions'] as any);
                 break;
               case Tab.ORGANIZE:
                 valid = await form.trigger(['shipping_profile_id', 'categories'] as any);

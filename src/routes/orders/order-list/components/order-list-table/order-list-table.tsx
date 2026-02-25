@@ -24,11 +24,11 @@ export const OrderListTable = () => {
   // Fetch all necessary fields including payment collections for correct payment status
   const { orders, count, isError, error, isLoading } =
     useOrders({
-      limit: 1000,
-      offset: 0,
       // Use DEFAULT_FIELDS which includes payment collections
       fields: DEFAULT_FIELDS,
       ...searchParams,
+    }, {
+      staleTime: 30_000,
     });
 
   const filters = useOrderTableFilters();

@@ -140,7 +140,8 @@ export const useStatistics = ({ from, to }: { from: string; to: string }) => {
       fetchQuery(`/vendor/statistics?time_from=${from}&time_to=${to}`, {
         method: "GET",
       }),
-    queryKey: [USERS_QUERY_KEY, "statistics"],
+    queryKey: [USERS_QUERY_KEY, "statistics", from, to],
+    staleTime: 30_000,
   })
 
   return { ...data, ...rest }

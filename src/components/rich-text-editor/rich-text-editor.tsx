@@ -13,6 +13,7 @@ import './rich-text-editor.css';
 interface RichTextEditorProps {
   value: string;
   onChange: (value: string) => void;
+  transformValue?: (value: string) => string;
   placeholder?: string;
   label?: string;
   optional?: boolean;
@@ -50,6 +51,7 @@ interface RichTextEditorProps {
 export const RichTextEditor = ({
   value = '',
   onChange,
+  transformValue,
   placeholder,
   label,
   optional = false,
@@ -58,12 +60,22 @@ export const RichTextEditor = ({
   const { t } = useTranslation();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiButtonRef = useRef<HTMLButtonElement>(null);
+  const onChangeRef = useRef(onChange);
+  const transformValueRef = useRef(transformValue);
   
   // Track whether the current value change originated from the editor itself
   // to prevent feedback loops when syncing external value changes
   const isInternalChange = useRef(false);
 
   const effectivePlaceholder = placeholder || t('richtext.placeholder');
+
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
+
+  useEffect(() => {
+    transformValueRef.current = transformValue;
+  }, [transformValue]);
 
   const editor = useEditor({
     extensions: [
@@ -90,7 +102,15 @@ export const RichTextEditor = ({
       isInternalChange.current = true;
       const html = updatedEditor.getHTML();
       const cleaned = sanitizeHtml(html);
-      onChange(cleaned);
+      const transformed = transformValueRef.current
+        ? transformValueRef.current(cleaned)
+        : cleaned;
+
+      if (transformed !== cleaned) {
+        updatedEditor.commands.setContent(transformed, { emitUpdate: false });
+      }
+
+      onChangeRef.current(transformed);
     },
     editorProps: {
       attributes: {

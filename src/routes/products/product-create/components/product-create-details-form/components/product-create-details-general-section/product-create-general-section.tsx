@@ -11,10 +11,23 @@ type ProductCreateGeneralSectionProps = {
   form: UseFormReturn<ProductCreateSchemaType>
 }
 
+const DESCRIPTION_EMAIL_REGEX = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi
+const DESCRIPTION_URL_REGEX = /\b(?:https?:\/\/|www\.)[^\s<]+|\b[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+\b(?:\/[^\s<]*)?/gi
+const DESCRIPTION_LINK_TAG_REGEX = /<a\s+[^>]*href\s*=\s*["'][^"']+["'][^>]*>(.*?)<\/a>/gi
+
+const stripBlockedDescriptionContent = (value: string) => {
+  const withoutAnchorTags = value.replace(DESCRIPTION_LINK_TAG_REGEX, '$1')
+
+  return withoutAnchorTags
+    .replace(DESCRIPTION_EMAIL_REGEX, '')
+    .replace(DESCRIPTION_URL_REGEX, '')
+}
+
 export const ProductCreateGeneralSection = ({
   form,
 }: ProductCreateGeneralSectionProps) => {
   const { t } = useTranslation()
+  const blockedContentMessage = 'Description cannot contain email addresses or website links.'
 
   return (
     <div id="general" className="flex flex-col gap-y-6">
@@ -84,15 +97,32 @@ export const ProductCreateGeneralSection = ({
         control={form.control}
         name="description"
         render={({ field, fieldState }) => {
+          const transformDescriptionValue = (nextValue: string) => {
+            const sanitizedValue = stripBlockedDescriptionContent(nextValue)
+            const hadBlockedContent = sanitizedValue !== nextValue
+
+            if (hadBlockedContent) {
+              form.setError('description', {
+                type: 'manual',
+                message: blockedContentMessage,
+              })
+            } else if (form.formState.errors.description?.type === 'manual') {
+              form.clearErrors('description')
+            }
+
+            return sanitizedValue
+          }
+
           return (
             <Form.Item>
               <RichTextEditor
                 value={field.value || ''}
                 onChange={field.onChange}
+                transformValue={transformDescriptionValue}
                 label={t("products.fields.description.label")}
                 placeholder="Ciepła i wygodna kurtka zimowa z wysokiej jakości materiałów..."
                 optional
-                error={fieldState.error?.message}
+                error={fieldState.error?.message || (form.formState.errors.description?.message as string | undefined)}
               />
             </Form.Item>
           )

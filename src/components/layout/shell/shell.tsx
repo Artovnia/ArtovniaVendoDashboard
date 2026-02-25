@@ -18,6 +18,7 @@ import { useSidebar } from "../../../providers/sidebar-provider"
 import { LanguageSwitcher } from "../../common/language-switcher/language-switcher"
 import { ProgressBar } from "../../common/progress-bar"
 import { Notifications } from "../notifications"
+import { HealthCheckWrapper } from "../../utilities/health-check-wrapper"
 
 export const Shell = ({ children }: PropsWithChildren) => {
   const globalShortcuts = useGlobalShortcuts()
@@ -26,30 +27,32 @@ export const Shell = ({ children }: PropsWithChildren) => {
   const loading = navigation.state === "loading"
 
   return (
-    <KeybindProvider shortcuts={globalShortcuts}>
-      <div className="relative flex h-screen flex-col items-start overflow-hidden lg:flex-row">
-        <NavigationBar loading={loading} />
-        <div>
-          <MobileSidebarContainer>{children}</MobileSidebarContainer>
-          <DesktopSidebarContainer>{children}</DesktopSidebarContainer>
+    <HealthCheckWrapper>
+      <KeybindProvider shortcuts={globalShortcuts}>
+        <div className="relative flex h-screen flex-col items-start overflow-hidden lg:flex-row">
+          <NavigationBar loading={loading} />
+          <div>
+            <MobileSidebarContainer>{children}</MobileSidebarContainer>
+            <DesktopSidebarContainer>{children}</DesktopSidebarContainer>
+          </div>
+          <div className="flex h-screen w-full min-w-0 flex-col overflow-auto">
+            <Topbar />
+            <main
+              className={clx(
+                "flex h-full w-full min-w-0 flex-col items-center overflow-y-auto transition-opacity delay-200 duration-200",
+                {
+                  "opacity-25": loading,
+                }
+              )}
+            >
+              <Gutter>
+                <Outlet />
+              </Gutter>
+            </main>
+          </div>
         </div>
-        <div className="flex h-screen w-full min-w-0 flex-col overflow-auto">
-          <Topbar />
-          <main
-            className={clx(
-              "flex h-full w-full min-w-0 flex-col items-center overflow-y-auto transition-opacity delay-200 duration-200",
-              {
-                "opacity-25": loading,
-              }
-            )}
-          >
-            <Gutter>
-              <Outlet />
-            </Gutter>
-          </main>
-        </div>
-      </div>
-    </KeybindProvider>
+      </KeybindProvider>
+    </HealthCheckWrapper>
   )
 }
 
