@@ -2767,7 +2767,7 @@
       "header": "Edytuj profil",
       "languageHint": "Język, którego chcesz używać w panelu administracyjnym. Nie zmienia to języka Twojego sklepu.",
       "languagePlaceholder": "Wybierz język",
-      "usageInsightsHint": "Podziel się spostrzeżeniami dotyczącymi użytkowania i pomóż nam ulepszyć Meduzę. Więcej informacji o tym, co zbieramy i jak z tego wykorzystujemy, możesz przeczytać w naszej <0>dokumentacji</0>."
+      "usageInsightsHint": "Podziel się spostrzeżeniami dotyczącymi użytkowania i pomóż nam ulepszyć Artovnię. Więcej informacji o tym, co zbieramy i jak z tego wykorzystujemy, możesz przeczytać w naszej <0>dokumentacji</0>."
     },
     "toast": {
       "edit": "Profil zaktualizowany pomyślnie"
@@ -3068,11 +3068,11 @@
   },
   "login": {
     "forgotPassword": "Zapomniałeś hasła? - <0>Resetuj</0>",
-    "title": "Witamy w Meduzie",
+    "title": "Witamy w Artovnia",
     "hint": "Zaloguj się, aby uzyskać dostęp do obszaru konta"
   },
   "invite": {
-    "title": "Witamy w Meduzie",
+    "title": "Witamy w Artovnia",
     "hint": "Utwórz swoje konto poniżej",
     "backToLogin": "Powrót do logowania",
     "createAccount": "Utwórz konto",
@@ -3080,8 +3080,8 @@
     "emailTooltip": "Nie można zmienić Twojego adresu e-mail. Jeśli chcesz skorzystać z innego adresu e-mail, należy wysłać nowe zaproszenie.",
     "invalidInvite": "Zaproszenie jest nieprawidłowe lub wygasło.",
     "successTitle": "Twoje konto zostało zarejestrowane",
-    "successHint": "Zacznij od razu z Medusa Admin.",
-    "successAction": "Uruchom administratora Meduzy",
+    "successHint": "Zacznij od razu z Artovnia.",
+    "successAction": "Uruchom administratora Artovnia",
     "invalidTokenTitle": "Twój token zaproszenia jest nieprawidłowy",
     "invalidTokenHint": "Spróbuj poprosić o nowy link z zaproszeniem.",
     "passwordMismatch": "Hasła nie pasują",
@@ -3206,7 +3206,7 @@
       "description": "W tej chwili nie masz żadnych powiadomień, ale gdy to zrobisz, będą one tutaj wyświetlane."
     },
     "accessibility": {
-      "description": "powiadomienia o działaniach Meduzy będą tutaj wymienione."
+      "description": "powiadomienia o działaniach Artovnia będą tutaj wymienione."
     }
   },
   "errors": {
