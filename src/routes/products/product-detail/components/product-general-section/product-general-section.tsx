@@ -131,6 +131,7 @@ export const ProductGeneralSection = ({
           initialProductHandle={product.handle || undefined}
           initialProductTitle={product.title || undefined}
           initialProductThumbnail={product.thumbnail || null}
+          initialProductStatus={product.status}
         />
       )}
     </Container>

@@ -31,6 +31,7 @@ type FacebookPromoteModalProps = {
   initialProductHandle?: string
   initialProductTitle?: string
   initialProductThumbnail?: string | null
+  initialProductStatus?: string
 }
 
 export const FacebookPromoteModal = ({
@@ -42,12 +43,13 @@ export const FacebookPromoteModal = ({
   initialProductHandle,
   initialProductTitle,
   initialProductThumbnail,
+  initialProductStatus,
 }: FacebookPromoteModalProps) => {
   const { t } = useTranslation()
 
   // Fetch full product data with variants, prices, and inventory items
   const { product, isLoading: isProductLoading } = useProduct(productId, {
-    fields: "title,handle,thumbnail,images.url,*variants,*variants.prices,*variants.inventory_items,*categories",
+    fields: "title,handle,status,updated_at,thumbnail,images.url,*variants,*variants.prices,*variants.inventory_items,*categories",
   })
 
   // Check if variant data is available
@@ -183,8 +185,8 @@ export const FacebookPromoteModal = ({
   // Add productId as a version key so Facebook treats each product share URL as unique
   // and avoids cross-product preview cache collisions.
   const shareUrl = useMemo(
-    () => buildProductShareUrl(resolvedHandle, vendorId, productId),
-    [resolvedHandle, vendorId, productId]
+    () => buildProductShareUrl(resolvedHandle, vendorId, product?.updated_at || productId),
+    [resolvedHandle, vendorId, product?.updated_at, productId]
   )
 
   const canShare = Boolean(shareUrl)
@@ -247,7 +249,8 @@ export const FacebookPromoteModal = ({
     e.stopPropagation()
   }, [])
 
-  const isPublished = product?.status === "published"
+  const resolvedStatus = product?.status || initialProductStatus
+  const isPublished = !resolvedStatus || resolvedStatus === "published"
 
   // Render via portal to fully isolate from DataTable row Link events
   return createPortal(
