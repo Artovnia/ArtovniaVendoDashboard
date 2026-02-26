@@ -129,6 +129,71 @@ export const useSignUpWithEmailPass = (
   });
 };
 
+/**
+ * Invite flow auth helper.
+ * Creates or reuses seller auth identity, but does NOT create a seller profile/request.
+ * This is required for team-member invite acceptance, where seller creation fields
+ * like product_description are not part of the flow.
+ */
+export const useSignUpInviteWithEmailPass = (
+  options?: UseMutationOptions<
+    string,
+    FetchError,
+    HttpTypes.AdminSignInWithEmailPassword & {
+      confirmPassword?: string;
+    }
+  >
+) => {
+  return useMutation({
+    mutationFn: async (payload) => {
+      try {
+        const token = await sdk.auth.register('seller', 'emailpass', payload);
+        return token;
+      } catch (error: any) {
+        const errorMessage = error?.message || error?.body?.message || '';
+        const isExistingIdentityError =
+          errorMessage.toLowerCase().includes('identity with email already exists') ||
+          errorMessage.toLowerCase().includes('identity already exists') ||
+          (error?.status === 401 && errorMessage.toLowerCase().includes('identity'));
+
+        if (isExistingIdentityError) {
+          try {
+            const loginResult = await sdk.auth.login('seller', 'emailpass', {
+              email: payload.email,
+              password: payload.password,
+            });
+
+            return typeof loginResult === 'string'
+              ? loginResult
+              : loginResult.location || '';
+          } catch (loginError: any) {
+            const loginErrorMessage =
+              loginError?.message || loginError?.body?.message || '';
+
+            if (
+              loginErrorMessage.toLowerCase().includes('invalid') ||
+              loginErrorMessage.toLowerCase().includes('password') ||
+              loginError?.status === 401
+            ) {
+              throw new Error(
+                'An account with this email already exists. Please use a different email or contact support.'
+              );
+            }
+
+            throw loginError;
+          }
+        }
+
+        throw error;
+      }
+    },
+    onSuccess: async (data, variables, context) => {
+      options?.onSuccess?.(data, variables, context);
+    },
+    ...options,
+  });
+};
+
 export const useResetPasswordForEmailPass = (
   options?: UseMutationOptions<
     void,
