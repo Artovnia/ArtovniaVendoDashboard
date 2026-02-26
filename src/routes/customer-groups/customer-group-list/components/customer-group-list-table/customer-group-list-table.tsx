@@ -18,11 +18,13 @@ import {
   useCustomerGroups,
   useDeleteCustomerGroupLazy,
 } from '../../../../../hooks/api';
-import { useDate } from '../../../../../hooks/use-date';
-import { _DataTable } from '../../../../../components/table/data-table';
 import { TextCell } from '../../../../../components/table/table-cells/common/text-cell';
 
 const PAGE_SIZE = 10;
+
+type CustomerGroupListItem = {
+  customer_group?: HttpTypes.AdminCustomerGroup;
+};
 
 export const CustomerGroupListTable = () => {
   const { t } = useTranslation();
@@ -43,9 +45,13 @@ export const CustomerGroupListTable = () => {
     throw error;
   }
 
-  const filteredList = customer_groups?.filter(
-    (group) => group.customers && group.customers.length > 0
-  );
+  const groups =
+    (customer_groups as CustomerGroupListItem[] | undefined)
+      ?.map((item) => item.customer_group)
+      .filter(
+        (group): group is HttpTypes.AdminCustomerGroup =>
+          Boolean(group)
+      ) ?? [];
 
   return (
     <SingleColumnPage
@@ -56,15 +62,15 @@ export const CustomerGroupListTable = () => {
     >
       <Container className='overflow-hidden p-0'>
         <DataTable
-          data={filteredList}
+          data={groups}
           columns={columns}
           filters={filters}
           heading={t('customerGroups.domain')}
-          subHeading='Organize customers into groups. Groups can have different promotions and prices.'
+          subHeading={t('customerGroups.subtitle')}
           rowCount={count}
           getRowId={(row) => row.id}
           rowHref={(row) => {
-            return `/customer-groups/${row.original.customer_group_id}`;
+            return `/customer-groups/${row.id}`;
           }}
           action={{
             label: t('actions.create'),
@@ -101,7 +107,6 @@ const columnHelper =
 
 const useColumns = () => {
   const { t } = useTranslation();
-  const { getFullDate } = useDate();
   const navigate = useNavigate();
   const prompt = usePrompt();
 
@@ -161,9 +166,7 @@ const useColumns = () => {
         cell: ({ row }) => {
           return (
             <TextCell
-              text={
-                row?.original?.customer_group?.name || '-'
-              }
+              text={row.original.name || '-'}
             />
           );
         },
@@ -171,12 +174,7 @@ const useColumns = () => {
       columnHelper.accessor('customers', {
         header: t('customers.domain'),
         cell: ({ row }) => {
-          return (
-            <span>
-              {row?.original?.customer_group?.customers
-                ?.length ?? 0}
-            </span>
-          );
+          return <span>{row.original.customers?.length ?? 0}</span>;
         },
       }),
       columnHelper.action({
@@ -187,7 +185,7 @@ const useColumns = () => {
               label: t('actions.edit'),
               onClick: ({ row }) => {
                 navigate(
-                  `/customer-groups/${row.original.customer_group_id}/edit`
+                  `/customer-groups/${row.original.id}/edit`
                 );
               },
             },
@@ -198,9 +196,8 @@ const useColumns = () => {
               label: t('actions.delete'),
               onClick: ({ row }) => {
                 handleDeleteCustomerGroup({
-                  id: row.original.customer_group_id,
-                  name:
-                    row.original.customer_group.name ?? '',
+                  id: row.original.id,
+                  name: row.original.name ?? '',
                 });
               },
             },
@@ -208,7 +205,7 @@ const useColumns = () => {
         ],
       }),
     ];
-  }, [t, navigate, getFullDate, handleDeleteCustomerGroup]);
+  }, [t, navigate, handleDeleteCustomerGroup]);
 };
 
 const useFilters = () => {

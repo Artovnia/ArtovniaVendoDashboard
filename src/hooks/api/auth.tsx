@@ -152,6 +152,7 @@ export const useSignUpInviteWithEmailPass = (
       } catch (error: any) {
         const errorMessage = error?.message || error?.body?.message || '';
         const isExistingIdentityError =
+          error?.status === 401 ||
           errorMessage.toLowerCase().includes('identity with email already exists') ||
           errorMessage.toLowerCase().includes('identity already exists') ||
           (error?.status === 401 && errorMessage.toLowerCase().includes('identity'));

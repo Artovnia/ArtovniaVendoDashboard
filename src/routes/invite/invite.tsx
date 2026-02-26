@@ -203,9 +203,8 @@ const CreateView = ({
       })
 
       const invitePayload = {
-        email: data.email,
-        first_name: data.first_name,
-        last_name: data.last_name,
+        token,
+        name: `${data.first_name} ${data.last_name}`.trim(),
       }
 
       await acceptInvite({
@@ -223,6 +222,14 @@ const CreateView = ({
           message: t("invite.invalidInvite"),
         })
         setInvalid(true)
+        return
+      }
+
+      if (error instanceof Error && error.message) {
+        form.setError("root", {
+          type: "manual",
+          message: error.message,
+        })
         return
       }
 

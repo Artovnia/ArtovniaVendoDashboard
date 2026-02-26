@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { ArrowPath, Trash } from '@medusajs/icons';
 import { HttpTypes } from '@medusajs/types';
 import {
   Alert,
@@ -9,6 +10,8 @@ import {
   StatusBadge,
   Text,
   Tooltip,
+  toast,
+  usePrompt,
 } from '@medusajs/ui';
 import { createColumnHelper } from '@tanstack/react-table';
 // import copy from 'copy-to-clipboard';
@@ -19,12 +22,15 @@ import { useTranslation } from 'react-i18next';
 import * as zod from 'zod';
 
 import { Form } from '../../../../../components/common/form';
+import { ActionMenu } from '../../../../../components/common/action-menu';
 import { RouteFocusModal } from '../../../../../components/modals/index.ts';
 import { _DataTable } from '../../../../../components/table/data-table';
 import { KeyboundForm } from '../../../../../components/utilities/keybound-form/keybound-form.tsx';
 import {
   useCreateInvite,
+  useDeleteInvite,
   useInvites,
+  useResendInvite,
 } from '../../../../../hooks/api/invites';
 import { useUserInviteTableQuery } from '../../../../../hooks/table/query/use-user-invite-table-query';
 import { useDataTable } from '../../../../../hooks/use-data-table';
@@ -36,6 +42,9 @@ const InviteUserSchema = zod.object({
 
 const PAGE_SIZE = 10;
 const PREFIX = 'usr_invite';
+type InviteRecord = HttpTypes.AdminInvite & {
+  token?: string;
+};
 
 export const InviteUserForm = () => {
   const { t } = useTranslation();
@@ -63,7 +72,7 @@ export const InviteUserForm = () => {
   const columns = useColumns();
 
   const { table } = useDataTable({
-    data: invites ?? [],
+    data: (invites as InviteRecord[]) ?? [],
     columns,
     count,
     enablePagination: true,
@@ -195,7 +204,93 @@ export const InviteUserForm = () => {
 };
 
 const columnHelper =
-  createColumnHelper<HttpTypes.AdminInvite>();
+  createColumnHelper<InviteRecord>();
+
+const InviteActionsCell = ({ invite }: { invite: InviteRecord }) => {
+  const { t } = useTranslation();
+  const prompt = usePrompt();
+  const { mutateAsync: resendInvite, isPending: isResending } = useResendInvite(invite.id);
+  const { mutateAsync: deleteInvite, isPending: isDeleting } = useDeleteInvite(invite.id);
+
+  const handleResend = async () => {
+    await resendInvite(undefined, {
+      onSuccess: () => {
+        toast.success(t('users.resendInvite'));
+      },
+      onError: (error) => {
+        toast.error(error.message || t('errors.serverError'));
+      },
+    });
+  };
+
+  const handleDelete = async () => {
+    const confirmed = await prompt({
+      title: t('general.areYouSure'),
+      description: t('users.deleteInviteWarning', { email: invite.email }),
+      verificationText: invite.email,
+      verificationInstruction: t('general.typeToConfirm'),
+      confirmText: t('actions.delete'),
+      cancelText: t('actions.cancel'),
+    });
+
+    if (!confirmed) {
+      return;
+    }
+
+    await deleteInvite(undefined, {
+      onSuccess: () => {
+        toast.success(t('actions.delete'));
+      },
+      onError: (error) => {
+        toast.error(error.message || t('errors.serverError'));
+      },
+    });
+  };
+
+  const handleCopyLink = async () => {
+    if (!invite.token) {
+      toast.error(t('errors.serverError'));
+      return;
+    }
+
+    const inviteLink = `${window.location.origin}/invite?token=${invite.token}`;
+    await navigator.clipboard.writeText(inviteLink);
+    toast.success(t('actions.copied'));
+  };
+
+  return (
+    <ActionMenu
+      groups={[
+        {
+          actions: [
+            {
+              label: t('users.resendInvite'),
+              icon: <ArrowPath />,
+              onClick: handleResend,
+              disabled: invite.accepted || isResending || isDeleting,
+            },
+            {
+              label: t('users.copyInviteLink'),
+              icon: <span>🔗</span>,
+              onClick: handleCopyLink,
+              disabled: invite.accepted || !invite.token || isResending || isDeleting,
+            },
+          ],
+        },
+        {
+          actions: [
+            {
+              label: t('actions.delete'),
+              icon: <Trash />,
+              onClick: handleDelete,
+              disabled: isDeleting || isResending,
+            },
+          ],
+        },
+      ]}
+    />
+  );
+};
 
 const useColumns = () => {
   const { t } = useTranslation();
@@ -252,6 +347,13 @@ const useColumns = () => {
               {t('users.inviteStatus.pending')}
             </StatusBadge>
           );
+        },
+      }),
+      columnHelper.display({
+        id: 'actions',
+        header: '',
+        cell: ({ row }) => {
+          return <InviteActionsCell invite={row.original} />;
         },
       }),
     ],

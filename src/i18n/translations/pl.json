@@ -1210,6 +1210,16 @@
   "customerGroups": {
     "domain": "Grupy klientów",
     "subtitle": "Organizuj klientów w grupy. Grupy mogą mieć różne promocje i ceny.",
+    "list": {
+      "empty": {
+        "heading": "Brak grup klientów",
+        "description": "Nie ma żadnych grup klientów do wyświetlenia."
+      },
+      "filtered": {
+        "heading": "Brak grup klientów",
+        "description": "Nie ma żadnych grup klientów do wyświetlenia."
+      }
+    },
     "create": {
       "header": "Utwórz grupę klientów",
       "hint": "Utwórz nową grupę klientów, aby segmentować swoich klientów.",

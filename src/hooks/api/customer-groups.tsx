@@ -45,10 +45,14 @@ export const useCustomerGroup = (
 };
 
 export const useCustomerGroups = (
-  query?: HttpTypes.AdminGetCustomerGroupsParams,
+  query?: HttpTypes.AdminGetCustomerGroupsParams & {
+    customer_id?: string;
+  },
   options?: Omit<
     UseQueryOptions<
-      HttpTypes.AdminGetCustomerGroupsParams,
+      HttpTypes.AdminGetCustomerGroupsParams & {
+        customer_id?: string;
+      },
       FetchError,
       HttpTypes.AdminCustomerGroupListResponse & {
         customer_group?: any;

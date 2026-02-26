@@ -11,7 +11,7 @@ import {
   RowSelectionState,
   createColumnHelper,
 } from '@tanstack/react-table';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import * as zod from 'zod';
@@ -23,7 +23,10 @@ import {
 } from '../../../../../components/modals';
 import { _DataTable } from '../../../../../components/table/data-table';
 import { KeyboundForm } from '../../../../../components/utilities/keybound-form';
-import { useAddCustomersToGroup } from '../../../../../hooks/api/customer-groups';
+import {
+  useCustomerGroup,
+  useAddCustomersToGroup,
+} from '../../../../../hooks/api/customer-groups';
 import { useCustomers } from '../../../../../hooks/api/customers';
 import { useCustomerTableColumns } from '../../../../../hooks/table/columns/use-customer-table-columns';
 import { useCustomerTableFilters } from '../../../../../hooks/table/filters/use-customer-table-filters';
@@ -60,19 +63,6 @@ export const AddCustomersForm = ({
   const [rowSelection, setRowSelection] =
     useState<RowSelectionState>({});
 
-  useEffect(() => {
-    setValue(
-      'customer_ids',
-      Object.keys(rowSelection).filter(
-        (k) => rowSelection[k]
-      ),
-      {
-        shouldDirty: true,
-        shouldTouch: true,
-      }
-    );
-  }, [rowSelection, setValue]);
-
   const { searchParams, raw } = useCustomerTableQuery({
     pageSize: PAGE_SIZE,
   });
@@ -83,18 +73,28 @@ export const AddCustomersForm = ({
       ...searchParams,
     });
 
+  const { customer_group } = useCustomerGroup(customerGroupId);
+  const existingCustomerIds = useMemo(
+    () => new Set(customer_group?.customers?.map((customer) => customer.id) ?? []),
+    [customer_group]
+  );
+
   const updater: OnChangeFn<RowSelectionState> = (fn) => {
-    const state =
-      typeof fn === 'function' ? fn(rowSelection) : fn;
+    setRowSelection((prev) => {
+      const nextState =
+        typeof fn === 'function' ? fn(prev) : fn;
 
-    const ids = Object.keys(state);
+      const normalizedState = Object.fromEntries(
+        Object.entries(nextState).filter(([, selected]) => selected)
+      );
 
-    setValue('customer_ids', ids, {
-      shouldDirty: true,
-      shouldTouch: true,
+      setValue('customer_ids', Object.keys(normalizedState), {
+        shouldDirty: true,
+        shouldTouch: true,
+      });
+
+      return { ...normalizedState };
     });
-
-    setRowSelection(state);
   };
 
   const columns = useColumns();
@@ -104,11 +104,7 @@ export const AddCustomersForm = ({
     columns,
     count,
     enablePagination: true,
-    enableRowSelection: (row) => {
-      return !row.original.groups
-        ?.map((gc) => gc.id)
-        .includes(customerGroupId);
-    },
+    enableRowSelection: (row) => !existingCustomerIds.has(row.original.id),
     getRowId: (row) => row.id,
     pageSize: PAGE_SIZE,
     rowSelection: {
@@ -150,6 +146,16 @@ export const AddCustomersForm = ({
         onSubmit={handleSubmit}
       >
         <RouteFocusModal.Header>
+          <RouteFocusModal.Title asChild>
+            <span className='sr-only'>
+              {t('customerGroups.domain')}
+            </span>
+          </RouteFocusModal.Title>
+          <RouteFocusModal.Description asChild>
+            <span className='sr-only'>
+              {t('customerGroups.customers.add.list.noRecordsMessage')}
+            </span>
+          </RouteFocusModal.Description>
           <div className='flex items-center justify-end gap-x-2'>
             {form.formState.errors.customer_ids && (
               <Hint variant='error'>

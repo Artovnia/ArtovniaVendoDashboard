@@ -1,5 +1,4 @@
 import { clx } from '@medusajs/ui';
-import { memo } from 'react';
 import {
   NoRecords,
   NoResultsProps,
@@ -13,6 +12,7 @@ import {
   DataTableRoot,
   DataTableRootProps,
 } from './data-table-root';
+import { memo } from 'react';
 
 interface DataTableProps<TData>
   extends Omit<DataTableRootProps<TData>, 'noResults'>,
@@ -23,8 +23,8 @@ interface DataTableProps<TData>
   noRecords?: Pick<NoResultsProps, 'title' | 'message'>;
 }
 
-// Memoize both DataTableRoot and DataTableQuery to prevent unnecessary re-renders
-const MemoizedDataTableRoot = memo(DataTableRoot) as typeof DataTableRoot;
+// Keep DataTableRoot non-memoized so internal table state changes (e.g. rowSelection)
+// reliably trigger row checkbox updates in controlled tables.
 const MemoizedDataTableQuery = memo(
   DataTableQuery
 ) as typeof DataTableQuery;
@@ -94,7 +94,7 @@ export const _DataTable = <TData,>({
         filters={filters}
         prefix={prefix}
       />
-      <MemoizedDataTableRoot
+      <DataTableRoot
         table={table}
         count={count}
         columns={columns}

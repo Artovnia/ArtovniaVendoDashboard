@@ -91,7 +91,10 @@ export const useResendInvite = (
   >
 ) => {
   return useMutation({
-    mutationFn: () => sdk.admin.invite.resend(id),
+    mutationFn: () =>
+      fetchQuery(`/vendor/invites/${id}/resend`, {
+        method: 'POST',
+      }),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
         queryKey: invitesQueryKeys.lists(),
@@ -114,7 +117,10 @@ export const useDeleteInvite = (
   >
 ) => {
   return useMutation({
-    mutationFn: () => sdk.admin.invite.delete(id),
+    mutationFn: () =>
+      fetchQuery(`/vendor/invites/${id}`, {
+        method: 'DELETE',
+      }),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
         queryKey: invitesQueryKeys.lists(),
@@ -131,22 +137,29 @@ export const useDeleteInvite = (
 export const useAcceptInvite = (
   inviteToken: string,
   options?: UseMutationOptions<
-    HttpTypes.AdminAcceptInviteResponse,
+    { invite: HttpTypes.AdminInvite },
     FetchError,
-    HttpTypes.AdminAcceptInvite & { auth_token: string }
+    {
+      token: string;
+      name: string;
+      auth_token: string;
+    }
   >
 ) => {
   return useMutation({
     mutationFn: (payload) => {
       const { auth_token, ...rest } = payload;
 
-      return sdk.admin.invite.accept(
-        { invite_token: inviteToken, ...rest },
-        {},
-        {
-          Authorization: `Bearer ${auth_token}`,
-        }
-      );
+      return fetchQuery('/vendor/invites/accept', {
+        method: 'POST',
+        body: {
+          ...rest,
+          token: inviteToken,
+        },
+        headers: {
+          authorization: `Bearer ${auth_token}`,
+        },
+      });
     },
     onSuccess: (data, variables, context) => {
       options?.onSuccess?.(data, variables, context);
