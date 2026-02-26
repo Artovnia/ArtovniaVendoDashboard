@@ -28,6 +28,9 @@ type FacebookPromoteModalProps = {
   productId: string
   vendorName?: string
   vendorId?: string
+  initialProductHandle?: string
+  initialProductTitle?: string
+  initialProductThumbnail?: string | null
 }
 
 export const FacebookPromoteModal = ({
@@ -36,12 +39,15 @@ export const FacebookPromoteModal = ({
   productId,
   vendorName,
   vendorId,
+  initialProductHandle,
+  initialProductTitle,
+  initialProductThumbnail,
 }: FacebookPromoteModalProps) => {
   const { t } = useTranslation()
 
   // Fetch full product data with variants, prices, and inventory items
   const { product, isLoading: isProductLoading } = useProduct(productId, {
-    fields: "*variants,*variants.prices,*variants.inventory_items,*categories",
+    fields: "title,handle,thumbnail,images.url,*variants,*variants.prices,*variants.inventory_items,*categories",
   })
 
   // Check if variant data is available
@@ -158,11 +164,30 @@ export const FacebookPromoteModal = ({
   const [selectedCaptionId, setSelectedCaptionId] = useState<CaptionOption["id"]>("story")
   const [editedText, setEditedText] = useState(captions[0]?.text || "")
 
+  useEffect(() => {
+    const nextCaption = captions.find((caption) => caption.id === selectedCaptionId) || captions[0]
+    if (nextCaption) {
+      setEditedText(nextCaption.text)
+    }
+  }, [captions, selectedCaptionId])
+
+  const resolvedHandle = product?.handle || initialProductHandle || ""
+  const resolvedTitle = product?.title || initialProductTitle || ""
+  const resolvedThumbnail =
+    product?.thumbnail ||
+    product?.images?.[0]?.url ||
+    initialProductThumbnail ||
+    null
+
   // Build share URL with UTM params
+  // Add productId as a version key so Facebook treats each product share URL as unique
+  // and avoids cross-product preview cache collisions.
   const shareUrl = useMemo(
-    () => buildProductShareUrl(product?.handle || "", vendorId),
-    [product?.handle, vendorId]
+    () => buildProductShareUrl(resolvedHandle, vendorId, productId),
+    [resolvedHandle, vendorId, productId]
   )
+
+  const canShare = Boolean(shareUrl)
 
   const handleCaptionSelect = (caption: CaptionOption) => {
     setSelectedCaptionId(caption.id)
@@ -170,17 +195,29 @@ export const FacebookPromoteModal = ({
   }
 
   const handleShareFacebook = useCallback(() => {
+    if (!canShare) {
+      toast.error(t("fbPromote.productNotReady", "Produkt nie jest jeszcze gotowy do udostępnienia"))
+      return
+    }
     openFacebookShareDialog(shareUrl)
-  }, [shareUrl])
+  }, [canShare, shareUrl, t])
 
   const handleShareMessenger = useCallback(async () => {
+    if (!canShare) {
+      toast.error(t("fbPromote.productNotReady", "Produkt nie jest jeszcze gotowy do udostępnienia"))
+      return
+    }
     const copied = await openMessengerShareDialog(shareUrl)
     if (copied) {
       toast.success(t("fbPromote.messengerLinkCopied", "Link skopiowany — wklej go w oknie Messengera"))
     }
-  }, [shareUrl, t])
+  }, [canShare, shareUrl, t])
 
   const handleCopyLink = async () => {
+    if (!canShare) {
+      toast.error(t("fbPromote.productNotReady", "Produkt nie jest jeszcze gotowy do udostępnienia"))
+      return
+    }
     const success = await copyToClipboard(shareUrl)
     if (success) {
       toast.success(t("fbPromote.linkCopied", "Link skopiowany do schowka"))
@@ -256,10 +293,10 @@ export const FacebookPromoteModal = ({
             <div className="flex gap-3 sm:gap-4 p-3 sm:p-4">
               {/* Thumbnail */}
               <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-md overflow-hidden bg-ui-bg-subtle flex-shrink-0">
-                {product?.thumbnail ? (
+                {resolvedThumbnail ? (
                   <img
-                    src={product.thumbnail}
-                    alt={product.title || ""}
+                    src={resolvedThumbnail}
+                    alt={resolvedTitle}
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -274,7 +311,7 @@ export const FacebookPromoteModal = ({
               {/* Product Info */}
               <div className="flex-1 min-w-0">
                 <Heading level="h3" className="truncate text-sm sm:text-base">
-                  {product?.title}
+                  {resolvedTitle}
                 </Heading>
                 <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-1">
                   {price && (
@@ -431,6 +468,11 @@ export const FacebookPromoteModal = ({
                   {t("fbPromote.copyLink", "Kopiuj")}
                 </Button>
               </div>
+              {!canShare && (
+                <Text size="xsmall" className="text-ui-fg-muted">
+                  {t("fbPromote.linkPending", "Czekam na pełne dane produktu (handle) — spróbuj za chwilę.")}
+                </Text>
+              )}
             </div>
           </div>
         </FocusModal.Body>
@@ -445,12 +487,13 @@ export const FacebookPromoteModal = ({
               <Button
                 variant="secondary"
                 onClick={handleShareMessenger}
+                disabled={!canShare}
                 className="w-full sm:w-auto"
               >
                 <Share className="mr-1" />
                 {t("fbPromote.sendMessenger", "Wyślij Messengerem")}
               </Button>
-              <Button onClick={handleShareFacebook} className="w-full sm:w-auto">
+              <Button onClick={handleShareFacebook} disabled={!canShare} className="w-full sm:w-auto">
                 <Facebook className="mr-1" />
                 {t("fbPromote.shareOnFacebook", "Udostępnij na Facebooku")}
               </Button>

@@ -25,14 +25,28 @@ const hashVendorId = (id: string): string => {
  */
 export const buildProductShareUrl = (
   productHandle: string,
-  vendorId?: string
+  vendorId?: string,
+  shareVersion?: string
 ): string => {
-  const baseUrl = `${MEDUSA_STOREFRONT_URL}/products/${productHandle}`
+  const normalizedHandle = productHandle?.trim()
+  if (!normalizedHandle) {
+    return ""
+  }
+
+  const normalizedStorefrontUrl = MEDUSA_STOREFRONT_URL.replace(/\/+$/, "")
+  const encodedHandle = normalizedHandle
+    .split("/")
+    .filter(Boolean)
+    .map((segment) => encodeURIComponent(segment))
+    .join("/")
+
+  const baseUrl = `${normalizedStorefrontUrl}/products/${encodedHandle}`
   const params = new URLSearchParams({
     utm_source: "facebook",
     utm_medium: "organic",
     utm_campaign: "vendor_share",
     ...(vendorId && { utm_content: hashVendorId(vendorId) }),
+    ...(shareVersion && { v: shareVersion }),
   })
   return `${baseUrl}?${params.toString()}`
 }

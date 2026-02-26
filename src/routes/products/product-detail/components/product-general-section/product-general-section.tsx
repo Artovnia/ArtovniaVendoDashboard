@@ -128,6 +128,9 @@ export const ProductGeneralSection = ({
           productId={product.id}
           vendorName={seller?.name}
           vendorId={seller?.id}
+          initialProductHandle={product.handle || undefined}
+          initialProductTitle={product.title || undefined}
+          initialProductThumbnail={product.thumbnail || null}
         />
       )}
     </Container>
