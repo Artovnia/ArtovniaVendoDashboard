@@ -35,10 +35,9 @@ const CreateAccountSchema = z
 // TODO: Update to V2 format
 type DecodedInvite = {
   id: string
-  jti: any
-  exp: string
+  exp: number
   iat: number
-  email: string
+  email?: string
 }
 
 export const Invite = () => {
@@ -200,6 +199,8 @@ const CreateView = ({
       const authToken = await signUpEmailPass({
         email: data.email,
         password: data.password,
+        confirmPassword: data.repeat_password,
+        name: `${data.first_name} ${data.last_name}`.trim(),
       })
 
       const invitePayload = {
@@ -406,9 +407,9 @@ const SuccessView = () => {
 
 const InviteSchema = z.object({
   id: z.string(),
-  jti: z.string(),
   exp: z.number(),
   iat: z.number(),
+  email: z.string().email().optional(),
 })
 
 const validateDecodedInvite = (decoded: any): decoded is DecodedInvite => {
