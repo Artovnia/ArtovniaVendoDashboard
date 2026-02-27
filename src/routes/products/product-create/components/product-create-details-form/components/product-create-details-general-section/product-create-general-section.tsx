@@ -12,7 +12,8 @@ type ProductCreateGeneralSectionProps = {
 }
 
 const DESCRIPTION_EMAIL_REGEX = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi
-const DESCRIPTION_URL_REGEX = /\b(?:https?:\/\/|www\.)[^\s<]+|\b[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+\b(?:\/[^\s<]*)?/gi
+const DESCRIPTION_URL_WITH_PROTOCOL_OR_WWW_REGEX = /\b(?:https?:\/\/|www\.)[^\s<]+/gi
+const DESCRIPTION_URL_DOMAIN_REGEX = /\b(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+(?:[a-z]{2,24})(?:\/[^\s<]*)?/gi
 const DESCRIPTION_LINK_TAG_REGEX = /<a\s+[^>]*href\s*=\s*["'][^"']+["'][^>]*>(.*?)<\/a>/gi
 
 const stripBlockedDescriptionContent = (value: string) => {
@@ -20,7 +21,8 @@ const stripBlockedDescriptionContent = (value: string) => {
 
   return withoutAnchorTags
     .replace(DESCRIPTION_EMAIL_REGEX, '')
-    .replace(DESCRIPTION_URL_REGEX, '')
+    .replace(DESCRIPTION_URL_WITH_PROTOCOL_OR_WWW_REGEX, '')
+    .replace(DESCRIPTION_URL_DOMAIN_REGEX, '')
 }
 
 export const ProductCreateGeneralSection = ({

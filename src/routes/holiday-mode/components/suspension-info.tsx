@@ -88,7 +88,7 @@ export const SuspensionInfo = () => {
             
             <div className="p-4 bg-ui-bg-base rounded border border-ui-border-base mt-2">
               <Text className="text-ui-fg-subtle">
-                {t('holidayMode.suspension.contactMessage')} <a href="mailto:sayuri.platform@gmail.com" className="underline">{t('holidayMode.suspension.contactEmail')}</a>
+                {t('holidayMode.suspension.contactMessage')} <a href="mailto:info.artovnia@gmail.com" className="underline">{t('holidayMode.suspension.contactEmail')}</a>
               </Text>
             </div>
           </div>

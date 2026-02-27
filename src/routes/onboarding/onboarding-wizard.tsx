@@ -280,7 +280,7 @@ export const OnboardingWizard = () => {
         {/* Help Text */}
         <div className='mt-4 sm:mt-6 text-center px-2'>
           <Text className='text-ui-fg-subtle text-xs sm:text-sm break-words'>
-            {t('dashboard.onboarding.help.text')} <a href='mailto:sayuri.platform@gmail.com' className='text-ui-fg-interactive hover:underline break-all'>sayuri.platform@gmail.com</a>
+            {t('dashboard.onboarding.help.text')} <a href='mailto:info.artovnia@gmail.com' className='text-ui-fg-interactive hover:underline break-all'>info.artovnia@gmail.com</a>
           </Text>
         </div>
       </div>

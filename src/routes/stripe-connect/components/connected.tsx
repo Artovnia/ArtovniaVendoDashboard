@@ -477,7 +477,7 @@ export const Connected = ({ status }: ConnectedProps) => {
         
         {statusConfig.showSupportLink && (
           <a
-            href='mailto:sayuri.platform@gmail.com'
+            href='mailto:info.artovnia@gmail.com'
             className='w-full'
           >
             <Button variant='secondary' className='w-full'>

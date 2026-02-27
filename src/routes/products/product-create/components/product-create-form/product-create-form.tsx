@@ -51,7 +51,8 @@ type ProductCreateFormProps = {
 };
 
 const DESCRIPTION_EMAIL_REGEX = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
-const DESCRIPTION_URL_REGEX = /\b(?:https?:\/\/|www\.)[^\s<]+|\b[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+\b(?:\/[^\s<]*)?/i;
+const DESCRIPTION_URL_WITH_PROTOCOL_OR_WWW_REGEX = /\b(?:https?:\/\/|www\.)[^\s<]+/i;
+const DESCRIPTION_URL_DOMAIN_REGEX = /\b(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+(?:[a-z]{2,24})(?:\/[^\s<]*)?/i;
 const DESCRIPTION_LINK_TAG_REGEX = /<a\s+[^>]*href\s*=\s*["'][^"']+["'][^>]*>/i;
 
 const hasBlockedDescriptionContactContent = (value?: string | null) => {
@@ -66,7 +67,8 @@ const hasBlockedDescriptionContactContent = (value?: string | null) => {
 
   return (
     DESCRIPTION_EMAIL_REGEX.test(plainText) ||
-    DESCRIPTION_URL_REGEX.test(plainText) ||
+    DESCRIPTION_URL_WITH_PROTOCOL_OR_WWW_REGEX.test(plainText) ||
+    DESCRIPTION_URL_DOMAIN_REGEX.test(plainText) ||
     DESCRIPTION_LINK_TAG_REGEX.test(value)
   );
 };
@@ -227,57 +229,43 @@ export const ProductCreateForm = ({
         delete payload.color_assignments;
       }
       
-      let uploadedMedia: (HttpTypes.AdminFile & {
-        isThumbnail: boolean;
-      })[] = [];
+      let uploadedMedia: Array<{ url: string; isThumbnail: boolean }> = [];
       
       // Validate and upload media files
       if (media.length) {
         console.log('📤 [PRODUCT-CREATE] Starting media upload process');
         
         try {
-          const thumbnailReq = media.find((m) => m.isThumbnail);
-          const otherMediaReq = media.filter((m) => !m.isThumbnail);
-          
-          console.log('📤 [PRODUCT-CREATE] Media split:', {
-            thumbnailCount: thumbnailReq ? 1 : 0,
-            otherMediaCount: otherMediaReq.length
+          const filesToUpload = media
+            .map((m, index) => ({ ...m, index }))
+            .filter((m) => !!m.file);
+
+          console.log('📤 [PRODUCT-CREATE] Uploading media in a single request:', {
+            fileCount: filesToUpload.length,
           });
 
-          const fileReqs = [];
-          
-          if (thumbnailReq) {
-            console.log('📤 [PRODUCT-CREATE] Uploading thumbnail:', thumbnailReq.file);
-            fileReqs.push(
-              uploadFilesQuery([thumbnailReq]).then(
-                (r: any) => {
-                  console.log('✅ [PRODUCT-CREATE] Thumbnail uploaded successfully:', r.files[0]?.url);
-                  return r.files.map((f: any) => ({
-                    ...f,
-                    isThumbnail: true,
-                  }));
-                }
-              )
-            );
-          }
-          
-          if (otherMediaReq?.length) {
-            console.log('📤 [PRODUCT-CREATE] Uploading other media:', otherMediaReq.length, 'files');
-            fileReqs.push(
-              uploadFilesQuery(otherMediaReq).then(
-                (r: any) => {
-                  console.log('✅ [PRODUCT-CREATE] Other media uploaded successfully:', r.files.length, 'files');
-                  return r.files.map((f: any) => ({
-                    ...f,
-                    isThumbnail: false,
-                  }));
-                }
-              )
-            );
-          }
+          const { files } = await uploadFilesQuery(filesToUpload);
 
-          uploadedMedia = (await Promise.all(fileReqs)).flat();
-          
+          const withUpdatedUrls = media.map((entry, index) => {
+            const uploadIndex = filesToUpload.findIndex((m) => m.index === index);
+
+            if (uploadIndex > -1) {
+              return {
+                ...entry,
+                url: files[uploadIndex]?.url,
+              };
+            }
+
+            return entry;
+          });
+
+          uploadedMedia = withUpdatedUrls
+            .filter((entry) => !!entry.url)
+            .map((entry) => ({
+              url: entry.url,
+              isThumbnail: entry.isThumbnail,
+            }));
+
           console.log('✅ [PRODUCT-CREATE] All media uploaded:', {
             uploadedCount: uploadedMedia.length,
             expectedCount: media.length,
@@ -366,12 +354,16 @@ export const ProductCreateForm = ({
       delete (cleanPayload as any).color_assignments;
       delete (cleanPayload as any).delivery_timeframe;
       
+      const thumbnailUrl =
+        uploadedMedia.find((m) => m.isThumbnail)?.url || uploadedMedia[0]?.url;
+
       const apiPayload = {
         ...cleanPayload,
         options: productOptions,
         variants: variants,
         status: isDraftSubmission ? 'draft' : 'published',
-        images: uploadedMedia,
+        images: uploadedMedia.map((m) => ({ url: m.url })),
+        thumbnail: thumbnailUrl,
       };
       
       console.log('🚀 [PRODUCT-CREATE] Sending product creation request:', {

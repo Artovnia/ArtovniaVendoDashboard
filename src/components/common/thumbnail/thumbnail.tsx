@@ -32,71 +32,18 @@ const getDashboardThumbnailCandidate = (src: string): string | null => {
   }
 }
 
-const buildNetlifyImageUrl = (
-  imageUrl: string,
-  width: number,
-  quality: number
-): string => {
-  const params = new URLSearchParams({
-    url: imageUrl,
-    w: String(width),
-    q: String(quality),
-    fit: "cover",
-  })
-
-  return `/.netlify/images?${params.toString()}`
-}
-
-const getOptimizedThumbnail = (
-  src: string,
-  size: "small" | "base",
-  forceDisableNetlifyCdn: boolean = false
-): { src: string; srcSet?: string } => {
-  const useNetlifyImageCdn = import.meta.env.VITE_USE_NETLIFY_IMAGE_CDN === "true"
-  const hostname = typeof window !== "undefined" ? window.location.hostname : ""
-  const isLocalhostLike =
-    hostname === "localhost" ||
-    hostname === "127.0.0.1" ||
-    hostname === "0.0.0.0" ||
-    hostname.endsWith(".local")
-
-  if (
-    !useNetlifyImageCdn ||
-    forceDisableNetlifyCdn ||
-    isLocalhostLike ||
-    !isRemoteHttpUrl(src)
-  ) {
-    return { src }
-  }
-
-  const targetWidth = size === "small" ? 16 : 24
-  const x1 = buildNetlifyImageUrl(src, targetWidth, 55)
-  const x2 = buildNetlifyImageUrl(src, targetWidth * 2, 55)
-
-  return {
-    src: x1,
-    srcSet: `${x1} 1x, ${x2} 2x`,
-  }
-}
-
 export const Thumbnail = memo(({ src, alt, size = "base" }: ThumbnailProps) => {
   const dashboardThumbnailSrc = src ? getDashboardThumbnailCandidate(src) : null
   const [fallbackToOriginal, setFallbackToOriginal] = useState(false)
-  const [disableNetlifyCdnForThisImage, setDisableNetlifyCdnForThisImage] = useState(false)
 
   useEffect(() => {
     setFallbackToOriginal(false)
-    setDisableNetlifyCdnForThisImage(false)
   }, [src])
 
   const resolvedSrc = src
     ? dashboardThumbnailSrc && !fallbackToOriginal
       ? dashboardThumbnailSrc
       : src
-    : null
-
-  const optimized = resolvedSrc
-    ? getOptimizedThumbnail(resolvedSrc, size, disableNetlifyCdnForThisImage)
     : null
   
   return (
@@ -111,20 +58,13 @@ export const Thumbnail = memo(({ src, alt, size = "base" }: ThumbnailProps) => {
     >
       {src ? (
         <img
-          src={optimized?.src || resolvedSrc || src}
-          srcSet={optimized?.srcSet}
+          src={resolvedSrc || src}
           alt={alt}
           className="h-full w-full object-cover object-center"
           loading="lazy"
           decoding="async"
-          fetchPriority="low"
           referrerPolicy="no-referrer"
           onError={() => {
-            if (!disableNetlifyCdnForThisImage) {
-              setDisableNetlifyCdnForThisImage(true)
-              return
-            }
-
             if (dashboardThumbnailSrc && !fallbackToOriginal) {
               setFallbackToOriginal(true)
             }

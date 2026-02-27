@@ -103,10 +103,10 @@ const MaintenancePage = () => {
               Jeśli problem się utrzymuje, skontaktuj się z nami:
             </Text>
             <a
-              href="mailto:sayuri.platform@gmail.com"
+              href="mailto:info.artovnia@gmail.com"
               className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover font-medium underline underline-offset-4"
             >
-              sayuri.platform@gmail.com
+              info.artovnia@gmail.com
             </a>
           </div>
 
