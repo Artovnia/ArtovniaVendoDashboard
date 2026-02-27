@@ -1,4 +1,4 @@
-import { memo } from "react"
+import { memo, useEffect, useState } from "react"
 import { Photo } from "@medusajs/icons"
 import { clx } from "@medusajs/ui"
 
@@ -10,6 +10,27 @@ type ThumbnailProps = {
 
 const isRemoteHttpUrl = (value: string): boolean =>
   value.startsWith("http://") || value.startsWith("https://")
+
+const getDashboardThumbnailCandidate = (src: string): string | null => {
+  if (!isRemoteHttpUrl(src) || src.includes("-thumb-96.webp")) {
+    return null
+  }
+
+  try {
+    const sourceUrl = new URL(src)
+    const pathname = sourceUrl.pathname
+    const extensionIndex = pathname.lastIndexOf(".")
+
+    if (extensionIndex === -1) {
+      return null
+    }
+
+    sourceUrl.pathname = `${pathname.slice(0, extensionIndex)}-thumb-96.webp`
+    return sourceUrl.toString()
+  } catch {
+    return null
+  }
+}
 
 const buildNetlifyImageUrl = (
   imageUrl: string,
@@ -28,13 +49,14 @@ const buildNetlifyImageUrl = (
 
 const getOptimizedThumbnail = (
   src: string,
-  size: "small" | "base"
+  size: "small" | "base",
+  forceDisableNetlifyCdn: boolean = false
 ): { src: string; srcSet?: string } => {
   const useNetlifyImageCdn = import.meta.env.VITE_USE_NETLIFY_IMAGE_CDN === "true"
   const hostname = typeof window !== "undefined" ? window.location.hostname : ""
   const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1"
 
-  if (!useNetlifyImageCdn || isLocalhost || !isRemoteHttpUrl(src)) {
+  if (!useNetlifyImageCdn || forceDisableNetlifyCdn || isLocalhost || !isRemoteHttpUrl(src)) {
     return { src }
   }
 
@@ -49,7 +71,24 @@ const getOptimizedThumbnail = (
 }
 
 export const Thumbnail = memo(({ src, alt, size = "base" }: ThumbnailProps) => {
-  const optimized = src ? getOptimizedThumbnail(src, size) : null
+  const dashboardThumbnailSrc = src ? getDashboardThumbnailCandidate(src) : null
+  const [fallbackToOriginal, setFallbackToOriginal] = useState(false)
+  const [disableNetlifyCdnForThisImage, setDisableNetlifyCdnForThisImage] = useState(false)
+
+  useEffect(() => {
+    setFallbackToOriginal(false)
+    setDisableNetlifyCdnForThisImage(false)
+  }, [src])
+
+  const resolvedSrc = src
+    ? dashboardThumbnailSrc && !fallbackToOriginal
+      ? dashboardThumbnailSrc
+      : src
+    : null
+
+  const optimized = resolvedSrc
+    ? getOptimizedThumbnail(resolvedSrc, size, disableNetlifyCdnForThisImage)
+    : null
   
   return (
     <div
@@ -63,7 +102,7 @@ export const Thumbnail = memo(({ src, alt, size = "base" }: ThumbnailProps) => {
     >
       {src ? (
         <img
-          src={optimized?.src || src}
+          src={optimized?.src || resolvedSrc || src}
           srcSet={optimized?.srcSet}
           alt={alt}
           className="h-full w-full object-cover object-center"
@@ -71,6 +110,16 @@ export const Thumbnail = memo(({ src, alt, size = "base" }: ThumbnailProps) => {
           decoding="async"
           fetchPriority="low"
           referrerPolicy="no-referrer"
+          onError={() => {
+            if (!disableNetlifyCdnForThisImage) {
+              setDisableNetlifyCdnForThisImage(true)
+              return
+            }
+
+            if (dashboardThumbnailSrc && !fallbackToOriginal) {
+              setFallbackToOriginal(true)
+            }
+          }}
         />
       ) : (
         <Photo className="text-ui-fg-subtle" />
