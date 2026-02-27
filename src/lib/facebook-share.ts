@@ -57,8 +57,18 @@ export const buildProductShareUrl = (
  * Facebook will scrape OG tags from the product page for the preview.
  */
 export const openFacebookShareDialog = (productUrl: string): void => {
-  const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}`
-  window.open(shareUrl, "_blank", "noopener,noreferrer,width=600,height=400")
+  // Facebook's sharer can aggressively reuse cached preview data in popup flow.
+  // Add a per-click URL nonce so each share opens with a unique URL variant,
+  // while still pointing to the same product page.
+  const nonceUrl = new URL(productUrl)
+  nonceUrl.searchParams.set("fb_share_nonce", Date.now().toString(36))
+
+  const shareUrl = new URL("https://www.facebook.com/sharer/sharer.php")
+  shareUrl.searchParams.set("u", nonceUrl.toString())
+
+  // Use a unique popup target name so browser/Facebook don't reuse an older share window.
+  const popupTarget = `fb-share-${Date.now()}`
+  window.open(shareUrl.toString(), popupTarget, "noopener,noreferrer,width=600,height=400")
 }
 
 /**
