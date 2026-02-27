@@ -54,9 +54,18 @@ const getOptimizedThumbnail = (
 ): { src: string; srcSet?: string } => {
   const useNetlifyImageCdn = import.meta.env.VITE_USE_NETLIFY_IMAGE_CDN === "true"
   const hostname = typeof window !== "undefined" ? window.location.hostname : ""
-  const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1"
+  const isLocalhostLike =
+    hostname === "localhost" ||
+    hostname === "127.0.0.1" ||
+    hostname === "0.0.0.0" ||
+    hostname.endsWith(".local")
 
-  if (!useNetlifyImageCdn || forceDisableNetlifyCdn || isLocalhost || !isRemoteHttpUrl(src)) {
+  if (
+    !useNetlifyImageCdn ||
+    forceDisableNetlifyCdn ||
+    isLocalhostLike ||
+    !isRemoteHttpUrl(src)
+  ) {
     return { src }
   }
 
