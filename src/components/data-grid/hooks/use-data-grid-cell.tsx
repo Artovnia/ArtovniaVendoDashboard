@@ -59,16 +59,6 @@ export const useDataGridCell = <TData, TValue>({
       e.preventDefault()
       e.stopPropagation()
 
-      if (e.detail === 2) {
-        if (inputRef.current) {
-          setShowOverlay(false)
-
-          inputRef.current.focus()
-
-          return
-        }
-      }
-
       if (e.shiftKey) {
         // Only allow setting the rangeEnd if the column matches the anchor column.
         // If not we let the function continue and treat the click as if the shift key was not pressed.
@@ -76,6 +66,13 @@ export const useDataGridCell = <TData, TValue>({
           setRangeEnd(coords)
           return
         }
+      }
+
+      if (inputRef.current) {
+        setSingleRange(coords)
+        setShowOverlay(false)
+        inputRef.current.focus()
+        return
       }
 
       if (containerRef.current) {

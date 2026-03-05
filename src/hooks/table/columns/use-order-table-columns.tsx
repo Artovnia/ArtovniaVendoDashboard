@@ -1,10 +1,14 @@
 import { HttpTypes } from '@medusajs/types';
+import { CheckCircle } from '@medusajs/icons';
 import {
   ColumnDef,
   ColumnDefBase,
   createColumnHelper,
 } from '@tanstack/react-table';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { toast } from '@medusajs/ui';
+import { ActionMenu } from '../../../components/common/action-menu';
 import {
   DateCell,
   DateHeader,
@@ -26,16 +30,12 @@ import {
   PaymentStatusCell,
   PaymentStatusHeader,
 } from '../../../components/table/table-cells/order/payment-status-cell';
-import {
-  SalesChannelCell,
-  SalesChannelHeader,
-} from '../../../components/table/table-cells/order/sales-channel-cell';
+import { StatusCell } from '../../../components/table/table-cells/common/status-cell';
 import {
   TotalCell,
   TotalHeader,
 } from '../../../components/table/table-cells/order/total-cell';
-import { toast } from '@medusajs/ui';
-import { backendUrl } from '../../../lib/client/client';
+import { useCompleteOrder } from '../../api/orders';
 
 // We have to use any here, as the type of Order is so complex that it lags the TS server
 const columnHelper =
@@ -43,12 +43,74 @@ const columnHelper =
 
 type UseOrderTableColumnsProps = {
   exclude?: string[];
+  onOrderCompleted?: () => void;
+};
+
+const OrderCompleteActionCell = ({
+  order,
+  onCompleted,
+}: {
+  order: HttpTypes.AdminOrder;
+  onCompleted?: () => void;
+}) => {
+  const { t } = useTranslation();
+  const { mutate, isPending } = useCompleteOrder(order.id, {
+    onSuccess: () => {
+      toast.success(t('orders.listActions.completeSuccess'));
+      onCompleted?.();
+    },
+    onError: () => {
+      toast.error(t('orders.listActions.completeError'));
+    },
+  });
+
+  const canCompleteOrder = order.fulfillment_status === 'delivered';
+
+  const isActionDisabled =
+    !canCompleteOrder ||
+    isPending ||
+    order.status === 'completed' ||
+    order.status === 'canceled';
+
+  const handleComplete = () => {
+    if (isActionDisabled) {
+      return;
+    }
+
+    mutate();
+  };
+
+  if (!canCompleteOrder) {
+    return null;
+  }
+
+  return (
+    <div className='flex h-full w-full  items-center justify-end'>
+      <ActionMenu
+        groups={[
+          {
+            actions: [
+              {
+                icon: <CheckCircle />,
+                label: isPending
+                  ? `${t('actions.complete')}...`
+                  : t('actions.complete'),
+                onClick: handleComplete,
+                disabled: isActionDisabled,
+              },
+            ],
+          },
+        ]}
+      />
+    </div>
+  );
 };
 
 export const useOrderTableColumns = (
   props: UseOrderTableColumnsProps
 ) => {
-  const { exclude = [] } = props ?? {};
+  const { t } = useTranslation();
+  const { exclude = [], onOrderCompleted } = props ?? {};
 
   const columns = useMemo(
     () => [
@@ -77,11 +139,24 @@ export const useOrderTableColumns = (
         },
       }),
       columnHelper.display({
-        id: 'sales_channel',
-        header: () => <SalesChannelHeader />,
+        id: 'order_lifecycle_status',
+        header: () => (
+          <div className='flex h-full w-full items-center'>
+            <span className='truncate'>{t('orders.listStatus.label')}</span>
+          </div>
+        ),
         cell: ({ row }) => {
-          const salesChannel = row.original.sales_channel;
-          return <SalesChannelCell channel={salesChannel} />;
+          const orderStatus = row.original.status;
+
+          if (orderStatus === 'canceled') {
+            return <StatusCell color='red'>{t('orders.listStatus.canceled')}</StatusCell>;
+          }
+
+          if (orderStatus === 'completed') {
+            return <StatusCell color='green'>{t('orders.listStatus.fulfilled')}</StatusCell>;
+          }
+
+          return <StatusCell color='orange'>{t('orders.listStatus.pending')}</StatusCell>;
         },
       }),
       columnHelper.accessor('payment_status', {
@@ -115,69 +190,29 @@ export const useOrderTableColumns = (
             <TotalCell
               currencyCode={currencyCode || 'PLN'} // Use PLN as a fallback currency
               total={typeof total === 'number' ? total : 0} // Ensure we have a valid number
+              order={row.original}
             />
           );
         },
       }),
       columnHelper.display({
-        id: 'baselinker_sync',
-        header: () => <div className="text-ui-fg-subtle">BaseLinker</div>,
+        id: 'actions',
+        header: () => (
+          <div className='flex h-full w-full items-center justify-end'>
+            <span className='truncate'>{t('dashboard.actions')}</span>
+          </div>
+        ),
         cell: ({ row }) => {
-          const [isSyncing, setIsSyncing] = useState(false);
-          const orderId = row.original.id;
-
-          const handleSync = async (e: React.MouseEvent) => {
-            e.stopPropagation();
-            setIsSyncing(true);
-
-            try {
-              const currentToken = window.localStorage.getItem('medusa_auth_token') || '';
-              
-              const response = await fetch(`${backendUrl}/vendor/orders/${orderId}/sync-to-baselinker`, {
-                method: 'POST',
-                credentials: 'include',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'authorization': `Bearer ${currentToken}`,
-                },
-              });
-
-              const result = await response.json();
-
-              if (result.success) {
-                if (result.already_synced) {
-                  toast.info('Already Synced', {
-                    description: `Order already synced to BaseLinker (BL #${result.bl_order_id})`,
-                  });
-                } else {
-                  toast.success('Order Synced', {
-                    description: `Successfully synced to BaseLinker (BL #${result.bl_order_id})`,
-                  });
-                }
-              } else if (result.skipped) {
-                toast.warning('Sync Skipped', {
-                  description: 'BaseLinker not enabled for this seller',
-                });
-              } else {
-                toast.error('Sync Failed', {
-                  description: result.error || 'Failed to sync order',
-                });
-              }
-            } catch (error) {
-              console.error('Sync error:', error);
-              toast.error('Sync Error', {
-                description: 'An error occurred while syncing',
-              });
-            } finally {
-              setIsSyncing(false);
-            }
-          };
-
-          
+          return (
+            <OrderCompleteActionCell
+              order={row.original}
+              onCompleted={onOrderCompleted}
+            />
+          );
         },
       }),
     ],
-    []
+    [t, onOrderCompleted]
   );
 
   const isAccessorColumnDef = (

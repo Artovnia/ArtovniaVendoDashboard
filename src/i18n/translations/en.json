@@ -1315,6 +1315,16 @@
     "list": {
       "noRecordsMessage": "Your orders will show up here."
     },
+    "listActions": {
+      "completeSuccess": "Order marked as fulfilled.",
+      "completeError": "Failed to mark order as fulfilled."
+    },
+    "listStatus": {
+      "label": "Status",
+      "pending": "Pending",
+      "canceled": "Canceled",
+      "fulfilled": "Fulfilled"
+    },
     "status": {
       "not_paid": "Not paid",
       "pending": "Pending",

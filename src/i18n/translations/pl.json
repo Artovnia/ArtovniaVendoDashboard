@@ -1335,6 +1335,16 @@
     "list": {
       "noRecordsMessage": "Twoje zamówienia pojawią się tutaj."
     },
+    "listActions": {
+      "completeSuccess": "Zamówienie zostało oznaczone jako zrealizowane.",
+      "completeError": "Nie udało się oznaczyć zamówienia jako zrealizowane."
+    },
+    "listStatus": {
+      "label": "Status",
+      "pending": "Oczekujące",
+      "canceled": "Anulowane",
+      "fulfilled": "Zrealizowane"
+    },
     "status": {
       "not_paid": "Nieopłacone",
       "pending": "Oczekujące",

@@ -1,6 +1,33 @@
 import { TFunction } from "i18next"
 import { HttpTypes } from "@medusajs/types"
 
+export type PaymentStatus = NonNullable<HttpTypes.AdminOrder["payment_status"]>
+
+const KNOWN_PAYMENT_STATUSES: PaymentStatus[] = [
+  "not_paid",
+  "authorized",
+  "partially_authorized",
+  "awaiting",
+  "captured",
+  "refunded",
+  "partially_refunded",
+  "partially_captured",
+  "canceled",
+  "requires_action",
+]
+
+export const normalizePaymentStatus = (status?: string | null): PaymentStatus => {
+  if (!status) {
+    return "not_paid"
+  }
+
+  if (KNOWN_PAYMENT_STATUSES.includes(status as PaymentStatus)) {
+    return status as PaymentStatus
+  }
+
+  return "not_paid"
+}
+
 export const getCanceledOrderStatus = (
   t: TFunction<"translation">,
   status: string
@@ -18,10 +45,10 @@ export const getCanceledOrderStatus = (
  */
 export const calculateActualPaymentStatus = (
   order: HttpTypes.AdminOrder
-): string => {
+): PaymentStatus => {
   // If no payment collections, use the order's payment_status
   if (!order.payment_collections || order.payment_collections.length === 0) {
-    return order.payment_status || "not_paid"
+    return normalizePaymentStatus(order.payment_status)
   }
 
   let totalAmount = 0
@@ -86,7 +113,7 @@ export const calculateActualPaymentStatus = (
   }
 
   // Fallback to order's payment_status
-  return order.payment_status || "not_paid"
+  return normalizePaymentStatus(order.payment_status)
 }
 
 export const getOrderPaymentStatus = (
@@ -103,7 +130,7 @@ export const getOrderPaymentStatus = (
     ],
     awaiting: [t("orders.payment.status.awaiting"), "orange"],
     captured: [t("orders.payment.status.captured"), "green"],
-    refunded: [t("orders.payment.status.refunded"), "green"],
+    refunded: [t("orders.payment.status.refunded"), "red"],
     partially_refunded: [
       t("orders.payment.status.partiallyRefunded"),
       "orange",

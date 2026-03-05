@@ -49,17 +49,24 @@ export const ProductListTable = () => {
       fields: '+thumbnail,+shipping_profile',
     });
 
-  // Memoize products array to prevent new reference on every render
-  const memoizedProducts = useMemo(() => 
-    (products ?? []) as HttpTypes.AdminProduct[],
+  // Guard against malformed/null rows returned by API (broken seller-product links).
+  // DataTable/getRowId must never receive null entries.
+  const memoizedProducts = useMemo(
+    () =>
+      (products ?? []).filter(
+        (product): product is HttpTypes.AdminProduct => Boolean(product?.id)
+      ),
     [products]
   );
 
   const { filters } = useProductTableFilters();
   const columns = useColumns();
 
-  // Create stable getRowId callback
-  const getRowId = useCallback((row: HttpTypes.AdminProduct) => row.id, []);
+  // Keep row IDs stable even if a bad record slips through.
+  const getRowId = useCallback(
+    (row: HttpTypes.AdminProduct, index: number) => row?.id ?? `invalid-row-${index}`,
+    []
+  );
 
   const { table } = useDataTable({
     data: memoizedProducts,

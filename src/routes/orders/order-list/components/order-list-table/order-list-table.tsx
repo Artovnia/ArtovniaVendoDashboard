@@ -17,6 +17,7 @@ const PAGE_SIZE = 20;
 export const OrderListTable = () => {
   const { t } = useTranslation();
   const [isExporting, setIsExporting] = useState(false);
+  const [tableVersion, setTableVersion] = useState(0);
   const { raw, searchParams } = useOrderTableQuery({
     pageSize: PAGE_SIZE,
   });
@@ -32,7 +33,11 @@ export const OrderListTable = () => {
     });
 
   const filters = useOrderTableFilters();
-  const columns = useOrderTableColumns({});
+  const columns = useOrderTableColumns({
+    onOrderCompleted: () => {
+      setTableVersion((prev) => prev + 1);
+    },
+  });
 
   const { table } = useDataTable({
     data: orders ?? [],
@@ -108,6 +113,7 @@ export const OrderListTable = () => {
         </Button>
       </div>
       <_DataTable
+        key={tableVersion}
         columns={columns}
         table={table}
         pagination

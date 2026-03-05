@@ -1,4 +1,4 @@
-import { XCircle } from "@medusajs/icons"
+import { CheckCircle, XCircle } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
 import {
   Container,
@@ -11,7 +11,10 @@ import {
 } from "@medusajs/ui"
 import { useTranslation } from "react-i18next"
 import { ActionMenu } from "../../../../../components/common/action-menu"
-import { useCancelOrder } from "../../../../../hooks/api/orders"
+import {
+  useCancelOrder,
+  useCompleteOrder,
+} from "../../../../../hooks/api/orders"
 import { useDate } from "../../../../../hooks/use-date"
 import {
   getCanceledOrderStatus,
@@ -30,6 +33,22 @@ export const OrderGeneralSection = ({ order }: OrderGeneralSectionProps) => {
   const { getFullDate } = useDate()
 
   const { mutateAsync: cancelOrder } = useCancelOrder(order.id)
+  const { mutate: completeOrder, isPending: isCompletingOrder } =
+    useCompleteOrder(order.id, {
+      onSuccess: () => {
+        toast.success(t("orders.listActions.completeSuccess"))
+      },
+      onError: () => {
+        toast.error(t("orders.listActions.completeError"))
+      },
+    })
+
+  const isCompleteDisabled =
+    isCompletingOrder ||
+    order.status === "completed" ||
+    order.status === "canceled"
+
+  const canCompleteOrder = order.fulfillment_status === "delivered"
 
   const handleCancel = async () => {
     const res = await prompt({
@@ -53,6 +72,14 @@ export const OrderGeneralSection = ({ order }: OrderGeneralSectionProps) => {
         toast.error(e.message)
       },
     })
+  }
+
+  const handleComplete = () => {
+    if (isCompleteDisabled) {
+      return
+    }
+
+    completeOrder()
   }
 
   return (
@@ -79,6 +106,18 @@ export const OrderGeneralSection = ({ order }: OrderGeneralSectionProps) => {
           groups={[
             {
               actions: [
+                ...(canCompleteOrder
+                  ? [
+                      {
+                        label: isCompletingOrder
+                          ? `${t("actions.complete")}...`
+                          : t("actions.complete"),
+                        onClick: handleComplete,
+                        disabled: isCompleteDisabled,
+                        icon: <CheckCircle />,
+                      },
+                    ]
+                  : []),
                 {
                   label: t("actions.cancel"),
                   onClick: handleCancel,

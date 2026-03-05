@@ -4796,6 +4796,38 @@
           "required": ["noRecordsMessage"],
           "additionalProperties": false
         },
+        "listActions": {
+          "type": "object",
+          "properties": {
+            "completeSuccess": {
+              "type": "string"
+            },
+            "completeError": {
+              "type": "string"
+            }
+          },
+          "required": ["completeSuccess", "completeError"],
+          "additionalProperties": false
+        },
+        "listStatus": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "type": "string"
+            },
+            "pending": {
+              "type": "string"
+            },
+            "canceled": {
+              "type": "string"
+            },
+            "fulfilled": {
+              "type": "string"
+            }
+          },
+          "required": ["label", "pending", "canceled", "fulfilled"],
+          "additionalProperties": false
+        },
         "status": {
           "type": "object",
           "properties": {
@@ -6509,6 +6541,8 @@
         "orderCanceled",
         "onDateFromSalesChannel",
         "list",
+        "listActions",
+        "listStatus",
         "status",
         "summary",
         "transfer",

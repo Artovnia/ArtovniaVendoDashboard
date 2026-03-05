@@ -382,6 +382,44 @@ export const useCancelOrder = (
   });
 };
 
+export const useCompleteOrder = (
+  orderId: string,
+  options?: UseMutationOptions<
+    { order: HttpTypes.AdminOrder },
+    FetchError,
+    void
+  >
+) => {
+  const { onSuccess, ...restOptions } = options ?? {};
+
+  return useMutation({
+    mutationFn: () =>
+      fetchQuery(`/vendor/orders/${orderId}/complete`, {
+        method: 'POST',
+      }),
+    onSuccess: (
+      data: any,
+      variables: any,
+      context: any
+    ) => {
+      queryClient.invalidateQueries({
+        queryKey: ordersQueryKeys.all,
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ordersQueryKeys.detail(orderId),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ordersQueryKeys.preview(orderId),
+      });
+
+      onSuccess?.(data, variables, context);
+    },
+    ...restOptions,
+  });
+};
+
 export const useRequestTransferOrder = (
   orderId: string,
   options?: UseMutationOptions<

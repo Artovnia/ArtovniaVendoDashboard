@@ -1,6 +1,11 @@
 import { HttpTypes } from "@medusajs/types"
 import { useTranslation } from "react-i18next"
-import { getOrderPaymentStatus, calculateActualPaymentStatus } from "../../../../../lib/order-helpers"
+import {
+  getOrderPaymentStatus,
+  calculateActualPaymentStatus,
+  PaymentStatus,
+  normalizePaymentStatus,
+} from "../../../../../lib/order-helpers"
 import { StatusCell } from "../../common/status-cell"
 
 type PaymentStatusCellProps = {
@@ -13,20 +18,15 @@ export const PaymentStatusCell = ({ status, order }: PaymentStatusCellProps) => 
 
   // CRITICAL FIX: Calculate actual status from payment collections for split orders
   // This ensures refunded orders show correct status even when order.payment_status is stale
-  let actualStatus = status
-  
-  if (order) {
-    actualStatus = calculateActualPaymentStatus(order)
-  }
+  let actualStatus: PaymentStatus = normalizePaymentStatus(status)
 
-  // Only use fallback if status is truly null/undefined, not for valid status strings
-  if (!actualStatus) {
-    const { label, color } = getOrderPaymentStatus(t, "not_paid")
-    return <StatusCell color={color}>{label}</StatusCell>
+  if (order) {
+    const computedStatus = calculateActualPaymentStatus(order)
+    actualStatus = computedStatus ?? "not_paid"
   }
 
   const { label, color } = getOrderPaymentStatus(t, actualStatus)
-  
+
   return <StatusCell color={color}>{label}</StatusCell>
 }
 

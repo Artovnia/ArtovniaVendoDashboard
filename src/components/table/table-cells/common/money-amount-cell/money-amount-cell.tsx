@@ -7,6 +7,7 @@ type MoneyAmountCellProps = {
   amount?: number | null
   align?: "left" | "right"
   className?: string
+  isStruckThrough?: boolean
 }
 
 export const MoneyAmountCell = ({
@@ -14,6 +15,7 @@ export const MoneyAmountCell = ({
   amount,
   align = "left",
   className,
+  isStruckThrough = false,
 }: MoneyAmountCellProps) => {
   if (typeof amount === "undefined" || amount === null) {
     return <PlaceholderCell />
@@ -32,7 +34,13 @@ export const MoneyAmountCell = ({
         className
       )}
     >
-      <span className="truncate">{formatted}</span>
+      <span
+        className={clx("truncate", {
+          "line-through text-ui-fg-muted": isStruckThrough,
+        })}
+      >
+        {formatted}
+      </span>
     </div>
   )
 }
