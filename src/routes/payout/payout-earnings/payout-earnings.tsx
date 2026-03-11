@@ -9,7 +9,7 @@ import {
   Tabs,
 } from '@medusajs/ui';
 import { useTranslation } from 'react-i18next';
-import { CurrencyDollar, Clock, CheckCircle, ExclamationCircle, Plus, PencilSquare } from '@medusajs/icons';
+import { CurrencyDollar, Clock, CheckCircle, ExclamationCircle } from '@medusajs/icons';
 
 import { usePayoutOverview, useOrdersWithoutPayouts, useCompletedPayouts, usePayoutStatistics, useCommissionRule, usePenalties } from '../../../hooks/api/payouts';
 import { DataTable } from '../../../components/data-table';

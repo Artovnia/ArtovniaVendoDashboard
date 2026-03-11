@@ -1690,6 +1690,12 @@
                 "price": {
                   "type": "string"
                 },
+                "estimatedSellerAmount": {
+                  "type": "string"
+                },
+                "estimatedSellerAmountDisclaimer": {
+                  "type": "string"
+                },
                 "stock_location": {
                   "type": "string"
                 },
@@ -1707,6 +1713,8 @@
                 "manage_inventory_description",
                 "allow_backorder",
                 "price",
+                "estimatedSellerAmount",
+                "estimatedSellerAmountDisclaimer",
                 "stock_location",
                 "stock_quantity"
               ],
@@ -13989,6 +13997,9 @@
         "messages": {
           "type": "string"
         },
+        "abandonedCarts": {
+          "type": "string"
+        },
         "requests": {
           "type": "string"
         },
@@ -14000,17 +14011,25 @@
         },
         "earnings": {
           "type": "string"
+        },
+        "pageBuilder": {
+          "type": "string"
+        },
+        "pricingCalculator": {
+          "type": "string"
         }
       },
       "required": [
         "dashboard",
         "reviews",
         "messages",
+        "abandonedCarts",
         "requests",
         "holidayMode",
         "payoutAccount",
         "earnings",
-        "pageBuilder"
+        "pageBuilder",
+        "pricingCalculator"
       ],
       "additionalProperties": false
     },
@@ -15541,204 +15560,212 @@
       ],
       "additionalProperties": false
     },
-    "platformPromotions": {
+   "platformPromotions": {
+  "type": "object",
+  "properties": {
+    "domain": { "type": "string" },
+    "subtitle": { "type": "string" },
+
+    "list": {
       "type": "object",
       "properties": {
-        "domain": {
-          "type": "string"
-        },
-        "subtitle": {
-          "type": "string"
-        },
-        "list": {
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "empty": {
           "type": "object",
           "properties": {
-            "title": {
-              "type": "string"
-            },
-            "subtitle": {
-              "type": "string"
-            },
-            "empty": {
-              "type": "object",
-              "properties": {
-                "heading": {
-                  "type": "string"
-                },
-                "message": {
-                  "type": "string"
-                }
-              },
-              "required": ["heading", "message"],
-              "additionalProperties": false
-            },
-            "search": {
-              "type": "object",
-              "properties": {
-                "placeholder": {
-                  "type": "string"
-                }
-              },
-              "required": ["placeholder"],
-              "additionalProperties": false
-            },
-            "joinPromotion": {
-              "type": "string"
-            },
-            "productsCount_one": {
-              "type": "string"
-            },
-            "productsCount_few": {
-              "type": "string"
-            },
-            "productsCount_many": {
-              "type": "string"
-            },
-            "productsCount_other": {
-              "type": "string"
-            }
+            "heading": { "type": "string" },
+            "message": { "type": "string" }
           },
-          "required": ["manage", "joinPromotion", "productsCount_one", "productsCount_other"],
+          "required": ["heading", "message"],
           "additionalProperties": false
         },
-        "status": {
+        "search": {
           "type": "object",
           "properties": {
-            "upcoming": {
-              "type": "string"
-            },
-            "active": {
-              "type": "string"
-            },
-            "expired": {
-              "type": "string"
-            },
-            "participating": {
-              "type": "string"
-            },
-            "notParticipating": {
-              "type": "string"
-            },
-            "available": {
-              "type": "string"
-            }
+            "placeholder": { "type": "string" }
           },
-          "required": ["upcoming", "active", "expired", "participating", "notParticipating", "available"],
+          "required": ["placeholder"],
           "additionalProperties": false
-        },
-        "productSelector": {
-          "type": "object",
-          "properties": {
-            "title": {
-              "type": "string"
-            },
-            "subtitle": {
-              "type": "string"
-            },
-            "search": {
-              "type": "object",
-              "properties": {
-                "placeholder": {
-                  "type": "string"
-                }
-              },
-              "required": ["placeholder"],
-              "additionalProperties": false
-            },
-            "selectAll": {
-              "type": "string"
-            },
-            "deselectAll": {
-              "type": "string"
-            },
-            "confirm": {
-              "type": "string"
-            },
-            "cancel": {
-              "type": "string"
-            },
-            "noProducts": {
-              "type": "string"
-            },
-            "noProductsMessage": {
-              "type": "string"
-            },
-            "selected": {
-              "type": "string"
-            }
-          },
-          "required": ["title", "subtitle", "search", "selectAll", "deselectAll", "confirm", "cancel", "noProducts", "noProductsMessage", "selected"],
-          "additionalProperties": false
-        },
-        "actions": {
-          "type": "object",
-          "properties": {
-            "addProducts": {
-              "type": "string"
-            },
-            "removeSelected": {
-              "type": "string"
-            },
-            "backToList": {
-              "type": "string"
-            }
-          },
-          "required": ["addProducts", "removeSelected", "backToList"],
-          "additionalProperties": false
-        },
-        "toasts": {
-          "type": "object",
-          "properties": {
-            "productsAdded": {
-              "type": "string"
-            },
-            "productsRemoved": {
-              "type": "string"
-            },
-            "addProductsError": {
-              "type": "string"
-            },
-            "removeProductsError": {
-              "type": "string"
-            }
-          },
-          "required": ["productsAdded", "productsRemoved", "addProductsError", "removeProductsError"],
-          "additionalProperties": false
-        },
-        "noDate": {
-          "type": "string"
-        },
-        "campaignPromotion": {
-          "type": "string"
-        },
-        "participating": {
-          "type": "string"
-        },
-        "notParticipating": {
-          "type": "string"
-        },
-        "errorLoading": {
-          "type": "string"
-        },
-        "promotionNotFound": {
-          "type": "string"
-        },
-        "platformPromotionDetails": {
-          "type": "string"
-        },
-        "backToPromotions": {
-          "type": "string"
-        },
-        "showingResults": {
-          "type": "string"
-        },
-        "errorLoadingPromotions": {
-          "type": "string"
         }
       },
-      "required": ["domain", "subtitle", "list", "detail", "card", "status", "productSelector", "actions", "toasts", "noDate", "campaignPromotion", "participating", "notParticipating", "errorLoading", "promotionNotFound", "platformPromotionDetails", "backToPromotions", "showingResults", "errorLoadingPromotions"],
+      "required": ["title", "subtitle", "empty", "search"],
       "additionalProperties": false
     },
+
+    "detail": {
+      "type": "object",
+      "properties": {
+        "promotionDetails": { "type": "string" },
+        "campaign": { "type": "string" },
+        "breadcrumb": { "type": "string" },
+        "code": { "type": "string" },
+        "type": { "type": "string" },
+        "value": { "type": "string" },
+        "startDate": { "type": "string" },
+        "endDate": { "type": "string" },
+        "yourProducts": { "type": "string" },
+        "noProductsAdded": { "type": "string" },
+        "addProducts": { "type": "string" },
+        "removeProducts": { "type": "string" }
+      },
+      "required": [
+        "promotionDetails",
+        "campaign",
+        "breadcrumb",
+        "code",
+        "type",
+        "value",
+        "startDate",
+        "endDate",
+        "yourProducts",
+        "noProductsAdded",
+        "addProducts",
+        "removeProducts"
+      ],
+      "additionalProperties": false
+    },
+
+    "card": {
+      "type": "object",
+      "properties": {
+        "manage": { "type": "string" },
+        "joinPromotion": { "type": "string" },
+        "productsCount_one": { "type": "string" },
+        "productsCount_few": { "type": "string" },
+        "productsCount_many": { "type": "string" },
+        "productsCount_other": { "type": "string" }
+      },
+      "required": [
+        "manage",
+        "joinPromotion",
+        "productsCount_one",
+        "productsCount_few",
+        "productsCount_many",
+        "productsCount_other"
+      ],
+      "additionalProperties": false
+    },
+
+    "status": {
+      "type": "object",
+      "properties": {
+        "upcoming": { "type": "string" },
+        "active": { "type": "string" },
+        "expired": { "type": "string" },
+        "participating": { "type": "string" },
+        "notParticipating": { "type": "string" },
+        "available": { "type": "string" }
+      },
+      "required": [
+        "upcoming",
+        "active",
+        "expired",
+        "participating",
+        "notParticipating",
+        "available"
+      ],
+      "additionalProperties": false
+    },
+
+    "productSelector": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "search": {
+          "type": "object",
+          "properties": {
+            "placeholder": { "type": "string" }
+          },
+          "required": ["placeholder"],
+          "additionalProperties": false
+        },
+        "selectAll": { "type": "string" },
+        "deselectAll": { "type": "string" },
+        "confirm": { "type": "string" },
+        "cancel": { "type": "string" },
+        "noProducts": { "type": "string" },
+        "noProductsMessage": { "type": "string" },
+        "selected": { "type": "string" }
+      },
+      "required": [
+        "title",
+        "subtitle",
+        "search",
+        "selectAll",
+        "deselectAll",
+        "confirm",
+        "cancel",
+        "noProducts",
+        "noProductsMessage",
+        "selected"
+      ],
+      "additionalProperties": false
+    },
+
+    "actions": {
+      "type": "object",
+      "properties": {
+        "addProducts": { "type": "string" },
+        "removeSelected": { "type": "string" },
+        "backToList": { "type": "string" }
+      },
+      "required": ["addProducts", "removeSelected", "backToList"],
+      "additionalProperties": false
+    },
+
+    "toasts": {
+      "type": "object",
+      "properties": {
+        "productsAdded": { "type": "string" },
+        "productsRemoved": { "type": "string" },
+        "addProductsError": { "type": "string" },
+        "removeProductsError": { "type": "string" }
+      },
+      "required": [
+        "productsAdded",
+        "productsRemoved",
+        "addProductsError",
+        "removeProductsError"
+      ],
+      "additionalProperties": false
+    },
+
+    "noDate": { "type": "string" },
+    "campaignPromotion": { "type": "string" },
+    "participating": { "type": "string" },
+    "notParticipating": { "type": "string" },
+    "errorLoading": { "type": "string" },
+    "promotionNotFound": { "type": "string" },
+    "platformPromotionDetails": { "type": "string" },
+    "backToPromotions": { "type": "string" },
+    "showingResults": { "type": "string" },
+    "errorLoadingPromotions": { "type": "string" }
+  },
+  "required": [
+    "domain",
+    "subtitle",
+    "list",
+    "detail",
+    "card",
+    "status",
+    "productSelector",
+    "actions",
+    "toasts",
+    "noDate",
+    "campaignPromotion",
+    "participating",
+    "notParticipating",
+    "errorLoading",
+    "promotionNotFound",
+    "platformPromotionDetails",
+    "backToPromotions",
+    "showingResults",
+    "errorLoadingPromotions"
+  ],
+  "additionalProperties": false
+},
     "stripeConnect": {
       "type": "object",
       "properties": {
@@ -17631,6 +17658,177 @@
       "required": ["title", "label", "hint", "selectPlaceholder", "noTimeframe", "preset1to3", "preset3to5", "preset7to14", "custom", "minDays", "maxDays", "days", "currentTimeframe", "customTimeframe", "notSet", "editTitle", "updated", "updateError", "removed", "removeError", "bulkTitle", "bulkDescription", "bulkSuccess", "bulkError", "selectProducts", "noProductsSelected"],
       "additionalProperties": false
     },
+    "abandonedCart": {
+      "type": "object",
+      "properties": {
+        "domain": {"type": "string"},
+        "subtitle": {"type": "string"},
+        "subtitleHelp": {"type": "string"},
+        "tabs": {
+          "type": "object",
+          "properties": {
+            "notSent": {"type": "string"},
+            "sent": {"type": "string"}
+          },
+          "required": ["notSent", "sent"],
+          "additionalProperties": false
+        },
+        "settings": {
+          "type": "object",
+          "properties": {
+            "title": {"type": "string"},
+            "saved": {"type": "string"},
+            "error": {"type": "string"},
+            "enabled": {"type": "string"},
+            "enabledHelp": {"type": "string"},
+            "mode": {"type": "string"},
+            "manual": {"type": "string"},
+            "automatic": {"type": "string"},
+            "delayHours": {"type": "string"},
+            "discountType": {"type": "string"},
+            "discountValue": {"type": "string"},
+            "currencyCode": {"type": "string"},
+            "validation": {
+              "type": "object",
+              "properties": {
+                "requiredAutomaticValues": {"type": "string"},
+                "requiredFixedCurrency": {"type": "string"}
+              },
+              "required": ["requiredAutomaticValues", "requiredFixedCurrency"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["title", "saved", "error", "enabled", "enabledHelp", "mode", "manual", "automatic", "delayHours", "discountType", "discountValue", "currencyCode", "validation"],
+          "additionalProperties": false
+        },
+        "list": {
+          "type": "object",
+          "properties": {
+            "title": {"type": "string"},
+            "search": {"type": "string"},
+            "searchPlaceholder": {"type": "string"},
+            "sort": {"type": "string"},
+            "details": {"type": "string"},
+            "hide": {"type": "string"},
+            "active": {"type": "string"},
+            "sortUpdatedDesc": {"type": "string"},
+            "sortUpdatedAsc": {"type": "string"},
+            "sortCreatedDesc": {"type": "string"},
+            "sortCreatedAsc": {"type": "string"},
+            "error": {"type": "string"},
+            "loading": {"type": "string"},
+            "empty": {"type": "string"},
+            "lastActivity": {"type": "string"},
+            "vendorItems": {"type": "string"},
+            "itemsDetails": {"type": "string"},
+            "unknownItem": {"type": "string"},
+            "quantity": {"type": "string"},
+            "unitPrice": {"type": "string"},
+            "subtotalPrice": {"type": "string"},
+            "totalPrice": {"type": "string"}
+          },
+          "required": ["title", "search", "searchPlaceholder", "sort", "details", "hide", "active", "sortUpdatedDesc", "sortUpdatedAsc", "sortCreatedDesc", "sortCreatedAsc", "error", "loading", "empty", "lastActivity", "vendorItems", "itemsDetails", "unknownItem", "quantity", "unitPrice", "subtotalPrice", "totalPrice"],
+          "additionalProperties": false
+        },
+        "discount": {
+          "type": "object",
+          "properties": {
+            "sent": {"type": "string"},
+            "alreadySent": {"type": "string"},
+            "sentStatus": {"type": "string"},
+            "ready": {"type": "string"},
+            "waiting": {"type": "string"},
+            "notSent": {"type": "string"},
+            "sendTitle": {"type": "string"},
+            "type": {"type": "string"},
+            "percentage": {"type": "string"},
+            "fixed": {"type": "string"},
+            "value": {"type": "string"},
+            "currency": {"type": "string"},
+            "preview": {"type": "string"},
+            "previewLoading": {"type": "string"},
+            "previewItemTotal": {"type": "string"},
+            "previewTaxTotal": {"type": "string"},
+            "previewTotal": {"type": "string"},
+            "previewDiscount": {"type": "string"},
+            "previewMissing": {"type": "string"},
+            "availableAfter": {"type": "string"},
+            "send": {"type": "string"},
+            "validation": {
+              "type": "object",
+              "properties": {
+                "notEligibleYet": {"type": "string"},
+                "currencyRequired": {"type": "string"}
+              },
+              "required": ["notEligibleYet", "currencyRequired"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["sent", "alreadySent", "sentStatus", "ready", "waiting", "notSent", "sendTitle", "type", "percentage", "fixed", "value", "currency", "preview", "previewLoading", "previewItemTotal", "previewTaxTotal", "previewTotal", "previewDiscount", "previewMissing", "availableAfter", "send", "validation"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["domain", "subtitle", "subtitleHelp", "tabs", "settings", "list", "discount"],
+      "additionalProperties": false
+    },
+    "profitCalculator": {
+      "type": "object",
+      "properties": {
+        "title": {"type": "string"},
+        "subtitle": {"type": "string"},
+        "formula": {"type": "string"},
+        "formulaExpression": {"type": "string"},
+        "materials": {"type": "string"},
+        "addMaterial": {"type": "string"},
+        "materialName": {"type": "string"},
+        "totalMaterials": {"type": "string"},
+        "laborTime": {"type": "string"},
+        "hours": {"type": "string"},
+        "minutes": {"type": "string"},
+        "hourlyRate": {"type": "string"},
+        "laborTotal": {"type": "string"},
+        "fixedCosts": {"type": "string"},
+        "fixedCostsHint": {"type": "string"},
+        "margin": {"type": "string"},
+        "marginHint": {"type": "string"},
+        "marginAmount": {"type": "string"},
+        "commission": {"type": "string"},
+        "commissionRateNet": {"type": "string"},
+        "commissionRateGross": {"type": "string"},
+        "commissionIncludesTax": {"type": "string"},
+        "commissionExcludesTax": {"type": "string"},
+        "autoDetected": {"type": "string"},
+        "loadingCommission": {"type": "string"},
+        "commissionReadOnly": {"type": "string"},
+        "commissionFallback": {"type": "string"},
+        "productTax": {"type": "string"},
+        "productTaxHint": {"type": "string"},
+        "netPrice": {"type": "string"},
+        "grossAmount": {"type": "string"},
+        "net": {"type": "string"},
+        "taxAmount": {"type": "string"},
+        "reset": {"type": "string"},
+        "recommendedPrice": {"type": "string"},
+        "roundedUp": {"type": "string"},
+        "youReceive": {"type": "string"},
+        "platformFee": {"type": "string"},
+        "hideBreakdown": {"type": "string"},
+        "showBreakdown": {"type": "string"},
+        "labor": {"type": "string"},
+        "subtotal": {"type": "string"},
+        "targetAmount": {"type": "string"},
+        "platformCommission": {"type": "string"},
+        "finalPrice": {"type": "string"},
+        "effectiveRateTooltip": {"type": "string"},
+        "effectiveRate": {"type": "string"},
+        "profitMarginTooltip": {"type": "string"},
+        "profitMargin": {"type": "string"},
+        "tipTitle": {"type": "string"},
+        "tipContent": {"type": "string"}
+      },
+      "required": ["title", "subtitle", "formula", "formulaExpression", "materials", "addMaterial", "materialName", "totalMaterials", "laborTime", "hours", "minutes", "hourlyRate", "laborTotal", "fixedCosts", "fixedCostsHint", "margin", "marginHint", "marginAmount", "commission", "commissionRateNet", "commissionRateGross", "commissionIncludesTax", "commissionExcludesTax", "autoDetected", "loadingCommission", "commissionReadOnly", "commissionFallback", "productTax", "productTaxHint", "netPrice", "grossAmount", "net", "taxAmount", "reset", "recommendedPrice", "roundedUp", "youReceive", "platformFee", "hideBreakdown", "showBreakdown", "labor", "subtotal", "targetAmount", "platformCommission", "finalPrice", "effectiveRateTooltip", "effectiveRate", "profitMarginTooltip", "profitMargin", "tipTitle", "tipContent"],
+      "additionalProperties": false
+    },
     "docs": {
       "type": "object",
       "properties": {
@@ -17750,6 +17948,8 @@
     "pagebuilder",
     "fbPromote",
     "deliveryTimeframe",
+    "abandonedCart",
+    "profitCalculator",
     "docs"
   ],
   "additionalProperties": false

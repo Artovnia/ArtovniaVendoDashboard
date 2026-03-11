@@ -521,6 +521,17 @@ export const RouteMap: RouteObject[] = [
             },
             children: [
               {
+                path: 'pricing-calculator',
+                errorElement: <ErrorBoundary />,
+                lazy: async () => {
+                  const mod = await import(
+                    '../../routes/products/pricing-calculator/pricing-calculator'
+                  )
+
+                  return { Component: mod.default }
+                },
+              },
+              {
                 path: '',
                 lazy: () =>
                   import(
@@ -1025,6 +1036,19 @@ export const RouteMap: RouteObject[] = [
                       ),
                   },
                 ],
+              },
+            ],
+          },
+          {
+            path: '/abandoned-carts',
+            errorElement: <ErrorBoundary />,
+            handle: {
+              breadcrumb: () => t('navigation.abandonedCarts', 'Abandoned Carts'),
+            },
+            children: [
+              {
+                path: '',
+                lazy: () => import('../../routes/abandoned-carts'),
               },
             ],
           },

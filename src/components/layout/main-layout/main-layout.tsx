@@ -8,15 +8,19 @@ import {
   MinusMini,
   ReceiptPercent,
   ShoppingCart,
-  Tag,
+  TaxInclusive,
+  GiftSolid,
   Users,
-  Component,
   Star,
-  ListCheckbox,
+  Swatch,
+  QueueList,
   ChatBubbleLeftRight,
-  Calendar,
-  Lifebuoy,
-  PencilSquare,
+  Bug,
+  ShoppingBag,
+  Snooze,
+  TablePen,
+  ComputerDesktop,
+  Cash
 } from '@medusajs/icons';
 import { Divider, Text, clx } from '@medusajs/ui';
 import { Collapsible as RadixCollapsible } from 'radix-ui';
@@ -123,7 +127,7 @@ const useCoreRoutes = (): Omit<INavItem, 'pathname'>[] => {
 
   return [
     {
-      icon: <Component />,
+      icon: <ComputerDesktop />,
       label: t('navigation.dashboard'),
       to: '/dashboard',
     },
@@ -144,9 +148,10 @@ const useCoreRoutes = (): Omit<INavItem, 'pathname'>[] => {
       label: t('requests.returns.domain'),
       to: '/returns',
     },
+    
    
     {
-      icon: <Tag />,
+      icon: <Swatch />,
       label: t('products.domain'),
       to: '/products',
       items: [
@@ -161,6 +166,11 @@ const useCoreRoutes = (): Omit<INavItem, 'pathname'>[] => {
         {
           label: t('productTemplates.domain'),
           to: '/product-templates',
+        },
+        {
+          label: t('navigation.pricingCalculator', 'Pricing Calculator'),
+          to: '/products/pricing-calculator',
+        
         },
         // TODO: Enable when domin is introduced
         // {
@@ -192,6 +202,11 @@ const useCoreRoutes = (): Omit<INavItem, 'pathname'>[] => {
       ],
     },
     {
+      icon: <ShoppingBag />,
+      label: t('navigation.abandonedCarts', 'Abandoned Carts'),
+      to: '/abandoned-carts',
+    },
+    {
       icon: <ReceiptPercent />,
       label: t('promotions.domain'),
       to: '/promotions',
@@ -203,7 +218,7 @@ const useCoreRoutes = (): Omit<INavItem, 'pathname'>[] => {
       ],
     },
     {
-      icon: <Tag />,
+      icon: <GiftSolid />,
       label: t('platformPromotions.domain'),
       to: '/platform-promotions',
     },
@@ -224,22 +239,22 @@ const useCoreRoutes = (): Omit<INavItem, 'pathname'>[] => {
       endIcon: unreadCount > 0 ? <NotificationBadge count={unreadCount} showCount className="ml-2"/> : undefined,
     },
     {
-      icon: <ListCheckbox />,
+      icon: <QueueList />,
       label: t('navigation.requests', 'Requests'),
       to: '/requests',
     },
     {
-      icon: <Calendar />,
+      icon: <Snooze />,
       label: t('navigation.holidayMode', 'Holiday Mode'),
       to: '/holiday-mode',
     },
    {
-      icon: <PencilSquare />,
+      icon: <TablePen />,
     label: t('navigation.pageBuilder', 'Kreator strony'),
    to: '/page-builder',
     },
     {
-      icon: <Lifebuoy />,
+      icon: <Bug />,
       label: t('tickets.navigation.tickets', 'Support Tickets'),
       to: '/tickets',
     },
@@ -258,7 +273,7 @@ const useExtensionRoutes = (): Omit<
       to: '/stripe-connect',
     },
     {
-      icon: <ReceiptPercent />,
+      icon: <Cash />,
       label: t('navigation.earnings', 'Zarobki i Wypłaty'),
       to: '/payout/earnings',
     },

@@ -15,6 +15,7 @@ import {
 } from '../../constants';
 import { ProductCreateSchemaType } from '../../types';
 import { useStockLocations } from '../../../../../hooks/api/stock-locations';
+import { useCommissionRule } from '../../../../../hooks/api/payouts';
 
 type ProductCreateVariantsFormProps = {
   form: UseFormReturn<ProductCreateSchemaType>;
@@ -99,6 +100,8 @@ const columnHelper = createDataGridHelper<
   ProductCreateSchemaType
 >();
 
+const DEFAULT_VAT_RATE = 23;
+
 const useColumns = ({
   options,
   currencies = [],
@@ -112,6 +115,7 @@ const useColumns = ({
 }) => {
   const { t } = useTranslation();
   const { stock_locations, isLoading: isLoadingLocations } = useStockLocations();
+  const { commissionRule } = useCommissionRule();
 
   // Use translation keys for column headers
   const headers = {
@@ -123,8 +127,91 @@ const useColumns = ({
     manage_inventory: t('products.create.variantHeaders.manage_inventory'),
     allow_backorder: t('products.create.variantHeaders.allow_backorder'),
     price: t('products.create.variantHeaders.price'),
+    estimatedSellerAmount: t('products.create.variantHeaders.estimatedSellerAmount'),
     stock_location: t('products.create.variantHeaders.stock_location'),
     stock_quantity: t('products.create.variantHeaders.stock_quantity'),
+  };
+
+  const commissionRate = useMemo(() => {
+    const percentageRate = Number(commissionRule?.percentage_rate);
+    if (Number.isFinite(percentageRate) && percentageRate > 0) {
+      return Math.min(percentageRate, 100);
+    }
+
+    const rawFeeValue = String(commissionRule?.fee_value ?? '').trim();
+    if (!rawFeeValue) {
+      return 0;
+    }
+
+    const normalized = rawFeeValue
+      .replace('%', '')
+      .replace(',', '.')
+      .replace(/[^0-9.-]/g, '');
+
+    const parsed = Number(normalized);
+    if (!Number.isFinite(parsed) || parsed <= 0) {
+      return 0;
+    }
+
+    const percentage = parsed <= 1 ? parsed * 100 : parsed;
+    return Math.min(percentage, 100);
+  }, [commissionRule?.fee_value, commissionRule?.percentage_rate]);
+
+  const priceIncludesTax = useMemo(() => {
+    const defaultCurrency = (currencies[0] || '').toLowerCase();
+    if (!defaultCurrency) {
+      return true;
+    }
+
+    const preference = pricePreferences.find(
+      (entry) =>
+        entry.attribute === 'currency_code' &&
+        String(entry.value).toLowerCase() === defaultCurrency
+    );
+
+    return preference?.is_tax_inclusive ?? true;
+  }, [currencies, pricePreferences]);
+
+  const effectiveCommissionRate = useMemo(() => {
+    if (!commissionRate) {
+      return 0;
+    }
+
+    const taxMultiplier = 1 + DEFAULT_VAT_RATE / 100;
+
+    const commissionRateNet = commissionRule?.include_tax
+      ? commissionRate / taxMultiplier
+      : commissionRate;
+    const commissionRateGross = commissionRule?.include_tax
+      ? commissionRate
+      : commissionRate * taxMultiplier;
+
+    return Math.min(
+      priceIncludesTax ? commissionRateGross : commissionRateNet,
+      100
+    );
+  }, [commissionRate, commissionRule?.include_tax, priceIncludesTax]);
+
+  const estimateSellerAmount = (basePrice: unknown) => {
+    const numericPrice =
+      typeof basePrice === 'number'
+        ? basePrice
+        : typeof basePrice === 'string'
+          ? Number(basePrice)
+          : Number.NaN;
+
+    if (!Number.isFinite(numericPrice) || numericPrice <= 0) {
+      return null;
+    }
+
+    const retained = numericPrice * (1 - effectiveCommissionRate / 100);
+
+    return retained > 0 ? retained : 0;
+  };
+
+  const formatEstimateAmount = (amount: number) => {
+    const normalizedCurrency = (currencies[0] || 'pln').toUpperCase();
+    return `${amount.toFixed(2)} ${normalizedCurrency}`;
   };
 
   // Prepare stock location options for select dropdown
@@ -282,6 +369,29 @@ const useColumns = ({
           return <DataGrid.NumberCell context={context} />;
         },
       }),
+      columnHelper.column({
+        id: 'estimated_seller_amount',
+        name: headers.estimatedSellerAmount,
+        header: headers.estimatedSellerAmount,
+        cell: (context) => {
+          const estimatedAmount = estimateSellerAmount(
+            context.row.original.prices?.default
+          );
+
+          return (
+            <DataGrid.ReadonlyCell context={context}>
+              <div className='flex flex-col'>
+                <span className='txt-compact-small text-ui-fg-base'>
+                  {estimatedAmount === null
+                    ? '-'
+                    : formatEstimateAmount(estimatedAmount)}
+                </span>
+               
+              </div>
+            </DataGrid.ReadonlyCell>
+          );
+        },
+      }),
       ...createDataGridPriceColumns<
         ProductCreateVariantSchema & { originalIndex: number },
         ProductCreateSchemaType
@@ -300,6 +410,15 @@ const useColumns = ({
         t,
       }),
     ],
-    [currencies, regions, options, pricePreferences, t, stockLocationOptions]
+    [
+      currencies,
+      regions,
+      options,
+      pricePreferences,
+      t,
+      stockLocationOptions,
+      headers.estimatedSellerAmount,
+      effectiveCommissionRate,
+    ]
   );
 };
