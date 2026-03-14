@@ -14,6 +14,7 @@ import * as zod from "zod"
 import { RouteFocusModal, useRouteModal } from "../../../../components/modals"
 import { _DataTable } from "../../../../components/table/data-table"
 import { KeyboundForm } from "../../../../components/utilities/keybound-form"
+import { VisuallyHidden } from "../../../../components/utilities/visually-hidden"
 import { useAddOrRemoveCampaignPromotions } from "../../../../hooks/api/campaigns"
 import { usePromotions } from "../../../../hooks/api/promotions"
 import { usePromotionTableColumns } from "../../../../hooks/table/columns/use-promotion-table-columns"
@@ -62,22 +63,35 @@ export const AddCampaignPromotionsForm = ({
 
   const { searchParams, raw } = usePromotionTableQuery({ pageSize: PAGE_SIZE })
   const {
-    promotions,
-    count,
+    promotions = [],
+    count = 0,
     isPending: isLoading,
+    isError,
+    error,
   } = usePromotions({ ...searchParams }, { placeholderData: keepPreviousData })
+
+  if (isError) {
+    throw error
+  }
 
   const columns = useColumns()
   const filters = usePromotionTableFilters()
 
+  const normalizedPromotions = useMemo(
+    () => promotions.filter((promotion): promotion is HttpTypes.AdminPromotion => {
+      return Boolean(promotion && promotion.id)
+    }),
+    [promotions]
+  )
+
   const { table } = useDataTable({
-    data: promotions ?? [],
+    data: normalizedPromotions,
     columns,
     enableRowSelection: (row) => {
       return row.original.campaign_id !== campaign.id
     },
     enablePagination: true,
-    getRowId: (row) => row.id,
+    getRowId: (row, index) => row?.id || `promotion_row_${index}`,
     pageSize: PAGE_SIZE,
     count,
     rowSelection: {
@@ -115,6 +129,12 @@ export const AddCampaignPromotionsForm = ({
         className="flex h-full flex-col overflow-hidden"
       >
         <RouteFocusModal.Header>
+          <RouteFocusModal.Title asChild>
+            <VisuallyHidden>{t("promotions.domain")}</VisuallyHidden>
+          </RouteFocusModal.Title>
+          <RouteFocusModal.Description asChild>
+            <VisuallyHidden>{t("campaigns.details")}</VisuallyHidden>
+          </RouteFocusModal.Description>
           <div className="flex items-center justify-end gap-x-2">
             {form.formState.errors.promotion_ids && (
               <Hint variant="error">
@@ -174,13 +194,19 @@ const useColumns = () => {
       columnHelper.display({
         id: "select",
         header: ({ table }) => {
+          let checked: boolean | "indeterminate" = false
+
+          try {
+            checked = table.getIsSomePageRowsSelected()
+              ? "indeterminate"
+              : table.getIsAllPageRowsSelected()
+          } catch {
+            checked = false
+          }
+
           return (
             <Checkbox
-              checked={
-                table.getIsSomePageRowsSelected()
-                  ? "indeterminate"
-                  : table.getIsAllPageRowsSelected()
-              }
+              checked={checked}
               onCheckedChange={(value) => table.toggleAllRowsSelected(!!value)}
             />
           )

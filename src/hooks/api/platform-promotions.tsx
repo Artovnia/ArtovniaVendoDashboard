@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { fetchQuery } from "../../lib/client"
 import { toast } from "@medusajs/ui"
+import { i18n } from "../../components/utilities/i18n"
 
 const PLATFORM_PROMOTIONS_QUERY_KEY = "platform_promotions" as const
 const PLATFORM_PROMOTION_QUERY_KEY = "platform_promotion" as const
@@ -86,6 +87,32 @@ export interface AddProductsToPromotionPayload {
 
 export interface RemoveProductsFromPromotionPayload {
   product_ids: string[]
+}
+
+type PlatformPromotionApiError = Error & {
+  body?: {
+    message?: string
+    conflicts?: Array<{ product_id?: string; reason?: string }>
+    skipped_product_ids?: string[]
+  }
+  status?: number
+}
+
+const getAddProductsErrorMessage = (error: unknown) => {
+  const apiError = error as PlatformPromotionApiError
+  const conflicts = apiError?.body?.conflicts || []
+
+  if (conflicts.length > 0) {
+    return i18n.t("platformPromotions.errors.productsAlreadyInOtherPromotion", {
+      count: conflicts.length,
+    })
+  }
+
+  if (apiError?.status === 409) {
+    return i18n.t("platformPromotions.errors.promotionConflict")
+  }
+
+  return i18n.t("platformPromotions.toasts.addProductsError")
 }
 
 /**
@@ -183,25 +210,32 @@ export const useAddProductsToPromotion = (promotionId: string) => {
 
   return useMutation({
     mutationFn: async (payload: AddProductsToPromotionPayload) => {
-      try {
-        const result = await fetchQuery(`/vendor/platform-promotions/${promotionId}/products`, {
-          method: "POST",
-          body: payload,
-        })
+      const result = await fetchQuery(`/vendor/platform-promotions/${promotionId}/products`, {
+        method: "POST",
+        body: payload,
+      })
 
-        // Check if the response indicates an error
-        if (result.error || result.code === 'promotion_update_error') {
-          throw new Error(result.message || result.error || 'Failed to add products to promotion')
-        }
-
-        return result
-      } catch (error: any) {
-        // Ensure we properly throw the error for React Query to catch
-        throw new Error(error.message || 'Failed to add products to promotion')
+      // Network helpers can return { error } instead of throwing.
+      if (result.error || result.code === 'promotion_update_error') {
+        throw new Error(result.message || result.error || i18n.t("platformPromotions.toasts.addProductsError"))
       }
+
+      return result
     },
-    onSuccess: () => {
-      toast.success("Products added to promotion successfully")
+    onSuccess: (result: any) => {
+      const skippedCount = result?.skipped_product_ids?.length || 0
+      const addedCount = result?.added_products?.length || 0
+
+      if (skippedCount > 0) {
+        toast.warning(
+          i18n.t("platformPromotions.toasts.productsAddedWithConflicts", {
+            added: addedCount,
+            skipped: skippedCount,
+          })
+        )
+      } else {
+        toast.success(i18n.t("platformPromotions.toasts.productsAdded"))
+      }
       
       // Invalidate and refetch related queries
       queryClient.invalidateQueries({
@@ -211,8 +245,8 @@ export const useAddProductsToPromotion = (promotionId: string) => {
         queryKey: [PLATFORM_PROMOTION_QUERY_KEY, promotionId],
       })
     },
-    onError: (error: Error) => {
-      toast.error(`Failed to add products: ${error.message}`)
+    onError: (error: unknown) => {
+      toast.error(getAddProductsErrorMessage(error))
     },
   })
 }

@@ -213,6 +213,8 @@ export const DataTableRoot = <TData,>({
     scrollableRef.current?.scroll({ top: 0, left: 0 });
   }, [pageIndex]);
 
+  const rows = table.getRowModel?.()?.rows ?? []
+
   return (
     <div
       ref={scrollableRef}
@@ -321,7 +323,7 @@ export const DataTableRoot = <TData,>({
               </Table.Header>
             )}
             <Table.Body className='border-b-0'>
-              {table.getRowModel().rows.map((row) => {
+              {rows.map((row) => {
                 const to = navigateTo
                   ? navigateTo(row)
                   : undefined;

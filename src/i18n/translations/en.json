@@ -4341,7 +4341,8 @@
       "yourProducts": "Your Products in Promotion",
       "noProductsAdded": "You haven't added any products to this promotion yet.",
       "addProducts": "Add Products",
-      "removeProducts": "Remove Products"
+      "removeProducts": "Remove Products",
+      "productConflictHint": "Products already assigned to another active promotion with an equal or better discount cannot be added here. Disable the existing promotion or remove the product from it first."
     },
     "card": {
       "manage": "Manage",
@@ -4360,6 +4361,7 @@
     "productSelector": {
       "title": "Select Products",
       "subtitle": "Choose products to add to this promotion",
+      "conflictHint": "If a selected product already belongs to another active promotion with an equal or better discount, it will be skipped. Disable the existing promotion or remove the product from it first.",
       "search": {
         "placeholder": "Search products..."
       },
@@ -4378,9 +4380,15 @@
     },
     "toasts": {
       "productsAdded": "Products successfully added to promotion",
+      "productsAddedWithConflicts": "Added {{added}} products. Skipped {{skipped}} because they already belong to another active promotion with an equal or better discount. Disable the existing promotion or remove products from it first.",
       "productsRemoved": "Products successfully removed from promotion",
       "addProductsError": "Failed to add products to promotion",
       "removeProductsError": "Failed to remove products from promotion"
+    },
+    "errors": {
+      "promotionConflict": "Selected products could not be added because they are already in another active promotion with an equal or better discount. Disable that promotion or remove the products from it first.",
+      "productsAlreadyInOtherPromotion_one": "1 product could not be added because it is already in another active promotion with an equal or better discount. Disable that promotion or remove the product from it first.",
+      "productsAlreadyInOtherPromotion_other": "{{count}} products could not be added because they are already in another active promotion with an equal or better discount. Disable those promotions or remove the products from them first."
     },
     "noDate": "No date set",
     "campaignPromotion": "Campaign Promotion",

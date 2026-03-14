@@ -25,12 +25,23 @@ export const promotionStatusMap: StatusMap = {
   ],
 }
 
+const resolvePromotionStatusKey = (status?: string | null) => {
+  const normalizedStatus = status?.toUpperCase()
+
+  if (normalizedStatus && promotionStatusMap[normalizedStatus]) {
+    return normalizedStatus
+  }
+
+  return PromotionStatus.DRAFT
+}
+
 export const getPromotionStatus = (promotion: HttpTypes.AdminPromotion) => {
   const date = new Date()
   const campaign = promotion.campaign
+  const statusKey = resolvePromotionStatusKey(promotion.status)
 
   if (!campaign) {
-    return promotionStatusMap[promotion.status!.toUpperCase()]
+    return promotionStatusMap[statusKey]
   }
 
   if (campaign.starts_at && new Date(campaign.starts_at!) > date) {
@@ -45,5 +56,5 @@ export const getPromotionStatus = (promotion: HttpTypes.AdminPromotion) => {
     return promotionStatusMap[PromotionStatus.EXPIRED]
   }
 
-  return promotionStatusMap[promotion.status!.toUpperCase()]
+  return promotionStatusMap[statusKey]
 }

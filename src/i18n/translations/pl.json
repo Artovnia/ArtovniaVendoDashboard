@@ -4237,7 +4237,8 @@
       "yourProducts": "Twoje Produkty w Promocji",
       "noProductsAdded": "Nie dodałeś jeszcze żadnych produktów do tej promocji.",
       "addProducts": "Dodaj Produkty",
-      "removeProducts": "Usuń Produkty"
+      "removeProducts": "Usuń Produkty",
+      "productConflictHint": "Produktów przypisanych już do innej aktywnej promocji z równym lub większym rabatem nie można tu dodać. Najpierw wyłącz tę promocję albo usuń z niej produkty."
     },
     "card": {
       "manage": "Zarządzaj",
@@ -4258,6 +4259,7 @@
     "productSelector": {
       "title": "Wybierz Produkty",
       "subtitle": "Wybierz produkty do dodania do tej promocji",
+      "conflictHint": "Jeśli wybrany produkt już należy do innej aktywnej promocji z równym lub większym rabatem, zostanie pominięty. Najpierw wyłącz tę promocję albo usuń z niej produkt.",
       "search": {
         "placeholder": "Szukaj produktów..."
       },
@@ -4276,9 +4278,17 @@
     },
     "toasts": {
       "productsAdded": "Produkty zostały pomyślnie dodane do promocji",
+      "productsAddedWithConflicts": "Dodano {{added}} produktów. Pominięto {{skipped}}, ponieważ już należą do innej aktywnej promocji z równym lub większym rabatem. Najpierw wyłącz tę promocję albo usuń z niej produkty.",
       "productsRemoved": "Produkty zostały pomyślnie usunięte z promocji",
       "addProductsError": "Nie udało się dodać produktów do promocji",
       "removeProductsError": "Nie udało się usunąć produktów z promocji"
+    },
+    "errors": {
+      "promotionConflict": "Nie można dodać wybranych produktów, ponieważ już należą do innej aktywnej promocji z równym lub większym rabatem. Najpierw wyłącz tę promocję albo usuń z niej produkty.",
+      "productsAlreadyInOtherPromotion_one": "1 produktu nie można dodać, ponieważ już należy do innej aktywnej promocji z równym lub większym rabatem. Najpierw wyłącz tę promocję albo usuń z niej produkt.",
+      "productsAlreadyInOtherPromotion_few": "{{count}} produktów nie można dodać, ponieważ już należą do innej aktywnej promocji z równym lub większym rabatem. Najpierw wyłącz te promocje albo usuń z nich produkty.",
+      "productsAlreadyInOtherPromotion_many": "{{count}} produktów nie można dodać, ponieważ już należą do innej aktywnej promocji z równym lub większym rabatem. Najpierw wyłącz te promocje albo usuń z nich produkty.",
+      "productsAlreadyInOtherPromotion_other": "{{count}} produktów nie można dodać, ponieważ już należą do innej aktywnej promocji z równym lub większym rabatem. Najpierw wyłącz te promocje albo usuń z nich produkty."
     },
     "noDate": "Brak ustawionej daty",
     "campaignPromotion": "Promocja Kampanii",

@@ -7,7 +7,7 @@ import {
   useMutation,
   useQuery,
 } from "@tanstack/react-query"
-import { fetchQuery, sdk } from "../../lib/client"
+import { fetchQuery } from "../../lib/client"
 import { queryClient } from "../../lib/query-client"
 import { queryKeysFactory } from "../../lib/query-key-factory"
 import { promotionsQueryKeys } from "./promotions"
@@ -177,7 +177,29 @@ export const useAddOrRemoveCampaignPromotions = (
   >
 ) => {
   return useMutation({
-    mutationFn: (payload) => sdk.admin.campaign.batchPromotions(id, payload),
+    mutationFn: async (payload) => {
+      const addIds = payload.add || []
+      const removeIds = payload.remove || []
+
+      await Promise.all([
+        ...addIds.map((promotionId: string) =>
+          fetchQuery(`/vendor/promotions/${promotionId}`, {
+            method: "POST",
+            body: { campaign_id: id },
+          })
+        ),
+        ...removeIds.map((promotionId: string) =>
+          fetchQuery(`/vendor/promotions/${promotionId}`, {
+            method: "POST",
+            body: { campaign_id: null },
+          })
+        ),
+      ])
+
+      return fetchQuery(`/vendor/campaigns/${id}`, {
+        method: "GET",
+      })
+    },
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
         queryKey: campaignsQueryKeys.details(),

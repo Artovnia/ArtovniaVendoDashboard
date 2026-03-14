@@ -15607,7 +15607,8 @@
         "yourProducts": { "type": "string" },
         "noProductsAdded": { "type": "string" },
         "addProducts": { "type": "string" },
-        "removeProducts": { "type": "string" }
+        "removeProducts": { "type": "string" },
+        "productConflictHint": { "type": "string" }
       },
       "required": [
         "promotionDetails",
@@ -15621,7 +15622,8 @@
         "yourProducts",
         "noProductsAdded",
         "addProducts",
-        "removeProducts"
+        "removeProducts",
+        "productConflictHint"
       ],
       "additionalProperties": false
     },
@@ -15673,6 +15675,7 @@
       "properties": {
         "title": { "type": "string" },
         "subtitle": { "type": "string" },
+        "conflictHint": { "type": "string" },
         "search": {
           "type": "object",
           "properties": {
@@ -15692,6 +15695,7 @@
       "required": [
         "title",
         "subtitle",
+        "conflictHint",
         "search",
         "selectAll",
         "deselectAll",
@@ -15719,15 +15723,34 @@
       "type": "object",
       "properties": {
         "productsAdded": { "type": "string" },
+        "productsAddedWithConflicts": { "type": "string" },
         "productsRemoved": { "type": "string" },
         "addProductsError": { "type": "string" },
         "removeProductsError": { "type": "string" }
       },
       "required": [
         "productsAdded",
+        "productsAddedWithConflicts",
         "productsRemoved",
         "addProductsError",
         "removeProductsError"
+      ],
+      "additionalProperties": false
+    },
+
+    "errors": {
+      "type": "object",
+      "properties": {
+        "promotionConflict": { "type": "string" },
+        "productsAlreadyInOtherPromotion_one": { "type": "string" },
+        "productsAlreadyInOtherPromotion_few": { "type": "string" },
+        "productsAlreadyInOtherPromotion_many": { "type": "string" },
+        "productsAlreadyInOtherPromotion_other": { "type": "string" }
+      },
+      "required": [
+        "promotionConflict",
+        "productsAlreadyInOtherPromotion_one",
+        "productsAlreadyInOtherPromotion_other"
       ],
       "additionalProperties": false
     },
@@ -15753,6 +15776,7 @@
     "productSelector",
     "actions",
     "toasts",
+    "errors",
     "noDate",
     "campaignPromotion",
     "participating",

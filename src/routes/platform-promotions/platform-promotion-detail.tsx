@@ -106,11 +106,11 @@ export const PlatformPromotionDetail = () => {
               <ArrowLeft />
             </Button>
             <Tag className="text-ui-fg-base" />
-            <Heading level="h2">Platform Promotion Details</Heading>
+            <Heading level="h2">{t("platformPromotions.platformPromotionDetails")}</Heading>
           </div>
           <div className="px-6 py-4">
             <Alert variant="error">
-              <Text>{t("platformPromotions.errorLoading")}: {error?.message}</Text>
+              <Text>{t("platformPromotions.errorLoading")}</Text>
             </Alert>
           </div>
         </Container>
@@ -181,7 +181,7 @@ export const PlatformPromotionDetail = () => {
               <ArrowLeft />
             </Button>
             <Tag className="text-ui-fg-base" />
-            <Heading level="h2">Platform Promotion Details</Heading>
+            <Heading level="h2">{t("platformPromotions.platformPromotionDetails")}</Heading>
           </div>
           <div className="px-6 py-4">
             <Alert variant="warning">
@@ -295,6 +295,9 @@ export const PlatformPromotionDetail = () => {
               {t("platformPromotions.detail.addProducts")}
             </Button>
           </div>
+          <Text size="small" className="text-ui-fg-subtle mb-4">
+            {t("platformPromotions.detail.productConflictHint")}
+          </Text>
 
           {promotion.vendor_participation?.products_in_promotion?.length ? (
             <div className="overflow-hidden">

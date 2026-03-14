@@ -42,11 +42,11 @@ export const PlatformPromotionCard = ({ promotion }: PlatformPromotionCardProps)
       return `${promotion.value} ${promotion.type}`
     }
     
-    return "Campaign Promotion"
+    return t("platformPromotions.campaignPromotion")
   }
 
   const formatDate = (dateString: string | null | undefined) => {
-    if (!dateString) return "N/A"
+    if (!dateString) return t("platformPromotions.noDate")
     return new Date(dateString).toLocaleDateString()
   }
 

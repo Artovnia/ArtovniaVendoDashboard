@@ -57,7 +57,7 @@ export const PlatformPromotionsList = () => {
         </div>
         <div className="px-6 py-4">
           <Alert variant="error">
-            <Text>{t("platformPromotions.errorLoadingPromotions")}: {error?.message}</Text>
+            <Text>{t("platformPromotions.errorLoadingPromotions")}</Text>
           </Alert>
         </div>
       </Container>

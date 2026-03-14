@@ -153,6 +153,9 @@ export const ProductSelector = ({
         <RouteFocusModal.Description>
           {t("platformPromotions.productSelector.subtitle")}
         </RouteFocusModal.Description>
+        <Text size="small" className="text-ui-fg-subtle mt-2">
+          {t("platformPromotions.productSelector.conflictHint")}
+        </Text>
       </RouteFocusModal.Header>
       
       <RouteFocusModal.Body className="flex flex-col size-full overflow-hidden">
