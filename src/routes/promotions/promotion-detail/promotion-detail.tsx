@@ -64,7 +64,7 @@ export const PromotionDetail = () => {
     >
       <TwoColumnPage.Main>
         <PromotionGeneralSection promotion={promotion} />
-        <PromotionProductsSection promotion={promotion} />
+        <PromotionProductsSection promotion={promotion} rules={rules || []} />
         <PromotionConditionsSection
           rules={rules || []}
           ruleType={'rules'}

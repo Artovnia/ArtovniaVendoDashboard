@@ -2380,6 +2380,7 @@
       "details": "Promotion Details",
       "createPromotion": "Create Promotion",
       "selectProducts": "Select Products",
+      "selectShippingMethods": "Select Shipping Methods",
       "orderPromotionNoProducts": "This promotion applies to the entire order. No product selection needed."
     },
     "tabs": {
@@ -2407,7 +2408,10 @@
       "specificProductsDescription": "Select individual products for this promotion",
       "productCategories": "Product Categories",
       "productCategoriesDescription": "Apply to all products in selected categories",
+      "shippingMethods": "Shipping Methods",
+      "shippingMethodsDescription": "Apply free shipping to selected shipping methods",
       "selectProducts": "Select Products",
+      "selectShippingMethods": "Select Shipping Methods",
       "selectCategories": "Select Categories",
       "selected": "selected",
       "searchProducts": "Search products...",
@@ -2417,6 +2421,7 @@
       "selectAllOnPage": "Select all on this page",
       "noProductsFound": "No products found",
       "noProducts": "No products available",
+      "noShippingMethods": "No shipping methods available",
       "noCategories": "No categories available",
       "appliesTo": "Applies to",
       "products": "products",
@@ -2474,6 +2479,10 @@
       "buy_get": {
         "title": "Buy X Get Y",
         "description": "Buy X product(s), get Y product(s)"
+      },
+      "free_shipping": {
+        "title": "Free shipping",
+        "description": "Set shipping cost to zero for selected shipping methods"
       }
     },
     "edit": {
@@ -4888,6 +4897,11 @@
     "connectedTo": "Connected to inventory ID: {{id}}",
     "notConnectedYet": "Connect your BaseLinker account to get started",
     "confirmDisconnectTitle": "Disconnect BaseLinker",
+    "reconnect": "Reconnect / Update API Key",
+    "reconnectTitle": "Reconnect BaseLinker",
+    "reconnectDescription": "Enter your current BaseLinker API token to re-encrypt credentials and restore the connection.",
+    "reconnectSuccess": "API token updated and connection re-encrypted successfully",
+    "reconnectError": "Failed to update API token",
     "apiTokenHint": "Find this in BaseLinker → Settings → API",
     "inventoryIdHint": "Find this in BaseLinker → Inventory → Settings",
     "tokenConfigured": "Configured",

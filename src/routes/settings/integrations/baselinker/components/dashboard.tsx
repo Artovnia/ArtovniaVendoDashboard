@@ -5,6 +5,8 @@ import {
   Button,
   Container,
   Heading,
+  Input,
+  Label,
   Text,
   toast,
   Badge,
@@ -49,6 +51,8 @@ export function Dashboard({
   const navigate = useNavigate()
   const [isEditing, setIsEditing] = useState(false)
   const [showDisconnectConfirm, setShowDisconnectConfirm] = useState(false)
+  const [showReconnectPrompt, setShowReconnectPrompt] = useState(false)
+  const [reconnectApiToken, setReconnectApiToken] = useState('')
 
   const updateConnection = useUpdateBaseLinkerConnection()
   const deleteConnection = useDeleteBaseLinkerConnection()
@@ -89,6 +93,34 @@ export function Dashboard({
 
   const handleDeleteConnection = async () => {
     setShowDisconnectConfirm(true)
+  }
+
+  const handleReconnectConnection = () => {
+    setReconnectApiToken('')
+    setShowReconnectPrompt(true)
+  }
+
+  const handleConfirmReconnect = async () => {
+    const token = reconnectApiToken.trim()
+    if (!token) {
+      toast.error(t('baselinker.validation.required', { defaultValue: 'API Token and Inventory ID are required' }))
+      return
+    }
+
+    try {
+      await updateConnection.mutateAsync({
+        id: activeConnection.id,
+        data: {
+          api_token: token,
+        },
+      })
+
+      setShowReconnectPrompt(false)
+      setReconnectApiToken('')
+      toast.success(t('baselinker.reconnectSuccess', { defaultValue: 'API token updated and connection re-encrypted successfully' }))
+    } catch (error: any) {
+      toast.error(error?.message || t('baselinker.reconnectError', { defaultValue: 'Failed to update API token' }))
+    }
   }
 
   const handleConfirmDisconnect = async () => {
@@ -178,6 +210,10 @@ export function Dashboard({
               >
                 <PencilSquare className="mr-1" />
                 {t('actions.edit', { defaultValue: 'Edit' })}
+              </Button>
+              <Button variant="secondary" size="small" onClick={handleReconnectConnection}>
+                <ArrowPath className="mr-1" />
+                {t('baselinker.reconnect', { defaultValue: 'Reconnect / Update API Key' })}
               </Button>
               <Button variant="secondary" size="small" onClick={handleDeleteConnection}>
                 <Trash className="mr-1" />
@@ -338,6 +374,46 @@ export function Dashboard({
             </Prompt.Cancel>
             <Prompt.Action onClick={handleConfirmDisconnect}>
               {t('baselinker.disconnect', { defaultValue: 'Disconnect' })}
+            </Prompt.Action>
+          </Prompt.Footer>
+        </Prompt.Content>
+      </Prompt>
+
+      <Prompt open={showReconnectPrompt}>
+        <Prompt.Content>
+          <Prompt.Header>
+            <Prompt.Title>
+              {t('baselinker.reconnectTitle', { defaultValue: 'Reconnect BaseLinker' })}
+            </Prompt.Title>
+            <Prompt.Description>
+              {t('baselinker.reconnectDescription', {
+                defaultValue:
+                  'Enter your current BaseLinker API token to re-encrypt credentials and restore the connection.',
+              })}
+            </Prompt.Description>
+          </Prompt.Header>
+
+          <div className="px-6 py-2">
+            <Label htmlFor="reconnect_api_token" className="mb-2 block">
+              {t('baselinker.apiToken', { defaultValue: 'API Token' })}
+            </Label>
+            <Input
+              id="reconnect_api_token"
+              type="password"
+              value={reconnectApiToken}
+              onChange={(e) => setReconnectApiToken(e.target.value)}
+              placeholder={t('baselinker.apiTokenPlaceholder', {
+                defaultValue: 'Enter your BaseLinker API token',
+              })}
+            />
+          </div>
+
+          <Prompt.Footer>
+            <Prompt.Cancel onClick={() => setShowReconnectPrompt(false)}>
+              {t('actions.cancel', { defaultValue: 'Cancel' })}
+            </Prompt.Cancel>
+            <Prompt.Action onClick={handleConfirmReconnect}>
+              {t('baselinker.reconnect', { defaultValue: 'Reconnect / Update API Key' })}
             </Prompt.Action>
           </Prompt.Footer>
         </Prompt.Content>

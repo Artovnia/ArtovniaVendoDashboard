@@ -72,6 +72,24 @@ export const getTemplates = () => [
     },
   },
   {
+    id: 'free_shipping',
+    type: 'standard',
+    title: i18n.t('promotions.templates.free_shipping.title'),
+    description: i18n.t('promotions.templates.free_shipping.description'),
+    hiddenFields: [...commonHiddenFields],
+    defaults: {
+      is_automatic: 'false',
+      type: 'standard',
+      application_method: {
+        allocation: 'each',
+        target_type: 'shipping_methods',
+        type: 'percentage',
+        value: 100,
+        max_quantity: 1,
+      },
+    },
+  },
+  {
     id: 'buy_get',
     type: 'buy_get',
     title: i18n.t('promotions.templates.buy_get.title'),

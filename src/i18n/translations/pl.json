@@ -2372,6 +2372,7 @@
       "details": "Szczegóły promocji",
       "createPromotion": "Utwórz promocję",
       "selectProducts": "Wybierz produkty",
+      "selectShippingMethods": "Wybierz metody wysyłki",
       "orderPromotionNoProducts": "Ta promocja dotyczy całego zamówienia. Wybór produktów nie jest wymagany."
     },
     "tabs": {
@@ -2399,7 +2400,10 @@
       "specificProductsDescription": "Wybierz poszczególne produkty dla tej promocji",
       "productCategories": "Kategorie produktów",
       "productCategoriesDescription": "Zastosuj do wszystkich produktów w wybranych kategoriach",
+      "shippingMethods": "Metody wysyłki",
+      "shippingMethodsDescription": "Zastosuj darmową wysyłkę do wybranych metod wysyłki",
       "selectProducts": "Wybierz produkty",
+      "selectShippingMethods": "Wybierz metody wysyłki",
       "selectCategories": "Wybierz kategorie",
       "selected": "wybrano",
       "searchProducts": "Szukaj produktów...",
@@ -2409,6 +2413,7 @@
       "selectAllOnPage": "Zaznacz wszystkie na tej stronie",
       "noProductsFound": "Nie znaleziono produktów",
       "noProducts": "Brak dostępnych produktów",
+      "noShippingMethods": "Brak dostępnych metod wysyłki",
       "noCategories": "Brak dostępnych kategorii",
       "appliesTo": "Dotyczy",
       "products": "produkty",
@@ -2456,6 +2461,10 @@
       "buy_get": {
         "title": "Kup X Otrzymaj Y",
         "description": "Kup X produkt(ów), otrzymaj Y produkt(ów)"
+      },
+      "free_shipping": {
+        "title": "Darmowa wysyłka",
+        "description": "Ustaw koszt wysyłki na zero dla wybranych metod wysyłki"
       }
     },
     "edit": {
@@ -5040,6 +5049,11 @@
     "connectedTo": "Połączono z magazynem ID: {{id}}",
     "notConnectedYet": "Połącz swoje konto BaseLinker, aby rozpocząć",
     "confirmDisconnectTitle": "Rozłącz BaseLinker",
+    "reconnect": "Połącz ponownie / Zaktualizuj klucz API",
+    "reconnectTitle": "Połącz ponownie BaseLinker",
+    "reconnectDescription": "Wprowadź aktualny token API BaseLinker, aby ponownie zaszyfrować dane i przywrócić połączenie.",
+    "reconnectSuccess": "Token API zaktualizowany, połączenie zostało ponownie zaszyfrowane",
+    "reconnectError": "Nie udało się zaktualizować tokenu API",
     "apiTokenHint": "Znajdziesz to w BaseLinker → Ustawienia → API",
     "inventoryIdHint": "Znajdziesz to w BaseLinker → Magazyn → Ustawienia",
     "tokenConfigured": "Skonfigurowany",

@@ -14,35 +14,69 @@ const PRODUCTS_PER_PAGE = 10
 
 type PromotionProductsSectionProps = {
   promotion: HttpTypes.AdminPromotion
+  rules?: HttpTypes.AdminPromotionRule[]
 }
 
 export const PromotionProductsSection = ({
   promotion,
+  rules = [],
 }: PromotionProductsSectionProps) => {
   const { t } = useTranslation()
 
-  // Extract product and category IDs from target rules
+  // Extract product and category IDs from target rules and generic rules
   const { productIds, categoryIds } = useMemo(() => {
-    const targetRules = promotion.application_method?.target_rules || []
-    
-    const productRule = targetRules.find(
-      (rule) => rule.attribute === 'items.product.id'
+    const allRules = [
+      ...(promotion.application_method?.target_rules || []),
+      ...(promotion.rules || []),
+      ...rules,
+    ]
+
+    const productRule = allRules.find(
+      (rule) =>
+        rule.attribute === 'items.product.id' ||
+        rule.attribute === 'product_id'
     )
-    const categoryRule = targetRules.find(
-      (rule) => rule.attribute === 'items.product.categories.id'
+    const categoryRule = allRules.find(
+      (rule) =>
+        rule.attribute === 'items.product.categories.id' ||
+        rule.attribute === 'product_category_id' ||
+        rule.attribute === 'category'
     )
 
     // Extract string values from BasePromotionRuleValue objects
-    const extractIds = (values: any[] | undefined): string[] => {
+    const extractIds = (
+      values: Array<string | { value?: string } | { id?: string } | null> | undefined
+    ): string[] => {
       if (!values) return []
-      return values.map(v => typeof v === 'string' ? v : v.value)
+
+      return values
+        .map((value) => {
+          if (!value) {
+            return null
+          }
+
+          if (typeof value === 'string') {
+            return value
+          }
+
+          if ('value' in value && typeof value.value === 'string') {
+            return value.value
+          }
+
+          if ('id' in value && typeof value.id === 'string') {
+            return value.id
+          }
+
+          return null
+        })
+        .filter((value): value is string => typeof value === 'string' && value.length > 0)
     }
 
     return {
       productIds: extractIds(productRule?.values),
       categoryIds: extractIds(categoryRule?.values),
     }
-  }, [promotion])
+  }, [promotion, rules])
 
   // Fetch products individually since vendor API doesn't support id filter
   const [products, setProducts] = useState<any[]>([])

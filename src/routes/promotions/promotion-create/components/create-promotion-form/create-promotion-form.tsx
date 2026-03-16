@@ -38,7 +38,12 @@ import { useCreatePromotion } from "../../../../../hooks/api/promotions"
 import { getCurrencySymbol } from "../../../../../lib/data/currencies"
 import { DEFAULT_CAMPAIGN_VALUES } from "../../../../campaigns/common/constants"
 import { RulesFormField } from "../../../common/edit-rules/components/rules-form-field"
-import { PaginatedProductSelector, LightweightCategorySelector, PromotionTypeSelector } from "../../../common/simplified-selectors"
+import {
+  PaginatedProductSelector,
+  LightweightCategorySelector,
+  PromotionTypeSelector,
+  ShippingOptionSelector,
+} from "../../../common/simplified-selectors"
 import { AddCampaignPromotionFields } from "../../../promotion-add-campaign/components/add-campaign-promotion-form"
 import { Tab } from "./constants"
 import { CreatePromotionSchema } from "./form-schema"
@@ -65,6 +70,7 @@ const defaultValues = {
 }
 
 type TabState = Record<Tab, ProgressStatus>
+type CreatePromotionFormData = z.infer<typeof CreatePromotionSchema>
 
 export const CreatePromotionForm = () => {
   const [tab, setTab] = useState<Tab>(Tab.TYPE)
@@ -75,10 +81,12 @@ export const CreatePromotionForm = () => {
     [Tab.CAMPAIGN]: "not-started",
   })
 
-  // State for product/category selection
+  // State for product/category selection (shipping methods are handled by target_type)
   const [applyTo, setApplyTo] = useState<'products' | 'categories'>('products')
   const [selectedProductIds, setSelectedProductIds] = useState<string[]>([])
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([])
+  const [selectedShippingOptionIds, setSelectedShippingOptionIds] = useState<string[]>([])
+  const [isShippingRestrictionEnabled, setIsShippingRestrictionEnabled] = useState(false)
   
   // Memoize callbacks to prevent unnecessary re-renders
   const handleProductIdsChange = useCallback((ids: string[]) => {
@@ -89,14 +97,23 @@ export const CreatePromotionForm = () => {
     setSelectedCategoryIds(ids)
   }, [])
 
+  const handleShippingOptionIdsChange = useCallback((ids: string[]) => {
+    setSelectedShippingOptionIds(ids)
+  }, [])
+
   const { t } = useTranslation()
   const { handleSuccess } = useRouteModal()
 
-  const form = useForm<z.infer<typeof CreatePromotionSchema>>({
+  const form = useForm<CreatePromotionFormData>({
     defaultValues,
     resolver: zodResolver(CreatePromotionSchema),
   })
   const { setValue, reset, getValues } = form
+
+  const targetType = useWatch({
+    control: form.control,
+    name: "application_method.target_type",
+  })
 
   const { mutateAsync: createPromotion } = useCreatePromotion()
 
@@ -149,9 +166,33 @@ export const CreatePromotionForm = () => {
           }))
       }
 
-      // Build target rules from product/category selection
+      // Build target rules from product/category/shipping selection
       const targetRulesFromSelection: any[] = []
-      if (applyTo === 'products' && selectedProductIds.length > 0) {
+      const qualificationRulesFromSelection: any[] = []
+
+      if (targetType === 'shipping_methods' && selectedShippingOptionIds.length > 0) {
+        targetRulesFromSelection.push({
+          operator: 'in' as PromotionRuleOperatorValues,
+          attribute: 'shipping_option_id',
+          values: selectedShippingOptionIds,
+        })
+      }
+
+      if (targetType === 'shipping_methods' && isShippingRestrictionEnabled) {
+        if (applyTo === 'products' && selectedProductIds.length > 0) {
+          qualificationRulesFromSelection.push({
+            operator: 'in' as PromotionRuleOperatorValues,
+            attribute: 'items.product.id',
+            values: selectedProductIds,
+          })
+        } else if (applyTo === 'categories' && selectedCategoryIds.length > 0) {
+          qualificationRulesFromSelection.push({
+            operator: 'in' as PromotionRuleOperatorValues,
+            attribute: 'items.product.categories.id',
+            values: selectedCategoryIds,
+          })
+        }
+      } else if (applyTo === 'products' && selectedProductIds.length > 0) {
         targetRulesFromSelection.push({
           operator: 'in' as PromotionRuleOperatorValues,
           attribute: 'items.product.id',
@@ -168,7 +209,7 @@ export const CreatePromotionForm = () => {
       createPromotion(
         {
           ...promotionData,
-          rules: buildRulesData(rules),
+          rules: [...buildRulesData(rules), ...qualificationRulesFromSelection],
           status,
           application_method: {
             ...applicationMethodData,
@@ -298,20 +339,39 @@ export const CreatePromotionForm = () => {
     })
 
     for (const [key, value] of Object.entries(currentTemplate.defaults)) {
-      if (typeof value === "object") {
+      if (
+        key === "application_method" &&
+        value &&
+        typeof value === "object" &&
+        !Array.isArray(value)
+      ) {
         for (const [subKey, subValue] of Object.entries(value)) {
           setValue(
-            `application_method.${subKey}` as keyof typeof defaultValues,
-            subValue
+            `application_method.${subKey}` as never,
+            subValue as never
           )
         }
       } else {
-        setValue(key as keyof typeof defaultValues, value)
+        setValue(key as keyof CreatePromotionFormData, value as never)
       }
     }
 
     return currentTemplate
   }, [watchTemplateId, setValue, reset])
+
+  useEffect(() => {
+    if (currentTemplate?.id === 'free_shipping') {
+      setSelectedProductIds([])
+      setSelectedCategoryIds([])
+      setIsShippingRestrictionEnabled(false)
+    }
+  }, [currentTemplate])
+
+  useEffect(() => {
+    if (targetType !== 'shipping_methods') {
+      setIsShippingRestrictionEnabled(false)
+    }
+  }, [targetType])
 
   const watchValueType = useWatch({
     control: form.control,
@@ -336,11 +396,6 @@ export const CreatePromotionForm = () => {
   })
 
   const isTypeStandard = watchType === "standard"
-
-  const targetType = useWatch({
-    control: form.control,
-    name: "application_method.target_type",
-  })
 
   const isTargetTypeOrder = targetType === "order"
 
@@ -378,7 +433,8 @@ export const CreatePromotionForm = () => {
         setValue("campaign", {
           ...DEFAULT_CAMPAIGN_VALUES,
           budget: {
-            ...DEFAULT_CAMPAIGN_VALUES.budget,
+            type: "usage",
+            limit: DEFAULT_CAMPAIGN_VALUES.budget.limit,
             currency_code: formData.application_method.currency_code,
           },
         })
@@ -947,28 +1003,98 @@ export const CreatePromotionForm = () => {
               <div className="flex size-full flex-col items-center">
                 <div className="flex w-full max-w-[720px] flex-col gap-y-8 py-16">
                   <Heading level="h1" className="text-fg-base">
-                    {t("promotions.sections.selectProducts")}
+                    {targetType === "shipping_methods"
+                      ? t("promotions.sections.selectShippingMethods")
+                      : t("promotions.sections.selectProducts")}
                   </Heading>
 
                   {!isTargetTypeOrder && (
                     <>
-                      <PromotionTypeSelector
-                        value={applyTo}
-                        onChange={setApplyTo}
-                      />
+                      {targetType === 'shipping_methods' ? (
+                        <div className="flex flex-col gap-y-6">
+                          <ShippingOptionSelector
+                            selectedShippingOptionIds={selectedShippingOptionIds}
+                            onChange={handleShippingOptionIdsChange}
+                          />
 
-                      {applyTo === 'products' && (
-                        <PaginatedProductSelector
-                          selectedProductIds={selectedProductIds}
-                          onChange={handleProductIdsChange}
-                        />
-                      )}
+                          <Divider />
 
-                      {applyTo === 'categories' && (
-                        <LightweightCategorySelector
-                          selectedCategoryIds={selectedCategoryIds}
-                          onChange={handleCategoryIdsChange}
-                        />
+                          <div className="flex flex-col gap-y-4">
+                            {!isShippingRestrictionEnabled ? (
+                              <Button
+                                type="button"
+                                variant="secondary"
+                                size="small"
+                                className="w-fit"
+                                onClick={() => setIsShippingRestrictionEnabled(true)}
+                              >
+                                {t('promotions.sections.enableQualifyingProducts', {
+                                  defaultValue: 'Dodaj ograniczenie do produktów/kategorii',
+                                })}
+                              </Button>
+                            ) : (
+                              <>
+                                <div className="flex items-center justify-between gap-3">
+                                  <Text size="small" className="text-ui-fg-subtle">
+                                    {t('promotions.sections.qualifyingProductsHint', {
+                                      defaultValue:
+                                        'Ograniczenie jest aktywne: darmowa dostawa zadziała tylko dla wybranych produktów lub kategorii.',
+                                    })}
+                                  </Text>
+
+                                  <Button
+                                    type="button"
+                                    variant="transparent"
+                                    size="small"
+                                    onClick={() => setIsShippingRestrictionEnabled(false)}
+                                  >
+                                    {t('actions.remove', { defaultValue: 'Usuń ograniczenie' })}
+                                  </Button>
+                                </div>
+
+                                <PromotionTypeSelector
+                                  value={applyTo}
+                                  onChange={setApplyTo}
+                                />
+
+                                {applyTo === 'products' && (
+                                  <PaginatedProductSelector
+                                    selectedProductIds={selectedProductIds}
+                                    onChange={handleProductIdsChange}
+                                  />
+                                )}
+
+                                {applyTo === 'categories' && (
+                                  <LightweightCategorySelector
+                                    selectedCategoryIds={selectedCategoryIds}
+                                    onChange={handleCategoryIdsChange}
+                                  />
+                                )}
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <PromotionTypeSelector
+                            value={applyTo}
+                            onChange={setApplyTo}
+                          />
+
+                          {applyTo === 'products' && (
+                            <PaginatedProductSelector
+                              selectedProductIds={selectedProductIds}
+                              onChange={handleProductIdsChange}
+                            />
+                          )}
+
+                          {applyTo === 'categories' && (
+                            <LightweightCategorySelector
+                              selectedCategoryIds={selectedCategoryIds}
+                              onChange={handleCategoryIdsChange}
+                            />
+                          )}
+                        </>
                       )}
                     </>
                   )}
