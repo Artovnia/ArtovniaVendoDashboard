@@ -34,7 +34,7 @@ export const useMe = (
         method: "GET",
         query: {
           fields:
-            "id,name,description,phone,email,media,address_line,postal_code,country_code,city,region,metadata,tax_id,photo",
+            "id,name,handle,description,phone,email,media,address_line,postal_code,country_code,city,region,metadata,tax_id,photo",
         },
       }),
     queryKey: usersQueryKeys.me(),

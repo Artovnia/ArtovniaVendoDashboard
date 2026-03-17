@@ -72,7 +72,13 @@ const defaultValues = {
 type TabState = Record<Tab, ProgressStatus>
 type CreatePromotionFormData = z.infer<typeof CreatePromotionSchema>
 
-export const CreatePromotionForm = () => {
+type CreatePromotionFormProps = {
+  initialTemplateId?: string
+}
+
+export const CreatePromotionForm = ({
+  initialTemplateId,
+}: CreatePromotionFormProps = {}) => {
   const [tab, setTab] = useState<Tab>(Tab.TYPE)
   const [tabState, setTabState] = useState<TabState>({
     [Tab.TYPE]: "in-progress",
@@ -105,7 +111,10 @@ export const CreatePromotionForm = () => {
   const { handleSuccess } = useRouteModal()
 
   const form = useForm<CreatePromotionFormData>({
-    defaultValues,
+    defaultValues: {
+      ...defaultValues,
+      template_id: initialTemplateId || defaultValues.template_id,
+    },
     resolver: zodResolver(CreatePromotionSchema),
   })
   const { setValue, reset, getValues } = form
