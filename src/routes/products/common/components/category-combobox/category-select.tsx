@@ -38,6 +38,7 @@ export const CategorySelect = forwardRef<
   HTMLInputElement,
   CategoryComboboxProps
 >(({ value, onChange, className }, ref) => {
+  const safeValue = Array.isArray(value) ? value : [];
   const innerRef = useRef<HTMLInputElement>(null);
 
   useImperativeHandle<
@@ -184,7 +185,7 @@ export const CategorySelect = forwardRef<
     }
     
     // Leaf category: allow selection
-    if (value.includes(option)) {
+    if (safeValue.includes(option)) {
       onChange([]);
     } else {
       onChange([option]);
@@ -197,21 +198,21 @@ export const CategorySelect = forwardRef<
   const options = getOptions(product_categories || [], allCategories);
 
   const tagWidth = useMemo(() => {
-    const count = value.length;
+    const count = safeValue.length;
     const digits = count.toString().length;
 
     return TAG_BASE_WIDTH + digits * TABLUAR_NUM_WIDTH;
-  }, [value]);
+  }, [safeValue]);
 
   const showLevelUp = !searchValue && level.length > 0;
 
   // Get the selected category label for display
   const selectedCategory = useMemo(() => {
-    if (!value || value.length === 0 || !allCategories) return null;
-    const category = allCategories.find(cat => cat.id === value[0]);
+    if (!safeValue.length || !allCategories) return null;
+    const category = allCategories.find(cat => cat.id === safeValue[0]);
     
     return category;
-  }, [value, allCategories]);
+  }, [safeValue, allCategories]);
 
   const [focusedIndex, setFocusedIndex] =
     useState<number>(-1);
@@ -308,9 +309,7 @@ export const CategorySelect = forwardRef<
   // We'll let Radix UI manage the open state entirely
   // No need for custom trigger click handler
 
-  if (isError) {
-    throw error;
-  }
+  const hasCategoriesFetchError = isError || !!error;
 
   return (
     <Select.Root 
@@ -386,6 +385,13 @@ export const CategorySelect = forwardRef<
                   {getParentLabel(level)}
                 </Text>
               </button>
+            )}
+            {hasCategoriesFetchError && (
+              <div className='px-2 py-1.5'>
+                <Text size='small' leading='compact' className='text-ui-fg-muted'>
+                  Category list is temporarily unavailable.
+                </Text>
+              </div>
             )}
             {options.length > 0 &&
               !showLoading &&
@@ -472,7 +478,7 @@ export const CategorySelect = forwardRef<
                         tabIndex={-1}
                       >
                         <div className='flex size-5 items-center justify-center'>
-                          {value.includes(option.value) && (
+                          {safeValue.includes(option.value) && (
                             <Check className='size-4' />
                           )}
                         </div>

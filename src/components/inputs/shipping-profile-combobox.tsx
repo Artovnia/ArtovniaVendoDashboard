@@ -19,9 +19,13 @@ export const ShippingProfileCombobox = forwardRef<
 >(({ showValidationBadges = true, showWarningMessages = true, ...props }, ref) => {
   const { t } = useTranslation()
   const { shipping_profiles, isLoading } = useShippingProfilesWithValidation()
+  const safeShippingProfiles = Array.isArray(shipping_profiles)
+    ? shipping_profiles
+    : []
+  const selectedProfileId = typeof props.value === 'string' ? props.value : undefined
 
   // Convert profiles to combobox options with validation indicators
-  const options = shipping_profiles.map((profile) => {
+  const options = safeShippingProfiles.map((profile) => {
     // Translate the profile name
     const translatedName = translateShippingProfileKey(profile.name, false, t)
     let label = translatedName
@@ -50,8 +54,8 @@ export const ShippingProfileCombobox = forwardRef<
         disabled={isLoading || props.disabled}
       />
       
-      {showWarningMessages && props.value && (
-        <ShippingProfileWarning profileId={props.value as string} />
+      {showWarningMessages && selectedProfileId && (
+        <ShippingProfileWarning profileId={selectedProfileId} />
       )}
     </div>
   )

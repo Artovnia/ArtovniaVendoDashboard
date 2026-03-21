@@ -34,7 +34,7 @@ export const ProductCreateOrganizationSection = ({
         query: params,
       }),
     getOptions: (data) =>
-      data.product_tags.map((tag: any) => ({
+      (data.product_tags || []).map((tag: any) => ({
         label: tag.value,
         value: tag.id,
       })),
@@ -50,6 +50,7 @@ export const ProductCreateOrganizationSection = ({
   const selectedStockLocation = useWatch({
     control: form.control,
     name: 'default_stock_location_id',
+    defaultValue: '',
   });
 
   useEffect(() => {
@@ -125,7 +126,13 @@ export const ProductCreateOrganizationSection = ({
                   {t('formFields.categories.label')}
                 </Form.Label>
                 <Form.Control>
-                  <CategorySelect {...field} />
+                  <CategorySelect
+                    {...field}
+                    value={Array.isArray(field.value) ? field.value : []}
+                    onChange={(nextValue) =>
+                      field.onChange(Array.isArray(nextValue) ? nextValue : [])
+                    }
+                  />
                 </Form.Control>
                 <Form.ErrorMessage />
               </Form.Item>
@@ -144,6 +151,10 @@ export const ProductCreateOrganizationSection = ({
                 <Form.Control>
                   <Combobox
                     {...field}
+                    value={typeof field.value === 'string' ? field.value : ''}
+                    onChange={(nextValue) =>
+                      field.onChange(typeof nextValue === 'string' ? nextValue : '')
+                    }
                     options={stockLocationOptions}
                     searchValue={''}
                     onSearchValueChange={() => {}}
@@ -171,8 +182,12 @@ export const ProductCreateOrganizationSection = ({
                 <Form.Control>
                   <Combobox
                     {...field}
-                    options={tags.options}
-                    searchValue={tags.searchValue}
+                    value={Array.isArray(field.value) ? field.value : []}
+                    onChange={(nextValue) =>
+                      field.onChange(Array.isArray(nextValue) ? nextValue : [])
+                    }
+                    options={tags.options || []}
+                    searchValue={tags.searchValue || ''}
                     onSearchValueChange={tags.onSearchValueChange}
                     fetchNextPage={tags.fetchNextPage}
                     isFetchingNextPage={tags.isFetchingNextPage}

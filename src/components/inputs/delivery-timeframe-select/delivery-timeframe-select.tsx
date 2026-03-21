@@ -28,6 +28,15 @@ export const DeliveryTimeframeSelect = ({
   showClearOption = true,
 }: DeliveryTimeframeSelectProps) => {
   const { t } = useTranslation()
+
+  const parseDayValue = (input: string, fallback: number) => {
+    const parsed = Number.parseInt(input, 10)
+    if (!Number.isFinite(parsed) || parsed < 1) {
+      return fallback
+    }
+
+    return Math.min(parsed, 365)
+  }
   
   const getInitialPreset = () => {
     if (value?.preset && value.preset !== "custom") return value.preset
@@ -69,6 +78,11 @@ export const DeliveryTimeframeSelect = ({
       })
     } else {
       const preset = DELIVERY_TIMEFRAME_PRESETS[presetKey as DeliveryTimeframePresetKey]
+      if (!preset) {
+        onChange(null)
+        return
+      }
+
       onChange({
         preset: presetKey as DeliveryTimeframePresetKey,
         min_days: preset.min_days,
@@ -150,7 +164,9 @@ export const DeliveryTimeframeSelect = ({
               min={1}
               max={365}
               value={customMinDays}
-              onChange={(e) => handleCustomMinChange(parseInt(e.target.value) || 1)}
+              onChange={(e) =>
+                handleCustomMinChange(parseDayValue(e.target.value, 1))
+              }
               disabled={disabled}
               className="w-20"
             />
@@ -163,7 +179,9 @@ export const DeliveryTimeframeSelect = ({
               min={customMinDays}
               max={365}
               value={customMaxDays}
-              onChange={(e) => handleCustomMaxChange(parseInt(e.target.value) || customMinDays)}
+              onChange={(e) =>
+                handleCustomMaxChange(parseDayValue(e.target.value, customMinDays))
+              }
               disabled={disabled}
               className="w-20"
             />

@@ -1,11 +1,10 @@
-import { FormProvider, UseFormReturn, useFieldArray, useFormContext, useWatch } from 'react-hook-form';
+import { UseFormReturn, useFieldArray, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Heading, Text, Button, Container, Badge, DropdownMenu } from '@medusajs/ui';
-import { Swatch, Trash, EllipsisHorizontal, SquareTwoStack } from '@medusajs/icons';
-import { useColorsByFamily, useColorTaxonomy, Color, ColorTaxonomyResponse } from '../../../../../hooks/api/colors';
+import { Heading, Text, Button, DropdownMenu } from '@medusajs/ui';
+import { Swatch, Trash, SquareTwoStack } from '@medusajs/icons';
+import { useColorTaxonomy, Color } from '../../../../../hooks/api/colors';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { ColorSelector } from '../../../../../components/color-selector';
-import { Link } from 'react-router-dom';
 
 type ProductCreateColorSchemeFormProps = {
   form: UseFormReturn<any>;
@@ -16,7 +15,6 @@ export const ProductCreateColorSchemeForm = ({
 }: ProductCreateColorSchemeFormProps) => {
   const { t } = useTranslation();
   const { control, setValue, getValues } = form;
-  const formContext = useFormContext();
   
   // Get color taxonomy for organizing colors by family
   const { data: colorTaxonomy, isLoading: isLoadingTaxonomy } = useColorTaxonomy();
@@ -25,21 +23,28 @@ export const ProductCreateColorSchemeForm = ({
   const watchedVariants = useWatch({
     control,
     name: 'variants',
+    defaultValue: [],
   });
+
+  const safeWatchedVariants = Array.isArray(watchedVariants)
+    ? watchedVariants
+    : [];
 
   const { fields: options } = useFieldArray({
     control,
     name: 'options',
   });
 
+  const safeOptions = Array.isArray(options) ? options : [];
+
   // Check if we have a color option among product options
-  const hasColorOption = options.some((option: any) => 
+  const hasColorOption = safeOptions.some((option: any) => 
     option.title?.toLowerCase() === 'color' || 
     option.title?.toLowerCase() === 'kolor'
   );
 
   // If we have explicit variants, we need to assign colors to each. If not, just the default variant.
-  const hasVariants = watchedVariants && watchedVariants.length > 1;
+  const hasVariants = safeWatchedVariants.length > 1;
   
   // Initialize selected colors for each variant - now an array of strings for multiple colors
   const [variantColors, setVariantColors] = useState<Record<string, string[]>>({});
@@ -63,12 +68,12 @@ export const ProductCreateColorSchemeForm = ({
   
   // Initialize the variant colors map
   useEffect(() => {
-    if (!watchedVariants || watchedVariants.length === 0) {
+    if (safeWatchedVariants.length === 0) {
       return;
     }
 
     // Generate current variant IDs
-    const currentVariantIds = watchedVariants.map((variant: any, index: number) => 
+    const currentVariantIds = safeWatchedVariants.map((variant: any, index: number) => 
       generateVariantId(variant, index)
     );
     
@@ -105,7 +110,7 @@ export const ProductCreateColorSchemeForm = ({
       
       console.log('Initialized color assignments:', initialColorMap);
     }
-  }, [watchedVariants, setValue, getValues, generateVariantId]);
+  }, [safeWatchedVariants, setValue, getValues, generateVariantId]);
   
   // Add a color to a variant's color list
   const handleAddColor = useCallback((variantId: string, colorId: string) => {
@@ -153,7 +158,7 @@ export const ProductCreateColorSchemeForm = ({
 
   // Copy colors from previous variant that has colors assigned
   const handleCopyFromPrevious = useCallback((targetVariantId: string) => {
-    const currentVariantIds = watchedVariants.map((variant: any, index: number) => 
+    const currentVariantIds = safeWatchedVariants.map((variant: any, index: number) => 
       generateVariantId(variant, index)
     );
     
@@ -186,7 +191,7 @@ export const ProductCreateColorSchemeForm = ({
         return newColors;
       });
     }
-  }, [watchedVariants, generateVariantId, variantColors, setValue]);
+  }, [safeWatchedVariants, generateVariantId, variantColors, setValue]);
 
   // Copy colors from any variant that has colors assigned
   const handleCopyFromVariant = useCallback((targetVariantId: string, sourceVariantId: string) => {
@@ -238,10 +243,20 @@ export const ProductCreateColorSchemeForm = ({
           </div>
         </div>
       )}
+
+      {safeWatchedVariants.length === 0 && (
+        <div className="p-4 bg-ui-bg-base border border-ui-border-base rounded-lg w-full max-w-3xl">
+          <Text className="text-ui-fg-subtle">
+            {t('products.color_scheme.no_variants_available', {
+              defaultValue: 'No variants available yet. Continue to the variants step and define variants first.',
+            })}
+          </Text>
+        </div>
+      )}
       
       <div className="space-y-6 w-full max-w-3xl">
         <div className="border rounded-lg divide-y">
-          {watchedVariants.map((variant: any, index: number) => {
+          {safeWatchedVariants.map((variant: any, index: number) => {
             const variantId = generateVariantId(variant, index);
             
             const variantTitle = variant.title || 
@@ -252,12 +267,12 @@ export const ProductCreateColorSchemeForm = ({
             const hasAssignedColors = variantColorIds.length > 0;
             
             // Get available variants to copy from (variants that have colors assigned)
-            const currentVariantIds = watchedVariants.map((v: any, i: number) => 
+            const currentVariantIds = safeWatchedVariants.map((v: any, i: number) => 
               generateVariantId(v, i)
             );
             
             const availableSourceVariants = currentVariantIds
-              .map((id: string, i: number) => ({ id, index: i, variant: watchedVariants[i] }))
+              .map((id: string, i: number) => ({ id, index: i, variant: safeWatchedVariants[i] }))
               .filter(({ id, index: i }: { id: string; index: number }) => 
                 id !== variantId && 
                 variantColors[id] && 

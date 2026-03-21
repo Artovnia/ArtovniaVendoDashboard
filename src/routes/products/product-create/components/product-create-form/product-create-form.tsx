@@ -116,14 +116,19 @@ export const ProductCreateForm = ({
   const watchedVariants = useWatch({
     control: form.control,
     name: 'variants',
+    defaultValue: [],
   });
+
+  const safeWatchedVariants = Array.isArray(watchedVariants)
+    ? watchedVariants
+    : [];
 
   const showInventoryTab = useMemo(
     () =>
-      watchedVariants.some(
+      safeWatchedVariants.some(
         (v) => v.manage_inventory && v.inventory_kit
       ),
-    [watchedVariants]
+    [safeWatchedVariants]
   );
 
   const onSubmit = form.handleSubmit(
@@ -415,6 +420,11 @@ export const ProductCreateForm = ({
         variants: payload.variants.map((variant, index) => {
           // Destructure to remove fields that shouldn't be sent to backend
           const { stock_quantity, stock_location_id, manage_inventory, allow_backorder, ...cleanVariant } = variant;
+          const variantMetadata =
+            typeof (variant as { metadata?: unknown }).metadata === 'object' &&
+            (variant as { metadata?: unknown }).metadata !== null
+              ? ((variant as { metadata?: Record<string, unknown> }).metadata as Record<string, unknown>)
+              : {};
           
           
           return {
@@ -428,7 +438,7 @@ export const ProductCreateForm = ({
             sku: variant.sku || `${payload.title.substring(0, 3).toUpperCase()}-${Date.now().toString().substring(9)}-${index}`,
             // Include stock data in variant metadata for backend processing
             metadata: {
-              ...(variant.metadata || {}),  // Handle undefined metadata
+              ...variantMetadata,
               stock_location_id: payload.default_stock_location_id, // Use default location for all variants
               stock_quantity: stock_quantity || 0, // Default to 0 if not set
             },

@@ -75,20 +75,41 @@ export const useStockLocations = (
   >,
   filters?: { id?: string[] }
 ) => {
+  const queryParams: Record<string, string | number> | undefined = query
+    ? Object.entries(query).reduce<Record<string, string | number>>((acc, [key, value]) => {
+        if (typeof value === "string" || typeof value === "number") {
+          acc[key] = value
+        }
+
+        return acc
+      }, {})
+    : undefined
+
   const { data, ...rest } = useQuery({
     queryFn: () =>
       fetchQuery("/vendor/stock-locations", {
         method: "GET",
+        query: queryParams,
       }),
     queryKey: stockLocationsQueryKeys.list(query),
     ...options,
   })
 
+  const safeStockLocations = Array.isArray(data?.stock_locations)
+    ? data.stock_locations
+    : []
+  const safeCount = typeof data?.count === "number" ? data.count : safeStockLocations.length
+
   if (!filters) {
-    return { ...data, ...rest }
+    return {
+      ...(data || {}),
+      count: safeCount,
+      stock_locations: safeStockLocations,
+      ...rest,
+    }
   }
 
-  const stock_locations = data?.stock_locations.filter((location) =>
+  const stock_locations = safeStockLocations.filter((location) =>
     filters.id?.includes(location.id)
   )
 
